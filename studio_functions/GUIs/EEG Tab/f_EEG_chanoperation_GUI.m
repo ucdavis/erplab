@@ -8,7 +8,7 @@
 
 
 
-function varargout = f_EEG_chanoperation_GUI(varargin)
+function varargout = f_EEG_chanoperation_GUI(varargin) 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
@@ -144,7 +144,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_chanop',1);
+        erpworkingmemory('EEGTab_chanop',1);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
@@ -240,7 +240,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_chanop',1);
+        erpworkingmemory('EEGTab_chanop',1);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
@@ -285,7 +285,7 @@ varargout{1} = EEG_chan_operation_gui;
             return;
         end
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
+        pathName =  erpworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  [cd,filesep];
         end
@@ -347,7 +347,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_chanop',1);
+        erpworkingmemory('EEGTab_chanop',1);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
@@ -426,7 +426,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_chanop',1);
+        erpworkingmemory('EEGTab_chanop',1);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
@@ -447,7 +447,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_chanop',1);
+        erpworkingmemory('EEGTab_chanop',1);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
@@ -495,7 +495,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_chanop',1);
+        erpworkingmemory('EEGTab_chanop',1);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
@@ -553,7 +553,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         erpworkingmemory('f_EEG_proces_messg','Channel Operations > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        estudioworkingmemory('EEGTab_chanop',0);
+        erpworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
@@ -582,7 +582,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         erpworkingmemory('f_EEG_proces_messg','Channel Operations > Apply');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        estudioworkingmemory('EEGTab_chanop',0);
+        erpworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
@@ -593,10 +593,10 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(pathName_def)
             pathName_def =cd;
         end
-        EEGArray= estudioworkingmemory('EEGArray');
+        EEGArray= erpworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
         end
         
         Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
@@ -701,7 +701,7 @@ varargout{1} = EEG_chan_operation_gui;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            erpworkingmemory('EEGArray',Selected_EEG_afd);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         assignin('base','EEG',observe_EEGDAT.EEG);
@@ -725,10 +725,10 @@ varargout{1} = EEG_chan_operation_gui;
             Enable_label = 'off';
         end
         if ~isempty(observe_EEGDAT.EEG)
-            EEGArray =  estudioworkingmemory('EEGArray');
+            EEGArray =  erpworkingmemory('EEGArray');
             if isempty(EEGArray) || min(EEGArray(:)) <=0 || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
                 EEGArray = observe_EEGDAT.CURRENTSET;
-                estudioworkingmemory('EEGArray',EEGArray);
+                erpworkingmemory('EEGArray',EEGArray);
             end
             ChaNumAll = [];
             for Numofeeg = 1:numel(EEGArray)
@@ -788,12 +788,12 @@ varargout{1} = EEG_chan_operation_gui;
 %         if observe_EEGDAT.eeg_two_panels==0
 %             return;
 %         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_chanop');
+%         ChangeFlag =  erpworkingmemory('EEGTab_chanop');
 %         if ChangeFlag~=1
 %             return;
 %         end
 %         chanop_eeg_apply();
-%         estudioworkingmemory('EEGTab_chanop',0);
+%         erpworkingmemory('EEGTab_chanop',0);
 %         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
 %         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
 %         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
@@ -808,13 +808,13 @@ varargout{1} = EEG_chan_operation_gui;
             return;
         end
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_chanop');
+        ChangeFlag =  erpworkingmemory('EEGTab_chanop');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             chanop_eeg_apply();
-            estudioworkingmemory('EEGTab_chanop',0);
+            erpworkingmemory('EEGTab_chanop',0);
             gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
             gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
             EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
@@ -831,7 +831,7 @@ varargout{1} = EEG_chan_operation_gui;
         if observe_EEGDAT.Reset_eeg_paras_panel~=6
             return;
         end
-        estudioworkingmemory('EEGTab_chanop',0);
+        erpworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
         %         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];

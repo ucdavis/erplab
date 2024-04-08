@@ -59,13 +59,9 @@ if save_or_load == 1
         % save
         save(fullfile(wm_pathname, wm_fname), 'vmemoryerp');
         
-        
     catch
         errordlg('Memory save problem.  Perhaps memory was empty?');
     end
-    
-    
-    
     
     
 elseif save_or_load == 2

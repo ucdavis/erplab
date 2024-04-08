@@ -59,7 +59,7 @@ figbgdColor = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
 if ~isnumeric(figbgdColor) || isempty(figbgdColor) || numel(figbgdColor)~=3 || max(figbgdColor)>1 ||  min(figbgdColor)<0
     figbgdColor =[1 1 1];
 end
-zoomSpace = estudioworkingmemory('zoomSpace');
+zoomSpace = erpworkingmemory('zoomSpace');
 if isempty(zoomSpace)
     zoomSpace = 100;
 else
@@ -426,7 +426,7 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-ViewerName = estudioworkingmemory('viewername');
+ViewerName = erpworkingmemory('viewername');
 if isempty(ViewerName)
     ViewerName = char('My Viewer');
 end
@@ -496,7 +496,7 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-ViewerName = estudioworkingmemory('viewername');
+ViewerName = erpworkingmemory('viewername');
 if isempty(ViewerName)
     ViewerName = char('My Viewer');
 end
@@ -521,15 +521,15 @@ global viewer_ERPDAT;
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
-zoomSpace = estudioworkingmemory('zoomSpace');
+zoomSpace = erpworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('zoomSpace',100)
+    erpworkingmemory('zoomSpace',100)
 else
     if zoomSpace<100
         zoomSpace = 100;
     end
     zoomSpace =zoomSpace+50;
-    estudioworkingmemory('zoomSpace',zoomSpace) ;
+    erpworkingmemory('zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom In'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -548,8 +548,8 @@ function Panel_Reset(~,~)
 global viewer_ERPDAT;
 global gui_erp_waviewer
 
-estudioworkingmemory('MERPWaveViewer_label',[]);
-estudioworkingmemory('MERPWaveViewer_others',[]);
+erpworkingmemory('MERPWaveViewer_label',[]);
+erpworkingmemory('MERPWaveViewer_others',[]);
 
 MessageViewer= char(strcat('Reset'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -557,7 +557,7 @@ erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     viewer_ERPDAT.Reset_Waviewer_panel=1;
-    estudioworkingmemory('zoomSpace',0);
+    erpworkingmemory('zoomSpace',0);
     f_redrawERP_viewer_test();
     viewer_ERPDAT.Process_messg =2;
 catch
@@ -579,8 +579,6 @@ set(gui_erp_waviewer.Window, 'Position', new_pos);
 end
 
 
-
-
 function zoomedit(Source,~)
 global viewer_ERPDAT;
 
@@ -593,7 +591,7 @@ zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
 if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
-    estudioworkingmemory('zoomSpace',zoomspaceEdit);
+    erpworkingmemory('zoomSpace',zoomspaceEdit);
     try
         viewer_ERPDAT.Process_messg =1;
         f_redrawERP_viewer_test();
@@ -631,15 +629,15 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-zoomSpace = estudioworkingmemory('zoomSpace');
+zoomSpace = erpworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('zoomSpace',100)
+    erpworkingmemory('zoomSpace',100)
 else
     zoomSpace =zoomSpace-50;
     if zoomSpace <100
         zoomSpace =100;
     end
-    estudioworkingmemory('zoomSpace',zoomSpace) ;
+    erpworkingmemory('zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom Out'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);

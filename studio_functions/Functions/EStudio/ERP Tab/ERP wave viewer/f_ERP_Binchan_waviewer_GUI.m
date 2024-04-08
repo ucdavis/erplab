@@ -58,7 +58,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault);
 varargout{1} = Chanbin_waveviewer_box;
 % Draw the ui
     function drawui_erpsetbinchan_viewer(FonsizeDefault)
-        MERPWaveViewer_chanbin= estudioworkingmemory('MERPWaveViewer_chanbin');%%call the memery for this panel
+        MERPWaveViewer_chanbin= erpworkingmemory('MERPWaveViewer_chanbin');%%call the memery for this panel
         
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
@@ -161,8 +161,8 @@ varargout{1} = Chanbin_waveviewer_box;
         set(ERPwaveview_binchan.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(ERPwaveview_binchan.vBox, 'Sizes', [210 25]);
         
-        estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin); %%save chan array and bin array
-        estudioworkingmemory('MyViewer_chanbin',0);
+        erpworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin); %%save chan array and bin array
+        erpworkingmemory('MyViewer_chanbin',0);
         
         gui_erp_waviewer.ERPwaviewer.bin = Bin_sel;
         gui_erp_waviewer.ERPwaviewer.chan = Chan_sel;
@@ -188,7 +188,7 @@ varargout{1} = Chanbin_waveviewer_box;
                 Source.Value = 1;
             end
         end
-        estudioworkingmemory('MyViewer_chanbin',1);
+        erpworkingmemory('MyViewer_chanbin',1);
         ERPwaveview_binchan.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         ERPwaveview_binchan.apply.ForegroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.4940 0.1840 0.5560];
@@ -213,7 +213,7 @@ varargout{1} = Chanbin_waveviewer_box;
                 BinSource.Value = 1;
             end
         end
-        estudioworkingmemory('MyViewer_chanbin',1);
+        erpworkingmemory('MyViewer_chanbin',1);
         ERPwaveview_binchan.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         ERPwaveview_binchan.apply.ForegroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.4940 0.1840 0.5560];
@@ -228,7 +228,7 @@ varargout{1} = Chanbin_waveviewer_box;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
-        changeFlag =  estudioworkingmemory('MyViewer_chanbin');
+        changeFlag =  erpworkingmemory('MyViewer_chanbin');
         if changeFlag~=1
             return;
         end
@@ -261,7 +261,7 @@ varargout{1} = Chanbin_waveviewer_box;
         ERPwaveview_binchan.ElecRange.Enable = 'on';
         ERPwaveview_binchan.BinRange.Enable = 'on';
         
-        estudioworkingmemory('MyViewer_chanbin',0);
+        erpworkingmemory('MyViewer_chanbin',0);
         ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
         ERPwaveview_binchan.apply.ForegroundColor = [0 0 0];
@@ -299,7 +299,7 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         gui_erp_waviewer.ERPwaviewer.bin = BinArray;
         
-        estudioworkingmemory('MyViewer_chanbin',0);
+        erpworkingmemory('MyViewer_chanbin',0);
         ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
         ERPwaveview_binchan.apply.ForegroundColor = [0 0 0];
@@ -309,7 +309,7 @@ varargout{1} = Chanbin_waveviewer_box;
         MERPWaveViewer_chanbin{1} = 0;
         MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
         MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
-        estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
+        erpworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
         %%change  the other panels based on the changed bins and channels
         viewer_ERPDAT.Count_currentERP = 1;
         viewer_ERPDAT.Process_messg =2;
@@ -409,7 +409,7 @@ varargout{1} = Chanbin_waveviewer_box;
         MERPWaveViewer_chanbin{1} = 0;
         MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
         MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
-        estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
+        erpworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
         viewer_ERPDAT.Count_currentERP=3;
     end
 
@@ -506,7 +506,7 @@ varargout{1} = Chanbin_waveviewer_box;
         MERPWaveViewer_chanbin{1} = 0;
         MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
         MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
-        estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
+        erpworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
         viewer_ERPDAT.loadproper_count=3;
     end
 
@@ -520,7 +520,7 @@ varargout{1} = Chanbin_waveviewer_box;
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  estudioworkingmemory('MyViewer_chanbin');
+        changeFlag =  erpworkingmemory('MyViewer_chanbin');
         if changeFlag~=1
             return;
         end
@@ -562,7 +562,7 @@ varargout{1} = Chanbin_waveviewer_box;
         MERPWaveViewer_chanbin{1} = 0;
         MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
         MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
-        estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
+        erpworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
         
         ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];

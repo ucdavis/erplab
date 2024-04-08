@@ -60,7 +60,7 @@ varargout{1} = box_erplabelset_viewer_property;
         
         %%-----------------Setting for Auto-------
         %%get the parameters from memory file
-        MERPWaveViewer_label= estudioworkingmemory('MERPWaveViewer_label');
+        MERPWaveViewer_label= erpworkingmemory('MERPWaveViewer_label');
         try
             locationAuto = MERPWaveViewer_label{1};
             locationno = MERPWaveViewer_label{2};
@@ -219,9 +219,9 @@ varargout{1} = box_erplabelset_viewer_property;
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title  );
         set(gui_labelset_waveviewer.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(gui_labelset_waveviewer.DataSelBox ,'Sizes',[20 25 25 20 25 25 25]);
-        estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        erpworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
         
-        estudioworkingmemory('MyViewer_labels',0);
+        erpworkingmemory('MyViewer_labels',0);
     end
 
 %%***********************************************************************%%
@@ -233,7 +233,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -302,7 +302,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -326,7 +326,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -351,7 +351,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -371,7 +371,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -391,7 +391,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -405,7 +405,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -419,7 +419,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -433,7 +433,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_labels',1);
+        erpworkingmemory('MyViewer_labels',1);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -450,7 +450,7 @@ varargout{1} = box_erplabelset_viewer_property;
         MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        changeFlag =  estudioworkingmemory('MyViewer_labels');
+        changeFlag =  erpworkingmemory('MyViewer_labels');
         if changeFlag~=1
             MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Cancel'));
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -495,7 +495,7 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.center.Enable = Enable;
         gui_labelset_waveviewer.center.Value = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
         
-        estudioworkingmemory('MyViewer_labels',0);
+        erpworkingmemory('MyViewer_labels',0);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
         gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
@@ -513,7 +513,7 @@ varargout{1} = box_erplabelset_viewer_property;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
-        estudioworkingmemory('MyViewer_labels',0);
+        erpworkingmemory('MyViewer_labels',0);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
         gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
@@ -558,7 +558,7 @@ varargout{1} = box_erplabelset_viewer_property;
         
         viewer_ERPDAT.Count_currentERP = 1;
         viewer_ERPDAT.Process_messg =2;
-        estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        erpworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
     end
 
 
@@ -643,7 +643,7 @@ varargout{1} = box_erplabelset_viewer_property;
         MERPWaveViewer_label{7} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_label{9}  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
-        estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        erpworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
         viewer_ERPDAT.loadproper_count =6;
     end
 
@@ -656,7 +656,7 @@ varargout{1} = box_erplabelset_viewer_property;
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  estudioworkingmemory('MyViewer_labels');
+        changeFlag =  erpworkingmemory('MyViewer_labels');
         if changeFlag~=1
             return;
         end
@@ -712,7 +712,7 @@ varargout{1} = box_erplabelset_viewer_property;
         MERPWaveViewer_label{7} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_label{9}  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
-        estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        erpworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
         viewer_ERPDAT.Reset_Waviewer_panel=6;
     end
 
@@ -797,7 +797,7 @@ varargout{1} = box_erplabelset_viewer_property;
         MERPWaveViewer_label{7} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_label{9}  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
-        estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        erpworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
         viewer_ERPDAT.Count_currentERP=6;
     end
 
@@ -807,7 +807,7 @@ varargout{1} = box_erplabelset_viewer_property;
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             label_apply();
-            estudioworkingmemory('MyViewer_labels',0);
+            erpworkingmemory('MyViewer_labels',0);
             gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
             gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
             box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];

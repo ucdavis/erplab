@@ -1,18 +1,27 @@
+%%This function is to display the summary of trial information
+
+
+% *** This function is part of ERPLAB Studio Toolbox ***
+% Author: Guanghui Zhang & Steven Luck
+% Center for Mind and Brain
+% University of California, Davis,
+% Davis, CA
+% Apr. 2024
+
 
 
 function eegcom = f_eeg_ar_summary(ALLEEG,EEGArray)
 
-
 eegcom = '';
-if nargin < 1
+if nargin < 1 || nargin >2
     help f_eeg_ar_summary
     return
 end
 if nargin < 2
-  EEGArray = [1:length(ALLEEG)];  
+    EEGArray = [1:length(ALLEEG)];
 end
 if isempty(EEGArray) || any(EEGArray(:)>length(ALLEEG)) || any(EEGArray(:)<1)
-  EEGArray = [1:length(ALLEEG)];     
+    EEGArray = [1:length(ALLEEG)];
 end
 
 for NumofEEG = 1:numel(EEGArray)

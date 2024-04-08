@@ -49,8 +49,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
 
     function drawui_plot_xyaxis_viewer(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
-        MERPWaveViewer_xaxis= estudioworkingmemory('MERPWaveViewer_xaxis');%%call the memery for this panel
-        MERPWaveViewer_yaxis= estudioworkingmemory('MERPWaveViewer_yaxis');
+        MERPWaveViewer_xaxis= erpworkingmemory('MERPWaveViewer_xaxis');%%call the memery for this panel
+        MERPWaveViewer_yaxis= erpworkingmemory('MERPWaveViewer_yaxis');
         
         
         %%Set for x units: 1 is in Second; 0 is in millisecond
@@ -868,10 +868,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
         set(gui_erpxyaxeset_waveviewer.help_run_title,'Sizes',[40 70 20 70 30]);
         
         %%save the parameters
-        estudioworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%% save parameters for x axis to memory file
-        estudioworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%% save parameters for y axis to memory file
+        erpworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%% save parameters for x axis to memory file
+        erpworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%% save parameters for y axis to memory file
         
-        estudioworkingmemory('MyViewer_xyaxis',0);
+        erpworkingmemory('MyViewer_xyaxis',0);
     end
 
 %%*********************************************************************************************************************************%%
@@ -905,7 +905,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.xticks_precision.String = xprecisoonName;
             gui_erpxyaxeset_waveviewer.xticks_precision.Value =xtick_precision+1;
             
-            estudioworkingmemory('MyViewer_xyaxis',1);
+            erpworkingmemory('MyViewer_xyaxis',1);
             
             track_changes_title_color();
             
@@ -1033,7 +1033,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
                 xtick_precision=1;
             end
             gui_erpxyaxeset_waveviewer.xticks_precision.Value=xtick_precision;
-            estudioworkingmemory('MyViewer_xyaxis',1);
+            erpworkingmemory('MyViewer_xyaxis',1);
             track_changes_title_color();%%change title color and background color for "cancel" and "apply"
             gui_erpxyaxeset_waveviewer.xmillisecond.Value =0; %display with millisecond
             gui_erpxyaxeset_waveviewer.xsecond.Value =1;%display with second
@@ -1142,7 +1142,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         Value = strx_auto.Value;
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
@@ -1198,7 +1198,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
         
@@ -1250,7 +1250,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
         timeArray =  str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
@@ -1288,7 +1288,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         Value = Str.Value;
@@ -1325,7 +1325,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
@@ -1355,7 +1355,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         Value = Str.Value;
@@ -1415,7 +1415,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         Str_xtick_minor = str2num(Str.String);
@@ -1434,7 +1434,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         Value = Str.Value;
@@ -1485,7 +1485,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 1;
@@ -1501,7 +1501,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 0;
@@ -1517,7 +1517,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -1531,7 +1531,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
     end
 %%---------------------color of x labelticks-------------------------------
@@ -1540,7 +1540,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
     end
 
@@ -1550,7 +1550,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         gui_erpxyaxeset_waveviewer.xtimeunits_on.Value = 1;
         gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = 0;
@@ -1562,7 +1562,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         gui_erpxyaxeset_waveviewer.xtimeunits_on.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = 1;
@@ -1579,7 +1579,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         yscalecustom = str2num(char(yscalStr.String));
         %%checking the inputs
@@ -1624,7 +1624,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         Value = yscaleauto.Value;
         if Value ==1
@@ -1691,7 +1691,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         ytickcustom = str2num(char(Str.String));
@@ -1749,7 +1749,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         Value = Str.Value;
@@ -1791,7 +1791,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         yticksLabel =  gui_erpxyaxeset_waveviewer.yticks_edit.String;
@@ -1823,7 +1823,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         Value = Str.Value;
@@ -1878,7 +1878,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         ytickmin_step = str2num(Str.String);
@@ -1896,7 +1896,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         Value = Str.Value;%%
@@ -1942,7 +1942,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         gui_erpxyaxeset_waveviewer.ylabel_on.Value = 1;
@@ -1959,7 +1959,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
     end
 
@@ -1969,7 +1969,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
     end
 
@@ -1979,7 +1979,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
     end
 
@@ -1990,7 +1990,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         gui_erpxyaxeset_waveviewer.ylabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.ylabel_off.Value = 1;
@@ -2005,7 +2005,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -2021,7 +2021,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=3
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_xyaxis',1);
+        erpworkingmemory('MyViewer_xyaxis',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         gui_erpxyaxeset_waveviewer.yunits_on.Value = 0;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = 1;
@@ -2039,7 +2039,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
-        changeFlag =  estudioworkingmemory('MyViewer_xyaxis');
+        changeFlag =  erpworkingmemory('MyViewer_xyaxis');
         if changeFlag~=1%% Donot reset this panel if there is no change
             return;
         end
@@ -2232,7 +2232,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
         gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [1 1 1];
         gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('MyViewer_xyaxis',0);
+        erpworkingmemory('MyViewer_xyaxis',0);
         MessageViewer= char(strcat('Time and Amplitude Scales > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
@@ -2245,7 +2245,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
-        estudioworkingmemory('MyViewer_xyaxis',0);
+        erpworkingmemory('MyViewer_xyaxis',0);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
@@ -2340,7 +2340,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         MERPWaveViewer_xaxis{12} = gui_erpxyaxeset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_xaxis{13}= gui_erpxyaxeset_waveviewer.xtimetextcolor.Value;
         MERPWaveViewer_xaxis{14}= gui_erpxyaxeset_waveviewer.xtimeunits_on.Value;
-        estudioworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%%save the parameters for x axis to memory file
+        erpworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%%save the parameters for x axis to memory file
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%Setting for Y axis%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2436,7 +2436,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%y units
         gui_erp_waviewer.ERPwaviewer.yaxis.units = gui_erpxyaxeset_waveviewer.yunits_on.Value;
         MERPWaveViewer_yaxis{13}= gui_erpxyaxeset_waveviewer.yunits_on.Value;
-        estudioworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the parameters for y axis to momery file
+        erpworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the parameters for y axis to momery file
         %%save the parameters
         viewer_ERPDAT.Count_currentERP=1;
         viewer_ERPDAT.Process_messg =2;%% complete
@@ -2450,7 +2450,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex==3
             xyaxis_apply();
-            estudioworkingmemory('MyViewer_xyaxis',0);
+            erpworkingmemory('MyViewer_xyaxis',0);
         end
         
         try
@@ -2594,7 +2594,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         gui_erp_waviewer.ERPwaviewer.xaxis.timeticks = xticksArray;
         
-        MERPWaveViewer_xaxis = estudioworkingmemory('MERPWaveViewer_xaxis');
+        MERPWaveViewer_xaxis = erpworkingmemory('MERPWaveViewer_xaxis');
         if xdispysecondValue==1
             MERPWaveViewer_xaxis{1}=1;
             MERPWaveViewer_xaxis{3} =  str2num(char(gui_erpxyaxeset_waveviewer.timerange_edit.String));
@@ -2606,7 +2606,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             MERPWaveViewer_xaxis{5} = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String));
             MERPWaveViewer_xaxis{8} = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String));
         end
-        estudioworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%%save the changed parameters for x axis to memory file.
+        erpworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%%save the changed parameters for x axis to memory file.
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%----------------------------Setting for Y axis-------------------
@@ -2722,12 +2722,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erp_waviewer.ERPwaviewer.yaxis.ticks = YTicks;
         gui_erp_waviewer.ERPwaviewer.yaxis.yminor.step = str2num(char(gui_erpxyaxeset_waveviewer.yminorstepedit.String));
         %%save the parameters
-        MERPWaveViewer_yaxis = estudioworkingmemory('MERPWaveViewer_yaxis');
+        MERPWaveViewer_yaxis = erpworkingmemory('MERPWaveViewer_yaxis');
         MERPWaveViewer_yaxis{1} = gui_erpxyaxeset_waveviewer.yrangeauto.Value;
         MERPWaveViewer_yaxis{2}=str2num(char(gui_erpxyaxeset_waveviewer.yrange_edit.String));
         MERPWaveViewer_yaxis{4} =  str2num(char(gui_erpxyaxeset_waveviewer.yticks_edit.String));
         MERPWaveViewer_yaxis{8} = str2num(char(gui_erpxyaxeset_waveviewer.yminorstepedit.String));
-        estudioworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the changed parameters for y axis to memory file.
+        erpworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the changed parameters for y axis to memory file.
         viewer_ERPDAT.Count_currentERP =4;
     end
 
@@ -2908,7 +2908,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         MERPWaveViewer_xaxis{12} = gui_erpxyaxeset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_xaxis{13} = xticklabelcolor;
         MERPWaveViewer_xaxis{14} =gui_erpxyaxeset_waveviewer.xtimeunits_on.Value ;
-        estudioworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%% save the parameters for x axis to memory file
+        erpworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%% save the parameters for x axis to memory file
         
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3082,7 +3082,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         MERPWaveViewer_yaxis{11} = ysize;
         MERPWaveViewer_yaxis{12} = yticklabelcolor;
         MERPWaveViewer_yaxis{13} = yunits;
-        estudioworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the parameters for y axis to memory file
+        erpworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the parameters for y axis to memory file
         viewer_ERPDAT.loadproper_count=4;%%update the next panel
     end
 
@@ -3094,7 +3094,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  estudioworkingmemory('MyViewer_xyaxis');
+        changeFlag =  erpworkingmemory('MyViewer_xyaxis');
         if changeFlag~=1
             return;
         end
@@ -3284,8 +3284,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         MERPWaveViewer_yaxis{11}=4;
         MERPWaveViewer_yaxis{12}=1;
         MERPWaveViewer_yaxis{13}= 1;
-        estudioworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%%save the parameters for x axis to memory file
-        estudioworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the parameters for y axis to memory file
+        erpworkingmemory('MERPWaveViewer_xaxis',MERPWaveViewer_xaxis);%%save the parameters for x axis to memory file
+        erpworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the parameters for y axis to memory file
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
@@ -3298,7 +3298,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             xyaxis_apply();
-            estudioworkingmemory('MyViewer_xyaxis',0);
+            erpworkingmemory('MyViewer_xyaxis',0);
             gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];

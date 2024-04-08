@@ -187,7 +187,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         set(EEG_dq_epoch.detar_run_title,'Sizes',[15 105  30 105 15]);
         
         set(EEG_dq_epoch.DataSelBox,'Sizes',[20 25 25 20 25 30 30 30]);
-        estudioworkingmemory('EEGTab_dq_epoch',0);
+        erpworkingmemory('EEGTab_dq_epoch',0);
     end
 
 %%**************************************************************************%%
@@ -209,7 +209,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_cancel.ForegroundColor = [1 1 1];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_epoch.dq_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_dq_epoch',1);
+        erpworkingmemory('EEGTab_dq_epoch',1);
         EEG_dq_epoch.def_para.Value=1;
         EEG_dq_epoch.custom_para.Value=0;
         EEG_dq_epoch.custom_para_op.Enable = 'off';
@@ -230,7 +230,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_cancel.ForegroundColor = [1 1 1];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_epoch.dq_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_dq_epoch',1);
+        erpworkingmemory('EEGTab_dq_epoch',1);
         EEG_dq_epoch.def_para.Value=0;
         EEG_dq_epoch.custom_para.Value=1;
         EEG_dq_epoch.custom_para_op.Enable = 'on';
@@ -251,7 +251,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_cancel.ForegroundColor = [1 1 1];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_epoch.dq_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_dq_epoch',1);
+        erpworkingmemory('EEGTab_dq_epoch',1);
         
         timelimits = 1000 * [observe_EEGDAT.EEG.xmin observe_EEGDAT.EEG.xmax];
         old_DQ_spec = EEG_dq_epoch.DQ_spec;
@@ -279,7 +279,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_epoch.dq_run.ForegroundColor = [1 1 1];
         
-        estudioworkingmemory('EEGTab_dq_epoch',1);
+        erpworkingmemory('EEGTab_dq_epoch',1);
         EEG_dq_epoch.all_marks.Value = 1;
         EEG_dq_epoch.excld_marks.Value = 0;
         EEG_dq_epoch.marked_epochs.Value = 0;
@@ -301,7 +301,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_cancel.ForegroundColor = [1 1 1];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_epoch.dq_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_dq_epoch',1);
+        erpworkingmemory('EEGTab_dq_epoch',1);
         
         EEG_dq_epoch.all_marks.Value = 0;
         EEG_dq_epoch.excld_marks.Value = 1;
@@ -324,7 +324,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_cancel.ForegroundColor = [1 1 1];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_epoch.dq_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_dq_epoch',1);
+        erpworkingmemory('EEGTab_dq_epoch',1);
         EEG_dq_epoch.all_marks.Value = 0;
         EEG_dq_epoch.excld_marks.Value = 0;
         EEG_dq_epoch.marked_epochs.Value = 1;
@@ -349,7 +349,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];
         EEG_dq_epoch.dq_run.ForegroundColor = [0 0 0];
         
-        estudioworkingmemory('EEGTab_dq_epoch',0);
+        erpworkingmemory('EEGTab_dq_epoch',0);
         
         def  = erpworkingmemory('pop_DQ_preavg');
         if isempty(def) || numel(def)~=12
@@ -420,12 +420,12 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];
         EEG_dq_epoch.dq_run.ForegroundColor = [0 0 0];
         
-        estudioworkingmemory('EEGTab_dq_epoch',0);
+        erpworkingmemory('EEGTab_dq_epoch',0);
         %%--------Selected EEGsets-----------
-        EEGArray= estudioworkingmemory('EEGArray');
+        EEGArray= erpworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
         end
         
         incALL=EEG_dq_epoch.all_marks.Value;
@@ -614,13 +614,13 @@ varargout{1} = Eegtab_box_dq_epoch;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_shiftcodes_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_dq_epoch');
+        ChangeFlag =  erpworkingmemory('EEGTab_dq_epoch');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             dq_run();
-            estudioworkingmemory('EEGTab_dq_epoch',0);
+            erpworkingmemory('EEGTab_dq_epoch',0);
             Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
             EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
             EEG_dq_epoch.dq_cancel.ForegroundColor = [0 0 0];
@@ -637,7 +637,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if observe_EEGDAT.Reset_eeg_paras_panel~=18
             return;
         end
-        estudioworkingmemory('EEGTab_dq_epoch',0);
+        erpworkingmemory('EEGTab_dq_epoch',0);
         EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
         EEG_dq_epoch.dq_cancel.ForegroundColor = [0 0 0];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];

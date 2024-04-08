@@ -259,12 +259,12 @@ drawui_erp_information(FonsizeDefault);
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             return;
         end
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = ERPArray;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         feval('dq_trial_rejection',observe_ERPDAT.ALLERP(ERPArray),[],0);
         
@@ -282,12 +282,12 @@ drawui_erp_information(FonsizeDefault);
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             return;
         end
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = ERPArray;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         try
             try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end

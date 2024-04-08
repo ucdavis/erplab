@@ -10,9 +10,6 @@
 
 
 function EStudio_gui_erp_totl = EStudio_ERP_Tab(EStudio_gui_erp_totl,ColorB_def)
-% global observe_ERPDAT;
-% global viewer_ERPDAT;
-% global EStudio_gui_erp_totl;
 
 if isempty(ColorB_def)
     ColorB_def = [0.7020 0.77 0.85];
@@ -25,7 +22,6 @@ EStudio_gui_erp_totl.ViewContainer = uicontainer('Parent', EStudio_gui_erp_totl.
 
 EStudio_gui_erp_totl.panelscroll = uix.ScrollingPanel('Parent', EStudio_gui_erp_totl.tabERP);
 set(EStudio_gui_erp_totl.panelscroll,'BackgroundColor',ColorB_def);
-% + Adjust the main layout
 set( EStudio_gui_erp_totl.tabERP, 'Widths', [-4, 300]); % Viewpanel and settings panel
 
 

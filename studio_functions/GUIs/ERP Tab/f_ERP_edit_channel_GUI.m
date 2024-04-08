@@ -97,7 +97,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         ERP_tab_edit_chan.edit_chanlocs.String = '<html>    Add or edit   <br />chan locations</html>';
         ERP_tab_edit_chan.edit_chanlocs.HorizontalAlignment='Center';
         set(ERP_tab_edit_chan.DataSelBox,'sizes',[30 30 30 40])
-        estudioworkingmemory('ERPTab_editchan',0);
+        erpworkingmemory('ERPTab_editchan',0);
     end
 
 %%**************************************************************************%%
@@ -115,7 +115,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('ERPTab_editchan',1);
+        erpworkingmemory('ERPTab_editchan',1);
         ERP_tab_edit_chan.mode_modify.Value =1;
         ERP_tab_edit_chan.mode_create.Value = 0;
     end
@@ -132,7 +132,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('ERPTab_editchan',1);
+        erpworkingmemory('ERPTab_editchan',1);
         ERP_tab_edit_chan.mode_modify.Value =0;
         ERP_tab_edit_chan.mode_create.Value = 1;
     end
@@ -149,7 +149,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('ERPTab_editchan',1);
+        erpworkingmemory('ERPTab_editchan',1);
         New_chans = str2num(Source.String);
         if isempty(New_chans) || any(New_chans(:)<=0)
             msgboxText='Edit/Delete Channels & Locations >  Index(es) of channels should be positive numbers';
@@ -181,7 +181,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('ERPTab_editchan',1);
+        erpworkingmemory('ERPTab_editchan',1);
         
         ERP = observe_ERPDAT.ERP;
         for Numofchan = 1:ERP.nchan
@@ -221,14 +221,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('ERPTab_editchan',0);
+        erpworkingmemory('ERPTab_editchan',0);
         
         erpworkingmemory('f_ERP_proces_messg','Edit/Delete Channels & Locations >  Delete selected chan');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP))  ||  any(ERPArray <1)
-            ERPArray = observe_ERPDAT.CURRENTERP;estudioworkingmemory('selectederpstudio',ERPArray);
+            ERPArray = observe_ERPDAT.CURRENTERP;erpworkingmemory('selectederpstudio',ERPArray);
         end
         
         ChanArray =  str2num(ERP_tab_edit_chan.select_edit_chan.String);
@@ -328,7 +328,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
             
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
             assignin('base','ALLERP',observe_ERPDAT.ALLERP);
@@ -350,7 +350,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('ERPTab_editchan',0);
+        erpworkingmemory('ERPTab_editchan',0);
         
         erpworkingmemory('f_ERP_proces_messg','Edit/Delete Channels & Locations >  Rename selected chan');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
@@ -363,9 +363,9 @@ varargout{1} = EStudio_erp_box_edit_chan;
             return;
         end
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
-            ERPArray = observe_ERPDAT.CURRENTERP; estudioworkingmemory('selectederpstudio',ERPArray);
+            ERPArray = observe_ERPDAT.CURRENTERP; erpworkingmemory('selectederpstudio',ERPArray);
         end
         
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
@@ -473,7 +473,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
             assignin('base','ALLERP',observe_ERPDAT.ALLERP);
@@ -496,12 +496,12 @@ varargout{1} = EStudio_erp_box_edit_chan;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('ERPTab_editchan',0);
+        erpworkingmemory('ERPTab_editchan',0);
         
         erpworkingmemory('f_ERP_proces_messg','Edit/Delete Channels & Locations >  Add or edit channel locations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  min(ERPArray(:)) > length(observe_ERPDAT.ALLERP) ||  max(ERPArray(:)) > length(observe_ERPDAT.ALLERP) ||  min(ERPArray(:)) <1
             ERPArray = observe_ERPDAT.CURRENTERP;
         end
@@ -597,7 +597,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
             
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
             assignin('base','ALLERP',observe_ERPDAT.ALLERP);
@@ -643,7 +643,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if observe_ERPDAT.Reset_erp_paras_panel~=5
             return;
         end
-        estudioworkingmemory('ERPTab_editchan',0);
+        erpworkingmemory('ERPTab_editchan',0);
         ERP_tab_edit_chan.mode_modify.Value =1;
         ERP_tab_edit_chan.mode_create.Value = 0;
         ERP_tab_edit_chan.select_edit_chan.String = '';

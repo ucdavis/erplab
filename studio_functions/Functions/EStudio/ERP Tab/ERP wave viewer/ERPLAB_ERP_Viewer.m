@@ -38,6 +38,7 @@ function  ERPLAB_ERP_Viewer(ALLERP,selectedERP_index,binArray,chanArray,Paramete
 tic;%
 disp('ERP Waveform Viewer is launching. Please be patient...');
 
+EStudioversion = geterplabeversion;
 
 global viewer_ERPDAT;
 global gui_erp_waviewer;
@@ -64,29 +65,27 @@ if ~strcmpi(ERPtooltype,'EStudio') &&  ~strcmpi(ERPtooltype,'ERPLAB')
     observe_ERPDAT.Process_messg = 0;
 end
 
+p_location = which('eegplugin_erplab','-all');
+if length(p_location)>1
+    fprintf('\nERPLAB Studio WARNING: More than one ERPLAB folder was found.\n\n');
+end
+p_location = p_location{1};
+p_location = p_location(1:findstr(p_location,'eegplugin_erplab.m')-1);
 
-if exist('memoryerpstudiopanels.erpm','file')==2
+if exist('memoryerp.erpm','file')==2
     iserpmem = 1; % file for memory exists
 else
     iserpmem = 0; % does not exist file for memory
 end
+
+
 if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudiopanels.erpm'),'ERPtooltype')
-end
-
-
-
-if exist('memoryerpstudio.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
-if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudio.erpm'),'ERPtooltype')
+    mshock = 0;
+    if iserpmem==0
+        p1 = which('eegplugin_erplab');
+        p1 = p1(1:findstr(p1,'eegplugin_erplab.m')-1);
+        save(fullfile(p1,'memoryerp.erpm'),'EStudioversion')
+    end
 end
 
 
@@ -170,13 +169,7 @@ if nargin>6
 end
 
 erpworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB
-% if ~strcmpi(ERPtooltype,'EStudio')
-%     addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
-%     addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
-%     addlistener(viewer_ERPDAT,'v_messg_change',@V_messg_change);
-%     addlistener(viewer_ERPDAT,'count_legend_change',@count_legend_change);
-%     addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
-% % end
+
 
 
 viewer_ERPDAT.Count_currentERP = 0;
@@ -206,13 +199,13 @@ end
 
 %%Setting the flags for all panels that are used to get the changes from
 %%each panel
-estudioworkingmemory('MyViewer_ERPsetpanel',0);
-estudioworkingmemory('MyViewer_chanbin',0);
-estudioworkingmemory('MyViewer_xyaxis',0);
-estudioworkingmemory('MyViewer_plotorg',0);
-estudioworkingmemory('MyViewer_labels',0);
-estudioworkingmemory('MyViewer_linelegend',0);
-estudioworkingmemory('MyViewer_other',0);
+erpworkingmemory('MyViewer_ERPsetpanel',0);
+erpworkingmemory('MyViewer_chanbin',0);
+erpworkingmemory('MyViewer_xyaxis',0);
+erpworkingmemory('MyViewer_plotorg',0);
+erpworkingmemory('MyViewer_labels',0);
+erpworkingmemory('MyViewer_linelegend',0);
+erpworkingmemory('MyViewer_other',0);
 
 gui_erp_waviewer.ERPwaviewer.ALLERP =ALLERP;
 gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
@@ -250,7 +243,7 @@ gui_erp_waviewer.ERPwaviewer.figbackgdcolor = [1 1 1];
 gui_erp_waviewer.ERPwaviewer.figname = 'My Viewer';
 gui_erp_waviewer.ERPwaviewer.FigOutpos=[];
 %
-% estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
+% erpworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
 
 
 createInterface_ERPWave_viewer(ERPtooltype);
@@ -309,7 +302,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             
             currvers  = ['ERPLAB ' erplabstudiover,'- My Viewer'];
         end
-        estudioworkingmemory('viewername','My Viewer');
+        erpworkingmemory('viewername','My Viewer');
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
@@ -460,6 +453,13 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         
     end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function
+
+
+%%---------------------ERPLAB VERSION--------------------------------------
+function erplabver1 = geterplabeversion
+erplab_default_values;
+erplabver1 = str2num(erplabver);
+erpworkingmemory('erplabver', erplabver);
+end

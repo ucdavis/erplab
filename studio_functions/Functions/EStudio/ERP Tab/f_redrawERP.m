@@ -9,10 +9,9 @@
 
 
 function f_redrawERP()
-% Draw a demo ERP into the axes provided
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
-% addlistener(observe_ERPDAT,'Messg_change',@Count_Process_messg_change);
+
 FonsizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
@@ -23,16 +22,10 @@ if isempty(ColorB_def)
     ColorB_def = [0.702,0.77,0.85];
 end
 
-
-%Sets the units of your root object (screen) to pixels
 set(0,'units','pixels')
-%Obtains this pixel information
 Pix_SS = get(0,'screensize');
-%Sets the units of your root object (screen) to inches
 set(0,'units','inches')
-%Obtains this inch information
 Inch_SS = get(0,'screensize');
-%Calculates the resolution (pixels per inch)
 Resolation = Pix_SS./Inch_SS;
 
 
@@ -46,7 +39,7 @@ end
 if ishandle( EStudio_gui_erp_totl.ViewAxes )
     delete( EStudio_gui_erp_totl.ViewAxes );
 end
-zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
+zoomSpace = erpworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
     zoomSpace = 100;
 else
@@ -59,11 +52,11 @@ if zoomSpace ==100
     EStudio_gui_erp_totl.ScrollHorizontalOffsets=0;
 end
 
-ERPArray= estudioworkingmemory('selectederpstudio');
+ERPArray= erpworkingmemory('selectederpstudio');
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
         ERPArray =  length(observe_ERPDAT.ALLERP) ;
-        estudioworkingmemory('selectederpstudio',ERPArray);
+        erpworkingmemory('selectederpstudio',ERPArray);
         observe_ERPDAT.CURRENTERP = ERPArray;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(ERPArray);
         assignin('base','ERP',observe_ERPDAT.ERP);
@@ -86,7 +79,7 @@ else
     pagecurrentNum=1;
     PageStr = 'No ERPset was loaded';
     ERPArray= 1;
-    estudioworkingmemory('selectederpstudio',1);
+    erpworkingmemory('selectederpstudio',1);
     Enableflag = 'off';
 end
 ERP_autoplot = EStudio_gui_erp_totl.ERP_autoplot;
@@ -321,15 +314,15 @@ global observe_ERPDAT;
 if ~isempty(messgStr)
     observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
 end
-zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
+zoomSpace = erpworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('ERPTab_zoomSpace',0);
+    erpworkingmemory('ERPTab_zoomSpace',0);
 else
     if zoomSpace<100
         zoomSpace = 100;
     end
     zoomSpace =zoomSpace+50;
-    estudioworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
+    erpworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom In'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
@@ -355,7 +348,7 @@ zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
-    estudioworkingmemory('ERPTab_zoomSpace',zoomspaceEdit);
+    erpworkingmemory('ERPTab_zoomSpace',zoomspaceEdit);
     try
         observe_ERPDAT.Process_messg =1;
         f_redrawERP();
@@ -395,15 +388,15 @@ if ~isempty(messgStr)
     observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
 end
 
-zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
+zoomSpace = erpworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('ERPTab_zoomSpace',0)
+    erpworkingmemory('ERPTab_zoomSpace',0)
 else
     zoomSpace =zoomSpace-50;
     if zoomSpace <100
         zoomSpace =100;
     end
-    estudioworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
+    erpworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom Out'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
@@ -483,12 +476,12 @@ if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
     return;
 end
 
-ERPArray= estudioworkingmemory('selectederpstudio');
+ERPArray= erpworkingmemory('selectederpstudio');
 if isempty(ERPArray)
     ERPArray = length(observe_ERPDAT.ALLERP);
     observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
     observe_ERPDAT.CURRENTERP = ERPArray;
-    estudioworkingmemory('selectederpstudio',ERPArray);
+    erpworkingmemory('selectederpstudio',ERPArray);
 end
 
 Pagecurrent = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
@@ -548,13 +541,7 @@ EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundCol
 MessageViewer= char(strcat('Plot previous page (<)'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 observe_ERPDAT.Process_messg =1;
-% try
 observe_ERPDAT.Count_currentERP = 1;
-%     observe_ERPDAT.Process_messg =2;
-% catch
-%     observe_ERPDAT.Process_messg =3;
-% end
-% observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
 
@@ -565,12 +552,12 @@ global EStudio_gui_erp_totl;
 if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
     return;
 end
-ERPArray= estudioworkingmemory('selectederpstudio');
+ERPArray= erpworkingmemory('selectederpstudio');
 if isempty(ERPArray)
     ERPArray = length(observe_ERPDAT.ALLERP);
     observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
     observe_ERPDAT.CURRENTERP = ERPArray;
-    estudioworkingmemory('selectederpstudio',ERPArray);
+    erpworkingmemory('selectederpstudio',ERPArray);
 end
 
 Pagecurrent = str2num(Str.String);
@@ -616,15 +603,8 @@ EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 
-% MessageViewer= char(strcat('Page Editor'));
-% erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-% observe_ERPDAT.Process_messg =1;
-% try
 observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg =2;
-% catch
-%     observe_ERPDAT.Process_messg =3;
-% end
 end
 
 
@@ -635,12 +615,12 @@ global observe_ERPDAT;
 if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
     return;
 end
-ERPArray= estudioworkingmemory('selectederpstudio');
+ERPArray= erpworkingmemory('selectederpstudio');
 if isempty(ERPArray)
     ERPArray = length(observe_ERPDAT.ALLERP);
     observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
     observe_ERPDAT.CURRENTERP = ERPArray;
-    estudioworkingmemory('selectederpstudio',ERPArray);
+    erpworkingmemory('selectederpstudio',ERPArray);
 end
 Pagecurrent = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
 pageNum = numel(ERPArray);
@@ -666,7 +646,7 @@ EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
 
 observe_ERPDAT.CURRENTERP =  Current_erp_Index;
 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
-estudioworkingmemory('selectederpstudio',ERPArray);
+erpworkingmemory('selectederpstudio',ERPArray);
 if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
@@ -694,17 +674,7 @@ EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-
-% MessageViewer= char(strcat('Plot next page (>)'));
-% erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-% observe_ERPDAT.Process_messg =1;
-% try
 observe_ERPDAT.Count_currentERP = 1;
-%     observe_ERPDAT.Process_messg =2;
-% catch
-%     observe_ERPDAT.Process_messg =3;
-% end
-% observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
 
@@ -831,7 +801,7 @@ if reset_paras(1)==1
         observe_EEGDAT.ALLEEG = [];
         observe_EEGDAT.EEG = [];
         observe_EEGDAT.CURRENTSET  = 0;
-        estudioworkingmemory('EEGArray',1);
+        erpworkingmemory('EEGArray',1);
         observe_EEGDAT.count_current_eeg =1;
     end
 else
@@ -839,7 +809,7 @@ else
         observe_EEGDAT.ALLEEG = [];
         observe_EEGDAT.EEG = [];
         observe_EEGDAT.CURRENTSET  = 0;
-        estudioworkingmemory('EEGArray',1);
+        erpworkingmemory('EEGArray',1);
         observe_EEGDAT.count_current_eeg =1;
     end
 end
@@ -862,7 +832,7 @@ if reset_paras(3)==1
         observe_ERPDAT.ALLERP = [];
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;
-        estudioworkingmemory('selectederpstudio',1);
+        erpworkingmemory('selectederpstudio',1);
     end
     
 else
@@ -871,7 +841,7 @@ else
         observe_ERPDAT.ALLERP = [];
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;
-        estudioworkingmemory('selectederpstudio',1);
+        erpworkingmemory('selectederpstudio',1);
     end
 end
 observe_ERPDAT.Count_currentERP = 1;
@@ -888,20 +858,20 @@ end
 erpworkingmemory('f_ERP_proces_messg','Launching "Advanced Wave Viewer"');
 observe_ERPDAT.Process_messg =1;
 
-ChanArray= estudioworkingmemory('ERP_ChanArray');
+ChanArray= erpworkingmemory('ERP_ChanArray');
 if isempty(ChanArray) || any(ChanArray<1) || any(ChanArray>observe_ERPDAT.ERP.nchan)
     ChanArray = [1:observe_ERPDAT.ERP.nchan];
 end
-BinArray= estudioworkingmemory('ERP_BinArray');
+BinArray= erpworkingmemory('ERP_BinArray');
 if isempty(BinArray) || any(BinArray<1) || any(BinArray>observe_ERPDAT.ERP.nbin)
     BinArray = [1:observe_ERPDAT.ERP.nbin];
 end
-ERPArray= estudioworkingmemory('selectederpstudio');
+ERPArray= erpworkingmemory('selectederpstudio');
 if isempty(ERPArray)
     ERPArray = length(observe_ERPDAT.ALLERP);
     observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
     observe_ERPDAT.CURRENTERP = ERPArray;
-    estudioworkingmemory('selectederpstudio',ERPArray);
+    erpworkingmemory('selectederpstudio',ERPArray);
 end
 ERPLAB_ERP_Viewer(observe_ERPDAT.ALLERP,ERPArray,BinArray,ChanArray);
 observe_ERPDAT.Process_messg =2;

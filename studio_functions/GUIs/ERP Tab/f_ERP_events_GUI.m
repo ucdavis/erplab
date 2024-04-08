@@ -132,12 +132,12 @@ varargout{1} = eegtab_events_box;
         erpworkingmemory('pop_rt2text', {fullfile(pathx, filename), listformat, headstr, arfilter, indexel});
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         
         for Numoferp = 1:numel(ERPArray)
@@ -194,12 +194,12 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         erpworkingmemory('f_ERP_proces_messg','EventList >  View EventList');
         observe_ERPDAT.Process_messg =1;
@@ -236,12 +236,12 @@ varargout{1} = eegtab_events_box;
         erpworkingmemory('f_ERP_proces_messg','EventList >  Import');
         observe_ERPDAT.Process_messg =1;
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = '';  end
         ALLERP = observe_ERPDAT.ALLERP;
@@ -314,7 +314,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        estudioworkingmemory('selectederpstudio',Selected_EEG_afd);
+        erpworkingmemory('selectederpstudio',Selected_EEG_afd);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
@@ -347,12 +347,12 @@ varargout{1} = eegtab_events_box;
         if isequal(fname,0)
             return
         end
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         [xpath, suffixstr, ext] = fileparts(fname);
         ALLERPCOM = evalin('base','ALLERPCOM');
@@ -428,12 +428,12 @@ varargout{1} = eegtab_events_box;
         erpworkingmemory('f_ERP_proces_messg','EventList >  Import');
         observe_ERPDAT.Process_messg =1;
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch  ALLERPCOM = [];end
@@ -503,7 +503,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        estudioworkingmemory('selectederpstudio',Selected_EEG_afd);
+        erpworkingmemory('selectederpstudio',Selected_EEG_afd);
         
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
@@ -535,12 +535,12 @@ varargout{1} = eegtab_events_box;
         if isequal(fname,0)
             return
         end
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         [xpath, suffixstr, ext] = fileparts(fname);
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end

@@ -260,7 +260,7 @@ varargout{1} = erp_measurement_box;
         
         %%ERPMTops end
         set(ERPMTops.mt,'Sizes',[155 30]);
-        estudioworkingmemory('ERPTab_mesuretool',0);
+        erpworkingmemory('ERPTab_mesuretool',0);
     end
 
 %%****************************************************************************************************************************************
@@ -278,7 +278,7 @@ varargout{1} = erp_measurement_box;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         ERPMTops.m_t_value.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPMTops.m_t_value.ForegroundColor = [1 1 1];
         erp_measurement_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -341,7 +341,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         
         try
             op         = ERPMTops.def_erpvalue{7};
@@ -533,9 +533,9 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         ERPsetArray = str2num(Source.String);
-        ERPsetArraydef =  estudioworkingmemory('selectederpstudio');
+        ERPsetArraydef =  erpworkingmemory('selectederpstudio');
         if isempty(ERPsetArray) || any(ERPsetArray> length(observe_ERPDAT.ALLERP))
             if isempty(ERPsetArraydef) || any(ERPsetArraydef> length(observe_ERPDAT.ALLERP))
                 Source.String = '';
@@ -565,7 +565,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         binNums =  str2num(source.String);
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binNums, [],1);
         if chk(1)
@@ -596,9 +596,9 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         
-        ERPsetArraydef = estudioworkingmemory('selectederpstudio');
+        ERPsetArraydef = erpworkingmemory('selectederpstudio');
         if isempty(ERPsetArraydef) || any(ERPsetArraydef> length(observe_ERPDAT.ALLERP))
             ERPsetArraydef = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = ERPsetArraydef;
@@ -642,7 +642,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         
         ERP_CURRENT = observe_ERPDAT.ERP;
         for Numofbin = 1:length(ERP_CURRENT.bindescr)
@@ -683,7 +683,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         chanNums =  str2num(Source.String);
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, [], chanNums,2);
         if chk(2)
@@ -714,7 +714,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         
         for Numofchan = 1:observe_ERPDAT.ERP.nchan
             try
@@ -762,7 +762,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         if isempty(str2num(source_tw.String))
             source_tw.String = '';
             msgboxText =  ['Measurement Tool - No measurement window was set'];
@@ -843,7 +843,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         try
             Baseline =   ERPMTops.def_erpvalue{10};
             Answer = f_ERP_meas_basecorr(Baseline);
@@ -902,7 +902,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [1 1 1];
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
     end
 
 %%-------------------Path setting to save the measurement results----------
@@ -921,14 +921,14 @@ varargout{1} = erp_measurement_box;
         erp_measurement_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPMTops.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
+        erpworkingmemory('ERPTab_mesuretool',1);
         
         if strcmp(ERPMTops.def_erpvalue{18},'wide')
             FileFormat = 0;
         else
             FileFormat = 1;
         end
-        pathName_folder_default =  estudioworkingmemory('EEG_save_folder');
+        pathName_folder_default =  erpworkingmemory('EEG_save_folder');
         if isempty(pathName_folder_default)
             pathName_folder_default = cd;
         end
@@ -1026,13 +1026,13 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [0 0 0];
         ERPMTops.apply.BackgroundColor =  [1 1 1];
         ERPMTops.apply.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_mesuretool',0);
+        erpworkingmemory('ERPTab_mesuretool',0);
         
-        pathName_folder =  estudioworkingmemory('EEG_save_folder');
+        pathName_folder =  erpworkingmemory('EEG_save_folder');
         if isempty(pathName_folder)
             pathName_folder =  cd;
         end
-        ERPArraydef = estudioworkingmemory('selectederpstudio');
+        ERPArraydef = erpworkingmemory('selectederpstudio');
         if isempty(ERPArraydef) || any(ERPArraydef> length(observe_ERPDAT.ALLERP))
             ERPArraydef =  observe_ERPDAT.CURRENTERP;
         end
@@ -1130,7 +1130,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [0 0 0];
         ERPMTops.apply.BackgroundColor =  [1 1 1];
         ERPMTops.apply.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_mesuretool',0);
+        erpworkingmemory('ERPTab_mesuretool',0);
         
         ERPMTops.Paras{1} = ERPMTops.m_t_type.Value;
         ERPMTops.Paras{2} = str2num(ERPMTops.m_t_erpset.String);
@@ -1231,7 +1231,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [0 0 0];
         ERPMTops.apply.BackgroundColor =  [1 1 1];
         ERPMTops.apply.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_mesuretool',0);
+        erpworkingmemory('ERPTab_mesuretool',0);
         
         ERPsetArray =  str2num(ERPMTops.m_t_erpset.String);
         if isempty(ERPsetArray) || any(ERPsetArray>length(observe_ERPDAT.ALLERP))
@@ -1313,7 +1313,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [0 0 0];
         ERPMTops.apply.BackgroundColor =  [1 1 1];
         ERPMTops.apply.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_mesuretool',0);
+        erpworkingmemory('ERPTab_mesuretool',0);
         ERPMTops.Paras{1} = ERPMTops.m_t_type.Value;
         ERPMTops.Paras{2} = str2num(ERPMTops.m_t_erpset.String);
         ERPMTops.Paras{3} = str2num(ERPMTops.m_t_bin.String);
@@ -1424,18 +1424,18 @@ varargout{1} = erp_measurement_box;
         end
         
         if  ~isempty(observe_ERPDAT.ERP) && ~isempty(observe_ERPDAT.ALLERP)
-            ERPArray= estudioworkingmemory('selectederpstudio');
+            ERPArray= erpworkingmemory('selectederpstudio');
             if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
                 ERPArray =  length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
                 observe_ERPDAT.CURRENTERP = ERPArray;
-                estudioworkingmemory('selectederpstudio',ERPArray);
+                erpworkingmemory('selectederpstudio',ERPArray);
             end
             ERPArray = vect2colon(ERPArray,'Sort','on');
             ERPArray = erase(ERPArray,{'[',']'});
             %             ERPMTops.m_t_erpset.String= ERPArray;%%Dec 20 2022
-            BinArray = estudioworkingmemory('ERP_BinArray');
-            ChanArray =  estudioworkingmemory('ERP_ChanArray');
+            BinArray = erpworkingmemory('ERP_BinArray');
+            ChanArray =  erpworkingmemory('ERP_ChanArray');
             [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
             if chk(1)==1
                 BinArray =  [1:observe_ERPDAT.ERP.nbin];
@@ -1474,7 +1474,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [0 0 0];
         ERPMTops.apply.BackgroundColor =  [1 1 1];
         ERPMTops.apply.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_mesuretool',0);
+        erpworkingmemory('ERPTab_mesuretool',0);
         
         m_t_type = ERPMTops.Paras{1} ;
         if isempty(m_t_type) || numel(m_t_type)~=1 || any(m_t_type>20)
@@ -1487,7 +1487,7 @@ varargout{1} = erp_measurement_box;
             m_t_erpset =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = m_t_erpset;
-            estudioworkingmemory('selectederpstudio',m_t_erpset);
+            erpworkingmemory('selectederpstudio',m_t_erpset);
             ERPMTops.Paras{2} = m_t_erpset;
         end
         m_t_erpset = vect2colon(m_t_erpset,'Sort', 'on');
@@ -1528,7 +1528,7 @@ varargout{1} = erp_measurement_box;
 %%--------------press return to execute "Apply"----------------------------
     function erp_mt_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
+        ChangeFlag =  erpworkingmemory('ERPTab_mesuretool');
         if ChangeFlag~=1
             return;
         end
@@ -1541,7 +1541,7 @@ varargout{1} = erp_measurement_box;
             ERPMTops.cancel.ForegroundColor = [0 0 0];
             ERPMTops.apply.BackgroundColor =  [1 1 1];
             ERPMTops.apply.ForegroundColor = [0 0 0];
-            estudioworkingmemory('ERPTab_mesuretool',0);
+            erpworkingmemory('ERPTab_mesuretool',0);
         else
             return;
         end
@@ -1558,15 +1558,15 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.ForegroundColor = [0 0 0];
         ERPMTops.apply.BackgroundColor =  [1 1 1];
         ERPMTops.apply.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_mesuretool',0);
+        erpworkingmemory('ERPTab_mesuretool',0);
         ERPMTops.m_t_type.Value=1;
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if ~isempty(observe_ERPDAT.ALLERP)
             if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
                 ERPArray =  length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
                 observe_ERPDAT.CURRENTERP = ERPArray;
-                estudioworkingmemory('selectederpstudio',ERPArray);
+                erpworkingmemory('selectederpstudio',ERPArray);
             end
         end
         ERPArray = vect2colon(ERPArray,'Sort', 'on');

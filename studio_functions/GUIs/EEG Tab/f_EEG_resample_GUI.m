@@ -6,7 +6,7 @@
 
 % EEGLAB Studio
 
-function varargout = f_EEG_resample_GUI(varargin)
+function varargout = f_EEG_resample_GUI(varargin) 
 global observe_EEGDAT;
 
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
@@ -133,7 +133,7 @@ varargout{1} = box_eeg_resample;
         set(gui_eeg_resample.advance_help_title,'Sizes',[15 105  30 105 15]);
         set(gui_eeg_resample.DataSelBox,'Sizes',[30 30 30 30 30 30]);
         
-        estudioworkingmemory('EEGTab_resample',0);
+        erpworkingmemory('EEGTab_resample',0);
     end
 
 
@@ -154,7 +154,7 @@ varargout{1} = box_eeg_resample;
         if ~isempty(messgStr) && eegpanelIndex~=18
             observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_resample',1);
+        erpworkingmemory('EEGTab_resample',1);
         gui_eeg_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_resample.resample_run.ForegroundColor = [1 1 1];
         box_eeg_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -184,7 +184,7 @@ varargout{1} = box_eeg_resample;
         if ~isempty(messgStr) && eegpanelIndex~=18
             observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_resample',1);
+        erpworkingmemory('EEGTab_resample',1);
         gui_eeg_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_resample.resample_run.ForegroundColor = [1 1 1];
         box_eeg_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -213,7 +213,7 @@ varargout{1} = box_eeg_resample;
         if ~isempty(messgStr) && eegpanelIndex~=18
             observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_resample',1);
+        erpworkingmemory('EEGTab_resample',1);
         gui_eeg_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_resample.resample_run.ForegroundColor = [1 1 1];
         box_eeg_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -255,7 +255,7 @@ varargout{1} = box_eeg_resample;
         if ~isempty(messgStr) && eegpanelIndex~=18
             observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_resample',1);
+        erpworkingmemory('EEGTab_resample',1);
         gui_eeg_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_resample.resample_run.ForegroundColor = [1 1 1];
         box_eeg_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -316,7 +316,7 @@ varargout{1} = box_eeg_resample;
         if ~isempty(messgStr) && eegpanelIndex~=18
             observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_resample',1);
+        erpworkingmemory('EEGTab_resample',1);
         gui_eeg_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_resample.resample_run.ForegroundColor = [1 1 1];
         box_eeg_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -374,10 +374,10 @@ varargout{1} = box_eeg_resample;
             observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
         end
         
-        EEGArray= estudioworkingmemory('EEGArray');
+        EEGArray= erpworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
         end
         erpworkingmemory('f_EEG_proces_messg','Sampling Rate & Epoch>Trim continuous data');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
@@ -458,7 +458,7 @@ varargout{1} = box_eeg_resample;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        erpworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -477,7 +477,7 @@ varargout{1} = box_eeg_resample;
         if ~isempty(messgStr) && eegpanelIndex~=18
             observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_resample',0);
+        erpworkingmemory('EEGTab_resample',0);
         gui_eeg_resample.resample_run.BackgroundColor =  [1 1 1];
         gui_eeg_resample.resample_run.ForegroundColor = [0 0 0];
         box_eeg_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -606,7 +606,7 @@ varargout{1} = box_eeg_resample;
             Newend = [];
         end
         
-        estudioworkingmemory('EEGTab_resample',0);
+        erpworkingmemory('EEGTab_resample',0);
         gui_eeg_resample.resample_run.BackgroundColor =  [1 1 1];
         gui_eeg_resample.resample_run.ForegroundColor = [0 0 0];
         box_eeg_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -618,12 +618,12 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.Paras{4} = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
         gui_eeg_resample.Paras{5} = str2num(gui_eeg_resample.nwtimewindow_editright.String);
         
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray)
             EEGArray =  length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(end);
             observe_EEGDAT.CURRENTSET = EEGArray;
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
         end
         
         erpworkingmemory('f_EEG_proces_messg','Sampling Rate & Epoch');
@@ -704,7 +704,7 @@ varargout{1} = box_eeg_resample;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',EEGArray);
+        erpworkingmemory('EEGArray',EEGArray);
         
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg = 1;
@@ -816,13 +816,13 @@ varargout{1} = box_eeg_resample;
 %%--------------press return to execute "Apply"----------------------------
     function EEG_resample_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_resample');
+        ChangeFlag =  erpworkingmemory('EEGTab_resample');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             resample_run();
-            estudioworkingmemory('EEGTab_resample',0);
+            erpworkingmemory('EEGTab_resample',0);
             gui_eeg_resample.resample_run.BackgroundColor =  [1 1 1];
             gui_eeg_resample.resample_run.ForegroundColor = [0 0 0];
             box_eeg_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -838,7 +838,7 @@ varargout{1} = box_eeg_resample;
         if observe_EEGDAT.Reset_EEG_paras_panel~=7
             return;
         end
-        estudioworkingmemory('EEGTab_resample',0);
+        erpworkingmemory('EEGTab_resample',0);
         gui_eeg_resample.resample_run.BackgroundColor =  [1 1 1];
         gui_eeg_resample.resample_run.ForegroundColor = [0 0 0];
         box_eeg_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

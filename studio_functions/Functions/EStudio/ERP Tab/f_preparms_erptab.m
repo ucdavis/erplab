@@ -34,25 +34,25 @@ end
 %%channel array and bin array
 %
 %%channels
-ChanArray=estudioworkingmemory('ERP_ChanArray');
+ChanArray=erpworkingmemory('ERP_ChanArray');
 nbchan = ERP.nchan;
 if isempty(ChanArray) || any(ChanArray(:)>nbchan) ||  any(ChanArray(:)<=0)
     ChanArray = 1:nbchan;
-    estudioworkingmemory('ERP_ChanArray',ChanArray);
+    erpworkingmemory('ERP_ChanArray',ChanArray);
 end
 
 %
 %%bins
-BinArray=estudioworkingmemory('ERP_BinArray');
+BinArray=erpworkingmemory('ERP_BinArray');
 if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<=0)
     BinArray  = [1:ERP.nbin];
-    estudioworkingmemory('ERP_BinArray',BinArray);
+    erpworkingmemory('ERP_BinArray',BinArray);
 end
 
 
 %
 %%Plot setting
-ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
+ERPTab_plotset_pars = erpworkingmemory('ERPTab_plotset_pars');
 
 %
 %%time range
@@ -298,7 +298,7 @@ else
     end
 end
 
-figSize = estudioworkingmemory('egfigsize');
+figSize = erpworkingmemory('egfigsize');
 if isempty(figSize)
     figSize = [];
 end

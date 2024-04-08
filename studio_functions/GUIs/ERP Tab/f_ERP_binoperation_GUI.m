@@ -104,7 +104,7 @@ varargout{1} = ERP_bin_operation_gui;
         uicontrol('Style','text','Parent',gui_erp_bin_operation.note_title,...
             'String','Note: Operates on all bins and channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         set(gui_erp_bin_operation.DataSelBox,'Sizes',[130,30,35,35,30 30]);
-        estudioworkingmemory('ERPTab_binop',0);
+        erpworkingmemory('ERPTab_binop',0);
     end
 
 
@@ -129,7 +129,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_binop',1);
+        erpworkingmemory('ERPTab_binop',1);
         def  = erpworkingmemory('pop_binoperator');
         if isempty(def)
             def = { [], 1};
@@ -207,7 +207,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_binop',1);
+        erpworkingmemory('ERPTab_binop',1);
         
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
@@ -300,7 +300,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_binop',1);
+        erpworkingmemory('ERPTab_binop',1);
         for ii = 1:100
             dsnames{ii,1} = '';
         end
@@ -326,7 +326,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_binop',1);
+        erpworkingmemory('ERPTab_binop',1);
         gui_erp_bin_operation.mode_modify.Value = 1;
         gui_erp_bin_operation.mode_create.Value = 0;
         FormulaArrayIn = char(gui_erp_bin_operation.edit_bineq.Data);
@@ -368,7 +368,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_binop',1);
+        erpworkingmemory('ERPTab_binop',1);
         
         gui_erp_bin_operation.mode_modify.Value = 0;
         gui_erp_bin_operation.mode_create.Value = 1;
@@ -417,12 +417,12 @@ varargout{1} = ERP_bin_operation_gui;
         if isempty(pathName_def)
             pathName_def =cd;
         end
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         Eq_Data =  gui_erp_bin_operation.edit_bineq.Data;
         
@@ -446,7 +446,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [1 1 1];
         gui_erp_bin_operation.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_binop',0);
+        erpworkingmemory('ERPTab_binop',0);
         %%check the format of equations
         if gui_erp_bin_operation.mode_modify.Value
             editormode = 0;
@@ -527,7 +527,7 @@ varargout{1} = ERP_bin_operation_gui;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
@@ -554,7 +554,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [1 1 1];
         gui_erp_bin_operation.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_binop',0);
+        erpworkingmemory('ERPTab_binop',0);
         
         gui_erp_bin_operation.edit_bineq.Data= gui_erp_bin_operation.Paras{1};
         mode_modify = gui_erp_bin_operation.Paras{2};
@@ -615,7 +615,7 @@ varargout{1} = ERP_bin_operation_gui;
 %%--------------press return to execute "Apply"----------------------------
     function erp_binop_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_binop');
+        ChangeFlag =  erpworkingmemory('ERPTab_binop');
         if ChangeFlag~=1
             return;
         end
@@ -626,7 +626,7 @@ varargout{1} = ERP_bin_operation_gui;
             ERP_bin_operation_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
             gui_erp_bin_operation.cancel.BackgroundColor =  [1 1 1];
             gui_erp_bin_operation.cancel.ForegroundColor = [0 0 0];
-            estudioworkingmemory('ERPTab_binop',0);
+            erpworkingmemory('ERPTab_binop',0);
         else
             return;
         end
@@ -641,7 +641,7 @@ varargout{1} = ERP_bin_operation_gui;
         ERP_bin_operation_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_bin_operation.cancel.BackgroundColor =  [1 1 1];
         gui_erp_bin_operation.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_binop',0);
+        erpworkingmemory('ERPTab_binop',0);
         for ii = 1:100
             dsnames{ii,1} = '';
         end

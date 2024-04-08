@@ -8,7 +8,7 @@
 % Oct.2023
 
 
-function varargout = f_EEG_interpolate_chan_epoch_GUI(varargin)
+function varargout = f_EEG_interpolate_chan_epoch_GUI(varargin) 
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
@@ -178,7 +178,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         %%resize each row
         set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[30 30 25 30 25 30 30 30])
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
     end
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
@@ -199,7 +199,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.mode_modify.Value =1;
         Eegtab_EEG_interpolate_chan_epoch.mode_create.Value = 0;
     end
@@ -220,7 +220,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.mode_modify.Value =0;
         Eegtab_EEG_interpolate_chan_epoch.mode_create.Value = 1;
     end
@@ -241,7 +241,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         
         Newchan = round(str2num(Source.String));
         if isempty(Newchan) || any(Newchan(:) <=0)
@@ -288,7 +288,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         
         %%-------Browse and select chans that will be interpolated---------
         EEG = observe_EEGDAT.EEG;
@@ -334,7 +334,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value= 1;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=0;
     end
@@ -355,7 +355,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         if ignoreValue==1
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.Enable='on';
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse.Enable='on';
@@ -381,7 +381,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value= 0;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=1;
     end
@@ -401,7 +401,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         ChanArray =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         
         ChanArrayNew = str2num(Source.String);
@@ -449,7 +449,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         ChanArray =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         EEG = observe_EEGDAT.EEG;
         for Numofchan = 1:EEG.nbchan
@@ -503,7 +503,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value=1;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0;
     end
@@ -524,7 +524,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value=0;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=1;
     end
@@ -541,7 +541,7 @@ varargout{1} = box_interpolate_chan_epoch;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
         Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];
@@ -556,7 +556,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
         
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:)<1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -728,7 +728,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            erpworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -770,12 +770,12 @@ varargout{1} = box_interpolate_chan_epoch;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
         
         erpworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -915,7 +915,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
             
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            erpworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -932,7 +932,7 @@ varargout{1} = box_interpolate_chan_epoch;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
         
         erpworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
@@ -984,7 +984,7 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         
         CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -1121,7 +1121,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
             
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            erpworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -1198,7 +1198,7 @@ varargout{1} = box_interpolate_chan_epoch;
         if ~isempty(messgStr) && eegpanelIndex~=8
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
@@ -1238,11 +1238,11 @@ varargout{1} = box_interpolate_chan_epoch;
 %         if observe_EEGDAT.eeg_two_panels==0
 %             return;
 %         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_interpolated_chan_epoch');
+%         ChangeFlag =  erpworkingmemory('EEGTab_interpolated_chan_epoch');
 %         if ChangeFlag~=1
 %             return;
 %         end
-%         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+%         erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
 %         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
 %     end
 
@@ -1250,13 +1250,13 @@ varargout{1} = box_interpolate_chan_epoch;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_interpolatechan_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_plotset');
+        ChangeFlag =  erpworkingmemory('EEGTab_plotset');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             interpolate_run();
-            estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+            erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
             box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
             Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
             Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
@@ -1272,7 +1272,7 @@ varargout{1} = box_interpolate_chan_epoch;
         if observe_EEGDAT.Reset_eeg_paras_panel~=5
             return;
         end
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+        erpworkingmemory('EEGTab_interpolated_chan_epoch',0);
         Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];

@@ -117,7 +117,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         
         set(gui_eeg_blc_dt.blc_dt,'Sizes',[18 25 15 25 25 15 25 30]);
         
-        estudioworkingmemory('EEGTab_baseline_detrend',0);
+        erpworkingmemory('EEGTab_baseline_detrend',0);
     end
 %%*************************************************************************
 %%*******************   Subfunctions   ************************************
@@ -139,7 +139,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.blc.Value =1;
         gui_eeg_blc_dt.dt.Value = 0;
         gui_eeg_blc_dt.blc_dt_title.String = 'Baseline Period:';
@@ -161,7 +161,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.dt.Value = 1;
         gui_eeg_blc_dt.blc.Value =0;
         gui_eeg_blc_dt.blc_dt_title.String = 'Calculate Trend During:';
@@ -183,7 +183,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.pre.Value=1;
         gui_eeg_blc_dt.post.Value=0;
         gui_eeg_blc_dt.whole.Value=0;
@@ -214,7 +214,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.pre.Value=0;
         gui_eeg_blc_dt.post.Value=1;
         gui_eeg_blc_dt.whole.Value=0;
@@ -244,7 +244,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.pre.Value=0;
         gui_eeg_blc_dt.post.Value=0;
         gui_eeg_blc_dt.whole.Value=1;
@@ -270,7 +270,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.pre.Value=0;
         gui_eeg_blc_dt.post.Value=0;
         gui_eeg_blc_dt.whole.Value=0;
@@ -294,7 +294,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
@@ -346,7 +346,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.all_bin_chan.Value = 1;
         gui_eeg_blc_dt.Selected_bin_chan.Value = 0;
     end
@@ -367,7 +367,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_baseline_detrend',1);
+        erpworkingmemory('EEGTab_baseline_detrend',1);
         gui_eeg_blc_dt.all_bin_chan.Value = 0;
         gui_eeg_blc_dt.Selected_bin_chan.Value = 1;
     end
@@ -382,12 +382,12 @@ varargout{1} = EEG_basecorr_detrend_box;
         if ~isempty(messgStr) && eegpanelIndex~=15
             observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
         end
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray)
             EEGArray =  length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(end);
             observe_EEGDAT.CURRENTSET = EEGArray;
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
         end
         try
             if gui_eeg_blc_dt.pre.Value==1
@@ -452,7 +452,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         EEG_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [1 1 1];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('EEGTab_baseline_detrend',0);
+        erpworkingmemory('EEGTab_baseline_detrend',0);
         
         gui_eeg_blc_dt.EEGTab_baseline_detrend{1} = gui_eeg_blc_dt.blc.Value;
         if gui_eeg_blc_dt.pre.Value==1
@@ -469,7 +469,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         gui_eeg_blc_dt.EEGTab_baseline_detrend{3} = gui_eeg_blc_dt.all_bin_chan.Value;
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-        ChanArray = estudioworkingmemory('EEG_ChanArray');
+        ChanArray = erpworkingmemory('EEG_ChanArray');
         if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:)>observe_EEGDAT.EEG.nbchan)
             ChanArray = [1:observe_EEGDAT.EEG.nbchan];
         end
@@ -548,7 +548,7 @@ varargout{1} = EEG_basecorr_detrend_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        erpworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -645,7 +645,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         gui_eeg_blc_dt.all_bin_chan.Value = all_bin_chan;
         gui_eeg_blc_dt.Selected_bin_chan.Value = ~all_bin_chan;
         
-        estudioworkingmemory('EEGTab_baseline_detrend',0);
+        erpworkingmemory('EEGTab_baseline_detrend',0);
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_eeg_blc_dt.apply.ForegroundColor = [0 0 0];
         EEG_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -696,11 +696,11 @@ varargout{1} = EEG_basecorr_detrend_box;
             observe_EEGDAT.count_current_eeg=22;
             return;
         end
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray> length(observe_EEGDAT.ALLEEG))
             EEGArray =  length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(end);
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
             observe_EEGDAT.CURRENTSET = EEGArray;
         end
         
@@ -718,13 +718,13 @@ varargout{1} = EEG_basecorr_detrend_box;
 %%--------------press return to execute "Apply"----------------------------
     function EEG_blcorrdetrend_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_baseline_detrend');
+        ChangeFlag =  erpworkingmemory('EEGTab_baseline_detrend');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             apply_blc_dt();
-            estudioworkingmemory('EEGTab_baseline_detrend',0);
+            erpworkingmemory('EEGTab_baseline_detrend',0);
             gui_eeg_blc_dt.apply.BackgroundColor =  [ 1 1 1];
             gui_eeg_blc_dt.apply.ForegroundColor = [0 0 0];
             EEG_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -740,7 +740,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         if observe_EEGDAT.Reset_EEG_paras_panel~=17
             return;
         end
-        estudioworkingmemory('EEGTab_baseline_detrend',0);
+        erpworkingmemory('EEGTab_baseline_detrend',0);
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_eeg_blc_dt.apply.ForegroundColor = [0 0 0];
         EEG_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

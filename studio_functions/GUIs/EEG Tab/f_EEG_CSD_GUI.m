@@ -89,7 +89,7 @@ varargout{1} = EEG_CSD_gui;
         uiextras.Empty('Parent',  gui_eeg_CSD.run_title);
         set(gui_eeg_CSD.run_title,'Sizes',[15 105  30 105 15]);
         set(gui_eeg_CSD.DataSelBox,'Sizes',[40,40,40,30]);
-        estudioworkingmemory('EEGTab_csd',0);
+        erpworkingmemory('EEGTab_csd',0);
     end
 
 %%**************************************************************************%%
@@ -112,7 +112,7 @@ varargout{1} = EEG_CSD_gui;
         EEG_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_CSD.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_csd',1);
+        erpworkingmemory('EEGTab_csd',1);
         
         mcont = str2num(source.String);
         if isempty(mcont) || numel(mcont)~=1
@@ -139,7 +139,7 @@ varargout{1} = EEG_CSD_gui;
         EEG_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_CSD.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_csd',1);
+        erpworkingmemory('EEGTab_csd',1);
         
         mcont = str2num(source.String);
         if isempty(mcont) || numel(mcont)~=1
@@ -166,7 +166,7 @@ varargout{1} = EEG_CSD_gui;
         EEG_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_CSD.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('EEGTab_csd',1);
+        erpworkingmemory('EEGTab_csd',1);
         mcont = str2num(source.String);
         if isempty(mcont) || numel(mcont)~=1
             gui_eeg_CSD.hr_num.String='10';
@@ -194,19 +194,19 @@ varargout{1} = EEG_CSD_gui;
         csd_param(3) = str2double(gui_eeg_CSD.hr_num.String);
         csd_param(4) = 1;
         erpworkingmemory('csd_param',csd_param);
-        EEGArray= estudioworkingmemory('EEGArray');
+        EEGArray= erpworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:)>length(observe_EEGDAT.ALLEEG))
             EEGArray = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(end);
             observe_EEGDAT.CURRENTSET = EEGArray;
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
         end
         gui_eeg_CSD.run.BackgroundColor =  [1 1 1];
         gui_eeg_CSD.run.ForegroundColor = [0 0 0];
         EEG_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_eeg_CSD.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('EEGTab_csd',0);
+        erpworkingmemory('EEGTab_csd',0);
         
         %%---------------------Compute CSD for each ERPset----------------
         erpworkingmemory('f_EEG_proces_messg','Convert Voltage to CSD');
@@ -276,7 +276,7 @@ varargout{1} = EEG_CSD_gui;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        erpworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -305,7 +305,7 @@ varargout{1} = EEG_CSD_gui;
         EEG_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_eeg_CSD.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('EEGTab_csd',0);
+        erpworkingmemory('EEGTab_csd',0);
     end
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
@@ -333,7 +333,7 @@ varargout{1} = EEG_CSD_gui;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_csd_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_csd');
+        ChangeFlag =  erpworkingmemory('EEGTab_csd');
         if ChangeFlag~=1
             return;
         end
@@ -344,7 +344,7 @@ varargout{1} = EEG_CSD_gui;
             EEG_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
             gui_eeg_CSD.cancel.BackgroundColor =  [1 1 1];
             gui_eeg_CSD.cancel.ForegroundColor = [0 0 0];
-            estudioworkingmemory('EEGTab_csd',0);
+            erpworkingmemory('EEGTab_csd',0);
         else
             return;
         end
@@ -360,7 +360,7 @@ varargout{1} = EEG_CSD_gui;
         EEG_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_eeg_CSD.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('EEGTab_csd',0);
+        erpworkingmemory('EEGTab_csd',0);
         gui_eeg_CSD.sif_num.String = '4';
         gui_eeg_CSD.scl_num.String = '0.00001';
         gui_eeg_CSD.hr_num.String = '10';

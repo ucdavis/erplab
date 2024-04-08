@@ -7,7 +7,7 @@
 % ERPLAB Studio
 
 function varargout = f_EEG_filtering_GUI(varargin)
-
+ 
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
@@ -311,7 +311,7 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         gui_eegtab_filtering.all_chan.Value = 1;
         gui_eegtab_filtering.Selected_chan.Value = 0;
-        estudioworkingmemory('EEGTab_filter',1);
+        erpworkingmemory('EEGTab_filter',1);
     end
 
 %%----------------------selected bin and all chan-------------------------------
@@ -332,7 +332,7 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         gui_eegtab_filtering.all_chan.Value = 0;
         gui_eegtab_filtering.Selected_chan.Value = 1;
-        estudioworkingmemory('EEGTab_filter',1);
+        erpworkingmemory('EEGTab_filter',1);
     end
 
 %%--------------------------------High-pass filtering toggle------------------
@@ -386,7 +386,7 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB);
             gui_eegtab_filtering.roll_off.Enable = 'on';
         end
-        estudioworkingmemory('EEGTab_filter',1);
+        erpworkingmemory('EEGTab_filter',1);
     end
 
 
@@ -438,7 +438,7 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.lp_halfpow.Enable ='off';
             gui_eegtab_filtering.roll_off.Enable = 'on';
         end
-        estudioworkingmemory('EEGTab_filter',1);
+        erpworkingmemory('EEGTab_filter',1);
     end
 
 
@@ -503,7 +503,7 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.hp_halfamp.String = num2str(valueh);
         gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB);
         gui_eegtab_filtering.hp_halfpow.Enable ='off';
-        estudioworkingmemory('EEGTab_filter',1);
+        erpworkingmemory('EEGTab_filter',1);
     end
 
 
@@ -568,7 +568,7 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.lp_halfamp.String = num2str(valuel);
         gui_eegtab_filtering.lp_halfpow.String = num2str(frec3dB(1));
         gui_eegtab_filtering.lp_halfpow.Enable ='off';
-        estudioworkingmemory('EEGTab_filter',1);
+        erpworkingmemory('EEGTab_filter',1);
     end
 
 
@@ -669,7 +669,7 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.lp_halfpow.String = num2str(frec3dB(1));
             gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB(2));
         end
-        estudioworkingmemory('EEGTab_filter',1);
+        erpworkingmemory('EEGTab_filter',1);
         EStudio_gui_erp_totl.EEG_transf = 0;
     end
 
@@ -691,7 +691,7 @@ varargout{1} = EEG_filtering_box;
         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('EEGTab_filter',0);
+        erpworkingmemory('EEGTab_filter',0);
         try
             nchan = observe_EEGDAT.EEG.nbchan;
             fs = observe_EEGDAT.EEG.srate;
@@ -792,7 +792,7 @@ varargout{1} = EEG_filtering_box;
         if filterallch
             chanArray = 1:nchan;
         else
-            chanArray= estudioworkingmemory('EEG_ChanArray');
+            chanArray= erpworkingmemory('EEG_ChanArray');
         end
         
         fdesign = 'butter';
@@ -827,10 +827,10 @@ varargout{1} = EEG_filtering_box;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         %%--------Selected EEGsets-----------
-        EEGArray= estudioworkingmemory('EEGArray');
+        EEGArray= erpworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',EEGArray);
+            erpworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG =  observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
@@ -888,7 +888,7 @@ varargout{1} = EEG_filtering_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        erpworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -915,7 +915,7 @@ varargout{1} = EEG_filtering_box;
         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('EEGTab_filter',0);
+        erpworkingmemory('EEGTab_filter',0);
         try
             nchan = observe_EEGDAT.EEG.nbchan;
             fs = observe_EEGDAT.EEG.srate;
@@ -951,12 +951,12 @@ varargout{1} = EEG_filtering_box;
         def{3} = 2*gui_eegtab_filtering.roll_off.Value;
         def{6} = fdesign;
         
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if gui_eegtab_filtering.all_chan.Value == 1
             chanArray = 1:nchan;
             def{5} =1;
         else
-            chanArray= estudioworkingmemory('EEG_ChanArray');
+            chanArray= erpworkingmemory('EEG_ChanArray');
             def{5} =0;
         end
         def{4} = chanArray;
@@ -1136,7 +1136,7 @@ varargout{1} = EEG_filtering_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        erpworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -1248,7 +1248,7 @@ varargout{1} = EEG_filtering_box;
         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('EEGTab_filter',0);
+        erpworkingmemory('EEGTab_filter',0);
         
         if ndims(observe_EEGDAT.EEG.data)==3
             gui_eegtab_filtering.DC_remove.Enable = 'off';
@@ -1399,13 +1399,13 @@ varargout{1} = EEG_filtering_box;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_filter_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_filter');
+        ChangeFlag =  erpworkingmemory('EEGTab_filter');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             EEG_filter_apply();
-            estudioworkingmemory('EEGTab_filter',0);
+            erpworkingmemory('EEGTab_filter',0);
             gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
             gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
             EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
@@ -1421,7 +1421,7 @@ varargout{1} = EEG_filtering_box;
         if observe_EEGDAT.Reset_eeg_paras_panel~=8
             return;
         end
-        estudioworkingmemory('EEGTab_filter',0);
+        erpworkingmemory('EEGTab_filter',0);
         gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
         %         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];

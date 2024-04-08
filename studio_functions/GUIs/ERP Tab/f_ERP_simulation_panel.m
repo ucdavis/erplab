@@ -586,7 +586,7 @@ varargout{1} = ERP_simulation_box;
         set(gui_erp_simulation.bsfun_box, 'Sizes',[200 20 25 25 25 25 20 25 25 25 20 25 25 25 25 25 25 25 20 25 25 25 25 25]);
         plot_erp_simulation();
         
-        estudioworkingmemory('ERPTab_stimulation',0);
+        erpworkingmemory('ERPTab_stimulation',0);
     end
 %%****************************************************************************************************************************************
 %%*******************   Subfunctions   ***************************************************************************************************
@@ -604,7 +604,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         
         Value = Str.Value;
@@ -669,7 +669,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         ERPArray = str2num(Str.String);
         if  ~isempty(observe_ERPDAT.ALLERP)
             if ~isempty(ERPArray) && any(ERPArray>0)
@@ -743,7 +743,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         ERPArray = str2num(gui_erp_simulation.erpsetedit.String);
         if ~isempty(ERPArray)
             if numel(ERPArray)~=1
@@ -819,7 +819,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         channelArray = str2num(Str.String);
         if ~isempty(observe_ERPDAT.ALLERP)
@@ -875,7 +875,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         if ~isempty(observe_ERPDAT.ALLERP)
             ERPsetArray =  str2num(gui_erp_simulation.erpsetedit.String);
@@ -939,7 +939,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         binArray = str2num(Str.String);
         if  ~isempty(observe_ERPDAT.ALLERP)
@@ -995,7 +995,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         if ~isempty(observe_ERPDAT.ALLERP)
             ERPsetArray =  str2num(gui_erp_simulation.erpsetedit.String);
@@ -1068,7 +1068,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         epochStart = str2num( gui_erp_simulation.epoch_start.String);
         epochStop = str2num( gui_erp_simulation.epoch_stop.String);
@@ -1093,7 +1093,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         epochStart = str2num( gui_erp_simulation.epoch_start.String);
         epochStop = str2num( gui_erp_simulation.epoch_stop.String);
@@ -1117,7 +1117,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.srate.Value =1;
         gui_erp_simulation.srateedit.Enable = 'on';
         gui_erp_simulation.srateperiod.Value =0;
@@ -1137,7 +1137,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         srate = str2num(Str.String);
         if ~isempty(srate) && numel(srate)==1 && srate>0
@@ -1163,7 +1163,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         gui_erp_simulation.srate.Value =0;
         gui_erp_simulation.srateedit.Enable = 'off';
@@ -1183,7 +1183,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         srateperiod = str2num(Str.String);
         if ~isempty(srateperiod) && numel(srateperiod)==1 && srateperiod>0
             gui_erp_simulation.srateedit.String = num2str(1000/srateperiod);
@@ -1208,7 +1208,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.exgua_op.Value =1;
         gui_erp_simulation.exgua_peakamp.Enable = 'on';
         gui_erp_simulation.exgua_mean.Enable = 'on';
@@ -1236,7 +1236,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         PeakAmp = str2num(Str.String);
         if isempty(PeakAmp) || numel(PeakAmp)~=1
             msgboxText =  ['Create Artificial ERP Waveform> peak amplitude for Ex-Gaussian should be a numeric'];
@@ -1259,7 +1259,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         Mean = str2num(Str.String);
         if isempty(Mean) || numel(Mean)~=1
             msgboxText =  ['Create Artificial ERP Waveform> Gaussian mean for Ex-Gaussian should be a numeric'];
@@ -1282,7 +1282,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         SD = str2num(Str.String);
         if isempty(SD) || numel(SD)~=1
             msgboxText =  ['Create Artificial ERP Waveform> SD for Ex-Gaussian should be a numeric'];
@@ -1306,7 +1306,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         Tau = str2num(Str.String);
         if isempty(Tau) || numel(Tau)~=1
             msgboxText =  ['Create Artificial ERP Waveform> Exponential tau for Ex-Gaussian should be a numeric'];
@@ -1330,7 +1330,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.exgua_op.Value =0;
         gui_erp_simulation.exgua_peakamp.Enable = 'off';
         gui_erp_simulation.exgua_mean.Enable = 'off';
@@ -1357,7 +1357,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Impulse- peak amplitude should be a numeric'];
@@ -1380,7 +1380,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         peakLat = str2num(Str.String);
         if isempty(peakLat)
             msgboxText =  ['Create Artificial ERP Waveform>Impulse- Latency should be a numeric'];
@@ -1403,7 +1403,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.exgua_op.Value =0;
         gui_erp_simulation.exgua_peakamp.Enable = 'off';
         gui_erp_simulation.exgua_mean.Enable = 'off';
@@ -1431,7 +1431,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Square- peak amplitude should be a numeric'];
@@ -1454,7 +1454,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         onsetlat = str2num(Str.String);
         if isempty(onsetlat)
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Onset latency should be a numeric'];
@@ -1485,7 +1485,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         offsetlat = str2num(Str.String);
         if isempty(offsetlat)
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Offset latency should be a numeric'];
@@ -1516,7 +1516,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         %%reset the phase for sin signal
         SimulationPhase = rand(1);
         erpworkingmemory('SimulationPhase',SimulationPhase);
@@ -1547,7 +1547,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         Value = Str.Value;
         if Value==1
@@ -1571,7 +1571,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Sinusoidal noise- peak amplitude should be a numeric'];
@@ -1594,7 +1594,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         Fresin = str2num(Str.String);
         if isempty(Fresin) || Fresin<=0
             msgboxText =  ['Create Artificial ERP Waveform>Sinusoidal noise- frequency should be a positive numeric'];
@@ -1617,7 +1617,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         if Str.Value ==1
             gui_erp_simulation.white_amp.Enable ='on';
         else
@@ -1637,7 +1637,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
@@ -1661,7 +1661,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         if Str.Value ==1
             gui_erp_simulation.pink_amp.Enable = 'on';
         else
@@ -1681,7 +1681,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
@@ -1709,7 +1709,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_stimulation',0);
+        erpworkingmemory('ERPTab_stimulation',0);
         
         
         try gui_erp_simulation.realerp_check.Value = gui_erp_simulation.Paras{1};catch gui_erp_simulation.realerp_check.Value=0; end
@@ -1843,7 +1843,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_stimulation',1);
+        erpworkingmemory('ERPTab_stimulation',1);
         
         erpworkingmemory('f_ERP_proces_messg','Create Artificial ERP waveform');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
@@ -2039,7 +2039,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_stimulation',0);
+        erpworkingmemory('ERPTab_stimulation',0);
         
         gui_erp_simulation.Paras{1}=gui_erp_simulation.realerp_check.Value;
         gui_erp_simulation.Paras{2} = str2num(gui_erp_simulation.erpsetedit.String);
@@ -2107,7 +2107,7 @@ varargout{1} = ERP_simulation_box;
         end
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
+        erpworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
         erpworkingmemory('ERP_simulation',1);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
@@ -2607,7 +2607,7 @@ varargout{1} = ERP_simulation_box;
 %%--------------press return to execute "Apply"----------------------------
     function erp_simuls_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_stimulation');
+        ChangeFlag =  erpworkingmemory('ERPTab_stimulation');
         if ChangeFlag~=1
             return;
         end
@@ -2618,7 +2618,7 @@ varargout{1} = ERP_simulation_box;
             ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
             gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
             gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
-            estudioworkingmemory('ERPTab_stimulation',0);
+            erpworkingmemory('ERPTab_stimulation',0);
         else
             return;
         end
@@ -2634,7 +2634,7 @@ varargout{1} = ERP_simulation_box;
         ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
         gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_stimulation',0);
+        erpworkingmemory('ERPTab_stimulation',0);
         gui_erp_simulation.realerp_check.Value=0;
         EnableFlag = 'off';
         gui_erp_simulation.erpsetedit.Enable = EnableFlag;

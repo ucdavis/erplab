@@ -169,11 +169,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         set(EStduio_gui_EEG_plotset.reset_apply, 'Sizes',[10,-1,30,-1,10]);
         
         set(EStduio_gui_EEG_plotset.DataSelBox,'Sizes',[25 25 25 25 25 25 20 25 25 30]);
-        estudioworkingmemory('EEG_plotset',EEG_plotset);
+        erpworkingmemory('EEG_plotset',EEG_plotset);
         
         EStduio_gui_EEG_plotset.chanorder{1,1} = [];
         EStduio_gui_EEG_plotset.chanorder{1,2} = '';
-        estudioworkingmemory('EEGTab_plotset',0);
+        erpworkingmemory('EEGTab_plotset',0);
     end
 
 
@@ -192,7 +192,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -216,7 +216,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -240,7 +240,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -285,7 +285,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -314,7 +314,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -341,7 +341,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -369,7 +369,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -389,7 +389,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -410,7 +410,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -430,7 +430,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -455,7 +455,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -478,7 +478,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -553,7 +553,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -622,7 +622,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             catch
             end
         end
-        pathstr =  estudioworkingmemory('EEG_save_folder');
+        pathstr =  erpworkingmemory('EEG_save_folder');
         if isempty(pathstr)
             pathstr =cd;
         end
@@ -666,7 +666,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
+        erpworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -844,12 +844,12 @@ varargout{1} = EStudio_box_EEG_plot_set;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        ChangeFlag =  estudioworkingmemory('EEGTab_plotset');
+        ChangeFlag =  erpworkingmemory('EEGTab_plotset');
         if ChangeFlag~=1
             return;
         end
         
-        EEG_plotset = estudioworkingmemory('EEG_plotset');
+        EEG_plotset = erpworkingmemory('EEG_plotset');
         
         %%display original data?
         try OrigFlag = EEG_plotset{1};catch OrigFlag= 1; end
@@ -986,8 +986,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'off';
         end
         
-        estudioworkingmemory('EEG_plotset',EEG_plotset);
-        estudioworkingmemory('EEGTab_plotset',0);
+        erpworkingmemory('EEG_plotset',EEG_plotset);
+        erpworkingmemory('EEGTab_plotset',0);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
@@ -1104,9 +1104,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
         end
         
-        estudioworkingmemory('EEG_plotset',EEG_plotset);
+        erpworkingmemory('EEG_plotset',EEG_plotset);
         
-        estudioworkingmemory('EEGTab_plotset',0);
+        erpworkingmemory('EEGTab_plotset',0);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
@@ -1159,7 +1159,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             observe_EEGDAT.count_current_eeg=4;
             return;
         end
-        EEG_plotset=  estudioworkingmemory('EEG_plotset');
+        EEG_plotset=  erpworkingmemory('EEG_plotset');
         if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.EEG.icachansind) && EEGUpdate==0
             EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
             EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'on';
@@ -1194,10 +1194,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         %%
         if ~isempty(observe_EEGDAT.EEG) && EEGUpdate==0
-            EEGArray= estudioworkingmemory('EEGArray');
+            EEGArray= erpworkingmemory('EEGArray');
             if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
                 EEGArray = observe_EEGDAT.CURRENTSET;
-                estudioworkingmemory('EEGArray',EEGArray);
+                erpworkingmemory('EEGArray',EEGArray);
             end
             SetFlags =  check_chanlocs(observe_EEGDAT.ALLEEG(EEGArray));
             if any(SetFlags(:)==0)
@@ -1230,7 +1230,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
         end
         %%
-        estudioworkingmemory('EEG_plotset',EEG_plotset);
+        erpworkingmemory('EEG_plotset',EEG_plotset);
         observe_EEGDAT.count_current_eeg=4;
     end
 
@@ -1242,12 +1242,12 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if observe_EEGDAT.eeg_two_panels==0
             return;
         end
-        ChangeFlag =  estudioworkingmemory('EEGTab_plotset');
+        ChangeFlag =  erpworkingmemory('EEGTab_plotset');
         if ChangeFlag~=1
             return;
         end
         eeg_plotset_apply();
-        estudioworkingmemory('EEGTab_plotset',0);
+        erpworkingmemory('EEGTab_plotset',0);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
@@ -1259,13 +1259,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_plotset_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('EEGTab_plotset');
+        ChangeFlag =  erpworkingmemory('EEGTab_plotset');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             eeg_plotset_apply();
-            estudioworkingmemory('EEGTab_plotset',0);
+            erpworkingmemory('EEGTab_plotset',0);
             EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
             EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
             EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
@@ -1281,7 +1281,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if observe_EEGDAT.Reset_eeg_paras_panel~=3
             return;
         end
-        estudioworkingmemory('EEGTab_plotset',0);
+        erpworkingmemory('EEGTab_plotset',0);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
         %         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
@@ -1365,7 +1365,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
         EStduio_gui_EEG_plotset.chanorder{1,1} = [];
         EStduio_gui_EEG_plotset.chanorder{1,2} = '';
-        estudioworkingmemory('EEG_plotset',EEG_plotset);
+        erpworkingmemory('EEG_plotset',EEG_plotset);
         observe_EEGDAT.Reset_eeg_paras_panel=4;
     end
 end

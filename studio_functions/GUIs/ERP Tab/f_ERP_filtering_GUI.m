@@ -219,7 +219,7 @@ varargout{1} = ERP_filtering_box;
             'callback',@ERP_filter_apply,'Enable',Apply_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set( gui_erp_filtering.filtering,'Sizes',[20 20 20 80 20 30]);
         
-        estudioworkingmemory('ERPTab_filter',0);
+        erpworkingmemory('ERPTab_filter',0);
     end
 
 %%****************************************************************************************************************************************
@@ -244,7 +244,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.cancel.ForegroundColor = [1 1 1];
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_filter',1);
+        erpworkingmemory('ERPTab_filter',1);
         gui_erp_filtering.all_bin_chan.Value = 1;
         gui_erp_filtering.Selected_bin_chan.Value = 0;
     end
@@ -267,7 +267,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.cancel.ForegroundColor = [1 1 1];
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_filter',1);
+        erpworkingmemory('ERPTab_filter',1);
         gui_erp_filtering.all_bin_chan.Value = 0;
         gui_erp_filtering.Selected_bin_chan.Value = 1;
     end
@@ -290,7 +290,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.cancel.ForegroundColor = [1 1 1];
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_filter',1);
+        erpworkingmemory('ERPTab_filter',1);
         
         fs = observe_ERPDAT.ERP.srate;
         locutoff = 0.1;
@@ -342,7 +342,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.cancel.ForegroundColor = [1 1 1];
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_filter',1);
+        erpworkingmemory('ERPTab_filter',1);
         
         try
             fs = observe_ERPDAT.ERP.srate;
@@ -398,7 +398,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.cancel.ForegroundColor = [1 1 1];
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_filter',1);
+        erpworkingmemory('ERPTab_filter',1);
         
         try
             fs = observe_ERPDAT.ERP.srate;
@@ -464,7 +464,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.cancel.ForegroundColor = [1 1 1];
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_filter',1);
+        erpworkingmemory('ERPTab_filter',1);
         
         try
             fs = observe_ERPDAT.ERP.srate;
@@ -528,7 +528,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.cancel.ForegroundColor = [1 1 1];
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_filter',1);
+        erpworkingmemory('ERPTab_filter',1);
         
         
         Source_value = Source.Value;
@@ -737,12 +737,12 @@ varargout{1} = ERP_filtering_box;
         
         erpworkingmemory('pop_filterp', {locutoff,hicutoff,filterorder,chanArray,filterallch,fdesign,remove_dc});
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         checked_ERPset_Index_bin_chan =f_checkerpsets(observe_ERPDAT.ALLERP,ERPArray);
         
@@ -751,7 +751,7 @@ varargout{1} = ERP_filtering_box;
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
         
-        estudioworkingmemory('ERPTab_filter',0);
+        erpworkingmemory('ERPTab_filter',0);
         gui_erp_filtering.apply.BackgroundColor =  [1 1 1];
         gui_erp_filtering.apply.ForegroundColor = [0 0 0];
         ERP_filtering_box.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -792,8 +792,8 @@ varargout{1} = ERP_filtering_box;
             
             ERP = ALLERP(ERPArray(Numoferp));
             if (checked_ERPset_Index_bin_chan(1)==0 && checked_ERPset_Index_bin_chan(2)==0) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                BinArray = estudioworkingmemory('ERP_BinArray');
-                ChanArray = estudioworkingmemory('ERP_ChanArray');
+                BinArray = erpworkingmemory('ERP_BinArray');
+                ChanArray = erpworkingmemory('ERP_ChanArray');
                 [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
                 if chk(1)==1
                     BinArray =  [1:ERP.nbin];
@@ -874,7 +874,7 @@ varargout{1} = ERP_filtering_box;
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         
-        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+        erpworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -916,7 +916,7 @@ varargout{1} = ERP_filtering_box;
         def{3} = 2*gui_erp_filtering.roll_off.Value;
         def{6} = fdesign;
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
@@ -932,8 +932,8 @@ varargout{1} = ERP_filtering_box;
             def{5} =1;
         else
             try
-                BinArray = estudioworkingmemory('ERP_BinArray');
-                ChanArray =  estudioworkingmemory('ERP_ChanArray');
+                BinArray = erpworkingmemory('ERP_BinArray');
+                ChanArray =  erpworkingmemory('ERP_ChanArray');
                 [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
                 if chk(1)==1
                     BinArray =  [1:observe_ERPDAT.ERP.nbin];
@@ -1129,8 +1129,8 @@ varargout{1} = ERP_filtering_box;
             end
             
             if (checked_ERPset_Index_bin_chan(1)==0 && checked_ERPset_Index_bin_chan(2)==0) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                BinArray = estudioworkingmemory('ERP_BinArray');
-                ChanArray = estudioworkingmemory('ERP_ChanArray');
+                BinArray = erpworkingmemory('ERP_BinArray');
+                ChanArray = erpworkingmemory('ERP_ChanArray');
                 [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
                 if chk(1)==1
                     BinArray =  [1:ERP.nbin];
@@ -1206,7 +1206,7 @@ varargout{1} = ERP_filtering_box;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+        erpworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -1223,7 +1223,7 @@ varargout{1} = ERP_filtering_box;
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_filter',0);
+        erpworkingmemory('ERPTab_filter',0);
         gui_erp_filtering.apply.BackgroundColor =  [1 1 1];
         gui_erp_filtering.apply.ForegroundColor = [0 0 0];
         ERP_filtering_box.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -1419,13 +1419,13 @@ varargout{1} = ERP_filtering_box;
 %%--------------press return to execute "Apply"----------------------------
     function erp_filter_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_filter');
+        ChangeFlag =  erpworkingmemory('ERPTab_filter');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             ERP_filter_apply();
-            estudioworkingmemory('ERPTab_filter',0);
+            erpworkingmemory('ERPTab_filter',0);
             gui_erp_filtering.apply.BackgroundColor =  [1 1 1];
             gui_erp_filtering.apply.ForegroundColor = [0 0 0];
             ERP_filtering_box.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -1442,7 +1442,7 @@ varargout{1} = ERP_filtering_box;
         if observe_ERPDAT.Reset_erp_paras_panel~=7
             return;
         end
-        estudioworkingmemory('ERPTab_filter',0);
+        erpworkingmemory('ERPTab_filter',0);
         gui_erp_filtering.apply.BackgroundColor =  [1 1 1];
         gui_erp_filtering.apply.ForegroundColor = [0 0 0];
         ERP_filtering_box.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

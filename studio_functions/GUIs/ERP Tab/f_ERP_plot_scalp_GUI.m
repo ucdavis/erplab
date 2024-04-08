@@ -53,13 +53,13 @@ varargout{1} = ERP_plot_scalp_gui;
         plegend.colorbar = 1;
         plegend.colormap = 0;
         plegend.maximize = 0;
-        estudioworkingmemory('pscalp_plegend',plegend);
+        erpworkingmemory('pscalp_plegend',plegend);
         agif.value =0;
         agif.fps =[];
         agif.fname ='';
-        estudioworkingmemory('pscalp_agif',agif);
+        erpworkingmemory('pscalp_agif',agif);
         
-        ERPTab_plotscalp= estudioworkingmemory('ERPTab_plotscalp');
+        ERPTab_plotscalp= erpworkingmemory('ERPTab_plotscalp');
         
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------bin and latency setting----------------------
@@ -278,8 +278,8 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','Plot','callback',@apply_run,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set(gui_erp_scalp_map.ERPscalpops,'Sizes',[25 20 25,25,25 55 20 30 25 20 25 30 30]);
         
-        estudioworkingmemory('ERPTab_topos',0);
-        estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
+        erpworkingmemory('ERPTab_topos',0);
+        erpworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
     end
 
 %%**************************************************************************%%
@@ -296,7 +296,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -325,7 +325,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -354,7 +354,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -403,7 +403,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -485,7 +485,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -518,7 +518,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -552,7 +552,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -574,7 +574,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -587,12 +587,12 @@ varargout{1} = ERP_plot_scalp_gui;
         if isempty(pathName_def)
             pathName_def =cd;
         end
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray)%%Check indexs of the selected ERPsets
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         else
             [chk, msgboxText] = f_ERP_chckerpindex(observe_ERPDAT.ALLERP, ERPArray);
             if chk==1
@@ -706,7 +706,7 @@ varargout{1} = ERP_plot_scalp_gui;
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
         end
         
         assignin('base','ALLERPCOM',ALLERPCOM);
@@ -727,7 +727,7 @@ varargout{1} = ERP_plot_scalp_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -754,7 +754,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -781,7 +781,7 @@ varargout{1} = ERP_plot_scalp_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -805,7 +805,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -834,7 +834,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -889,7 +889,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -911,7 +911,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -933,7 +933,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -955,7 +955,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',1);
+        erpworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
         ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -1036,7 +1036,7 @@ varargout{1} = ERP_plot_scalp_gui;
         end
         
         try
-            pscalp_plegend =  estudioworkingmemory('pscalp_plegend');
+            pscalp_plegend =  erpworkingmemory('pscalp_plegend');
             pscale_legend{1} = pscalp_plegend.binnum ;
             pscale_legend{2} = pscalp_plegend.bindesc;
             pscale_legend{3} = pscalp_plegend.type;
@@ -1051,7 +1051,7 @@ varargout{1} = ERP_plot_scalp_gui;
         end
         
         try
-            pscalp_agif =  estudioworkingmemory('pscalp_agif');
+            pscalp_agif =  erpworkingmemory('pscalp_agif');
             pagif_legend{1}= pscalp_agif.value ;
             pagif_legend{2}= pscalp_agif.fps ;
             pagif_legend{3}=pscalp_agif.fname;
@@ -1084,8 +1084,8 @@ varargout{1} = ERP_plot_scalp_gui;
         pscalp_agif.fps = pagif{2};
         pscalp_agif.fname = pagif{4};
         %%Save parameters
-        estudioworkingmemory('pscalp_plegend', pscalp_plegend);
-        estudioworkingmemory('pscalp_agif', pscalp_agif);
+        erpworkingmemory('pscalp_plegend', pscalp_plegend);
+        erpworkingmemory('pscalp_agif', pscalp_agif);
     end
 
 %%---------------------Run-------------------------------------------------
@@ -1099,7 +1099,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',0);
+        erpworkingmemory('ERPTab_topos',0);
         gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
         gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
         ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -1112,15 +1112,15 @@ varargout{1} = ERP_plot_scalp_gui;
         erpworkingmemory('f_ERP_proces_messg','Plot Scalp Maps');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP=length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         
-        plegend = estudioworkingmemory('pscalp_plegend');
+        plegend = erpworkingmemory('pscalp_plegend');
         if isempty(plegend)
             plegend.binnum = 1;
             plegend.bindesc = 1;
@@ -1132,14 +1132,14 @@ varargout{1} = ERP_plot_scalp_gui;
             plegend.colorbar = gui_erp_scalp_map.map_extras_cmapb_disp.Value;
             plegend.colormap = gui_erp_scalp_map.map_extras_cmap_ops.Value;
             plegend.maximize = 0;
-            estudioworkingmemory('pscalp_plegend',plegend);
+            erpworkingmemory('pscalp_plegend',plegend);
         end
-        agif  = estudioworkingmemory('pscalp_agif');
+        agif  = erpworkingmemory('pscalp_agif');
         if isempty(agif)
             agif.value =0;
             agif.fps =[];
             agif.fname ='';
-            estudioworkingmemory('pscalp_agif',agif);
+            erpworkingmemory('pscalp_agif',agif);
         end
         
         binArray     = str2num(gui_erp_scalp_map.bin_plot_edit.String);
@@ -1350,12 +1350,12 @@ varargout{1} = ERP_plot_scalp_gui;
         logstring = nonzeros(logstring)';
         mapleg    = strtrim(char(logstring));
         
-        ERPArray =  estudioworkingmemory('selectederpstudio');
+        ERPArray =  erpworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTSET = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         
         ERPTab_plotscalp{1}=str2num(gui_erp_scalp_map.bin_plot_edit.String);
@@ -1374,7 +1374,7 @@ varargout{1} = ERP_plot_scalp_gui;
         ERPTab_plotscalp{8} =gui_erp_scalp_map.map_extras_cmap_ops.Value ;
         ERPTab_plotscalp{9}=gui_erp_scalp_map.map_extras_cmapb_disp.Value;
         ERPTab_plotscalp{10}=gui_erp_scalp_map.measurement.Value;
-        estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
+        erpworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
         
         
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch   ALLERPCOM = [];end
@@ -1437,7 +1437,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_topos',0);
+        erpworkingmemory('ERPTab_topos',0);
         gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
         gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
         ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -1446,7 +1446,7 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.advanced.BackgroundColor =  [1 1 1];
         gui_erp_scalp_map.advanced.ForegroundColor = [0 0 0];
         
-        ERPTab_plotscalp=estudioworkingmemory('ERPTab_plotscalp');
+        ERPTab_plotscalp=erpworkingmemory('ERPTab_plotscalp');
         try binArray = ERPTab_plotscalp{1}; catch binArray = [];ERPTab_plotscalp{1} = [];end
         nbinum = observe_ERPDAT.ERP.nbin;
         if isempty(binArray) || any(binArray<0) || any(binArray>nbinum)
@@ -1583,7 +1583,7 @@ varargout{1} = ERP_plot_scalp_gui;
             case {2,4,5}
                 gui_erp_scalp_map.measurement_exp.String='(min max pairs: e.g., 300 400 ; 400 500)';
         end
-        estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
+        erpworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
     end
 
 
@@ -1632,19 +1632,19 @@ varargout{1} = ERP_plot_scalp_gui;
             observe_ERPDAT.Count_currentERP =5;
             return;
         end
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTSET = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
             observe_ERPDAT.Count_currentERP =1;
         end
         
-        BinArray = estudioworkingmemory('ERP_BinArray');
+        BinArray = erpworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray>observe_ERPDAT.ERP.nbin) || any(BinArray<=0)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
-            estudioworkingmemory('ERP_BinArray',BinArray);
+            erpworkingmemory('ERP_BinArray',BinArray);
             observe_ERPDAT.Count_currentERP =2;
         end
         binset = vect2colon(BinArray,'Sort', 'on');
@@ -1703,13 +1703,13 @@ varargout{1} = ERP_plot_scalp_gui;
 %%--------------press return to execute "Apply"----------------------------
     function erp_scalps_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_topos');
+        ChangeFlag =  erpworkingmemory('ERPTab_topos');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             apply_run();
-            estudioworkingmemory('ERPTab_topos',0);
+            erpworkingmemory('ERPTab_topos',0);
             gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
             gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
             ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -1727,7 +1727,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if observe_ERPDAT.Reset_erp_paras_panel~=4
             return;
         end
-        estudioworkingmemory('ERPTab_topos',0);
+        erpworkingmemory('ERPTab_topos',0);
         gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
         gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
         ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -1759,9 +1759,9 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.map_extras_cmap_ops.Value =1;
         gui_erp_scalp_map.measurement.Value=2;
         pscale_legend = {1,1,1,1,0,'on','off',0,1};
-        estudioworkingmemory('pscalp_plegend',pscale_legend);
+        erpworkingmemory('pscalp_plegend',pscale_legend);
         pagif_legend = {0,[],'',[]};
-        estudioworkingmemory('pscalp_agif',pagif_legend);
+        erpworkingmemory('pscalp_agif',pagif_legend);
         observe_ERPDAT.Reset_erp_paras_panel=5;
     end
 end

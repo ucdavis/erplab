@@ -64,7 +64,7 @@ varargout{1} = box_erpwave_viewer_property;
         gui_property_waveviewer.viewer_TN_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_TN_title,'String','Title:',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
-        ViewerName = estudioworkingmemory('viewername');
+        ViewerName = erpworkingmemory('viewername');
         if isempty(ViewerName)
             ViewerName = char('My Viewer');
         end
@@ -331,7 +331,7 @@ varargout{1} = box_erpwave_viewer_property;
             erplabstudiover = '??';
         end
         currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
-        estudioworkingmemory('viewername',ViewerName);
+        erpworkingmemory('viewername',ViewerName);
         
         gui_erp_waviewer.ERPwaviewer.figname = ViewerName;
         gui_erp_waviewer.Window.Name = currvers;
@@ -501,7 +501,7 @@ varargout{1} = box_erpwave_viewer_property;
             erplabstudiover = '??';
         end
         currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
-        estudioworkingmemory('viewername',ViewerName);
+        erpworkingmemory('viewername',ViewerName);
         gui_erp_waviewer.ERPwaviewer.figname = ViewerName;
         gui_erp_waviewer.Window.Name = currvers;
     end

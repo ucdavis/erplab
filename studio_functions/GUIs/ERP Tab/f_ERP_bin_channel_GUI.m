@@ -81,7 +81,7 @@ varargout{1} = EStudio_box_bin_chan;
         set(ERPTab_bin_chan.reset_apply, 'Sizes',[10,-1,30,-1,10]);
         set(ERPTab_bin_chan.DataSelBox,'Sizes',[250 30]);
         
-        estudioworkingmemory('ERPTab_chanbin',0);
+        erpworkingmemory('ERPTab_chanbin',0);
         ERPTab_bin_chan.ERPFlag = 0;
     end
 
@@ -101,7 +101,7 @@ varargout{1} = EStudio_box_bin_chan;
         if ~isempty(messgStr) && eegpanelIndex~=1
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_chanbin',1);
+        erpworkingmemory('ERPTab_chanbin',1);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_bin_chan.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -133,7 +133,7 @@ varargout{1} = EStudio_box_bin_chan;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('ERPTab_chanbin',1);
+        erpworkingmemory('ERPTab_chanbin',1);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [1 1 1];
         EStudio_box_bin_chan.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -166,7 +166,7 @@ varargout{1} = EStudio_box_bin_chan;
         erpworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Cancel');
         observe_ERPDAT.Process_messg =1;
         
-        estudioworkingmemory('ERPTab_chanbin',0);
+        erpworkingmemory('ERPTab_chanbin',0);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
         EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -175,7 +175,7 @@ varargout{1} = EStudio_box_bin_chan;
         
         %
         %%setting for channels
-        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        ChanArray =  erpworkingmemory('ERP_ChanArray');
         ChaNum = length(ERPTab_bin_chan.ElecRange.String)-1;
         if isempty(ChanArray) ||  any(ChanArray(:)> ChaNum) || any(ChanArray(:)<=0) || numel(ChanArray) == ChaNum
             ERPTab_bin_chan.ElecRange.Value = 1;
@@ -183,11 +183,11 @@ varargout{1} = EStudio_box_bin_chan;
         else
             ERPTab_bin_chan.ElecRange.Value = ChanArray+1;
         end
-        estudioworkingmemory('EEG_ChanArray',ChanArray);
+        erpworkingmemory('EEG_ChanArray',ChanArray);
         
         %
         %%setting for bins
-        BinArray=  estudioworkingmemory('ERP_BinArray');
+        BinArray=  erpworkingmemory('ERP_BinArray');
         BinNum = length( ERPTab_bin_chan.BinRange.String)-1;
         if isempty(BinArray) ||  any(BinArray(:)>BinNum) ||  any(BinArray(:)<=0) || (numel(BinArray)==BinNum)
             ERPTab_bin_chan.BinRange.Value=1;
@@ -195,7 +195,7 @@ varargout{1} = EStudio_box_bin_chan;
         else
             ERPTab_bin_chan.BinRange.Value = BinArray+1;
         end
-        estudioworkingmemory('ERP_BinArray',BinArray);
+        erpworkingmemory('ERP_BinArray',BinArray);
         erpworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Cancel');
         observe_ERPDAT.Process_messg =2;
     end
@@ -212,7 +212,7 @@ varargout{1} = EStudio_box_bin_chan;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        estudioworkingmemory('ERPTab_chanbin',0);
+        erpworkingmemory('ERPTab_chanbin',0);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
         EStudio_box_bin_chan.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -234,7 +234,7 @@ varargout{1} = EStudio_box_bin_chan;
         if any(ChanArray(:)<=0)
             ChanArray = [1:ChanNum];
         end
-        estudioworkingmemory('ERP_ChanArray',ChanArray);
+        erpworkingmemory('ERP_ChanArray',ChanArray);
         %
         %%selectd bins
         BinArray=  ERPTab_bin_chan.BinRange.Value;
@@ -248,7 +248,7 @@ varargout{1} = EStudio_box_bin_chan;
         if any(BinArray(:)<=0)
             BinArray = [1:BinNum];
         end
-        estudioworkingmemory('ERP_BinArray',BinArray);
+        erpworkingmemory('ERP_BinArray',BinArray);
         observe_ERPDAT.Count_currentERP=3;
         f_redrawERP();
         erpworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Apply');
@@ -280,7 +280,7 @@ varargout{1} = EStudio_box_bin_chan;
             Enableflag = 'on';
             %
             %%setting for channels
-            ChanArray =  estudioworkingmemory('ERP_ChanArray');
+            ChanArray =  erpworkingmemory('ERP_ChanArray');
             Chanlist = observe_ERPDAT.ERP.chanlocs;
             Chanlist_name{1} = 'All';
             for Numofchan = 1:length(Chanlist)
@@ -293,7 +293,7 @@ varargout{1} = EStudio_box_bin_chan;
                 ERPTab_bin_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)-1];
                 if numel(ChanArray) ~= length(Chanlist_name)-1
-                estudioworkingmemory('ERP_ChanArray',ChanArray);
+                erpworkingmemory('ERP_ChanArray',ChanArray);
                 end
             else
                 ERPTab_bin_chan.ElecRange.Value =ChanArray+1;
@@ -313,11 +313,11 @@ varargout{1} = EStudio_box_bin_chan;
             ERPTab_bin_chan.BinRange.String = binlist_name;
             ERPTab_bin_chan.BinRange.Min = 1;
             ERPTab_bin_chan.BinRange.Max = length(binlist_name) + 1;
-            BinArray= estudioworkingmemory('ERP_BinArray');
+            BinArray= erpworkingmemory('ERP_BinArray');
             BinNum = observe_ERPDAT.ERP.nbin;
             if ERPTab_bin_chan.ERPFlag ==1
                 if ERPTab_bin_chan.BinRange.Value==1
-                    BinArray = 1:BinNum; estudioworkingmemory('ERP_BinArray',BinArray);
+                    BinArray = 1:BinNum; erpworkingmemory('ERP_BinArray',BinArray);
                 end
             end
             
@@ -325,7 +325,7 @@ varargout{1} = EStudio_box_bin_chan;
                 BinArray = [1:BinNum];
                 ERPTab_bin_chan.BinRange.Value=1;
                 if numel(BinArray) ~= BinNum
-                estudioworkingmemory('ERP_BinArray',BinArray);
+                erpworkingmemory('ERP_BinArray',BinArray);
                 end
             else
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
@@ -347,12 +347,12 @@ varargout{1} = EStudio_box_bin_chan;
         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
             return;
         end
-        ChangeFlag =  estudioworkingmemory('ERPTab_chanbin');
+        ChangeFlag =  erpworkingmemory('ERPTab_chanbin');
         if ChangeFlag~=1
             return;
         end
         binchan_apply();
-        estudioworkingmemory('ERPTab_chanbin',0);
+        erpworkingmemory('ERPTab_chanbin',0);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
         EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -364,13 +364,13 @@ varargout{1} = EStudio_box_bin_chan;
 %%--------------press return to execute "Apply"----------------------------
     function erp_binchan_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_chanbin');
+        ChangeFlag =  erpworkingmemory('ERPTab_chanbin');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             binchan_apply();
-            estudioworkingmemory('ERPTab_chanbin',0);
+            erpworkingmemory('ERPTab_chanbin',0);
             ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
             ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
             EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -387,7 +387,7 @@ varargout{1} = EStudio_box_bin_chan;
         if observe_ERPDAT.Reset_erp_paras_panel~=2
             return;
         end
-        estudioworkingmemory('ERPTab_chanbin',0);
+        erpworkingmemory('ERPTab_chanbin',0);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
         EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -400,9 +400,9 @@ varargout{1} = EStudio_box_bin_chan;
             ChanArray= [1:observe_ERPDAT.ERP.nchan];
         end
         ERPTab_bin_chan.BinRange.Value=1;
-        estudioworkingmemory('ERP_BinArray',BinArray);
+        erpworkingmemory('ERP_BinArray',BinArray);
         ERPTab_bin_chan.ElecRange.Value = 1;
-        estudioworkingmemory('ERP_ChanArray',ChanArray);
+        erpworkingmemory('ERP_ChanArray',ChanArray);
         observe_ERPDAT.Reset_erp_paras_panel=3;
     end
 end

@@ -32,14 +32,14 @@ end
 
 %%channel array and IC array
 %channels
-ChanArray = estudioworkingmemory('EEG_ChanArray');
+ChanArray = erpworkingmemory('EEG_ChanArray');
 nbchan = EEG.nbchan;
 if isempty(ChanArray) || any(ChanArray(:)>nbchan) ||  any(ChanArray(:)<=0)
     ChanArray = 1:nbchan;
-    estudioworkingmemory('EEG_ChanArray',ChanArray);
+    erpworkingmemory('EEG_ChanArray',ChanArray);
 end
 
-EEG_plotset = estudioworkingmemory('EEG_plotset');
+EEG_plotset = erpworkingmemory('EEG_plotset');
 ChanArray = reshape(ChanArray,1,[]);
 try
     chanOrder = EEG_plotset{10};
@@ -69,20 +69,20 @@ end
 
 
 %%ICs
-ICArray = estudioworkingmemory('EEG_ICArray');
+ICArray = erpworkingmemory('EEG_ICArray');
 if isempty(EEG.icachansind)
     ICArray = [];
-    estudioworkingmemory('EEG_ICArray',[]);
+    erpworkingmemory('EEG_ICArray',[]);
 else
     nIC = numel(EEG.icachansind);
     if isempty(ICArray) || min(ICArray(:))>nIC || max(ICArray(:)) >  nIC ||  min(ICArray(:))<=0
         ICArray = [];
-        estudioworkingmemory('EEG_ICArray',ICArray);
+        erpworkingmemory('EEG_ICArray',ICArray);
     end
 end
 
 %%Plot setting
-EEG_plotset = estudioworkingmemory('EEG_plotset');
+EEG_plotset = erpworkingmemory('EEG_plotset');
 if isempty(EEG_plotset)
     EEGdisp = 1;
     ICdisp = 0;
@@ -211,7 +211,7 @@ end
 
 
 %%Start time to display
-Startimes = estudioworkingmemory('Startimes');
+Startimes = erpworkingmemory('Startimes');
 [chaNum,sampleNum,trialNum]=size(EEG.data);
 Frames = sampleNum*trialNum;
 if EEG.trials>1 % time in second or in trials
@@ -226,10 +226,10 @@ if ndims(EEG.data)==3
 end
 if isempty(Startimes) || numel(Startimes)~=1 || Startimes<0 ||Startimes>StartimesMax
     Startimes=0;
-    estudioworkingmemory('Startimes',Startimes);
+    erpworkingmemory('Startimes',Startimes);
 end
 
-figSize = estudioworkingmemory('egfigsize');
+figSize = erpworkingmemory('egfigsize');
 if isempty(figSize)
     figSize = [];
 end

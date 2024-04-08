@@ -44,28 +44,7 @@ erplabver1 = geterplabeversion;
 EStudioversion = erplabver1;
 SignalProcessingToolboxCheck;
 %%--------------------check memory file------------------------------------
-if exist('memoryerpstudiopanels.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
-if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudiopanels.erpm'),'EStudioversion')
-end
 
-
-if exist('memoryerpstudio.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
-if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
-end
 
 if exist('memoryerp.erpm','file')==2
     iserpmem = 1; % file for memory exists
@@ -216,7 +195,7 @@ erpworkingmemory('f_EEG_proces_messg_pre',{'',0});
 erpworkingmemory('ViewerFlag',0);
 erpworkingmemory('Change2epocheeg',0);%%Indicate whether we need to force "Epoched EEG" to be selected in EEGsets panel after epoched EEG.
 erpworkingmemory('eegicinspectFlag',0);%%Update the current EEG after Inspect/label ICs.
-estudioworkingmemory('ERPTab_zoomSpace',0);%%zoom in/out for erp tab
+erpworkingmemory('ERPTab_zoomSpace',0);%%zoom in/out for erp tab
 EStudio_gui_erp_totl = struct();
 EStudio_gui_erp_totl = createInterface();
 EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
@@ -288,7 +267,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         
         %%ERPStudio Memory
         EStudio_gui_erp_totl.set_ERP_memory = uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'Memory Settings','separator','off');
-        uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset Working Memory', 'Callback', 'erplabstudioamnesia(1)','separator','off');
+        uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset Working Memory', 'Callback', 'erplabamnesia(1)','separator','off');
         uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Save a copy of the current working memory as...', 'Callback', 'working_mem_save_load(1)','separator','off');
         comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
@@ -380,7 +359,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.eegplotgrid.Heights(5) = 30; % set the second element (x axis) to 30px high
         Pos = EStudio_gui_erp_totl.myeegviewer.Position;
         EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.5,Pos(3)*1.15,Pos(4)*1.05];%%x,y,width,height
-        estudioworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
+        erpworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
         
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -390,7 +369,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         pageNum=1;
         pagecurrentNum=1;
         PageStr = 'No ERPset was loaded';
-        estudioworkingmemory('selectederpstudio',1);
+        erpworkingmemory('selectederpstudio',1);
         EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
         pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
         %%legends
@@ -507,8 +486,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         
         erpworkingmemory('EEGUpdate',0);
         observe_EEGDAT.count_current_eeg =1;
-        
-        
         if EStudio_gui_erp_totl.context_tabs.SelectedChild==1
             erpworkingmemory('f_EEG_proces_messg','Reset parameters for ALL panels');
             observe_EEGDAT.eeg_panel_message=1;
@@ -545,7 +522,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_EEGDAT.ALLEEG = [];
                 observe_EEGDAT.EEG = [];
                 observe_EEGDAT.CURRENTSET  = 0;
-                estudioworkingmemory('EEGArray',1);
+                erpworkingmemory('EEGArray',1);
                 observe_EEGDAT.count_current_eeg =1;
             end
         else
@@ -553,7 +530,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_EEGDAT.ALLEEG = [];
                 observe_EEGDAT.EEG = [];
                 observe_EEGDAT.CURRENTSET  = 0;
-                estudioworkingmemory('EEGArray',1);
+                erpworkingmemory('EEGArray',1);
                 observe_EEGDAT.count_current_eeg =1;
             end
         end
@@ -577,7 +554,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_ERPDAT.ALLERP = [];
                 observe_ERPDAT.ERP = [];
                 observe_ERPDAT.CURRENTERP  = 1;
-                estudioworkingmemory('selectederpstudio',1);
+                erpworkingmemory('selectederpstudio',1);
                 observe_ERPDAT.Count_currentERP = 1;
             end
         else
@@ -585,7 +562,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_ERPDAT.ALLERP = [];
                 observe_ERPDAT.ERP = [];
                 observe_ERPDAT.CURRENTERP  = 1;
-                estudioworkingmemory('selectederpstudio',1);
+                erpworkingmemory('selectederpstudio',1);
                 observe_ERPDAT.Count_currentERP = 1;
             end
         end

@@ -34,7 +34,7 @@ else
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
 
-estudioworkingmemory('OverlayIndex',0);
+erpworkingmemory('OverlayIndex',0);
 
 %-----------------------------Draw the panel-------------------------------------
 try
@@ -60,7 +60,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             SrateNum_mp(Numofselectederp,1)   =  ALLERP(indexerp(Numofselectederp)).srate;
         end
         
-        MERPWaveViewer_plotorg= estudioworkingmemory('MERPWaveViewer_plotorg');%%call the memery for this panel
+        MERPWaveViewer_plotorg= erpworkingmemory('MERPWaveViewer_plotorg');%%call the memery for this panel
         try
             plotorg_Index = MERPWaveViewer_plotorg{1};
         catch
@@ -73,7 +73,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         ERPtooltype = erpgettoolversion('tooltype');
         if strcmpi(ERPtooltype,'EStudio')
-            ERPTab_plotset_pars= estudioworkingmemory('ERPTab_plotset_pars');
+            ERPTab_plotset_pars= erpworkingmemory('ERPTab_plotset_pars');
             try
                 overlay = ERPTab_plotset_pars{7};
             catch
@@ -522,8 +522,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         set(gui_plotorg_waveviewer.DataSelBox,'Sizes',[150 25 25 25 25 25 25 25 25]);
         gui_plotorg_waveviewer.columFormatStr = '';
-        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
-        estudioworkingmemory('MyViewer_plotorg',0);
+        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        erpworkingmemory('MyViewer_plotorg',0);
     end
 
 
@@ -607,7 +607,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         
         gui_plotorg_waveviewer.plotorg_c1.Value = 1;
@@ -654,7 +654,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        estudioworkingmemory('OverlayIndex',1);
+        erpworkingmemory('OverlayIndex',1);
     end
 
 %%-------------------------Setting for Overlay--------------------------------
@@ -736,7 +736,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 1;
@@ -782,7 +782,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        estudioworkingmemory('OverlayIndex',1);
+        erpworkingmemory('OverlayIndex',1);
     end
 
 %%-------------------------Setting for Pages--------------------------------
@@ -861,7 +861,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -905,7 +905,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        estudioworkingmemory('OverlayIndex',1);
+        erpworkingmemory('OverlayIndex',1);
     end
 
 
@@ -986,7 +986,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1032,7 +1032,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        estudioworkingmemory('OverlayIndex',1);
+        erpworkingmemory('OverlayIndex',1);
     end
 
 
@@ -1114,7 +1114,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1160,7 +1160,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        estudioworkingmemory('OverlayIndex',1);
+        erpworkingmemory('OverlayIndex',1);
     end
 
 
@@ -1242,7 +1242,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1287,7 +1287,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        estudioworkingmemory('OverlayIndex',1);
+        erpworkingmemory('OverlayIndex',1);
     end
 
 
@@ -1297,7 +1297,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
@@ -1388,7 +1388,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.layout_auto.Value =0;
         gui_plotorg_waveviewer.layout_custom.Value = 1;
@@ -1443,7 +1443,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
     end
 
@@ -1454,7 +1454,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
     end
 
@@ -1466,7 +1466,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.rowgap_auto.Value = 1;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'on';
@@ -1480,7 +1480,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         rowgap = str2num(Source.String);
         if isempty(rowgap) || numel(rowgap)~=1 || rowgap<=0
@@ -1499,7 +1499,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.rowgap_auto.Value = 0;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
@@ -1513,7 +1513,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         rowoverlay = str2num(Source.String);
@@ -1533,7 +1533,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
@@ -1551,7 +1551,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         columngap = str2num(Source.String);
@@ -1571,7 +1571,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         colnOverlay = str2num(char( gui_plotorg_waveviewer.columngapoverlapedit.String));
@@ -1591,7 +1591,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         columnoverlay = str2num(Source.String);
@@ -1609,7 +1609,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) %% && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         if Source.Value==1
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'on';
@@ -1685,7 +1685,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) %% && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',1);
+        erpworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         MessageViewer= char(strcat('Plot Organization > Custom Grid Locations > Edit'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -1723,7 +1723,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         def =  ERP_layoutstringGUI(columFormat,GridinforData,plotBox,AllabelArray);
         if isempty(def)
-            estudioworkingmemory('MyViewer_plotorg',0);
+            erpworkingmemory('MyViewer_plotorg',0);
             gui_plotorg_waveviewer.apply.BackgroundColor =  [1,1,1];
             box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
             gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
@@ -1780,11 +1780,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.ERPset_Chan_bin_label=1;
         
         viewer_ERPDAT.Count_currentERP=1;
-        estudioworkingmemory('MyViewer_plotorg',0);
+        erpworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1,1,1];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
@@ -2144,7 +2144,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         
         viewer_ERPDAT.Count_currentERP=1;
         
@@ -2249,7 +2249,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        changeFlag =  estudioworkingmemory('MyViewer_plotorg');
+        changeFlag =  erpworkingmemory('MyViewer_plotorg');
         if changeFlag~=1
             return;
         end
@@ -2397,7 +2397,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'on';
         end
         gui_plotorg_waveviewer.columFormatStr  = '';
-        estudioworkingmemory('MyViewer_plotorg',0);
+        erpworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
@@ -2416,7 +2416,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_plotorg',0);
+        erpworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
@@ -2576,7 +2576,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.Count_currentERP=1;
         viewer_ERPDAT.Process_messg =2;
     end
@@ -2763,7 +2763,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.Count_currentERP =5;
     end
 
@@ -3092,7 +3092,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.loadproper_count =5;
     end
 
@@ -3106,7 +3106,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  estudioworkingmemory('MyViewer_plotorg');
+        changeFlag =  erpworkingmemory('MyViewer_plotorg');
         if changeFlag~=1
             return;
         end
@@ -3169,7 +3169,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_erp_waviewer.ERPwaviewer.plot_org.Grid = 1;
         gui_erp_waviewer.ERPwaviewer.plot_org.Overlay = 2;
         gui_erp_waviewer.ERPwaviewer.plot_org.Pages = 3;
-        estudioworkingmemory('OverlayIndex',1);
+        erpworkingmemory('OverlayIndex',1);
         %%check sampling rate and data type
         for Numofselectederp = 1:numel(indexerp)
             SrateNum_mp(Numofselectederp,1)   =  ALLERP(indexerp(Numofselectederp)).srate;
@@ -3277,7 +3277,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         %%execute next panel
         viewer_ERPDAT.Reset_Waviewer_panel=5;
     end%%end of reset
@@ -3288,7 +3288,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress, 'enter')
             plotorg_apply();
-            estudioworkingmemory('MyViewer_plotorg',0);
+            erpworkingmemory('MyViewer_plotorg',0);
             gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];

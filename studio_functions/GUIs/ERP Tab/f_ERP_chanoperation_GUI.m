@@ -123,7 +123,7 @@ varargout{1} = ERP_chan_operation_gui;
         
         set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30]);
         
-        estudioworkingmemory('ERPTab_chanop',0);
+        erpworkingmemory('ERPTab_chanop',0);
     end
 
 %%**************************************************************************%%
@@ -146,7 +146,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_chanop',1);
+        erpworkingmemory('ERPTab_chanop',1);
         
         def  = erpworkingmemory('pop_erpchanoperator');
         if isempty(def)
@@ -244,7 +244,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_chanop',1);
+        erpworkingmemory('ERPTab_chanop',1);
         
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
@@ -334,7 +334,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_chanop',1);
+        erpworkingmemory('ERPTab_chanop',1);
         
         for ii = 1:1000
             dsnames{ii,1} = '';
@@ -359,7 +359,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_chanop',1);
+        erpworkingmemory('ERPTab_chanop',1);
         gui_erp_chan_operation.mode_modify.Value = 0;
         gui_erp_chan_operation.mode_create.Value = 1;
         
@@ -433,7 +433,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_chanop',1);
+        erpworkingmemory('ERPTab_chanop',1);
         Value = source.Value;
         gui_erp_chan_operation.locaInfor.Value = Value;
     end
@@ -455,7 +455,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_chanop',1);
+        erpworkingmemory('ERPTab_chanop',1);
         
         gui_erp_chan_operation.mode_modify.Value = 1;
         gui_erp_chan_operation.mode_create.Value = 0;
@@ -506,7 +506,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_chanop',1);
+        erpworkingmemory('ERPTab_chanop',1);
         
         
         gui_erp_chan_operation.mode_modify.Value = 0;
@@ -554,7 +554,7 @@ varargout{1} = ERP_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=6
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('ERPTab_chanop',0);
+        erpworkingmemory('ERPTab_chanop',0);
         gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
         gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
         ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -586,12 +586,12 @@ varargout{1} = ERP_chan_operation_gui;
             pathName_def =cd;
         end
         
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         
         Eq_Data =  gui_erp_chan_operation.edit_bineq.Data;
@@ -609,7 +609,7 @@ varargout{1} = ERP_chan_operation_gui;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        estudioworkingmemory('ERPTab_chanop',0);
+        erpworkingmemory('ERPTab_chanop',0);
         gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
         gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
         ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -701,7 +701,7 @@ varargout{1} = ERP_chan_operation_gui;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
@@ -734,12 +734,12 @@ varargout{1} = ERP_chan_operation_gui;
             gui_erp_chan_operation.edit_bineq.Data = dsnames;
             set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         else
-            ERPArray= estudioworkingmemory('selectederpstudio');
+            ERPArray= erpworkingmemory('selectederpstudio');
             if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
                 ERPArray = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-                estudioworkingmemory('selectederpstudio',ERPArray);
+                erpworkingmemory('selectederpstudio',ERPArray);
             end
             Enable_label = 'on';
             chanopDataor =  gui_erp_chan_operation.edit_bineq.Data;
@@ -775,13 +775,13 @@ varargout{1} = ERP_chan_operation_gui;
 %%--------------press return to execute "Apply"----------------------------
     function erp_chanop_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_chanop');
+        ChangeFlag =  erpworkingmemory('ERPTab_chanop');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             apply_run();
-            estudioworkingmemory('ERPTab_chanop',0);
+            erpworkingmemory('ERPTab_chanop',0);
             gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
             gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
             ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -796,7 +796,7 @@ varargout{1} = ERP_chan_operation_gui;
         if observe_ERPDAT.Reset_erp_paras_panel~=8
             return;
         end
-        estudioworkingmemory('ERPTab_chanop',0);
+        erpworkingmemory('ERPTab_chanop',0);
         gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
         gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
         ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

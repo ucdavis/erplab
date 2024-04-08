@@ -8,7 +8,7 @@
 % Sep.2023
 
 
-function varargout = f_EEG_edit_channel_GUI(varargin)
+function varargout = f_EEG_edit_channel_GUI(varargin) 
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
@@ -100,7 +100,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         EStduio_eegtab_EEG_edit_chan.edit_chanlocs.String = '<html>    Add or edit   <br />chan locations</html>';
         EStduio_eegtab_EEG_edit_chan.edit_chanlocs.HorizontalAlignment='Center';
         set(EStduio_eegtab_EEG_edit_chan.DataSelBox,'sizes',[30 30 30 40])
-        estudioworkingmemory('EEGTab_editchan',0);
+        erpworkingmemory('EEGTab_editchan',0);
     end
 
 %%**************************************************************************%%
@@ -118,7 +118,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         EStudio_eeg_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('EEGTab_editchan',1);
+        erpworkingmemory('EEGTab_editchan',1);
         EStduio_eegtab_EEG_edit_chan.mode_modify.Value =1;
         EStduio_eegtab_EEG_edit_chan.mode_create.Value = 0;
     end
@@ -134,7 +134,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         EStudio_eeg_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('EEGTab_editchan',1);
+        erpworkingmemory('EEGTab_editchan',1);
         EStduio_eegtab_EEG_edit_chan.mode_modify.Value =0;
         EStduio_eegtab_EEG_edit_chan.mode_create.Value = 1;
     end
@@ -151,7 +151,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         
         EStudio_eeg_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('EEGTab_editchan',1);
+        erpworkingmemory('EEGTab_editchan',1);
         
         New_chans = str2num(Source.String);
         if isempty(New_chans) || any(New_chans(:)<=0)
@@ -184,7 +184,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         
         EStudio_eeg_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
-        estudioworkingmemory('EEGTab_editchan',1);
+        erpworkingmemory('EEGTab_editchan',1);
         
         EEG = observe_EEGDAT.EEG;
         for Numofchan = 1:EEG.nbchan
@@ -224,14 +224,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('EEGTab_editchan',0);
+        erpworkingmemory('EEGTab_editchan',0);
         
         erpworkingmemory('f_EEG_proces_messg','Edit/Delete Channels & Locations >  Delete selected chan');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
         end
         
         ChanArray =  str2num(EStduio_eegtab_EEG_edit_chan.select_edit_chan.String);
@@ -319,7 +319,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            erpworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -341,7 +341,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('EEGTab_editchan',0);
+        erpworkingmemory('EEGTab_editchan',0);
         
         erpworkingmemory('f_EEG_proces_messg','Edit/Delete Channels & Locations >  Rename selected chan');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
@@ -354,9 +354,9 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             return;
         end
         
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
         end
         
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
@@ -454,7 +454,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            erpworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -476,14 +476,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('EEGTab_editchan',0);
+        erpworkingmemory('EEGTab_editchan',0);
         
         erpworkingmemory('f_EEG_proces_messg','Edit/Delete Channels & Locations >  Add or edit channel locations');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  estudioworkingmemory('EEGArray');
+        EEGArray =  erpworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:)> length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
         end
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
         %%loop for the selected EEGsets
@@ -573,7 +573,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            erpworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -619,7 +619,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if observe_EEGDAT.Reset_eeg_paras_panel~=4
             return;
         end
-        estudioworkingmemory('EEGTab_editchan',0);
+        erpworkingmemory('EEGTab_editchan',0);
         EStduio_eegtab_EEG_edit_chan.mode_modify.Value =1;
         EStduio_eegtab_EEG_edit_chan.mode_create.Value = 0;
         EStduio_eegtab_EEG_edit_chan.select_edit_chan.String = '';

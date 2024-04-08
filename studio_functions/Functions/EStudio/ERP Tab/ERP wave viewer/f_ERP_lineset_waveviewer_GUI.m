@@ -53,7 +53,7 @@ varargout{1} = box_erplineset_viewer_property;
         %%--------------------channel and bin setting----------------------
         gui_erplinset_waveviewer.DataSelBox = uiextras.VBox('Parent', box_erplineset_viewer_property,'BackgroundColor',ColorBviewer_def);
         %%-----------------Setting for Auto-------
-        MERPWaveViewer_linelegend= estudioworkingmemory('MERPWaveViewer_linelegend');%%call the parameters for this panel
+        MERPWaveViewer_linelegend= erpworkingmemory('MERPWaveViewer_linelegend');%%call the parameters for this panel
         try
             linAutoValue= MERPWaveViewer_linelegend{1};
         catch
@@ -328,7 +328,7 @@ varargout{1} = box_erplineset_viewer_property;
         
         set(gui_erplinset_waveviewer.DataSelBox ,'Sizes',[20 200 20 25 25 25 25]);
         
-        estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);
+        erpworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);
         
         gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
         gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
@@ -341,7 +341,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erp_waviewer.ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
         gui_erp_waviewer.ERPwaviewer.Legend.FontColorAuto = gui_erplinset_waveviewer.font_colorauto.Value;
         
-        estudioworkingmemory('MyViewer_linelegend',0);
+        erpworkingmemory('MyViewer_linelegend',0);
     end
 
 %%**************************************************************************%%
@@ -354,7 +354,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -394,7 +394,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -420,7 +420,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -435,7 +435,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -479,7 +479,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -500,7 +500,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -514,7 +514,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -529,7 +529,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewelinelegend',1);
+        erpworkingmemory('MyViewelinelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -546,7 +546,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -562,7 +562,7 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
+        erpworkingmemory('MyViewer_linelegend',1);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
@@ -581,7 +581,7 @@ varargout{1} = box_erplineset_viewer_property;
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
-        changeFlag =  estudioworkingmemory('MyViewer_linelegend');
+        changeFlag =  erpworkingmemory('MyViewer_linelegend');
         if changeFlag~=1
             MessageViewer= char(strcat('Lines & Legends > Cancel'));
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -630,7 +630,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.legendtextcustom.Enable = LegendEnable;
         gui_erplinset_waveviewer.legendcolumns.Enable = LegendEnable;
         
-        estudioworkingmemory('MyViewer_linelegend',0);
+        erpworkingmemory('MyViewer_linelegend',0);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
@@ -649,7 +649,7 @@ varargout{1} = box_erplineset_viewer_property;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
-        estudioworkingmemory('MyViewer_linelegend',0);
+        erpworkingmemory('MyViewer_linelegend',0);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
@@ -678,7 +678,7 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{5}=gui_erplinset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
-        estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
         
         gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
         gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
@@ -761,7 +761,7 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{5}=gui_erplinset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
-        estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
         gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
         gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
@@ -923,7 +923,7 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{5}=gui_erplinset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
-        estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
         viewer_ERPDAT.loadproper_count =7;
     end
 
@@ -935,7 +935,7 @@ varargout{1} = box_erplineset_viewer_property;
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  estudioworkingmemory('MyViewer_linelegend');
+        changeFlag =  erpworkingmemory('MyViewer_linelegend');
         if changeFlag~=1
             return;
         end
@@ -1048,7 +1048,7 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{5}=gui_erplinset_waveviewer.font_custom_size.Value;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
-        estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
+        erpworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
         
         viewer_ERPDAT.Reset_Waviewer_panel=7;
     end
@@ -1057,7 +1057,7 @@ varargout{1} = box_erplineset_viewer_property;
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             LineLegend_apply();
-            estudioworkingmemory('MyViewer_linelegend',0);
+            erpworkingmemory('MyViewer_linelegend',0);
             gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];

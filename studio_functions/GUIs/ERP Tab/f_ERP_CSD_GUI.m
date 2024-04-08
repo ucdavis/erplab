@@ -89,7 +89,7 @@ varargout{1} = ERP_CSD_gui;
         uiextras.Empty('Parent',  gui_erp_CSD.run_title);
         set(gui_erp_CSD.run_title,'Sizes',[15 105  30 105 15]);
         set(gui_erp_CSD.DataSelBox,'Sizes',[40,40,40,30]);
-        estudioworkingmemory('ERPTab_csd',0);
+        erpworkingmemory('ERPTab_csd',0);
     end
 
 %%**************************************************************************%%
@@ -112,7 +112,7 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_CSD.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_csd',1);
+        erpworkingmemory('ERPTab_csd',1);
         
         mcont = str2num(source.String);
         if isempty(mcont) || numel(mcont)~=1
@@ -139,7 +139,7 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_CSD.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_csd',1);
+        erpworkingmemory('ERPTab_csd',1);
         
         mcont = str2num(source.String);
         if isempty(mcont) || numel(mcont)~=1
@@ -166,7 +166,7 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_CSD.cancel.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_csd',1);
+        erpworkingmemory('ERPTab_csd',1);
         mcont = str2num(source.String);
         if isempty(mcont) || numel(mcont)~=1
             gui_erp_CSD.hr_num.String='10';
@@ -194,19 +194,19 @@ varargout{1} = ERP_CSD_gui;
         csd_param(3) = str2double(gui_erp_CSD.hr_num.String);
         csd_param(4) = 1;
         erpworkingmemory('csd_param',csd_param);
-        ERPArray= estudioworkingmemory('selectederpstudio');
+        ERPArray= erpworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            estudioworkingmemory('selectederpstudio',ERPArray);
+            erpworkingmemory('selectederpstudio',ERPArray);
         end
         gui_erp_CSD.run.BackgroundColor =  [1 1 1];
         gui_erp_CSD.run.ForegroundColor = [0 0 0];
         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_csd',0);
+        erpworkingmemory('ERPTab_csd',0);
         
         %%---------------------Compute CSD for each ERPset----------------
         erpworkingmemory('f_ERP_proces_messg','Convert Voltage to CSD');
@@ -286,7 +286,7 @@ varargout{1} = ERP_CSD_gui;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+        erpworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -311,7 +311,7 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_csd',0);
+        erpworkingmemory('ERPTab_csd',0);
     end
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
@@ -339,7 +339,7 @@ varargout{1} = ERP_CSD_gui;
 %%--------------press return to execute "Apply"----------------------------
     function erp_csd_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  estudioworkingmemory('ERPTab_csd');
+        ChangeFlag =  erpworkingmemory('ERPTab_csd');
         if ChangeFlag~=1
             return;
         end
@@ -350,7 +350,7 @@ varargout{1} = ERP_CSD_gui;
             ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
             gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
             gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-            estudioworkingmemory('ERPTab_csd',0);
+            erpworkingmemory('ERPTab_csd',0);
         else
             return;
         end
@@ -366,7 +366,7 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_csd',0);
+        erpworkingmemory('ERPTab_csd',0);
         gui_erp_CSD.sif_num.String = '4';
         gui_erp_CSD.scl_num.String = '0.00001';
         gui_erp_CSD.hr_num.String = '10';
