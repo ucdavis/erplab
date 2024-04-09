@@ -124,7 +124,7 @@ varargout{1} = box_erp_resample;
         uiextras.Empty('Parent', gui_erp_resample.advance_help_title);
         set(gui_erp_resample.advance_help_title,'Sizes',[15 105  30 105 15]);
         set(gui_erp_resample.DataSelBox,'Sizes',[30 30 30 30 30]);
-        erpworkingmemory('ERPTab_resample',0);
+        estudioworkingmemory('ERPTab_resample',0);
     end
 
 %%**************************************************************************%%
@@ -143,7 +143,7 @@ varargout{1} = box_erp_resample;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_resample',1);
+        estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_resample.resample_run.ForegroundColor = [1 1 1];
         box_erp_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -173,7 +173,7 @@ varargout{1} = box_erp_resample;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_resample',1);
+        estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_resample.resample_run.ForegroundColor = [1 1 1];
         box_erp_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -201,7 +201,7 @@ varargout{1} = box_erp_resample;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_resample',1);
+        estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_resample.resample_run.ForegroundColor = [1 1 1];
         box_erp_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -235,7 +235,7 @@ varargout{1} = box_erp_resample;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_resample',1);
+        estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_resample.resample_run.ForegroundColor = [1 1 1];
         box_erp_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -283,7 +283,7 @@ varargout{1} = box_erp_resample;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_resample',1);
+        estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_resample.resample_run.ForegroundColor = [1 1 1];
         box_erp_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -332,7 +332,7 @@ varargout{1} = box_erp_resample;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_resample',0);
+        estudioworkingmemory('ERPTab_resample',0);
         gui_erp_resample.resample_run.BackgroundColor =  [1 1 1];
         gui_erp_resample.resample_run.ForegroundColor = [0 0 0];
         box_erp_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -391,7 +391,7 @@ varargout{1} = box_erp_resample;
             return;
         end
         %%Send message to Message panel
-        erpworkingmemory('f_ERP_proces_messg','Sampling Rate & Epoch');
+        estudioworkingmemory('f_ERP_proces_messg','Sampling Rate & Epoch');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         %%--------------------check new sampling rate----------------------
@@ -454,7 +454,7 @@ varargout{1} = box_erp_resample;
             Newend = [];
         end
         
-        erpworkingmemory('ERPTab_resample',0);
+        estudioworkingmemory('ERPTab_resample',0);
         gui_erp_resample.resample_run.BackgroundColor =  [1 1 1];
         gui_erp_resample.resample_run.ForegroundColor = [0 0 0];
         box_erp_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -466,15 +466,15 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.Paras{4} = str2num(gui_erp_resample.nwtimewindow_editleft.String);
         gui_erp_resample.Paras{5} = str2num(gui_erp_resample.nwtimewindow_editright.String);
         
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
-        erpworkingmemory('f_ERP_proces_messg','Sampling Rate & Epoch');
+        estudioworkingmemory('f_ERP_proces_messg','Sampling Rate & Epoch');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         ALLERP = observe_ERPDAT.ALLERP;
@@ -542,7 +542,7 @@ varargout{1} = box_erp_resample;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        erpworkingmemory('selectederpstudio',Selected_ERP_afd);
+        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
@@ -554,9 +554,9 @@ varargout{1} = box_erp_resample;
         if observe_ERPDAT.Count_currentERP~=8
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enableflag = 'off';
@@ -617,13 +617,13 @@ varargout{1} = box_erp_resample;
 %%--------------press return to execute "Apply"----------------------------
     function erp_resample_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('ERPTab_resample');
+        ChangeFlag =  estudioworkingmemory('ERPTab_resample');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             resample_run();
-            erpworkingmemory('ERPTab_resample',0);
+            estudioworkingmemory('ERPTab_resample',0);
             gui_erp_resample.resample_run.BackgroundColor =  [1 1 1];
             gui_erp_resample.resample_run.ForegroundColor = [0 0 0];
             box_erp_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -639,7 +639,7 @@ varargout{1} = box_erp_resample;
         if observe_ERPDAT.Reset_erp_paras_panel~=13
             return;
         end
-        erpworkingmemory('ERPTab_resample',0);
+        estudioworkingmemory('ERPTab_resample',0);
         gui_erp_resample.resample_run.BackgroundColor =  [1 1 1];
         gui_erp_resample.resample_run.ForegroundColor = [0 0 0];
         box_erp_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

@@ -209,7 +209,7 @@ end
 
 
 %%----------------------------Measurement tool-----------------------------
-geterpvaluesparas = erpworkingmemory('pop_geterpvalues');
+geterpvaluesparas = estudioworkingmemory('pop_geterpvalues');
 try moption = geterpvaluesparas{7}; catch moption = 'meanbl'; end
 
 try latency = geterpvaluesparas{4};catch latency = []; end

@@ -64,7 +64,7 @@ varargout{1} = Eegtab_box_avg_erp;
             EnableFlag = 'on';
         end
         
-        def  = erpworkingmemory('pop_averager');
+        def  = estudioworkingmemory('pop_averager');
         if isempty(def) || numel(def)~=12
             % Should not be empty, and have exactly 12 elements. Else, fallback to:
             def = {1 1 1 1 1 0 0 [] 1 [] 0 0};
@@ -216,8 +216,8 @@ varargout{1} = Eegtab_box_avg_erp;
         set(EEG_avg_erp.detar_run_title,'Sizes',[15 105  30 105 15]);
         
         set(EEG_avg_erp.DataSelBox,'Sizes',[20 25 30 30 30 20 25 25 25 30]);
-        erpworkingmemory('EEGTab_avg_erp',0);
-        erpworkingmemory('EEGTab_eeg2erp',0);
+        estudioworkingmemory('EEGTab_avg_erp',0);
+        estudioworkingmemory('EEGTab_eeg2erp',0);
     end
 
 
@@ -240,7 +240,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [1 1 1];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
         EEG_avg_erp.def_para.Value=1;
         EEG_avg_erp.custom_para.Value=0;
         EEG_avg_erp.no_dq.Value=0;
@@ -262,7 +262,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [1 1 1];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
         EEG_avg_erp.def_para.Value=0;
         EEG_avg_erp.custom_para.Value=1;
         EEG_avg_erp.custom_para_op.Enable = 'on';
@@ -284,7 +284,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [1 1 1];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
         
         timelimits = 1000 * [observe_EEGDAT.EEG.xmin observe_EEGDAT.EEG.xmax];
         old_DQ_spec = EEG_avg_erp.DQ_spec;
@@ -310,7 +310,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [1 1 1];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
         EEG_avg_erp.def_para.Value=0;
         EEG_avg_erp.custom_para.Value=0;
         EEG_avg_erp.custom_para_op.Enable = 'off';
@@ -334,7 +334,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
         
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
         EEG_avg_erp.all_marks.Value = 1;
         EEG_avg_erp.excld_marks.Value = 0;
         EEG_avg_erp.marked_epochs.Value = 0;
@@ -356,7 +356,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [1 1 1];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
         
         EEG_avg_erp.all_marks.Value = 0;
         EEG_avg_erp.excld_marks.Value = 1;
@@ -379,7 +379,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [1 1 1];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
         EEG_avg_erp.all_marks.Value = 0;
         EEG_avg_erp.excld_marks.Value = 0;
         EEG_avg_erp.marked_epochs.Value = 1;
@@ -401,7 +401,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [1 1 1];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_avg_erp.avg_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_avg_erp',1);
+        estudioworkingmemory('EEGTab_avg_erp',1);
     end
 
 
@@ -415,7 +415,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if ~isempty(messgStr) && eegpanelIndex~=17
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG) > Cancel');
+        estudioworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
@@ -423,9 +423,9 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
         EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('EEGTab_avg_erp',0);
+        estudioworkingmemory('EEGTab_avg_erp',0);
         
-        def  = erpworkingmemory('pop_averager');
+        def  = estudioworkingmemory('pop_averager');
         if isempty(def) || numel(def)~=12
             % Should not be empty, and have exactly 12 elements. Else, fallback to:
             def = {1 1 1 1 1 0 0 [] 1 [] 1 0};
@@ -498,7 +498,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if ~isempty(messgStr) && eegpanelIndex~=17
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG) > Run');
+        estudioworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG) > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
@@ -507,12 +507,12 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
         EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('EEGTab_avg_erp',0);
+        estudioworkingmemory('EEGTab_avg_erp',0);
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         incALL=EEG_avg_erp.all_marks.Value;
         excart=EEG_avg_erp.excld_marks.Value;
@@ -604,7 +604,7 @@ varargout{1} = Eegtab_box_avg_erp;
         DQcustom_wins = answer{12};
         
         answer(1:12)    = {EEGArray(1), artcrite, 1, stderror, excbound, compu2do, wintype, wintfunc,DQ_flag,DQ_spec,DQ_preavg_txt,DQcustom_wins};
-        erpworkingmemory('pop_averager', answer);
+        estudioworkingmemory('pop_averager', answer);
         
         if stderror==1
             stdsstr = 'on';
@@ -697,14 +697,14 @@ varargout{1} = Eegtab_box_avg_erp;
                 ALLERP(length(ALLERP)+1) = ERP;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
-            erpworkingmemory('EEGTab_eeg2erp',1);
+            estudioworkingmemory('EEGTab_eeg2erp',1);
         end%%end for loop of subjects
         feval('dq_trial_rejection',ALLERP,ALLEEG(EEGArray));
         observe_EEGDAT.eeg_panel_message =2;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-        erpworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
+        estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.Count_currentERP=1;
@@ -716,9 +716,9 @@ varargout{1} = Eegtab_box_avg_erp;
         if observe_EEGDAT.count_current_eeg ~=23
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1 || EEGUpdate==1
             EEG_avg_erp.def_para.Enable= 'off';
@@ -766,13 +766,13 @@ varargout{1} = Eegtab_box_avg_erp;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_avg_erp_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('EEGTab_avg_erp');
+        ChangeFlag =  estudioworkingmemory('EEGTab_avg_erp');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             avg_run();
-            erpworkingmemory('EEGTab_avg_erp',0);
+            estudioworkingmemory('EEGTab_avg_erp',0);
             Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
             EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
             EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
@@ -788,7 +788,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if observe_EEGDAT.Reset_eeg_paras_panel~=19
             return;
         end
-        erpworkingmemory('EEGTab_avg_erp',0);
+        estudioworkingmemory('EEGTab_avg_erp',0);
         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
         EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];

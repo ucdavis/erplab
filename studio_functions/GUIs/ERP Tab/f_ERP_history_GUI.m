@@ -52,9 +52,9 @@ varargout{1} = box_erp_history;
         
         
         gui_erp_history.erp_h_all = uicontrol('Style','radiobutton','Parent',gui_erp_history.erp_history_title,'String','Current ERPset',...
-            'callback',@ERP_H_ALL,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@ERP_H_ALL,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         gui_erp_history.erp_h_current = uicontrol('Style','radiobutton','Parent', gui_erp_history.erp_history_title,'String','Current session',...
-            'callback',@erp_h_current,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@erp_h_current,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         ERP_history = [];
         if isempty(ERP_history)
             ERP_history = char('No history exist in the current ERPset');
@@ -132,12 +132,12 @@ varargout{1} = box_erp_history;
         
         if gui_erp_history.erp_h_all.Value==1
             MessageViewer= char(strcat('Save history script for the current ERPset'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=1;
             LASTCOM = pop_saveh(observe_ERPDAT.ERP.history);
         else
             MessageViewer= char(strcat('Save history script for the current session'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=1;
             try
                 erp_history = evalin('base','ALLERPCOM');
@@ -164,8 +164,8 @@ varargout{1} = box_erp_history;
         end
         gui_erp_history.save_script.Enable = Enableflag;
         gui_erp_history.uitable.Enable = Enableflag;
-        gui_erp_history.erp_h_all.Enable = Enableflag;
-        gui_erp_history.erp_h_current.Enable = Enableflag;
+        gui_erp_history.erp_h_all.Enable = 'on';
+        gui_erp_history.erp_h_current.Enable = 'on';
         gui_erp_history.show_cmd.Enable = Enableflag;
         if gui_erp_history.erp_h_all.Value ==1
             try
@@ -208,7 +208,7 @@ varargout{1} = box_erp_history;
             return;
         end
         MessageViewer= char(strcat('History > Show in cmd window'));
-        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
         observe_ERPDAT.Process_messg=1;
         if gui_erp_history.erp_h_all.Value ==1
             try

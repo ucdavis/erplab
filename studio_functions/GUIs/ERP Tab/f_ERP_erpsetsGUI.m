@@ -116,17 +116,17 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Duplicate');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Duplicate');
         observe_ERPDAT.Process_messg =1;
         
         ERPArray= ERPsetops.butttons_datasets.Value;
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
-        ChanArray= erpworkingmemory('ERP_ChanArray');
-        BinArray= erpworkingmemory('ERP_BinArray');
+        ChanArray= estudioworkingmemory('ERP_ChanArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         
         def = f_ERP_duplicate(observe_ERPDAT.ERP,BinArray,ChanArray);
         if isempty(def)
@@ -184,7 +184,7 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.ALLERP = ALLERP;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
-        erpworkingmemory('ERPfilter',1);
+        estudioworkingmemory('ERPfilter',1);
         
         ERPlistName =  getERPsets();
         %%Reset the display in ERPset panel
@@ -202,7 +202,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        erpworkingmemory('selectederpstudio',Selected_ERP_afd);
+        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
@@ -219,13 +219,13 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Rename');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Rename');
         observe_ERPDAT.Process_messg =1;
         
         ERPArray= ERPsetops.butttons_datasets.Value;
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         app = feval('ERP_Tab_rename_gui',observe_ERPDAT.ALLERP(ERPArray),ERPArray);
         waitfor(app,'Finishbutton',1);
@@ -264,7 +264,7 @@ varargout{1} = box_erpset_gui;
         
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
-        erpworkingmemory('ERPfilter',1);
+        estudioworkingmemory('ERPfilter',1);
         observe_ERPDAT.ALLERP(ERPArray) = ALLERP_out;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         ERPlistName =  getERPsets();
@@ -287,13 +287,13 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Add Suffix');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Add Suffix');
         observe_ERPDAT.Process_messg =1;
         
         ERPArray= ERPsetops.butttons_datasets.Value;
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         suffixstr = f_ERP_suffix_gui('Suffix');
@@ -326,7 +326,7 @@ varargout{1} = box_erpset_gui;
         
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
-        erpworkingmemory('ERPfilter',1);
+        estudioworkingmemory('ERPfilter',1);
         observe_ERPDAT.ALLERP(ERPArray) = ALLERP_out;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         ERPlistName =  getERPsets();
@@ -345,7 +345,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Refresh');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Refresh');
         observe_ERPDAT.Process_messg =1;
         try
             ALLERP = evalin('base', 'ALLERP');
@@ -383,7 +383,7 @@ varargout{1} = box_erpset_gui;
         assignin('base','CURRENTERP',CURRENTERP);
         assignin('base','ERP',ERP);
         assignin('base','ALLERP',ALLERP);
-        erpworkingmemory('selectederpstudio',CURRENTERP);
+        estudioworkingmemory('selectederpstudio',CURRENTERP);
         ERPlistName =  getERPsets();
         ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Min = 1;
@@ -400,7 +400,7 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Import');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Import');
         observe_ERPDAT.Process_messg =1;
         %-----------Setting for import-------------------------------------
         try
@@ -483,7 +483,7 @@ varargout{1} = box_erpset_gui;
                 %%------------------------------------------------------------------------
                 if ind == 2
                     
-                    def  = erpworkingmemory('pop_importerp');
+                    def  = estudioworkingmemory('pop_importerp');
                     if isempty(def)
                         def = {'','','',0,1,0,0,1000,[-200 800]};
                     end
@@ -506,7 +506,7 @@ varargout{1} = box_erpset_gui;
                     fs          = getlista{8};
                     xlim        = getlista{9};
                     
-                    erpworkingmemory('pop_importerp', {filename, filepath, ftype,includetime,timeunit,elabel,transpose,fs,xlim});
+                    estudioworkingmemory('pop_importerp', {filename, filepath, ftype,includetime,timeunit,elabel,transpose,fs,xlim});
                     
                     filetype = {'text'};
                     if includetime==0
@@ -623,7 +623,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.export.Enable = Edit_label;
         
         ERPArray = observe_ERPDAT.CURRENTERP;
-        erpworkingmemory('selectederpstudio',ERPArray);
+        estudioworkingmemory('selectederpstudio',ERPArray);
         ERPsetops.butttons_datasets.Min=1;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
@@ -642,29 +642,29 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Export');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Export');
         observe_ERPDAT.Process_messg =1;
-        pathName =  erpworkingmemory('EEG_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  cd;
         end
         ERPArray= ERPsetops.butttons_datasets.Value;
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         checked_ERPset_Index_bin_chan = f_checkerpsets(observe_ERPDAT.ALLERP,ERPArray);
-        ChanArray= erpworkingmemory('ERP_ChanArray');
+        ChanArray= estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         
-        BinArray = erpworkingmemory('ERP_BinArray');
+        BinArray = estudioworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
-            erpworkingmemory('ERP_BinArray',BinArray);
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
         
         try
@@ -710,7 +710,7 @@ varargout{1} = box_erpset_gui;
             elseif ind ==2
                 ERP_export_erp.filename =fullfile(pathName,ERP_export_erp.filename);
                 ERP = ERP_export_erp;
-                def  = erpworkingmemory('f_export2textGUI');
+                def  = estudioworkingmemory('f_export2textGUI');
                 if isempty(def)
                     def = {1,1000, 1, 1, 4, ''};
                 end
@@ -724,7 +724,7 @@ varargout{1} = box_erpset_gui;
                 if isempty(answer_export)
                     return;
                 end
-                erpworkingmemory('f_export2textGUI',answer_export);
+                estudioworkingmemory('f_export2textGUI',answer_export);
                 istime    = answer_export{1};
                 tunit     = answer_export{2};
                 islabeled = answer_export{3};
@@ -771,7 +771,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Load');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Load');
         observe_ERPDAT.Process_messg =1;
         ALLERPCOM = evalin('base','ALLERPCOM');
         
@@ -833,7 +833,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         SelectedERP = observe_ERPDAT.CURRENTERP;
-        erpworkingmemory('selectederpstudio',SelectedERP);
+        estudioworkingmemory('selectederpstudio',SelectedERP);
         ERPsetops.butttons_datasets.Min=1;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
@@ -854,7 +854,7 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Clear');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Clear');
         observe_ERPDAT.Process_messg =1;
         SelectedERP = ERPsetops.butttons_datasets.Value;
         ALLERP = observe_ERPDAT.ALLERP;
@@ -898,7 +898,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         SelectedERP = observe_ERPDAT.CURRENTERP;
-        erpworkingmemory('selectederpstudio',SelectedERP);
+        estudioworkingmemory('selectederpstudio',SelectedERP);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
         if EStudio_gui_erp_totl.ERP_autoplot==1
@@ -919,17 +919,17 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Save');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save');
         observe_ERPDAT.Process_messg =1;
         
-        pathName =  erpworkingmemory('EEG_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  cd;
         end
-        ERPArray= erpworkingmemory('selectederpstudio');
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
@@ -973,18 +973,18 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Save As');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save As');
         observe_ERPDAT.Process_messg =1;
         
-        pathName =  erpworkingmemory('EEG_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  cd;
         end
         
-        ERPArray= erpworkingmemory('selectederpstudio');
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray(:)>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
@@ -1040,7 +1040,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        pathName =  erpworkingmemory('EEG_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =[pwd,filesep];
         end
@@ -1057,7 +1057,7 @@ varargout{1} = box_erpset_gui;
         ERP = observe_ERPDAT.ERP;
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom,2);
         assignin('base','ALLERPCOM',ALLERPCOM);
-        erpworkingmemory('EEG_save_folder',sel_path1);
+        estudioworkingmemory('EEG_save_folder',sel_path1);
         observe_ERPDAT.Count_currentERP = 20;
     end
 
@@ -1074,7 +1074,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         ERPArray = source.Value;
-        erpworkingmemory('selectederpstudio',ERPArray);
+        estudioworkingmemory('selectederpstudio',ERPArray);
         
         Current_ERP_selected=ERPArray(1);
         observe_ERPDAT.CURRENTERP = Current_ERP_selected;
@@ -1091,12 +1091,12 @@ varargout{1} = box_erpset_gui;
             return;
         end
         if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
-            ERPArray= erpworkingmemory('selectederpstudio');
+            ERPArray= estudioworkingmemory('selectederpstudio');
             if isempty(ERPArray)
                 ERPArray = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
                 observe_ERPDAT.CURRENTERP = ERPArray;
-                erpworkingmemory('selectederpstudio',ERPArray);
+                estudioworkingmemory('selectederpstudio',ERPArray);
             end
             ERPlistName =  getERPsets();
             ERPsetops.butttons_datasets.String = ERPlistName;
@@ -1104,7 +1104,7 @@ varargout{1} = box_erpset_gui;
             
             ERPsetops.butttons_datasets.Min=1;
             ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
             ERPsetops.butttons_datasets.Value = ERPArray;
             ERPsetops.butttons_datasets.Enable = 'on';
             Edit_label = 'on';
@@ -1115,12 +1115,12 @@ varargout{1} = box_erpset_gui;
             ERPsetops.butttons_datasets.Value = ERPArray;
             ERPsetops.butttons_datasets.Min=1;
             ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
             Edit_label = 'off';
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if ViewerFlag==1
             Edit_label = 'off';

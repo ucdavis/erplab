@@ -64,13 +64,13 @@ if nargin==1
     % to get 1 point each 0.25 Hz, at least.
     % Users can change this value using scripting. Jav
     %
-    def   = erpworkingmemory('pop_ERP_spectralanalysis');
+    def   = estudioworkingmemory('pop_ERP_spectralanalysis');
     if isempty(def)
         def = {1,1,[0,floor(ERP.srate/2)],ERP.srate};
         
     end
     
-    app = feval('ERP_spectral_analysis_GUI.mlapp',def{1},def{2},def{3},def{4});
+    app = feval('ERP_spectral_analysis_GUI.mlapp',def{1},def{2},def{3},def{4},ERP);
     waitfor(app,'Finishbutton',1);
     try
         def = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
@@ -98,17 +98,26 @@ if nargin==1
     else
         TaperWindow = 'off';
     end
-    erpworkingmemory('pop_ERP_spectralanalysis',def);
+    estudioworkingmemory('pop_ERP_spectralanalysis',def);
     freqrange = def{3};
     if isempty(freqrange) || numel(freqrange)~=2 || any(freqrange(:)>floor(ERP.srate/2)) || any(freqrange(:)<0)
         freqrange = [0 floor(ERP.srate/2)];
     end
+    
+    ChanArray = def{6};
+    if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
+        ChanArray = [1:ERP.nchan];
+    end
+    BinArray = def{5};
+    if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+        BinArray = 1:ERP.nbin;
+    end
+    
     erpcom = pop_ERP_spectralanalysis(ERP, 'Amptype',Amptype,'TaperWindow',TaperWindow,...
-        'freqrange',freqrange,'Plotwave','on','Saveas', 'off','History','gui');
+        'freqrange',freqrange,'BinArray',BinArray,'ChanArray',ChanArray,'Plotwave','on',...
+        'Saveas', 'off','History','gui');
     return
 end
-
-
 
 
 %
@@ -122,6 +131,8 @@ p.addRequired('ERP');
 p.addParamValue('TaperWindow', 'on', @ischar);       % 'ERP': compute the average of epochs per bin;
 p.addParamValue('Amptype', 'amp', @ischar);
 p.addParamValue('freqrange', [], @isnumeric);
+p.addParamValue('BinArray', [], @isnumeric);
+p.addParamValue('ChanArray', [], @isnumeric);
 p.addParamValue('Plotwave', 'on', @ischar);
 p.addParamValue('Saveas', 'off', @ischar);  % 'on', 'off'
 p.addParamValue('Warning', 'off', @ischar);
@@ -183,11 +194,28 @@ if isempty(freqrange) || numel(freqrange)~=2 || any(freqrange(:)>floor(ERP.srate
     freqrange = [0 floor(ERP.srate/2)];
 end
 
+%%
+ChanArray = p.Results.ChanArray;
+if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
+    ChanArray = [1:ERP.nchan];
+end
+
+%%
+BinArray = p.Results.BinArray;
+if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+    BinArray = 1:ERP.nbin;
+end
+
+
 [xxx, latsamp, latdiffms] = closest(ERP.times, freqrange);
 tmin = latsamp(1);
 tmax = latsamp(2);
-ERP.bindata = ERP.bindata(:,tmin:tmax,:);
+ERP.bindata = ERP.bindata(ChanArray,tmin:tmax,BinArray);
+ERP.nbin = numel(BinArray);
+ERP.bindescr = ERP.bindescr(BinArray);
 ERP.times = ERP.times(tmin:tmax);
+ERP.nchan =numel(ChanArray);
+ERP.chanlocs = ERP.chanlocs(ChanArray);
 
 if strcmpi(p.Results.Plotwave,'on')
     fig = figure('Name',figure_name);
@@ -196,17 +224,17 @@ if strcmpi(p.Results.Plotwave,'on')
     FonsizeDefault = f_get_default_fontsize();
     FreqTick = default_time_ticks(ERP, freqrange);
     FreqTick = str2num(FreqTick{1});
-    pbox = f_getrow_columnautowaveplot(1:ERP.nchan);
+    pbox = f_getrow_columnautowaveplot(ChanArray);
     try
         RowNum = pbox(1)+1;
         ColumnNum = pbox(2);
     catch
-        RowNum = ERP.nchan+1;
+        RowNum = numel(ChanArray)+1;
         ColumnNum = 1;
     end
     count = 0;
     for Numofcolumn = 1:ColumnNum
-        for Numofrow = 1: RowNum
+        for Numofrow = 1:RowNum
             count = count+1;
             if ColumnNum*RowNum<5
                 pause(1);
@@ -333,7 +361,7 @@ if issaveas==1
     try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
     
 elseif issaveas==2
-    def  = erpworkingmemory('f_export2csvGUI');
+    def  = estudioworkingmemory('f_export2csvGUI');
     if isempty(def)
         def = {1, 1, 1, 3, ''};
     end
@@ -348,11 +376,11 @@ elseif issaveas==2
     end
     def{5} = fullfile(pathName,ERP.filename);
     answer_export = f_export2csvGUI(ERP,def);
-    erpworkingmemory('f_export2csvGUI',answer_export);
+    estudioworkingmemory('f_export2csvGUI',answer_export);
     if isempty(answer_export)
         return;
     end
-    binArray = [1:ERP.nbin];
+    BinArray = [1:ERP.nbin];
     decimal_num = answer_export{4};
     istime =answer_export{1} ;
     electrodes=answer_export{2} ;
@@ -366,7 +394,7 @@ elseif issaveas==2
     filename = [filename ext];
     mkdir([pathx,filesep]);
     try
-        export2csv_spectranl_analysis(ERP,fullfile(pathx,filename), binArray,istime, electrodes,transpose,  decimal_num);
+        export2csv_spectranl_analysis(ERP,fullfile(pathx,filename), BinArray,istime, electrodes,transpose,  decimal_num);
     catch
         disp('Fail to save selected ERPset as ".csv"!!!');
     end

@@ -51,7 +51,7 @@ end
 
 %%Get local path
 sel_path = cd;
-erpworkingmemory('ERP_save_folder',sel_path);
+estudioworkingmemory('EEG_save_folder',sel_path);
 
 
 varargout{1} = ERPsets_waveviewer_box;
@@ -111,7 +111,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         ERPwaveview_erpsetops.ERPLABFlag = 0;
         gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPwaveview_erpsetops.butttons_datasets.Value;
         
-        erpworkingmemory('MyViewer_ERPsetpanel',0);
+        estudioworkingmemory('MyViewer_ERPsetpanel',0);
     end
 
 
@@ -176,7 +176,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             end
         end
         
-        erpworkingmemory('MyViewer_ERPsetpanel',1);
+        estudioworkingmemory('MyViewer_ERPsetpanel',1);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [0.4940 0.1840 0.5560];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [1 1 1];
         ERPsets_waveviewer_box.TitleColor= [0.4940 0.1840 0.5560];
@@ -191,12 +191,12 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         if ~isempty(messgStr) && viewerpanelIndex~=1
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        changeFlag =  erpworkingmemory('MyViewer_ERPsetpanel');
+        changeFlag =  estudioworkingmemory('MyViewer_ERPsetpanel');
         if changeFlag~=1
             return;
         end
         MessageViewer= char(strcat('ERPsets > Cancel'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         ERPwaveview_erpsetops.butttons_datasets.Enable = 'on';
@@ -221,7 +221,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             viewer_ERPDAT.Count_currentERP = 2;
         end
         ERPwaveview_erpsetops.butttons_datasets.Value = ERPArray;
-        erpworkingmemory('MyViewer_ERPsetpanel',0);
+        estudioworkingmemory('MyViewer_ERPsetpanel',0);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
         ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
@@ -229,7 +229,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         ERPwaveview_erpsetops.erpset_cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('ERPsets > Cancel'));
         
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -241,7 +241,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         end
         
         MessageViewer= char(strcat('ERPsets > Apply'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         ERPsetArray =  ERPwaveview_erpsetops.butttons_datasets.Value;
@@ -253,7 +253,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         
         %         ERPtooltype = erpgettoolversion('tooltype');
         %         if strcmpi(ERPtooltype,'EStudio')
-        %             ERPTab_plotset_pars = erpworkingmemory('ERPTab_plotset_pars');
+        %             ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
         %             try chan_bin =ERPTab_plotset_pars{7};catch chan_bin=1; end;
         %             if isempty(chan_bin) || numel(chan_bin)~=1  || (chan_bin~=1 && chan_bin~=2)
         %                 chan_bin=1;
@@ -272,7 +272,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         gui_erp_waviewer.ERPwaviewer.ERP = gui_erp_waviewer.ERPwaviewer.ALLERP(CurrentERP);
         gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPwaveview_erpsetops.butttons_datasets.Value;
         
-        erpworkingmemory('MyViewer_ERPsetpanel',0);
+        estudioworkingmemory('MyViewer_ERPsetpanel',0);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
         ERPwaveview_erpsetops.erpset_cancel.BackgroundColor = [1 1 1];
@@ -282,7 +282,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         viewer_ERPDAT.Count_currentERP = 2;
         f_redrawERP_viewer_test();%%Plot the waves
         MessageViewer= char(strcat('ERPsets > Apply'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -337,7 +337,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  erpworkingmemory('MyViewer_ERPsetpanel');
+        changeFlag =  estudioworkingmemory('MyViewer_ERPsetpanel');
         if changeFlag~=1
             return;
         end
@@ -376,7 +376,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
                         fprintf(2,'\n ERPsets error: Cannot get CURRENTERP from Workspace.\n');
                         return;
                     end
-                    erpworkingmemory('PlotOrg_ERPLAB',1);
+                    estudioworkingmemory('PlotOrg_ERPLAB',1);
                 else
                     ERPArray=  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
                     CURRENTERPStudio = gui_erp_waviewer.ERPwaviewer.CURRENTERP;

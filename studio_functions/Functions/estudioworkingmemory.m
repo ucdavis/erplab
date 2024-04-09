@@ -2,7 +2,7 @@
 %
 % FORMAT   :
 %
-% output = erpworkingmemory(field, input2store)
+% output = estudioworkingmemory(field, input2store)
 %
 % INPUTS   :
 %
@@ -17,12 +17,12 @@
 %
 % EXAMPLE 1: encode pop_appenderp's memory (values currently being used)
 %
-% erpworkingmemory('pop_appenderp', { optioni, erpset, prefixlist });
+% estudioworkingmemory('pop_appenderp', { optioni, erpset, prefixlist });
 %
 %
 % EXAMPLE 2: retrieve pop_appenderp's memory (values last used)
 %
-% def  = erpworkingmemory('pop_appenderp');
+% def  = estudioworkingmemory('pop_appenderp');
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -66,7 +66,6 @@ catch
 end
 
 
-
 if nargin==1 % read
     if ~isempty(vmemoryestudio)  %  variable at the workspace for storing/reading memory
         if isfield(vmemoryestudio, field)
@@ -78,13 +77,10 @@ if nargin==1 % read
         try
             p = which('o_ERPDAT');
             p = p(1:findstr(p,'o_ERPDAT.m')-1);
-            v = load(fullfile(p,'memoryerpstudiopanels.erpm'), '-mat');
-            
+            v = load(fullfile(p,'memoryerpstudio.erpm'), '-mat');
         catch
-            
-            msgboxText = ['EStudio (memoryerpstudiopanels.m) could not find "memoryerpstudiopanels.erpm" or does not have permission for reading it.\n'...
+            msgboxText = ['EStudio (memoryerpstudio.m) could not find "memoryerpstudio.erpm" or does not have permission for reading it.\n'...
                 'Please, run EStudio again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
-            
             try
                 cprintf([0.45 0.45 0.45], msgboxText');
             catch
@@ -102,7 +98,7 @@ if nargin==1 % read
     return
 elseif nargin==2 % write
     if ~isempty(vmemoryestudio) %  variable at the workspace for storing/reading memory
-        try
+        try 
             vmemoryestudio.(field) = input2store;
             assignin('base','vmemoryestudio', vmemoryestudio);
         catch
@@ -119,9 +115,9 @@ elseif nargin==2 % write
             eval([field '=input2store;'])
             p = which('o_ERPDAT');
             p = p(1:findstr(p,'o_ERPDAT.m')-1);
-            save(fullfile(p,'memoryerpstudiopanels.erpm'), field,'-append');
+            save(fullfile(p,'memoryerpstudio.erpm'), field,'-append');
         catch
-            msgboxText = ['EStudio could not find "memoryerpstudiopanels.erpm" or does not have permission for writting on it.\n'...
+            msgboxText = ['EStudio could not find "memoryerpstudio.erpm" or does not have permission for writting on it.\n'...
                 'Please, run EStudio again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
             
             try

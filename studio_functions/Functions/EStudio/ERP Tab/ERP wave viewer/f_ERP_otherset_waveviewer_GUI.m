@@ -49,7 +49,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         gui_otherset_waveviewer.DataSelBox = uiextras.VBox('Parent', box_erplabelset_viewer_otherset,'BackgroundColor',ColorBviewer_def);
         %%----------Polarity Setting---------------------------------------
-        MERPWaveViewer_others= erpworkingmemory('MERPWaveViewer_others');%%call the parameters for this panel
+        MERPWaveViewer_others= estudioworkingmemory('MERPWaveViewer_others');%%call the parameters for this panel
         try
             Polaritylabel= MERPWaveViewer_others{1};
         catch
@@ -244,9 +244,9 @@ varargout{1} = box_erplabelset_viewer_otherset;
         set(gui_otherset_waveviewer.help_run_title,'Sizes',[40 70 20 70 20]);
         
         set(gui_otherset_waveviewer.DataSelBox,'Sizes',[25 25 25 20 20 25 25 25]);
-        erpworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
         
-        erpworkingmemory('MyViewer_other',0);
+        estudioworkingmemory('MyViewer_other',0);
     end
 
 %%**************************************************************************%%
@@ -260,7 +260,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -276,7 +276,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -293,7 +293,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -318,7 +318,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -331,7 +331,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -346,7 +346,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -367,7 +367,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -388,7 +388,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -409,7 +409,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -429,7 +429,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -448,20 +448,20 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         MessageViewer= char(strcat('Other > Baseline Correction > Custom'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         
         bacselinePeriod = str2num(char(Str.String));
         if isempty(bacselinePeriod) || numel(bacselinePeriod)==1
             Str.String = '';
             msgboxText =  strcat('Other > Baseline Correction > Custom() error: Inputs must be two numbers');
-            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+            estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -469,21 +469,21 @@ varargout{1} = box_erplabelset_viewer_otherset;
         TimeRange = gui_erp_waviewer.ERPwaviewer.ERP.times;
         if bacselinePeriod(1)<TimeRange(1)
             msgboxText =  strcat('Other > Baseline Correction > Custom(): Left edge of baseline period should be larger than',32,num2str(TimeRange(1)),'ms');
-            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+            estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = '';
             viewer_ERPDAT.Process_messg =4;
             return;
         end
         if bacselinePeriod(2)>TimeRange(end)
             msgboxText =  strcat('Other > Baseline Correction > Custom(): Right edge of baseline period should be smaller than',32,num2str(TimeRange(end)),'ms');
-            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+            estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             viewer_ERPDAT.Process_messg =4;
             Str.String = '';
             return;
         end
         if bacselinePeriod(1)>=bacselinePeriod(end)
             msgboxText =  strcat('Other > Baseline Correction > Custom(): Right edge of baseline period should be larger than left edge');
-            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+            estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             viewer_ERPDAT.Process_messg =4;
             Str.String = '';
             return;
@@ -497,7 +497,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_other',1);
+        estudioworkingmemory('MyViewer_other',1);
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
@@ -506,7 +506,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         bgColor = str2num(Str.String);
         if isempty(bgColor)
             msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
-            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+            estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
             viewer_ERPDAT.Process_messg =4;
             return;
@@ -514,7 +514,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         if max(bgColor)>1 || min(bgColor) <0 ||  numel(bgColor)~=3
             msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
-            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+            estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
             viewer_ERPDAT.Process_messg =4;
             return;
@@ -528,13 +528,13 @@ varargout{1} = box_erplabelset_viewer_otherset;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         MessageViewer= char(strcat('Other > Cancel'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
-        changeFlag =  erpworkingmemory('MyViewer_other');
+        changeFlag =  estudioworkingmemory('MyViewer_other');
         if changeFlag~=1
             MessageViewer= char(strcat('Other > Cancel'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =2;
             return;
         end
@@ -594,14 +594,14 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.bsl_customedit.String = num2str(BslMethod);
             gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
         end
-        erpworkingmemory('MyViewer_other',0);
+        estudioworkingmemory('MyViewer_other',0);
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
         gui_otherset_waveviewer.cancel.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Other > Cancel'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -613,14 +613,14 @@ varargout{1} = box_erplabelset_viewer_otherset;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
-        erpworkingmemory('MyViewer_other',0);
+        estudioworkingmemory('MyViewer_other',0);
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
         gui_otherset_waveviewer.cancel.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Other > Apply'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         gui_erp_waviewer.ERPwaviewer.polarity = gui_otherset_waveviewer.polarity_up.Value;%% the polarity of wave
@@ -652,7 +652,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
             %checking the defined time-window for baselne correction
             if isempty(gui_erp_waviewer.ERPwaviewer.baselinecorr)|| numel(gui_erp_waviewer.ERPwaviewer.baselinecorr)==1
                 msgboxText =  strcat('Other > Baseline Period: Inputs must be two numbers! If you donot change it, "none" will be used for baseline correction!');
-                erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+                estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
                 viewer_ERPDAT.Process_messg =4;
                 return;
             end
@@ -660,7 +660,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_erp_waviewer.ERPwaviewer.baselinecorr = 'none';
         end
         MERPWaveViewer_others{5} = gui_erp_waviewer.ERPwaviewer.baselinecorr;
-        erpworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
         
         viewer_ERPDAT.Count_currentERP=1;
         viewer_ERPDAT.Process_messg =2;
@@ -788,7 +788,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         MERPWaveViewer_others{4} = gui_erp_waviewer.ERPwaviewer.SEM.trans;
         MERPWaveViewer_others{6} = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
         MERPWaveViewer_others{5} = gui_erp_waviewer.ERPwaviewer.baselinecorr;
-        erpworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
     end
 
 
@@ -800,7 +800,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  erpworkingmemory('MyViewer_other');
+        changeFlag =  estudioworkingmemory('MyViewer_other');
         if changeFlag~=1
             return;
         end
@@ -851,7 +851,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         MERPWaveViewer_others{4} = gui_erp_waviewer.ERPwaviewer.SEM.trans;
         MERPWaveViewer_others{6} = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
         MERPWaveViewer_others{5} = gui_erp_waviewer.ERPwaviewer.baselinecorr;
-        erpworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
         
         viewer_ERPDAT.Reset_Waviewer_panel=8;
     end
@@ -974,7 +974,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         MERPWaveViewer_others{4} = gui_erp_waviewer.ERPwaviewer.SEM.trans;
         MERPWaveViewer_others{6} = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
         MERPWaveViewer_others{5} = gui_erp_waviewer.ERPwaviewer.baselinecorr;
-        erpworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
         viewer_ERPDAT.Count_currentERP=8;
     end
 
@@ -984,7 +984,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             other_apply();
-            erpworkingmemory('MyViewer_other',0);
+            estudioworkingmemory('MyViewer_other',0);
             gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];

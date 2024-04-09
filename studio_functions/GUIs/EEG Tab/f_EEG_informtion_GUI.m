@@ -144,9 +144,9 @@ drawui_EEG_info(FonsizeDefault);
         if observe_EEGDAT.count_current_eeg~=7
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         EEG = observe_EEGDAT.EEG;
         if ~isempty(EEG)

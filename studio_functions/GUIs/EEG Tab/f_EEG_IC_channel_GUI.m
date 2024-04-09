@@ -94,10 +94,10 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         EStduio_eegtab_EEG_IC_chan.ElecRange = uicontrol('Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name)+1,...
             'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]); % 2B
         EStduio_eegtab_EEG_IC_chan.ElecRange.KeyPressFcn=  @eeg_ichan_presskey;
-        ChanArray =  erpworkingmemory('EEG_ChanArray');
+        ChanArray =  estudioworkingmemory('EEG_ChanArray');
         if isempty(ChanArray) || length(ChanArray)> ChaNum
             ChanArray = [1:ChaNum];
-            erpworkingmemory('EEG_ChanArray',ChanArray);
+            estudioworkingmemory('EEG_ChanArray',ChanArray);
         end
         if  length(ChanArray) == ChaNum
             EStduio_eegtab_EEG_IC_chan.ElecRange.Value  =1;
@@ -111,10 +111,10 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         EStduio_eegtab_EEG_IC_chan.ICRange =  uicontrol('Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'Style','listbox','Min',1,'Max',length(ICNamestrs)+1,...
             'String', ICNamestrs,'callback',@onIChanged,'FontSize',FonsizeDefault,'Enable',EnableIC,'BackgroundColor',[1 1 1]); % 2C
         EStduio_eegtab_EEG_IC_chan.ICRange.KeyPressFcn=  @eeg_ichan_presskey;
-        ICArray =  erpworkingmemory('EEG_ICArray');
+        ICArray =  estudioworkingmemory('EEG_ICArray');
         if isempty(ICArray) || length(ICArray)>ICNum
             ICArray = 1: ICNum;
-            erpworkingmemory('EEG_ICArray',ICArray);
+            estudioworkingmemory('EEG_ICArray',ICArray);
         end
         if length(ICArray) == ICNum
             EStduio_eegtab_EEG_IC_chan.ICRange.Value  =1;
@@ -138,7 +138,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         
         set(EStduio_eegtab_EEG_IC_chan.DataSelBox,'Sizes',[250 30]);
         
-        erpworkingmemory('EEGTab_chanic',0);
+        estudioworkingmemory('EEGTab_chanic',0);
     end
 
 
@@ -160,7 +160,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('EEGTab_chanic',1);
+        estudioworkingmemory('EEGTab_chanic',1);
         EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [1 1 1];
         EStudio_eeg_box_ic_chan.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -186,7 +186,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('EEGTab_chanic',1);
+        estudioworkingmemory('EEGTab_chanic',1);
         EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [1 1 1];
         EStudio_eeg_box_ic_chan.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -217,18 +217,18 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        ChangeFlag =  erpworkingmemory('EEGTab_chanic');
+        ChangeFlag =  estudioworkingmemory('EEGTab_chanic');
         if ChangeFlag~=1
             return;
         end
-        erpworkingmemory('EEGTab_chanic',0);
+        estudioworkingmemory('EEGTab_chanic',0);
         EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [0 0 0];
         EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         EStduio_eegtab_EEG_IC_chan.plot_reset.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_reset.ForegroundColor = [0 0 0];
         
-        ChanArray =  erpworkingmemory('EEG_ChanArray');
+        ChanArray =  estudioworkingmemory('EEG_ChanArray');
         ChaNum = length(EStduio_eegtab_EEG_IC_chan.ElecRange.String)-1;
         if isempty(ChanArray) ||  any(ChanArray(:)> ChaNum) || any(ChanArray(:)<=0) || numel(ChanArray)== ChaNum
             EStduio_eegtab_EEG_IC_chan.ElecRange.Value = 1;
@@ -237,10 +237,10 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             
             EStduio_eegtab_EEG_IC_chan.ElecRange.Value = ChanArray+1;
         end
-        erpworkingmemory('EEG_ChanArray',ChanArray);
+        estudioworkingmemory('EEG_ChanArray',ChanArray);
         
         if ~isempty(observe_EEGDAT.EEG.icachansind)
-            ICArray=  erpworkingmemory('EEG_ICArray');
+            ICArray=  estudioworkingmemory('EEG_ICArray');
             ICNum = length(EStduio_eegtab_EEG_IC_chan.ICRange.String);
             if isempty(ICArray) ||  min(ICArray(:))>ICNum || max(ICArray(:))>ICNum || min(ICArray(:))<=0 || (numel(ICArray)==ICNum)
                 EStduio_eegtab_EEG_IC_chan.ICRange.Value=1;
@@ -252,7 +252,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         else
             ICArray = [];
         end
-        erpworkingmemory('EEG_ICArray',ICArray);
+        estudioworkingmemory('EEG_ICArray',ICArray);
     end
 
 %%------------------Apply the changed parameters---------------------------
@@ -266,7 +266,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         MessageViewer= char(strcat('Channel and IC Selection > Apply'));
-        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
         observe_EEGDAT.eeg_panel_message=1;
         
         
@@ -278,7 +278,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         else%% 'All' is selected and included or all channels are slected except 'ALL'
             ChanArray = [1:ChanNum];
         end
-        erpworkingmemory('EEG_ChanArray',ChanArray);
+        estudioworkingmemory('EEG_ChanArray',ChanArray);
         
         if ~isempty(observe_EEGDAT.EEG.icachansind)
             IC_label_select = EStduio_eegtab_EEG_IC_chan.ICRange.Value;
@@ -292,9 +292,9 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         else
             ICArray = [];
         end
-        erpworkingmemory('EEG_ICArray',ICArray);
+        estudioworkingmemory('EEG_ICArray',ICArray);
         
-        erpworkingmemory('EEGTab_chanic',0);
+        estudioworkingmemory('EEGTab_chanic',0);
         EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [0 0 0];
         EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];
@@ -312,7 +312,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             return;
         end
         chanString = EStduio_eegtab_EEG_IC_chan.ElecRange.String;
-        chanArray = erpworkingmemory('EEG_ChanArray');
+        chanArray = estudioworkingmemory('EEG_ChanArray');
         if max(chanArray(:))> length(chanString)-1
             EStduio_eegtab_EEG_IC_chan.ElecRange.Value =1;
             observe_EEGDAT.EEG_chan = [1:length(chanString)-1];
@@ -337,7 +337,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         if observe_EEGDAT.eeg_panel_message==0 ||  isempty(observe_EEGDAT.EEG_IC)
             return;
         end
-        binArray =   erpworkingmemory('EEG_ICArray');
+        binArray =   estudioworkingmemory('EEG_ICArray');
         binString = EStduio_eegtab_EEG_IC_chan.ICRange.String;
         if isemoty(binArray)
             EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
@@ -363,9 +363,9 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         if observe_EEGDAT.count_current_eeg ~=2
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         ALLEEGIN = observe_EEGDAT.ALLEEG;
         CURRENTEEGIN= observe_EEGDAT.CURRENTSET;
@@ -444,8 +444,8 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.ICRange.Enable = 'off';
             ICValue = [];
         end
-        erpworkingmemory('EEG_ICArray',ICValue);
-        erpworkingmemory('EEG_ChanArray',ChanArray);
+        estudioworkingmemory('EEG_ICArray',ICValue);
+        estudioworkingmemory('EEG_ChanArray',ChanArray);
         observe_EEGDAT.count_current_eeg=3;
     end
 
@@ -458,12 +458,12 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         if observe_EEGDAT.eeg_two_panels==0
             return;
         end
-        ChangeFlag =  erpworkingmemory('EEGTab_chanic');
+        ChangeFlag =  estudioworkingmemory('EEGTab_chanic');
         if ChangeFlag~=1
             return;
         end
         plot_eeg_apply();
-        erpworkingmemory('EEGTab_chanic',0);
+        estudioworkingmemory('EEGTab_chanic',0);
         EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [0 0 0];
         EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];
@@ -475,13 +475,13 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_ichan_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('EEGTab_chanic');
+        ChangeFlag =  estudioworkingmemory('EEGTab_chanic');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             plot_eeg_apply();
-            erpworkingmemory('EEGTab_chanic',0);
+            estudioworkingmemory('EEGTab_chanic',0);
             EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [1 1 1];
             EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [0 0 0];
             EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];
@@ -515,9 +515,9 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         end
         EStduio_eegtab_EEG_IC_chan.ICRange.Value=1;
         
-        erpworkingmemory('EEG_ICArray',ICValue);
-        erpworkingmemory('EEG_ChanArray',ChanArray);
-        erpworkingmemory('EEGTab_chanic',0);
+        estudioworkingmemory('EEG_ICArray',ICValue);
+        estudioworkingmemory('EEG_ChanArray',ChanArray);
+        estudioworkingmemory('EEGTab_chanic',0);
         EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [0 0 0];
         %         EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];

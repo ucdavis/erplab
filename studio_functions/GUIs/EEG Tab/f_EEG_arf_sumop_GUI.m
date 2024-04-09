@@ -110,10 +110,10 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Clear artifact detection marks on EEG');
+        estudioworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Clear artifact detection marks on EEG');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -199,7 +199,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -221,13 +221,13 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Sync artifact info in EEG and EVENTLIST');
+        estudioworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Sync artifact info in EEG and EVENTLIST');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG) ) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         direction = synchroartifactsGUI;
         if isempty(direction)
@@ -309,7 +309,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -329,12 +329,12 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
+        estudioworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET; erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET; estudioworkingmemory('EEGArray',EEGArray);
         end
         app = feval('estudio_classic_ar_summary_gui',[1 0 0]);
         waitfor(app,'Finishbutton',1);
@@ -428,7 +428,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf( [repmat('-',1,100) '\n']);
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
+        estudioworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=26;
@@ -441,10 +441,10 @@ varargout{1} = Eegtab_box_art_sumop;
             return;
         end
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG =  observe_EEGDAT.ALLEEG(EEGArray);
         LASTCOM = f_eeg_ar_summary(ALLEEG,EEGArray);
@@ -468,9 +468,9 @@ varargout{1} = Eegtab_box_art_sumop;
         if observe_EEGDAT.count_current_eeg ~=20
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1 || EEGUpdate==1
             Eegtab_EEG_art_sumop.clear_art_det.Enable = 'off';

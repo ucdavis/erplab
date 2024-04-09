@@ -64,7 +64,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         def_bands = [0 3;3 8;8 12;8 30;30 48;49 51;59 61;0 256]; %default bands
         
         defx = {[] def_bands def_labels'};
-        def  = erpworkingmemory('pop_continuousFFT');
+        def  = estudioworkingmemory('pop_continuousFFT');
         
         if isempty(def)
             def = defx;
@@ -121,7 +121,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         set(EEG_dq_fre_conus.detar_run_title,'Sizes',[15 105  30 105 15]);
         
         set(EEG_dq_fre_conus.DataSelBox,'Sizes',[30 160 30 30]);
-        erpworkingmemory('EEGTab_dq_fre_conus',0);
+        estudioworkingmemory('EEGTab_dq_fre_conus',0);
     end
 
 
@@ -145,7 +145,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [1 1 1];
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_dq_fre_conus',1);
+        estudioworkingmemory('EEGTab_dq_fre_conus',1);
         
         Data = EEG_dq_fre_conus.bandtable.Data;
         [rowNum,columNum] = size(Data);
@@ -176,7 +176,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [1 1 1];
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_dq_fre_conus',1);
+        estudioworkingmemory('EEGTab_dq_fre_conus',1);
         
         ChaNum = observe_EEGDAT.EEG.nbchan;
         ChanArray = str2num(Source.String);
@@ -257,7 +257,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [1 1 1];
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_dq_fre_conus',1);
+        estudioworkingmemory('EEGTab_dq_fre_conus',1);
         EEG_dq_fre_conus.add_rows.Value = 1;
         
         curr_rows = size(EEG_dq_fre_conus.bandtable.Data,1);
@@ -286,7 +286,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [1 1 1];
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_dq_fre_conus',1);
+        estudioworkingmemory('EEGTab_dq_fre_conus',1);
         
         curr_rows = size(EEG_dq_fre_conus.bandtable.Data,1);
         row_del = EEG_dq_fre_conus.sel_row;
@@ -320,7 +320,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [1 1 1];
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_dq_fre_conus',1);
+        estudioworkingmemory('EEGTab_dq_fre_conus',1);
         
         fqnyq = observe_EEGDAT.EEG.srate/2;
         def_labels = {'delta','theta','alpha','beta','gamma','50hz-noise','60hz-noise','broadband'}; %defaults
@@ -360,14 +360,14 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG) > Cancel');
+        estudioworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [0 0 0];
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 1 1 1];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [0 0 0];
-        erpworkingmemory('EEGTab_dq_fre_conus',0);
+        estudioworkingmemory('EEGTab_dq_fre_conus',0);
         
         chan_label_select = [1:observe_EEGDAT.EEG.nbchan];
         EEG_dq_fre_conus.chans_edit.String  = vect2colon(chan_label_select);
@@ -391,7 +391,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG) > Run');
+        estudioworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG) > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -400,12 +400,12 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 1 1 1];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('EEGTab_dq_fre_conus',0);
+        estudioworkingmemory('EEGTab_dq_fre_conus',0);
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         chanArray =  str2num(EEG_dq_fre_conus.chans_edit.String);
         bnchan = observe_EEGDAT.EEG.nbchan;
@@ -422,7 +422,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             fqlabelsNew{ii,1} = fqlabels{ii};
         end
         fqlabels = fqlabelsNew;
-        erpworkingmemory('pop_continuousFFT',{chanArray,fqbands,fqlabels});
+        estudioworkingmemory('pop_continuousFFT',{chanArray,fqbands,fqlabels});
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
@@ -462,9 +462,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if observe_EEGDAT.count_current_eeg ~=18
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || EEGUpdate==1
             EEG_dq_fre_conus.chans_edit.Enable= 'off';
@@ -510,13 +510,13 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_shiftcodes_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('EEGTab_dq_fre_conus');
+        ChangeFlag =  estudioworkingmemory('EEGTab_dq_fre_conus');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             dq_fre_run();
-            erpworkingmemory('EEGTab_dq_fre_conus',0);
+            estudioworkingmemory('EEGTab_dq_fre_conus',0);
             Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
             EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
             EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [0 0 0];
@@ -533,7 +533,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if observe_EEGDAT.Reset_eeg_paras_panel~=15
             return;
         end
-        erpworkingmemory('EEGTab_dq_fre_conus',0);
+        estudioworkingmemory('EEGTab_dq_fre_conus',0);
         %         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [0 0 0];

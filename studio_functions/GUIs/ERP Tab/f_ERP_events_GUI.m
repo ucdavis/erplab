@@ -87,7 +87,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Export RTs');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Export RTs');
         observe_ERPDAT.Process_messg =1;
         
         if ~isfield(observe_ERPDAT.ERP,'EVENTLIST')
@@ -97,7 +97,7 @@ varargout{1} = eegtab_events_box;
             return;
         end
         
-        def  = erpworkingmemory('pop_rt2text');
+        def  = estudioworkingmemory('pop_rt2text');
         if isempty(def)
             def = {'' 'basic' 'on' 'off' 1};
         end
@@ -129,21 +129,21 @@ varargout{1} = eegtab_events_box;
         else
             arfilter = 'off';
         end
-        erpworkingmemory('pop_rt2text', {fullfile(pathx, filename), listformat, headstr, arfilter, indexel});
+        estudioworkingmemory('pop_rt2text', {fullfile(pathx, filename), listformat, headstr, arfilter, indexel});
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         for Numoferp = 1:numel(ERPArray)
             ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
             if ~isfield(ERP, 'EVENTLIST')
-                erpworkingmemory('f_ERP_proces_messg','EventList >  Export RTs:EVENTLIST structure is empty');
+                estudioworkingmemory('f_ERP_proces_messg','EventList >  Export RTs:EVENTLIST structure is empty');
                 observe_ERPDAT.Process_messg =4;
             else
                 filenameeeg = ERP.filename;
@@ -176,7 +176,7 @@ varargout{1} = eegtab_events_box;
         end
         assignin('base','ALLERPCOM',ALLERPCOM);
         try assignin('base','ERPCOM',ERPCOM);catch  end;
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Export RTs');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Export RTs');
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP=1;
     end
@@ -194,20 +194,19 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        erpworkingmemory('f_ERP_proces_messg','EventList >  View EventList');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  View EventList');
         observe_ERPDAT.Process_messg =1;
         feval('ERP_evenlist_gui',observe_ERPDAT.ALLERP(ERPArray));
         
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
-        ERPCOM = ['ERPArray=',vect2colon(ERPArray),';',32,...
-            'feval("ERP_evenlist_gui",ALLERP(ERPArray));'];
+        ERPCOM = ['feval("ERP_evenlist_gui",ALLERP(',vect2colon(ERPArray),'));'];
         for Numoferp = 1:numel(ERPArray)
             if Numoferp ==length(ERPArray)
                 [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM, ERPCOM,2);
@@ -215,6 +214,8 @@ varargout{1} = eegtab_events_box;
                 [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM, ERPCOM,1);
             end
         end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         observe_ERPDAT.Count_currentERP = 20;
         observe_ERPDAT.Process_messg =2;
@@ -233,15 +234,15 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Import');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Import');
         observe_ERPDAT.Process_messg =1;
         
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = '';  end
         ALLERP = observe_ERPDAT.ALLERP;
@@ -314,7 +315,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        erpworkingmemory('selectederpstudio',Selected_EEG_afd);
+        estudioworkingmemory('selectederpstudio',Selected_EEG_afd);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
@@ -332,7 +333,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist');
         observe_ERPDAT.Process_messg =1;
         
         if ~isfield(observe_ERPDAT.ERP,'EVENTLIST') || isempty(observe_ERPDAT.ERP.EVENTLIST)
@@ -347,12 +348,12 @@ varargout{1} = eegtab_events_box;
         if isequal(fname,0)
             return
         end
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         [xpath, suffixstr, ext] = fileparts(fname);
         ALLERPCOM = evalin('base','ALLERPCOM');
@@ -407,7 +408,7 @@ varargout{1} = eegtab_events_box;
                 fprintf( [repmat('-',1,100) '\n']);
             end
         end
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist');
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP=1;
     end
@@ -425,15 +426,15 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Import');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Import');
         observe_ERPDAT.Process_messg =1;
         
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch  ALLERPCOM = [];end
@@ -503,7 +504,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        erpworkingmemory('selectederpstudio',Selected_EEG_afd);
+        estudioworkingmemory('selectederpstudio',Selected_EEG_afd);
         
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
@@ -521,7 +522,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist to .xls file');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist to .xls file');
         observe_ERPDAT.Process_messg =1;
         
         if ~isfield(observe_ERPDAT.ERP,'EVENTLIST') || isempty(observe_ERPDAT.ERP.EVENTLIST)
@@ -535,12 +536,12 @@ varargout{1} = eegtab_events_box;
         if isequal(fname,0)
             return
         end
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = ERPArray;
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         [xpath, suffixstr, ext] = fileparts(fname);
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
@@ -594,7 +595,7 @@ varargout{1} = eegtab_events_box;
                 fprintf( [repmat('-',1,100) '\n']);
             end
         end
-        erpworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist');
+        estudioworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist');
         observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -606,9 +607,9 @@ varargout{1} = eegtab_events_box;
         if observe_ERPDAT.Count_currentERP ~=15
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if isempty(observe_ERPDAT.ERP) || ~isfield(observe_ERPDAT.ERP,'EVENTLIST') || ViewerFlag==1
             EnableFlag = 'off';

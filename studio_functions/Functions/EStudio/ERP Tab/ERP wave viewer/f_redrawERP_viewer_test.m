@@ -59,7 +59,7 @@ figbgdColor = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
 if ~isnumeric(figbgdColor) || isempty(figbgdColor) || numel(figbgdColor)~=3 || max(figbgdColor)>1 ||  min(figbgdColor)<0
     figbgdColor =[1 1 1];
 end
-zoomSpace = erpworkingmemory('zoomSpace');
+zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
     zoomSpace = 100;
 else
@@ -270,16 +270,16 @@ ERPsetArray=   OutputViewerpar{43};
 if (diff_mark(1) ==1 || diff_mark(2)==1) && LabelsdiffFlag==1 && PLOTORG(1)~=3
     if diff_mark(1) ==1 && diff_mark(2) ==0
         MessageViewer= char(strcat('Some grid Location Labels will be empty because CHANNELS differ across the selected ERPsets'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =4;
     elseif diff_mark(1) ==0 && diff_mark(2) ==1
         MessageViewer= char(strcat('Some grid Location Labels will be empty because BINS differ across the selected ERPsets'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =4;
         
     elseif  diff_mark(1) ==1 && diff_mark(2) ==1
         MessageViewer= char(strcat('Some grid Location Labels will be empty because CHANNELS and BINS differ across the selected ERPsets'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =4;
     end
     f_display_binstr_chanstr(ALLERPIN, ERPsetArray,diff_mark)
@@ -370,7 +370,7 @@ if  gui_erp_waviewer.ERPwaviewer.PageIndex<= pageNum &&  gui_erp_waviewer.ERPwav
     end
     
     MessageViewer= char(strcat('Plot previous page'));
-    erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+    estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
     
     viewer_ERPDAT.Process_messg =1;
     viewer_ERPDAT.Count_currentERP=1;
@@ -409,7 +409,7 @@ if  gui_erp_waviewer.ERPwaviewer.PageIndex<= pageNum &&  gui_erp_waviewer.ERPwav
         gui_erp_waviewer.ERPwaviewer.CURRENTERP  =ERPArray(Pagecurrent);
     end
     MessageViewer= char(strcat('Plot next page'));
-    erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+    estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
     viewer_ERPDAT.Process_messg =1;
     viewer_ERPDAT.Count_currentERP=1;
     viewer_ERPDAT.Process_messg =2;
@@ -426,12 +426,12 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-ViewerName = erpworkingmemory('viewername');
+ViewerName = estudioworkingmemory('viewername');
 if isempty(ViewerName)
     ViewerName = char('My Viewer');
 end
 MessageViewer= char(strcat('Show Command'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'command');
@@ -454,7 +454,7 @@ if ~isempty(messgStr)
 end
 
 MessageViewer= char(strcat('Save Figure As'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 
 pathstr = pwd;
 namedef ='Myviewer.pdf';
@@ -496,12 +496,12 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-ViewerName = erpworkingmemory('viewername');
+ViewerName = estudioworkingmemory('viewername');
 if isempty(ViewerName)
     ViewerName = char('My Viewer');
 end
 MessageViewer= char(strcat('Create Static/Exportable Plot'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'script');
@@ -521,18 +521,18 @@ global viewer_ERPDAT;
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
-zoomSpace = erpworkingmemory('zoomSpace');
+zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    erpworkingmemory('zoomSpace',100)
+    estudioworkingmemory('zoomSpace',100)
 else
     if zoomSpace<100
         zoomSpace = 100;
     end
     zoomSpace =zoomSpace+50;
-    erpworkingmemory('zoomSpace',zoomSpace) ;
+    estudioworkingmemory('zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom In'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     viewer_ERPDAT.Count_currentERP=1;
@@ -548,16 +548,16 @@ function Panel_Reset(~,~)
 global viewer_ERPDAT;
 global gui_erp_waviewer
 
-erpworkingmemory('MERPWaveViewer_label',[]);
-erpworkingmemory('MERPWaveViewer_others',[]);
+estudioworkingmemory('MERPWaveViewer_label',[]);
+estudioworkingmemory('MERPWaveViewer_others',[]);
 
 MessageViewer= char(strcat('Reset'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 
 try
     viewer_ERPDAT.Process_messg =1;
     viewer_ERPDAT.Reset_Waviewer_panel=1;
-    erpworkingmemory('zoomSpace',0);
+    estudioworkingmemory('zoomSpace',0);
     f_redrawERP_viewer_test();
     viewer_ERPDAT.Process_messg =2;
 catch
@@ -566,7 +566,7 @@ end
 
 %%Reset the window size and position
 new_pos = [0.01,0.01,75,75];
-erpworkingmemory('ERPWaveScreenPos',new_pos);
+estudioworkingmemory('ERPWaveScreenPos',new_pos);
 try
     ScreenPos =  get( groot, 'Screensize' );
 catch
@@ -589,9 +589,9 @@ end
 
 zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
-    erpworkingmemory('zoomSpace',zoomspaceEdit);
+    estudioworkingmemory('zoomSpace',zoomspaceEdit);
     try
         viewer_ERPDAT.Process_messg =1;
         f_redrawERP_viewer_test();
@@ -629,18 +629,18 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-zoomSpace = erpworkingmemory('zoomSpace');
+zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    erpworkingmemory('zoomSpace',100)
+    estudioworkingmemory('zoomSpace',100)
 else
     zoomSpace =zoomSpace-50;
     if zoomSpace <100
         zoomSpace =100;
     end
-    erpworkingmemory('zoomSpace',zoomSpace) ;
+    estudioworkingmemory('zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom Out'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     f_redrawERP_viewer_test();
@@ -665,7 +665,7 @@ if isempty(ColorBviewer_def)
 end
 gui_erp_waviewer.Process_messg.BackgroundColor = [0.95 0.95 0.95];
 gui_erp_waviewer.Process_messg.FontSize = FonsizeDefault;
-Processed_Method=erpworkingmemory('ERPViewer_proces_messg');
+Processed_Method=estudioworkingmemory('ERPViewer_proces_messg');
 if viewer_ERPDAT.Process_messg ==1
     gui_erp_waviewer.Process_messg.String =  strcat('1- ',Processed_Method,': Running....');
     gui_erp_waviewer.Process_messg.ForegroundColor = [0 0 0];

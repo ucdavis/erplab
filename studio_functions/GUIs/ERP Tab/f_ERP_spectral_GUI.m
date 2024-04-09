@@ -14,10 +14,10 @@ addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 
-defaulpar =  erpworkingmemory('f_ERP_spectral');
+defaulpar =  estudioworkingmemory('f_ERP_spectral');
 defaulpar{1} = 0;defaulpar{2} = [];defaulpar{3} = [];defaulpar{4} = [];defaulpar{5} = [];
 defaulpar{6} = [];defaulpar{7} = [];
-erpworkingmemory('f_ERP_spectral',defaulpar);
+estudioworkingmemory('f_ERP_spectral',defaulpar);
 %%---------------------------gui-------------------------------------------
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -124,7 +124,7 @@ varargout{1} = ERP_filtering_box;
             'String','Save','callback',@spectral_save,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         set(gui_erp_spectral.spectral, 'Sizes', [20 20 20 25 30]);
-        erpworkingmemory('ERPTab_spectral',0);
+        estudioworkingmemory('ERPTab_spectral',0);
     end
 %%*************************************************************************
 %%*******************   Subfunctions   ************************************
@@ -150,7 +150,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
         
-        erpworkingmemory('ERPTab_spectral',1);
+        estudioworkingmemory('ERPTab_spectral',1);
         
         gui_erp_spectral.amplitude.Value =1;
         gui_erp_spectral.phase.Value = 0;
@@ -177,7 +177,7 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_spectral',1);
+        estudioworkingmemory('ERPTab_spectral',1);
         
         gui_erp_spectral.phase.Value = 1;
         gui_erp_spectral.amplitude.Value =0;
@@ -204,7 +204,7 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_spectral',1);
+        estudioworkingmemory('ERPTab_spectral',1);
         
         gui_erp_spectral.phase.Value = 0;
         gui_erp_spectral.amplitude.Value =0;
@@ -231,7 +231,7 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_spectral',1);
+        estudioworkingmemory('ERPTab_spectral',1);
         
         gui_erp_spectral.phase.Value = 0;
         gui_erp_spectral.amplitude.Value =0;
@@ -259,7 +259,7 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_spectral',1);
+        estudioworkingmemory('ERPTab_spectral',1);
         
         gui_erp_spectral.hamwin_on.Value = 1;
         gui_erp_spectral.hamwin_off.Value = 0;
@@ -284,7 +284,7 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_spectral',1);
+        estudioworkingmemory('ERPTab_spectral',1);
         gui_erp_spectral.hamwin_on.Value = 0;
         gui_erp_spectral.hamwin_off.Value = 1;
     end
@@ -308,7 +308,7 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_spectral',1);
+        estudioworkingmemory('ERPTab_spectral',1);
         
         FreqRange = str2num(gui_erp_spectral.frerange.String);
         if isempty(FreqRange) || numel(FreqRange)~=2 || any(FreqRange(:)>floor(observe_ERPDAT.ERP.srate/2)) || any(FreqRange(:)<0)
@@ -340,7 +340,7 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
         gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('ERPTab_spectral',0);
+        estudioworkingmemory('ERPTab_spectral',0);
         amplitude = gui_erp_spectral.Paras{1};
         if isempty(amplitude) || numel(amplitude)~=1 || (amplitude~=1 && amplitude~=2 && amplitude~=3 && amplitude~=4)
             amplitude = 1;
@@ -414,14 +414,14 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
         gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('ERPTab_spectral',0);
+        estudioworkingmemory('ERPTab_spectral',0);
         
         if gui_erp_spectral.hamwin_on.Value
             iswindowed =1;
         else
             iswindowed = 0;
         end
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
@@ -461,6 +461,9 @@ varargout{1} = ERP_filtering_box;
             TaperWindow = 'off';
         end
         
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        BinArray =  estudioworkingmemory('ERP_BinArray');
+        
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
         for Numoferpset = 1:numel(ERPArray)
             %%%
@@ -469,8 +472,16 @@ varargout{1} = ERP_filtering_box;
                 freqrange = [0 floor(ERP.srate/2)];
             end
             
+            if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
+                ChanArray = [1:ERP.nchan];
+            end
+            if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+                BinArray = 1:ERP.nbin;
+            end
+            
+            
             [~, ERPCOM] = pop_ERP_spectralanalysis(ERP, 'Amptype',Amptype,'TaperWindow',TaperWindow,...
-                'freqrange',freqrange,'Plotwave','on','Saveas', 'off','History','gui');
+                'freqrange',freqrange,'BinArray',BinArray,'ChanArray',ChanArray,'Plotwave','on','Saveas', 'off','History','gui');
             if  Numoferpset == numel(ERPArray)
                 [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             else
@@ -504,9 +515,9 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
         gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('ERPTab_spectral',0);
+        estudioworkingmemory('ERPTab_spectral',0);
         
-        erpworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
+        estudioworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
         observe_ERPDAT.Process_messg =1;
         
         
@@ -515,7 +526,7 @@ varargout{1} = ERP_filtering_box;
         else
             iswindowed = 0;
         end
-        ERPArray =  erpworkingmemory('selectederpstudio');
+        ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  observe_ERPDAT.CURRENTERP;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
@@ -555,6 +566,9 @@ varargout{1} = ERP_filtering_box;
             TaperWindow = 'off';
         end
         
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        BinArray =  estudioworkingmemory('ERP_BinArray');
+        
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
         for Numoferpset = 1:numel(ERPArray)
             %%%
@@ -563,8 +577,15 @@ varargout{1} = ERP_filtering_box;
                 freqrange = [0 floor(ERP.srate/2)];
             end
             
+            if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
+                ChanArray = [1:ERP.nchan];
+            end
+            if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+                BinArray = 1:ERP.nbin;
+            end
             [~, ERPCOM] = pop_ERP_spectralanalysis(ERP, 'Amptype',Amptype,'TaperWindow',TaperWindow,...
-                'freqrange',freqrange,'Plotwave','off','Saveas', 'csv','History','gui');
+                'freqrange',freqrange,'BinArray',BinArray,'ChanArray',ChanArray,'Plotwave','off',...
+                'Saveas', 'csv','History','gui');
             if  Numoferpset == numel(ERPArray)
                 [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             else
@@ -584,9 +605,9 @@ varargout{1} = ERP_filtering_box;
         if observe_ERPDAT.Count_currentERP~=18
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enable_label = 'off';
@@ -642,7 +663,7 @@ varargout{1} = ERP_filtering_box;
 %%--------------press return to execute "Apply"----------------------------
     function erp_spectral_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('ERPTab_spectral');
+        ChangeFlag =  estudioworkingmemory('ERPTab_spectral');
         if ChangeFlag~=1
             return;
         end
@@ -656,7 +677,7 @@ varargout{1} = ERP_filtering_box;
             
             gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
             gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
-            erpworkingmemory('ERPTab_spectral',0);
+            estudioworkingmemory('ERPTab_spectral',0);
         else
             return;
         end
@@ -673,7 +694,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_spectral.save.ForegroundColor = [0 0 0];
         gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
         gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('ERPTab_spectral',0);
+        estudioworkingmemory('ERPTab_spectral',0);
         gui_erp_spectral.hamwin_on.Value = 1;
         gui_erp_spectral.hamwin_off.Value = 0;
         gui_erp_spectral.phase.Value = 0;

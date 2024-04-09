@@ -61,7 +61,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             EnableFlag = 'on';
         end
         
-        def  = erpworkingmemory('pop_erplabDeleteTimeSegments');
+        def  = estudioworkingmemory('pop_erplabDeleteTimeSegments');
         if isempty(def)
             def = {[1500], [500], [1500], [], ['ignore'], 0, 0};
         end
@@ -190,7 +190,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             'String','Warning: Any previously created Eventlist will be deleted','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         
         set(EEG_art_det_segmt_conus.DataSelBox,'Sizes',[30 35 35 35 25 30 30 30]);
-        erpworkingmemory('EEGTab_detect_segmt_conus',0);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',0);
     end
 
 
@@ -213,7 +213,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_segmt_conus',1);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',1);
         timeThresholdMS = str2num(Source.String);
         
         if isempty(timeThresholdMS) || numel(timeThresholdMS)~=1||  any(timeThresholdMS(:)<=0)
@@ -241,7 +241,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
         
-        erpworkingmemory('EEGTab_detect_segmt_conus',1);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',1);
         beforeEventcodeBufferMS= str2num(Source.String);
         if isempty(beforeEventcodeBufferMS) || numel(beforeEventcodeBufferMS)~=1
             msgboxText = ['Delete Time Segments (Continuous EEG) > Buffer before eventcode should have one number'];
@@ -267,7 +267,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_segmt_conus',1);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',1);
         afterEventcodeBufferMS= str2num(Source.String);
         if isempty(afterEventcodeBufferMS) || numel(afterEventcodeBufferMS) ~=1
             msgboxText = ['Delete Time Segments (Continuous EEG) > Buffer after eventcode should have one number'];
@@ -294,7 +294,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_segmt_conus',1);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',1);
         evntcodes = Source.String;
         evntcodes = colonrange2num(evntcodes);
         editString               = regexprep(evntcodes, '[\D]', ' ');
@@ -317,7 +317,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_segmt_conus',1);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',1);
     end
 
 
@@ -336,7 +336,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_segmt_conus',1);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',1);
     end
 
 
@@ -350,11 +350,11 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Preview');
+        estudioworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Preview');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         
         Eegtab_box_art_det_segmt_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_art_det_segmt_conus.detectsegmt_preview.BackgroundColor =  [1 1 1];
@@ -362,7 +362,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('EEGTab_detect_segmt_conus',0);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',0);
         
         timeThresholdMS = str2double(EEG_art_det_segmt_conus.time_threshold_edit.String);
         if isempty(timeThresholdMS) || numel(timeThresholdMS)~=1||  any(timeThresholdMS(:)<=0)
@@ -406,7 +406,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         ignoreBoundary = EEG_art_det_segmt_conus.boundaryevent.Value;
         displayEEG = 1;
         % Save the GUI inputs to memory
-        erpworkingmemory('pop_erplabDeleteTimeSegments',    ...
+        estudioworkingmemory('pop_erplabDeleteTimeSegments',    ...
             { timeThresholdMS,                              ...
             beforeEventcodeBufferMS,                       ...
             afterEventcodeBufferMS,                         ...
@@ -447,7 +447,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                 eegh(LASTCOM);
             end
         end
-        erpworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Preview');
+        estudioworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Preview');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -462,7 +462,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Finalize');
+        estudioworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Finalize');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_art_det_segmt_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -471,12 +471,12 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('EEGTab_detect_segmt_conus',0);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',0);
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         
         timeThresholdMS = str2double(EEG_art_det_segmt_conus.time_threshold_edit.String);
@@ -521,7 +521,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             disp("We force 'these exceptions' to be ignored because there is no input for Eventcode exceptions.");
         end
         % Save the GUI inputs to memory
-        erpworkingmemory('pop_erplabDeleteTimeSegments',    ...
+        estudioworkingmemory('pop_erplabDeleteTimeSegments',    ...
             { timeThresholdMS,                              ...
             beforeEventcodeBufferMS,                       ...
             afterEventcodeBufferMS,                         ...
@@ -598,7 +598,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -612,9 +612,9 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         if observe_EEGDAT.count_current_eeg ~=15
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || EEGUpdate==1
             EEG_art_det_segmt_conus.time_threshold_edit.Enable= 'off';
@@ -670,13 +670,13 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_artdetect_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('EEGTab_detect_segmt_conus');
+        ChangeFlag =  estudioworkingmemory('EEGTab_detect_segmt_conus');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             detectsegmt_run();
-            erpworkingmemory('EEGTab_detect_segmt_conus',0);
+            estudioworkingmemory('EEGTab_detect_segmt_conus',0);
             Eegtab_box_art_det_segmt_conus.TitleColor= [0.0500    0.2500    0.5000];
             EEG_art_det_segmt_conus.detectsegmt_preview.BackgroundColor =  [1 1 1];
             EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [0 0 0];
@@ -693,7 +693,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         if observe_EEGDAT.Reset_eeg_paras_panel~=12
             return;
         end
-        erpworkingmemory('EEGTab_detect_segmt_conus',0);
+        estudioworkingmemory('EEGTab_detect_segmt_conus',0);
         EEG_art_det_segmt_conus.detectsegmt_preview.BackgroundColor =  [1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [0 0 0];
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 1 1 1];

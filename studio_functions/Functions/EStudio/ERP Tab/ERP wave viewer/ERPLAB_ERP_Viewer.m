@@ -168,7 +168,7 @@ if nargin>6
     return;
 end
 
-erpworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB
+estudioworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB
 
 
 
@@ -199,13 +199,13 @@ end
 
 %%Setting the flags for all panels that are used to get the changes from
 %%each panel
-erpworkingmemory('MyViewer_ERPsetpanel',0);
-erpworkingmemory('MyViewer_chanbin',0);
-erpworkingmemory('MyViewer_xyaxis',0);
-erpworkingmemory('MyViewer_plotorg',0);
-erpworkingmemory('MyViewer_labels',0);
-erpworkingmemory('MyViewer_linelegend',0);
-erpworkingmemory('MyViewer_other',0);
+estudioworkingmemory('MyViewer_ERPsetpanel',0);
+estudioworkingmemory('MyViewer_chanbin',0);
+estudioworkingmemory('MyViewer_xyaxis',0);
+estudioworkingmemory('MyViewer_plotorg',0);
+estudioworkingmemory('MyViewer_labels',0);
+estudioworkingmemory('MyViewer_linelegend',0);
+estudioworkingmemory('MyViewer_other',0);
 
 gui_erp_waviewer.ERPwaviewer.ALLERP =ALLERP;
 gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
@@ -243,7 +243,7 @@ gui_erp_waviewer.ERPwaviewer.figbackgdcolor = [1 1 1];
 gui_erp_waviewer.ERPwaviewer.figname = 'My Viewer';
 gui_erp_waviewer.ERPwaviewer.FigOutpos=[];
 %
-% erpworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
+% estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
 
 
 createInterface_ERPWave_viewer(ERPtooltype);
@@ -302,7 +302,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             
             currvers  = ['ERPLAB ' erplabstudiover,'- My Viewer'];
         end
-        erpworkingmemory('viewername','My Viewer');
+        estudioworkingmemory('viewername','My Viewer');
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
@@ -318,10 +318,10 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             'tag', 'rollover',...
             'DockControls','off');%%donot allow to dock
         ScreenPos = [];
-        new_pos= erpworkingmemory('ERPWaviewerScreenPos');
+        new_pos= estudioworkingmemory('ERPWaviewerScreenPos');
         if isempty(new_pos) || numel(new_pos)~=2
             new_pos = [75,75];
-            erpworkingmemory('ERPWaviewerScreenPos',new_pos);
+            estudioworkingmemory('ERPWaviewerScreenPos',new_pos);
         end
         try
             ScreenPos =  get( groot, 'Screensize' );
@@ -461,5 +461,5 @@ end % end of the function
 function erplabver1 = geterplabeversion
 erplab_default_values;
 erplabver1 = str2num(erplabver);
-erpworkingmemory('erplabver', erplabver);
+estudioworkingmemory('erplabver', erplabver);
 end

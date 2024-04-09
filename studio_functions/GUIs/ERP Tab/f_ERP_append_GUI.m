@@ -86,7 +86,7 @@ varargout{1} = box_erp_append;
         gui_erp_append.append_run = uicontrol('Style', 'pushbutton','Parent',gui_erp_append.advance_help_title,'String','Run',...
             'callback',@append_run,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         set(gui_erp_append.DataSelBox,'Sizes',[30 25 30]);
-        erpworkingmemory('ERPTab_append',0);
+        estudioworkingmemory('ERPTab_append',0);
     end
 
 
@@ -105,7 +105,7 @@ varargout{1} = box_erp_append;
         if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_append',1);
+        estudioworkingmemory('ERPTab_append',1);
         gui_erp_append.append_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_append.append_run.ForegroundColor = [1 1 1];
         box_erp_append.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -117,7 +117,7 @@ varargout{1} = box_erp_append;
         gui_erp_append.sameerpset.Value=1;
         gui_erp_append.erpset_custom.Value=0;
         gui_erp_append.erpset_edit.Enable = 'off';
-        ERPArray = erpworkingmemory('selectederpstudio');
+        ERPArray = estudioworkingmemory('selectederpstudio');
         gui_erp_append.erpset_edit.String = num2str(ERPArray);
     end
 
@@ -133,7 +133,7 @@ varargout{1} = box_erp_append;
         if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_append',1);
+        estudioworkingmemory('ERPTab_append',1);
         gui_erp_append.append_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_append.append_run.ForegroundColor = [1 1 1];
         box_erp_append.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -159,7 +159,7 @@ varargout{1} = box_erp_append;
         if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_append',1);
+        estudioworkingmemory('ERPTab_append',1);
         gui_erp_append.append_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_append.append_run.ForegroundColor = [1 1 1];
         box_erp_append.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -205,7 +205,7 @@ varargout{1} = box_erp_append;
         if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_append',0);
+        estudioworkingmemory('ERPTab_append',0);
         gui_erp_append.append_run.BackgroundColor =  [1 1 1];
         gui_erp_append.append_run.ForegroundColor = [0 0 0];
         box_erp_append.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -232,7 +232,7 @@ varargout{1} = box_erp_append;
         end
         gui_erp_append.erpset_edit.String = num2str(erpset_edit);
         if sameerpset==1
-            ERPArrayERPpanel = erpworkingmemory('selectederpstudio');
+            ERPArrayERPpanel = estudioworkingmemory('selectederpstudio');
             gui_erp_append.erpset_edit.String = num2str(ERPArrayERPpanel);
         end
     end
@@ -252,7 +252,7 @@ varargout{1} = box_erp_append;
         end
         
         %%Send message to Message panel
-        erpworkingmemory('f_ERP_proces_messg','Append ERPsets');
+        estudioworkingmemory('f_ERP_proces_messg','Append ERPsets');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         ERPArray = str2num(gui_erp_append.erpset_edit.String);
@@ -282,7 +282,7 @@ varargout{1} = box_erp_append;
             return
         end
         
-        erpworkingmemory('ERPTab_append',0);
+        estudioworkingmemory('ERPTab_append',0);
         gui_erp_append.append_run.BackgroundColor =  [1 1 1];
         gui_erp_append.append_run.ForegroundColor = [0 0 0];
         box_erp_append.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -294,7 +294,7 @@ varargout{1} = box_erp_append;
         
         ALLERP=  observe_ERPDAT.ALLERP;
         nloadedset = length(observe_ERPDAT.ALLERP);
-        def  = erpworkingmemory('pop_appenderp');
+        def  = estudioworkingmemory('pop_appenderp');
         if isempty(def)
             if isempty(observe_ERPDAT.ALLERP)
                 inp1   = 1; %from hard drive
@@ -325,7 +325,7 @@ varargout{1} = box_erp_append;
         def{1} = 0;
         def{3} = ERPsetArraydef;
         def{2} = gui_erp_append.sameerpset.Value;
-        ERPArrayERPpanel = erpworkingmemory('selectederpstudio');
+        ERPArrayERPpanel = estudioworkingmemory('selectederpstudio');
         def{5} = ERPArrayERPpanel;
         
         %
@@ -342,7 +342,7 @@ varargout{1} = box_erp_append;
         prefixlist = answer{4};
         
         
-        erpworkingmemory('pop_appenderp',answer);
+        estudioworkingmemory('pop_appenderp',answer);
         
         if optioni==1 % from files
             filelist = erpset;
@@ -357,7 +357,7 @@ varargout{1} = box_erp_append;
         else
             prefixliststr   = prefixlist; % include prefix from list
         end
-        erpworkingmemory('pop_appenderp', { optioni, erpset, prefixlist });
+        estudioworkingmemory('pop_appenderp', { optioni, erpset, prefixlist });
         
         ALLERPCOM = evalin('base','ALLERPCOM');
         
@@ -389,7 +389,7 @@ varargout{1} = box_erp_append;
                 lista    = formcell{:};
                 if  numel(lista) ~= length(prefixliststr)
                     msgboxText = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                    estudioworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg=4;
                     return
                 end
@@ -406,7 +406,7 @@ varargout{1} = box_erp_append;
             return;
         end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
-        pathName_def =  erpworkingmemory('ERP_save_folder');
+        pathName_def =  estudioworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
@@ -458,9 +458,9 @@ varargout{1} = box_erp_append;
         assignin('base','ERPCOM',ERPCOM);
         assignin('base','ERP',observe_ERPDAT.ERP);
         assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
-        erpworkingmemory('f_ERP_bin_opt',1);
+        estudioworkingmemory('f_ERP_bin_opt',1);
         observe_ERPDAT.Process_messg =2;
-        erpworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
+        estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
         OpValue = answer{2};
         gui_erp_append.sameerpset.Value = OpValue;
         gui_erp_append.erpset_custom.Value = ~OpValue;
@@ -482,7 +482,7 @@ varargout{1} = box_erp_append;
         end
         
         %%Send message to Message panel
-        erpworkingmemory('f_ERP_proces_messg','Append ERPsets');
+        estudioworkingmemory('f_ERP_proces_messg','Append ERPsets');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         %%-------check the inputed ERPsetArray-----------------------------
         ERPArray = str2num(gui_erp_append.erpset_edit.String);
@@ -511,7 +511,7 @@ varargout{1} = box_erp_append;
             estudio_warning(msgboxText,titlNamerro);
             return
         end
-        erpworkingmemory('ERPTab_append',0);
+        estudioworkingmemory('ERPTab_append',0);
         gui_erp_append.append_run.BackgroundColor =  [1 1 1];
         gui_erp_append.append_run.ForegroundColor = [0 0 0];
         box_erp_append.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -532,7 +532,7 @@ varargout{1} = box_erp_append;
             return;
         end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
-        pathName_def =  erpworkingmemory('ERP_save_folder');
+        pathName_def =  estudioworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
@@ -584,9 +584,9 @@ varargout{1} = box_erp_append;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
-        erpworkingmemory('f_ERP_bin_opt',1);
+        estudioworkingmemory('f_ERP_bin_opt',1);
         observe_ERPDAT.Process_messg =2;
-        erpworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
+        estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
@@ -597,9 +597,9 @@ varargout{1} = box_erp_append;
         if observe_ERPDAT.Count_currentERP~=13
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enableflag = 'off';
@@ -614,7 +614,7 @@ varargout{1} = box_erp_append;
         gui_erp_append.erpset_custom.Enable = Enableflag;
         gui_erp_append.append_cancel.Enable = Enableflag;
         if gui_erp_append.sameerpset.Value ==1%%same to the
-            ERPArray = erpworkingmemory('selectederpstudio');
+            ERPArray = estudioworkingmemory('selectederpstudio');
             gui_erp_append.erpset_edit.String = num2str(ERPArray);
             gui_erp_append.erpset_edit.Enable = 'off';
         else
@@ -655,13 +655,13 @@ varargout{1} = box_erp_append;
 %%--------------press return to execute "Apply"----------------------------
     function erp_append_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('ERPTab_append');
+        ChangeFlag =  estudioworkingmemory('ERPTab_append');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             append_run();
-            erpworkingmemory('ERPTab_append',0);
+            estudioworkingmemory('ERPTab_append',0);
             gui_erp_append.append_run.BackgroundColor =  [1 1 1];
             gui_erp_append.append_run.ForegroundColor = [0 0 0];
             box_erp_append.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -679,7 +679,7 @@ varargout{1} = box_erp_append;
         if observe_ERPDAT.Reset_erp_paras_panel~=12
             return;
         end
-        erpworkingmemory('ERPTab_append',0);
+        estudioworkingmemory('ERPTab_append',0);
         gui_erp_append.append_run.BackgroundColor =  [1 1 1];
         gui_erp_append.append_run.ForegroundColor = [0 0 0];
         box_erp_append.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -690,7 +690,7 @@ varargout{1} = box_erp_append;
         gui_erp_append.sameerpset.Value=1;
         gui_erp_append.erpset_custom.Value=0;
         gui_erp_append.erpset_edit.Enable = 'off';
-        ERPArray = erpworkingmemory('selectederpstudio');
+        ERPArray = estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || numel(ERPArray)==1
             gui_erp_append.erpset_edit.String='';
         else

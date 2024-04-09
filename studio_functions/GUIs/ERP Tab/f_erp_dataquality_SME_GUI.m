@@ -113,9 +113,9 @@ drawui_erp_information(FonsizeDefault);
         else
             Enableflag = 'on';
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if ViewerFlag==1
             Enableflag = 'off';
@@ -167,14 +167,14 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.Count_currentERP=1;
             return;
         end
-        SelectedERP= erpworkingmemory('selectederpstudio');
+        SelectedERP= estudioworkingmemory('selectederpstudio');
         if isempty(SelectedERP) || any(SelectedERP> length(observe_ERPDAT.ALLERP))
             SelectedERP =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = SelectedERP;
-            erpworkingmemory('selectederpstudio',SelectedERP);
+            estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show in a table');
+        estudioworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show in a table');
         observe_ERPDAT.Process_messg =1;
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM=[];  end
         for Numoferp = 1:numel(SelectedERP)
@@ -196,14 +196,14 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.Count_currentERP=1;
             return;
         end
-        SelectedERP= erpworkingmemory('selectederpstudio');
+        SelectedERP= estudioworkingmemory('selectederpstudio');
         if isempty(SelectedERP) || any(SelectedERP> length(observe_ERPDAT.ALLERP))
             SelectedERP =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = SelectedERP;
-            erpworkingmemory('selectederpstudio',SelectedERP);
+            estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Save to file');
+        estudioworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Save to file');
         observe_ERPDAT.Process_messg =1;
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM=[];  end
         countr= 0;

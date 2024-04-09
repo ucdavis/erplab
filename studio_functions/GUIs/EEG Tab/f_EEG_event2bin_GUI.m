@@ -65,7 +65,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.BDF_edit = uicontrol('Style', 'edit','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
             'String','','callback',@BDF_edit,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         EStduio_eegtab_EEG_event2bin.BDF_edit.KeyPressFcn=  @eeg_event2bin_presskey;
-        def  = erpworkingmemory('pop_binlister');
+        def  = estudioworkingmemory('pop_binlister');
         if isempty(def)
             def = {'' '' '' 0 [] [] 0 0 0 1 0};
         end
@@ -105,7 +105,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.bdf_Run.KeyPressFcn=  @eeg_event2bin_presskey;
         
         set(EStduio_eegtab_EEG_event2bin.DataSelBox,'Sizes',[30 100 30]);
-        erpworkingmemory('EEGTab_event2bin',0);
+        estudioworkingmemory('EEGTab_event2bin',0);
     end
 
 %%**************************************************************************%%
@@ -137,7 +137,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             estudio_warning(msgboxText,titlNamerro);
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
         end
-        erpworkingmemory('EEGTab_event2bin',1);
+        estudioworkingmemory('EEGTab_event2bin',1);
     end
 
 %%--------------------------------Browse the Bin Descriptor File----------------------
@@ -169,7 +169,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             return;
         end
         EStduio_eegtab_EEG_event2bin.BDF_edit.String = fullfile(bdfpathname, bdfilename);
-        erpworkingmemory('EEGTab_event2bin',1);
+        estudioworkingmemory('EEGTab_event2bin',1);
     end
 
 %%---------------------------Cancel----------------------------------------
@@ -183,7 +183,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        def =  erpworkingmemory('pop_binlister');
+        def =  estudioworkingmemory('pop_binlister');
         bdfilename = def{1};
         if isempty(def)
             def = {'' '' '' 0 [] [] 0 0 0 1 0};
@@ -193,7 +193,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             bdfileName = '';
         end
         EStduio_eegtab_EEG_event2bin.BDF_edit.String = bdfileName;
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -202,7 +202,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         else
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'on';
         end
-        erpworkingmemory('EEGTab_event2bin',0);
+        estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
@@ -221,18 +221,18 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins (BINLISTER) > Advanced');
+        estudioworkingmemory('f_EEG_proces_messg','Assign Events to Bins (BINLISTER) > Advanced');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        erpworkingmemory('EEGTab_event2bin',0);
+        estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         for Numofeeg = 1:numel(EEGArray)
@@ -240,7 +240,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
-            def  = erpworkingmemory('pop_binlister');
+            def  = estudioworkingmemory('pop_binlister');
             if isempty(def)
                 def = {'' '' '' 0 [] [] 0 0 0 1 0};
             end
@@ -308,7 +308,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 file2 = [logpathname logfilename];
                 disp('For LOGFILE, user selected INTERNAL')
             end
-            erpworkingmemory('pop_binlister', {file1, file2, file3, flagrst, forbiddenCodeArray, ignoreCodeArray,...
+            estudioworkingmemory('pop_binlister', {file1, file2, file3, flagrst, forbiddenCodeArray, ignoreCodeArray,...
                 updevent, option2do, reportable, iswarning, getfromerp, indexEL});
             
             
@@ -382,7 +382,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -400,10 +400,10 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins (BINLISTER) > Run');
+        estudioworkingmemory('f_EEG_proces_messg','Assign Events to Bins (BINLISTER) > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        erpworkingmemory('EEGTab_event2bin',0);
+        estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
@@ -428,7 +428,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             return;
         end
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -441,12 +441,12 @@ varargout{1} = EStudio_box_EEG_event2bin;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
         
-        def  = erpworkingmemory('pop_binlister');
+        def  = estudioworkingmemory('pop_binlister');
         if isempty(def)
             def = {'' '' '' 0 [] [] 0 0 0 1 0};
         end
         def{1} = bdfileName;
-        erpworkingmemory('pop_binlister',def);
+        estudioworkingmemory('pop_binlister',def);
         ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
@@ -504,7 +504,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -517,9 +517,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if observe_EEGDAT.count_current_eeg ~=13
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         for ii = 1:100
             dsnamesdef{ii,1} = '';
@@ -590,13 +590,13 @@ varargout{1} = EStudio_box_EEG_event2bin;
 %%--------------press return to execute "Run"----------------------------
     function eeg_event2bin_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('EEGTab_event2bin');
+        ChangeFlag =  estudioworkingmemory('EEGTab_event2bin');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             eeg_bdf_Run();
-            erpworkingmemory('EEGTab_event2bin',0);
+            estudioworkingmemory('EEGTab_event2bin',0);
             EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
             EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
             EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
@@ -633,7 +633,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if observe_EEGDAT.Reset_eeg_paras_panel~=10
             return;
         end
-        erpworkingmemory('EEGTab_event2bin',0);
+        estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         %         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
@@ -641,7 +641,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
         EStduio_eegtab_EEG_event2bin.BDF_edit.String= '';
         def = {'' '' '' 0 [] [] 0 0 0 1 0};
-        erpworkingmemory('pop_binlister',def);
+        estudioworkingmemory('pop_binlister',def);
         observe_EEGDAT.Reset_eeg_paras_panel=11;
     end
 end

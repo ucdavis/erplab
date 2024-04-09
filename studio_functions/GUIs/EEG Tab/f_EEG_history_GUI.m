@@ -66,9 +66,9 @@ varargout{1} = box_eeg_history;
         
         gui_eeg_history.eeg_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_history.eeg_h_all = uicontrol('Style','radiobutton','Parent',gui_eeg_history.eeg_history_title,'String','Current EEGset',...
-            'callback',@eeg_H_ALL,'Value',1,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag); % 2F
+            'callback',@eeg_H_ALL,'Value',1,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         gui_eeg_history.eeg_h_EEG = uicontrol('Style','radiobutton','Parent', gui_eeg_history.eeg_history_title,'String','Current session',...
-            'callback',@eeg_H_EEG,'Value',0,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag); % 2F
+            'callback',@eeg_H_EEG,'Value',0,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         
         try
             eeg_history =  observe_EEGDAT.EEG.history;
@@ -162,12 +162,12 @@ varargout{1} = box_eeg_history;
         end
         if gui_eeg_history.eeg_h_all.Value==1
             MessageViewer= char(strcat('Save history script for the current EEGset'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message=1;
             LASTCOM = pop_saveh(observe_EEGDAT.EEG.history);
         else
             MessageViewer= char(strcat('Save history script for the current session'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message=1;
             try
                 eeg_history = evalin('base','ALLCOM');
@@ -192,14 +192,14 @@ varargout{1} = box_eeg_history;
         else
             gui_eeg_history.eeg_h_all.String = 'Current EEGset';
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             gui_eeg_history.save_script.Enable = 'off';
-            gui_eeg_history.eeg_h_all.Enable = 'off';
-            gui_eeg_history.eeg_h_EEG.Enable = 'off';
+            gui_eeg_history.eeg_h_all.Enable = 'on';
+            gui_eeg_history.eeg_h_EEG.Enable = 'on';
             gui_eeg_history.uitable.Enable = 'off';
             gui_eeg_history.show_cmd.Enable = 'off';
             eeg_history = char('No command history was found for the current eegset');
@@ -253,7 +253,7 @@ varargout{1} = box_eeg_history;
         end
         %%for current history
         MessageViewer='History > Show in cmd window';
-        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
         observe_EEGDAT.eeg_panel_message=1;
         
         if gui_eeg_history.eeg_h_all.Value ==1

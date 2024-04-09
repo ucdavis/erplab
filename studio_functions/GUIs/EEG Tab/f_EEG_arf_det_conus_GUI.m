@@ -187,7 +187,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
             'String','Finalize','callback',@detectar_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(Eegtab_EEG_art_det_conus.DataSelBox,'Sizes',[30 30 35 35 35 20 20 30 20 20 30 20 30 20 30 30]);
-        erpworkingmemory('EEGTab_detect_arts_conus',0);
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
         
         
         %%set the default parameters
@@ -202,7 +202,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         memoryCARTGUI.def=def;
         memoryCARTGUI.defx=[];
         memoryCARTGUI.colorseg=colorseg;
-        erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
+        estudioworkingmemory('continuousartifactGUI',memoryCARTGUI);
     end
 
 
@@ -227,7 +227,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         
         
         if Eegtab_EEG_art_det_conus.manuar_checkbox.Value==0
@@ -307,9 +307,9 @@ varargout{1} = Eegtab_box_art_det_conus;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > View & reject');
+        estudioworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > View & reject');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        erpworkingmemory('f_EEG_proces_messg','The main ERPLAB Studio window will be fronzen when you are using "Reject Artifactual Time Segments (Continuous EEG) > View & reject" tool. Please click "Reject"');
+        estudioworkingmemory('f_EEG_proces_messg','The main ERPLAB Studio window will be fronzen when you are using "Reject Artifactual Time Segments (Continuous EEG) > View & reject" tool. Please click "Reject"');
         observe_EEGDAT.eeg_panel_message =1;
         
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -319,7 +319,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('EEGTab_detect_arts_conus',0);
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
         
         OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,0);
         try EEGdisp = OutputViewereegpar{3}; catch EEGdisp=1; end
@@ -332,13 +332,13 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
         
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         
-        erpworkingmemory('EEGUpdate',1);
+        estudioworkingmemory('EEGUpdate',1);
         observe_EEGDAT.count_current_eeg=1;
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
@@ -349,7 +349,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             [EEG, LASTCOM] = f_ploteeg(EEG);
             if isempty(EEG) || isempty(LASTCOM)
-                erpworkingmemory('EEGUpdate',0);
+                estudioworkingmemory('EEGUpdate',0);
                 observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -401,15 +401,14 @@ varargout{1} = Eegtab_box_art_det_conus;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',EEGArray);
+        estudioworkingmemory('EEGArray',EEGArray);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         
-        erpworkingmemory('EEGUpdate',0);
+        estudioworkingmemory('EEGUpdate',0);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -433,7 +432,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         ChaNum = observe_EEGDAT.EEG.nbchan;
         ChanArray = str2num(Source.String);
         if isempty(ChanArray) || any(ChanArray(:)<=0)
@@ -475,7 +474,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         
         %%-------Browse and select chans that will be interpolated---------
         EEG = observe_EEGDAT.EEG;
@@ -525,7 +524,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         Voltagevalue= str2num(Source.String);
         if isempty(Voltagevalue) || (numel(Voltagevalue)~=1 && numel(Voltagevalue)~=2)
             msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Voltage threshold must have one or two values'];
@@ -563,7 +562,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         windowlength= str2num(Source.String);
         if isempty(windowlength) || numel(windowlength) ~=1 ||  any(windowlength(:)<=0)
             msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Move window width must be a positive number'];
@@ -600,7 +599,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         windowstep= str2num(Source.String);
         if isempty(windowstep) || numel(windowstep) ~=1 ||  any(windowstep(:)<=0)
             msgboxText= ['Reject Artifactual Time Segments (Continuous EEG) > Window step width must be a positive number'];
@@ -636,7 +635,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         
         if Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
             enableflag = 'on';
@@ -665,7 +664,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         
         lowfre_edit = str2num(Eegtab_EEG_art_det_conus.lowfre_edit.String);
         if isempty(lowfre_edit) || numel(lowfre_edit)~=1 || any(lowfre_edit(:)<0)
@@ -711,7 +710,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         
         highfre_edit = str2num(Eegtab_EEG_art_det_conus.highfre_edit.String);
         
@@ -755,7 +754,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         Eegtab_EEG_art_det_conus.include_fre.Value=1;
         Eegtab_EEG_art_det_conus.exclude_fre.Value=0;
     end
@@ -776,7 +775,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         Eegtab_EEG_art_det_conus.include_fre.Value=0;
         Eegtab_EEG_art_det_conus.exclude_fre.Value=1;
     end
@@ -797,7 +796,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value ==1
             Eegtab_EEG_art_det_conus.joinarseg_edit.Enable = 'on';
         else
@@ -821,7 +820,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         joinarseg_edit = str2num(Eegtab_EEG_art_det_conus.joinarseg_edit.String);
         if isempty(joinarseg_edit) || numel(joinarseg_edit)~=1 || any(joinarseg_edit(:)<=0)
             Eegtab_EEG_art_det_conus.joinarseg_edit.String = '';
@@ -847,7 +846,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         if  Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
             Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable = 'on';
         else
@@ -870,7 +869,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         unmarkarseg_edit = str2num(Eegtab_EEG_art_det_conus.unmarkarseg_edit.String);
         if isempty(unmarkarseg_edit) || numel(unmarkarseg_edit)~=1 || any(unmarkarseg_edit(:)<=0)
             Eegtab_EEG_art_det_conus.unmarkarseg_edit.String = '';
@@ -896,7 +895,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
             Eegtab_EEG_art_det_conus.addtime_edit.Enable = 'on';
         else
@@ -920,7 +919,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_detect_arts_conus',1);
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
         addtime_edit = str2num( Eegtab_EEG_art_det_conus.addtime_edit.String);
         if isempty(addtime_edit) || numel(addtime_edit)~=1 || any(addtime_edit(:)<=0)
             Eegtab_EEG_art_det_conus.addtime_edit.String = '';
@@ -941,7 +940,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
             return;
         end
-        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Cancel');
+        estudioworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -951,8 +950,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('EEGTab_detect_arts_conus',0);
-        memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
+        memoryCARTGUI   = estudioworkingmemory('continuousartifactGUI');
         
         try  Volthreshold = memoryCARTGUI.def{1};catch Volthreshold = 500;end
         Eegtab_EEG_art_det_conus.voltage_edit.String = num2str(Volthreshold);
@@ -1055,7 +1054,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         memoryCARTGUI.def{9} = shortisi;
         memoryCARTGUI.def{10} = shortseg;
         memoryCARTGUI.def{11} = winoffset;
-        erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
+        estudioworkingmemory('continuousartifactGUI',memoryCARTGUI);
         
         try Eegtab_EEG_art_det_conus.manuar_checkbox.Value= Eegtab_EEG_art_det_conus.manuar_checkbox_Value;catch Eegtab_EEG_art_det_conus.manuar_checkbox.Value=0;end
         if Eegtab_EEG_art_det_conus.manuar_checkbox.Value==0
@@ -1124,7 +1123,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
         
         
-        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Cancel');
+        estudioworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -1138,11 +1137,11 @@ varargout{1} = Eegtab_box_art_det_conus;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Preview');
+        estudioworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Preview');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
             msgboxText= 'Reject Artifactual Time Segments (Continuous EEG) > Preview: Only work for single EEG';
             titlNamerro = 'Warning for EEG Tab';
@@ -1159,7 +1158,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('EEGTab_detect_arts_conus',0);
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
         
         %%chans
         ChanArray = str2num(Eegtab_EEG_art_det_conus.chan_edit.String);
@@ -1325,7 +1324,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             end
         end
         
-        memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
+        memoryCARTGUI   = estudioworkingmemory('continuousartifactGUI');
         colorseg = [ 0.83 0.82 0.79];
         memoryCARTGUI.def{1} = Volthreshold;
         memoryCARTGUI.def{2} = WindowLength;
@@ -1337,7 +1336,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         memoryCARTGUI.def{9} = shortisi;
         memoryCARTGUI.def{10} = shortseg;
         memoryCARTGUI.def{11} = winoffset;
-        erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
+        estudioworkingmemory('continuousartifactGUI',memoryCARTGUI);
         fdet = 'off';
         forder =100;
         try
@@ -1369,7 +1368,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
         eegh(LASTCOM);
         fprintf( [repmat('-',1,100) '\n']);
-        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Preview');
+        estudioworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Preview');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -1384,7 +1383,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Finalize');
+        estudioworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Finalize');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -1394,12 +1393,12 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('EEGTab_detect_arts_conus',0);
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         
         %%chans
@@ -1571,7 +1570,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         fdet = 'off';
         forder =100;
         
-        memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
+        memoryCARTGUI   = estudioworkingmemory('continuousartifactGUI');
         colorseg = [ 0.83 0.82 0.79];
         memoryCARTGUI.def{1} = Volthreshold;
         memoryCARTGUI.def{2} = WindowLength;
@@ -1583,7 +1582,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         memoryCARTGUI.def{9} = shortisi;
         memoryCARTGUI.def{10} = shortseg;
         memoryCARTGUI.def{11} = winoffset;
-        erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
+        estudioworkingmemory('continuousartifactGUI',memoryCARTGUI);
         
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
@@ -1665,7 +1664,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -1679,9 +1678,9 @@ varargout{1} = Eegtab_box_art_det_conus;
         if observe_EEGDAT.count_current_eeg ~=16
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || EEGUpdate==1
             Eegtab_EEG_art_det_conus.chan_edit.Enable= 'off';
@@ -1726,7 +1725,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'on';
         Eegtab_EEG_art_det_conus.detectar_run.Enable= 'on';
         
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
             Eegtab_EEG_art_det_conus.detectar_preview.String = 'Only for single EEG';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable = 'off';
@@ -1852,13 +1851,13 @@ varargout{1} = Eegtab_box_art_det_conus;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_artdetect_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('EEGTab_detect_arts_conus');
+        ChangeFlag =  estudioworkingmemory('EEGTab_detect_arts_conus');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             detectar_run();
-            erpworkingmemory('EEGTab_detect_arts_conus',0);
+            estudioworkingmemory('EEGTab_detect_arts_conus',0);
             Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
             Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
             Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
@@ -1876,7 +1875,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if observe_EEGDAT.Reset_eeg_paras_panel~=13
             return;
         end
-        erpworkingmemory('EEGTab_detect_arts_conus',0);
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
         Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];

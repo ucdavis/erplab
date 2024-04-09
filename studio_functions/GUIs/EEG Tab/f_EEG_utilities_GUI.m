@@ -116,13 +116,13 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Convert to Continuous EEG');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities >  Convert to Continuous EEG');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG) ) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         
         app = feval('estudio_epoch2contn_gui',[1]);
@@ -216,11 +216,11 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        erpworkingmemory('Change2epocheeg',2);
+        estudioworkingmemory('Change2epocheeg',2);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -237,18 +237,18 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Erase undesired event codes');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities >  Erase undesired event codes');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET; erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET; estudioworkingmemory('EEGArray',EEGArray);
         end
         
         prompt    = {'expression (>, < ==, ~=):'};
         dlg_title = 'Input event-code condition to delete';
         num_lines = 1;
-        def  = erpworkingmemory('pop_eraseventcodes');
+        def  = estudioworkingmemory('pop_eraseventcodes');
         if isempty(def)
             def = {'>255'};
         end
@@ -257,7 +257,7 @@ varargout{1} = Eegtab_box_art_sumop;
             return
         end
         expression = answer{1};
-        erpworkingmemory('pop_eraseventcodes', {expression});
+        estudioworkingmemory('pop_eraseventcodes', {expression});
         
         
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -360,13 +360,13 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Erase undesired event codes');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities >  Erase undesired event codes');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -384,12 +384,12 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Recover bin descriptor file from EEG');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities >  Recover bin descriptor file from EEG');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         for Numofeeg = 1:numel(EEGArray)
@@ -411,7 +411,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=26;
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Recover bin descriptor file from EEG');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities >  Recover bin descriptor file from EEG');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -425,11 +425,11 @@ varargout{1} = Eegtab_box_art_sumop;
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Reset Event Code Bytes');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities >  Reset Event Code Bytes');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         %%call GUI to set parameters
         answer = setcodebitGUI;
@@ -522,13 +522,13 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Reset Event Code Bytes');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities >  Reset Event Code Bytes');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -543,12 +543,12 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Utilities > Delete Spurious Additional Responses');
+        estudioworkingmemory('f_EEG_proces_messg','EEG Utilities > Delete Spurious Additional Responses');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         [stim_codes, resp_codes] = gui_remove_response_mistakes(observe_EEGDAT.EEG);
         if isempty(stim_codes) && isempty(stim_codes)
@@ -683,7 +683,7 @@ varargout{1} = Eegtab_box_art_sumop;
             end
             if IA1==0
                 msgboxText = ['EEG Utilities > Delete Spurious Additional Responses: Some of Stimulus event types are invalid'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                estudioworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -759,7 +759,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -775,9 +775,9 @@ varargout{1} = Eegtab_box_art_sumop;
         if observe_EEGDAT.count_current_eeg ~=25
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             Eegtab_utilities.epoch2continuous.Enable = 'off';

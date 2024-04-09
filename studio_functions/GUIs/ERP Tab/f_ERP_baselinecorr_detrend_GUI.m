@@ -115,7 +115,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         
         set(gui_erp_blc_dt.blc_dt,'Sizes',[18 25 15 25 25 15 25 30]);
         
-        erpworkingmemory('ERPTab_baseline_detrend',0);
+        estudioworkingmemory('ERPTab_baseline_detrend',0);
     end
 %%*************************************************************************
 %%*******************   Subfunctions   ************************************
@@ -137,7 +137,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.blc.Value =1;
         gui_erp_blc_dt.dt.Value = 0;
         gui_erp_blc_dt.blc_dt_title.String = 'Baseline Period:';
@@ -159,7 +159,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.dt.Value = 1;
         gui_erp_blc_dt.blc.Value =0;
         gui_erp_blc_dt.blc_dt_title.String = 'Calculate Trend During:';
@@ -181,7 +181,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.pre.Value=1;
         gui_erp_blc_dt.post.Value=0;
         gui_erp_blc_dt.whole.Value=0;
@@ -212,7 +212,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.pre.Value=0;
         gui_erp_blc_dt.post.Value=1;
         gui_erp_blc_dt.whole.Value=0;
@@ -242,7 +242,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.pre.Value=0;
         gui_erp_blc_dt.post.Value=0;
         gui_erp_blc_dt.whole.Value=1;
@@ -268,7 +268,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.pre.Value=0;
         gui_erp_blc_dt.post.Value=0;
         gui_erp_blc_dt.whole.Value=0;
@@ -292,7 +292,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
@@ -344,7 +344,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.all_bin_chan.Value = 1;
         gui_erp_blc_dt.Selected_bin_chan.Value = 0;
     end
@@ -365,7 +365,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
-        erpworkingmemory('ERPTab_baseline_detrend',1);
+        estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.all_bin_chan.Value = 0;
         gui_erp_blc_dt.Selected_bin_chan.Value = 1;
     end
@@ -380,12 +380,12 @@ varargout{1} = ERP_basecorr_detrend_box;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        Selected_erpset =  erpworkingmemory('selectederpstudio');
+        Selected_erpset =  estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset)
             Selected_erpset =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = Selected_erpset;
-            erpworkingmemory('selectederpstudio',Selected_erpset);
+            estudioworkingmemory('selectederpstudio',Selected_erpset);
         end
         try
             if gui_erp_blc_dt.pre.Value==1
@@ -446,7 +446,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
         
         %%%%-------------------Loop fpor baseline correction---------------
-        erpworkingmemory('f_ERP_proces_messg','Baseline correction & Linear detrend');
+        estudioworkingmemory('f_ERP_proces_messg','Baseline correction & Linear detrend');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         ALLERPCOM = evalin('base','ALLERPCOM');
@@ -455,7 +455,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         ERP_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_blc_dt.Cancel.BackgroundColor =  [1 1 1];
         gui_erp_blc_dt.Cancel.ForegroundColor = [0 0 0];
-        erpworkingmemory('ERPTab_baseline_detrend',0);
+        estudioworkingmemory('ERPTab_baseline_detrend',0);
         
         gui_erp_blc_dt.ERPTab_baseline_detrend{1} = gui_erp_blc_dt.blc.Value;
         if gui_erp_blc_dt.pre.Value==1
@@ -494,8 +494,8 @@ varargout{1} = ERP_basecorr_detrend_box;
             
             if (Check_Selected_erpset(1)==0 && Check_Selected_erpset(2)==0) && gui_erp_blc_dt.Selected_bin_chan.Value ==1
                 try
-                    BinArray =  erpworkingmemory('ERP_BinArray');
-                    ChanArray = erpworkingmemory('ERP_ChanArray');
+                    BinArray =  estudioworkingmemory('ERP_BinArray');
+                    ChanArray = estudioworkingmemory('ERP_ChanArray');
                     [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
                     if chk(1)==1
                         BinArray =  [1:ERP.nbin];
@@ -567,7 +567,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             end
             ALLERP(length(ALLERP)+1) = ERP;
         end
-        erpworkingmemory('f_ERP_BLS_Detrend',{BaselineMethod,0,1});
+        estudioworkingmemory('f_ERP_BLS_Detrend',{BaselineMethod,0,1});
         observe_ERPDAT.ALLERP = ALLERP;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
@@ -580,7 +580,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
         
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        erpworkingmemory('selectederpstudio',Selected_ERP_afd);
+        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
@@ -675,7 +675,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         gui_erp_blc_dt.Selected_bin_chan.Value = ~all_bin_chan;
         
         
-        erpworkingmemory('ERPTab_baseline_detrend',0);
+        estudioworkingmemory('ERPTab_baseline_detrend',0);
         gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_erp_blc_dt.apply.ForegroundColor = [0 0 0];
         ERP_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -689,7 +689,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         if observe_ERPDAT.Count_currentERP~=11
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
+        ViewerFlag=estudioworkingmemory('ViewerFlag');%%when open advanced wave viewer
         if  isempty(observe_ERPDAT.ERP) || ~strcmp(observe_ERPDAT.ERP.datatype,'ERP') || ViewerFlag==1
             Enable_Label = 'off';
         else
@@ -717,11 +717,11 @@ varargout{1} = ERP_basecorr_detrend_box;
             observe_ERPDAT.Count_currentERP=12;
             return;
         end
-        Selected_erpset =  erpworkingmemory('selectederpstudio');
+        Selected_erpset =  estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset) || any(Selected_erpset> length(observe_ERPDAT.ALLERP))
             Selected_erpset =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            erpworkingmemory('selectederpstudio',Selected_erpset);
+            estudioworkingmemory('selectederpstudio',Selected_erpset);
             observe_ERPDAT.CURRENTERP = Selected_erpset;
         end
         Check_Selected_erpset = [0 0 0 0 0 0 0];
@@ -748,13 +748,13 @@ varargout{1} = ERP_basecorr_detrend_box;
 %%--------------press return to execute "Apply"----------------------------
     function erp_blcorrdetrend_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('ERPTab_baseline_detrend');
+        ChangeFlag =  estudioworkingmemory('ERPTab_baseline_detrend');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             apply_blc_dt();
-            erpworkingmemory('ERPTab_baseline_detrend',0);
+            estudioworkingmemory('ERPTab_baseline_detrend',0);
             gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];
             gui_erp_blc_dt.apply.ForegroundColor = [0 0 0];
             ERP_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -770,7 +770,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         if observe_ERPDAT.Reset_erp_paras_panel~=6
             return;
         end
-        erpworkingmemory('ERPTab_baseline_detrend',0);
+        estudioworkingmemory('ERPTab_baseline_detrend',0);
         gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_erp_blc_dt.apply.ForegroundColor = [0 0 0];
         ERP_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

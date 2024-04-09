@@ -34,25 +34,25 @@ end
 %%channel array and bin array
 %
 %%channels
-ChanArray=erpworkingmemory('ERP_ChanArray');
+ChanArray=estudioworkingmemory('ERP_ChanArray');
 nbchan = ERP.nchan;
 if isempty(ChanArray) || any(ChanArray(:)>nbchan) ||  any(ChanArray(:)<=0)
     ChanArray = 1:nbchan;
-    erpworkingmemory('ERP_ChanArray',ChanArray);
+    estudioworkingmemory('ERP_ChanArray',ChanArray);
 end
 
 %
 %%bins
-BinArray=erpworkingmemory('ERP_BinArray');
+BinArray=estudioworkingmemory('ERP_BinArray');
 if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<=0)
     BinArray  = [1:ERP.nbin];
-    erpworkingmemory('ERP_BinArray',BinArray);
+    estudioworkingmemory('ERP_BinArray',BinArray);
 end
 
 
 %
 %%Plot setting
-ERPTab_plotset_pars = erpworkingmemory('ERPTab_plotset_pars');
+ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
 
 %
 %%time range
@@ -298,7 +298,7 @@ else
     end
 end
 
-figSize = erpworkingmemory('egfigsize');
+figSize = estudioworkingmemory('egfigsize');
 if isempty(figSize)
     figSize = [];
 end
@@ -368,10 +368,10 @@ Legcolumns = ceil(sqrt(length(LegendName)));
 CBETcolor = [0 0 0];
 XdispFlag = 1;
 
-new_pos = erpworkingmemory('EStudioScreenPos');
+new_pos = estudioworkingmemory('EStudioScreenPos');
 if isempty(new_pos) || numel(new_pos)~=2
     new_pos = [75,75];
-    erpworkingmemory('EStudioScreenPos',new_pos);
+    estudioworkingmemory('EStudioScreenPos',new_pos);
 end
 try
     ScreenPos =  get( groot, 'Screensize' );

@@ -133,12 +133,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Decompose data');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Decompose data');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) || any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > Decompose data: Only works for one selected dataset'];
@@ -198,7 +198,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -217,12 +217,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > Inspect/label ICs:Only works for one selected dataset'];
@@ -230,7 +230,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        erpworkingmemory('EEGUpdate',1);
+        estudioworkingmemory('EEGUpdate',1);
         observe_EEGDAT.count_current_eeg=1;
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
@@ -239,10 +239,10 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
             [~,LASTCOM] =  pop_selectcomps(EEG);%
             if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
-                erpworkingmemory('EEGUpdate',0);
+                estudioworkingmemory('EEGUpdate',0);
                 observe_EEGDAT.count_current_eeg=1;
                 return;
             end
@@ -261,9 +261,9 @@ varargout{1} = EStudio_box_eeglab_ica;
                 observe_EEGDAT.EEG = EEG;
             end
         end
-        erpworkingmemory('EEGUpdate',0);
+        estudioworkingmemory('EEGUpdate',0);
         observe_EEGDAT.count_current_eeg=1;
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs');
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -277,12 +277,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > Classify IC by ICLabel:Only works for one selected dataset'];
@@ -290,7 +290,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        %         erpworkingmemory('EEGUpdate',1);
+        %         estudioworkingmemory('EEGUpdate',1);
         %         observe_EEGDAT.count_current_eeg=1;
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
@@ -308,7 +308,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             
             if isempty(EEG)
                 observe_EEGDAT.eeg_panel_message =4;
-                erpworkingmemory('EEGUpdate',0);
+                estudioworkingmemory('EEGUpdate',0);
                 observe_EEGDAT.count_current_eeg=1;
                 return;
             end
@@ -317,7 +317,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.count_current_eeg=1;
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -331,12 +331,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > Remove ICs:Only works for one selected dataset'];
@@ -387,7 +387,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         plotag = 0;
         [EEG, LASTCOM] = pop_subcomp( EEG, components, plotag, keepcomp);
         if isempty(LASTCOM)
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
+            estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
             observe_EEGDAT.eeg_panel_message =4;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             return;
@@ -438,7 +438,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -456,9 +456,9 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > Transfer ICA weights: Only works for one selected dataset'];
@@ -516,12 +516,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Transfer ICA weights> Transfer');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Transfer ICA weights> Transfer');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > Transfer ICA weights:Only works for one selected dataset'];
@@ -576,7 +576,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         [EEG,LASTCOM]= pop_editset(EEG, 'icaweights', ['ALLEEG(',num2str(EEGArray),').icaweights'],...
             'icasphere', ['ALLEEG(',num2str(EEGArray),').icasphere'], 'icachansind', ['ALLEEG(',num2str(EEGArray),').icachansind']);
         if isempty(LASTCOM)
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
+            estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
             observe_EEGDAT.eeg_panel_message =4;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             return;
@@ -619,7 +619,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -637,12 +637,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 2-D');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 2-D');
         observe_EEGDAT.eeg_panel_message =1;
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > IC maps in 2-D:Only works for one selected dataset'];
@@ -659,7 +659,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             
             LASTCOM= pop_topoplot(EEG, 0);
             if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 2-D:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 2-D:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
@@ -688,12 +688,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 3-D');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 3-D');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))||  any(EEGArray(:)<1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > IC maps in 3-D:Only works for one selected dataset'];
@@ -710,7 +710,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             
             [~, LASTCOM] = pop_headplot( EEG,0);
             if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 3-D:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 3-D:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
@@ -740,12 +740,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC spectra and maps');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC spectra and maps');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > IC spectra and maps:Only works for one selected dataset'];
@@ -762,7 +762,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             
             LASTCOM= pop_spectopo(EEG,0);
             if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC spectra and maps:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC spectra and maps:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
@@ -792,12 +792,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB ICA > IC properties:Only works for one selected dataset'];
@@ -819,7 +819,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         result = inputgui('geometry', uigeom, 'uilist', uitext, 'helpcom', 'pophelp(''pop_prop'');', ...
             'title', fastif( typecomp, 'IC properties - pop_prop()', 'Component properties - pop_prop()'));
         if size( result, 1 ) == 0
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties:User selected cancel');
+            estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties:User selected cancel');
             observe_EEGDAT.eeg_panel_message =4;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             return;
@@ -873,7 +873,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf(LASTCOM,'\n');
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=26;
@@ -890,12 +890,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC Time-frequency');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC Time-frequency');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = 'EEGLAB ICA > IC Time-frequency:Only works on one selected dataset';
@@ -925,7 +925,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC Time-frequency');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC Time-frequency');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=26;
@@ -938,9 +938,9 @@ varargout{1} = EStudio_box_eeglab_ica;
         if observe_EEGDAT.count_current_eeg ~=12
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG) || EEGUpdate==1
             EStduio_eegtab_eeglab_ica.icadecomp_eeg.Enable  = 'off';
@@ -959,7 +959,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end

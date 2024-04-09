@@ -1,4 +1,3 @@
-Copyright Regents of the University of California, 2008-2019 #
 #
 #
 ERPLAB Studio designed by Steve Luck, Guanghui Zhang, and Andrew X Stewart#

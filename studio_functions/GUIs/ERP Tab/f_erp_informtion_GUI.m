@@ -232,9 +232,9 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_information.trialinfor.String = ['Trial information'];
         end
         gui_erp_information.table_event.Data = dsnames;
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if ViewerFlag==1
             Enable_label = 'off';
@@ -259,12 +259,12 @@ drawui_erp_information(FonsizeDefault);
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             return;
         end
-        ERPArray= erpworkingmemory('selectederpstudio');
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = ERPArray;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         feval('dq_trial_rejection',observe_ERPDAT.ALLERP(ERPArray),[],0);
         
@@ -282,12 +282,12 @@ drawui_erp_information(FonsizeDefault);
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             return;
         end
-        ERPArray= erpworkingmemory('selectederpstudio');
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = ERPArray;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         try
             try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end

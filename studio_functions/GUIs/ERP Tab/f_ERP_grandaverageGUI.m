@@ -121,7 +121,7 @@ varargout{1} = ERP_grdavg_box_gui;
         set(gui_erp_grdavg.location_title,'Sizes',[20 95 30 95 20]);
         
         set(gui_erp_grdavg.DataSelBox,'Sizes',[25,30,30,30,25,30,25,30]);
-        erpworkingmemory('ERPTab_gravg',0);
+        estudioworkingmemory('ERPTab_gravg',0);
         
     end
 
@@ -140,7 +140,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -163,7 +163,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -182,7 +182,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -200,7 +200,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -225,7 +225,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -255,7 +255,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -277,7 +277,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -299,7 +299,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -335,23 +335,23 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',1);
+        estudioworkingmemory('ERPTab_gravg',1);
         gui_erp_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_grdavg.run.ForegroundColor = [1 1 1];
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_grdavg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_grdavg.cancel.ForegroundColor = [1 1 1];
         
-        ERPArray= erpworkingmemory('selectederpstudio');
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         custom_spec  = grandaverager_DQ(observe_ERPDAT.ALLERP(ERPArray));
-        erpworkingmemory('grandavg_custom_DQ',custom_spec);
+        estudioworkingmemory('grandavg_custom_DQ',custom_spec);
     end
 
 %%--------------------------------cancel-----------------------------------
@@ -365,7 +365,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if ~isempty(messgStr) && eegpanelIndex~=11
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_gravg',0);
+        estudioworkingmemory('ERPTab_gravg',0);
         gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
         gui_erp_grdavg.run.ForegroundColor = [0 0 0];
         ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -446,16 +446,16 @@ varargout{1} = ERP_grdavg_box_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        pathName_def =  erpworkingmemory('ERP_save_folder');
+        pathName_def =  estudioworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
-        ERPArray= erpworkingmemory('selectederpstudio');
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            erpworkingmemory('selectederpstudio',ERPArray);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         if numel(ERPArray)<2
@@ -478,7 +478,7 @@ varargout{1} = ERP_grdavg_box_gui;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        erpworkingmemory('ERPTab_gravg',0);
+        estudioworkingmemory('ERPTab_gravg',0);
         gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
         gui_erp_grdavg.run.ForegroundColor = [0 0 0];
         ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -486,7 +486,7 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.cancel.ForegroundColor = [0 0 0];
         
         %%Send message to Message panel
-        erpworkingmemory('f_ERP_proces_messg','Average Across ERPsets (Grand Average) ');
+        estudioworkingmemory('f_ERP_proces_messg','Average Across ERPsets (Grand Average) ');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         Weightedg =  gui_erp_grdavg.weigavg.Value;
@@ -548,7 +548,7 @@ varargout{1} = ERP_grdavg_box_gui;
             dq_spec = GAv_combo_defaults;
         elseif gui_erp_grdavg.cbdatq.Value && gui_erp_grdavg.cbdatq_custom.Value
             dq_option  = 2;
-            dq_spec = erpworkingmemory('grandavg_custom_DQ');
+            dq_spec = estudioworkingmemory('grandavg_custom_DQ');
             if isempty(dq_spec)
                 dq_spec = GAv_combo_defaults;
             end
@@ -606,7 +606,7 @@ varargout{1} = ERP_grdavg_box_gui;
             observe_ERPDAT.ALLERP = ALLERP;
             observe_ERPDAT.CURRENTERP = Selected_ERP_afd(1);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
+            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         else
             [ERP, ERPCOM]  = pop_gaverager(ALLERP, 'Erpsets', erpset,'Criterion', artcrite, 'SEM', stdsstr,...
                 'ExcludeNullBin', excnullbinstr,'Weighted', Weightedstr, 'Saveas', 'off',...
@@ -628,11 +628,11 @@ varargout{1} = ERP_grdavg_box_gui;
             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            erpworkingmemory('selectederpstudio',Selected_ERP_afd);
+            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         end
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
-        erpworkingmemory('f_ERP_bin_opt',1);
+        estudioworkingmemory('f_ERP_bin_opt',1);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -643,9 +643,9 @@ varargout{1} = ERP_grdavg_box_gui;
         if observe_ERPDAT.Count_currentERP~=12
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enable_label = 'off';
@@ -685,13 +685,13 @@ varargout{1} = ERP_grdavg_box_gui;
 %%--------------press return to execute "Apply"----------------------------
     function erp_graverage_presskey(~,eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('ERPTab_mesuretool');
+        ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             apply_run();
-            erpworkingmemory('ERPTab_gravg',0);
+            estudioworkingmemory('ERPTab_gravg',0);
             gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
             gui_erp_grdavg.run.ForegroundColor = [0 0 0];
             ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -707,7 +707,7 @@ varargout{1} = ERP_grdavg_box_gui;
         if observe_ERPDAT.Reset_erp_paras_panel~=11
             return;
         end
-        erpworkingmemory('ERPTab_gravg',0);
+        estudioworkingmemory('ERPTab_gravg',0);
         gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
         gui_erp_grdavg.run.ForegroundColor = [0 0 0];
         ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

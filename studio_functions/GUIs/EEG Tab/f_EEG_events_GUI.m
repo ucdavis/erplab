@@ -8,7 +8,7 @@
 % 2023
 
 
-function varargout = f_EEG_events_GUI(varargin) 
+function varargout = f_EEG_events_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
@@ -153,10 +153,10 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Summarize event code');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Summarize event code');
         observe_EEGDAT.eeg_panel_message =1;
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||   any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -186,7 +186,7 @@ varargout{1} = EStudio_eeg_events_box;
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
             end
         end
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Summarize event code');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Summarize event code');
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -214,18 +214,18 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Create Eventlist');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Create Eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
         
         %% Get previous input parameters
-        def  = erpworkingmemory('pop_creabasiceventlist');
+        def  = estudioworkingmemory('pop_creabasiceventlist');
         if isempty(def)
             def = {'' 'boundary' -99 1 1};
         end
@@ -258,8 +258,7 @@ varargout{1} = EStudio_eeg_events_box;
             rwwarn   = inputstrMat{4};
             alphanum = inputstrMat{5};
             
-            erpworkingmemory('pop_creabasiceventlist', {elname, boundarystrcode, newboundarynumcode, rwwarn, alphanum});
-            
+            estudioworkingmemory('pop_creabasiceventlist', {elname, boundarystrcode, newboundarynumcode, rwwarn, alphanum});
             if rwwarn==1
                 striswarning = 'on';
             else
@@ -336,7 +335,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -357,7 +356,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Export RTs');
         observe_EEGDAT.eeg_panel_message =1;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST')
@@ -367,7 +366,7 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-        def  = erpworkingmemory('pop_rt2text');
+        def  = estudioworkingmemory('pop_rt2text');
         
         if isempty(def)
             def = {'' 'basic' 'on' 'off' 1};
@@ -400,9 +399,9 @@ varargout{1} = EStudio_eeg_events_box;
         else
             arfilter = 'off';
         end
-        erpworkingmemory('pop_rt2text', {fullfile(pathx, filename), listformat, headstr, arfilter, indexel});
+        estudioworkingmemory('pop_rt2text', {fullfile(pathx, filename), listformat, headstr, arfilter, indexel});
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -410,7 +409,7 @@ varargout{1} = EStudio_eeg_events_box;
             
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             if ~isfield(EEG, 'EVENTLIST')
-                erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs:EVENTLIST structure is empty');
+                estudioworkingmemory('f_EEG_proces_messg','EventList >  Export RTs:EVENTLIST structure is empty');
                 observe_EEGDAT.eeg_panel_message =4;
             else
                 filenameeeg = EEG.filename;
@@ -439,7 +438,7 @@ varargout{1} = EStudio_eeg_events_box;
                 end
             end
         end
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Export RTs');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
@@ -457,14 +456,14 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        erpworkingmemory('f_EEG_proces_messg','EventList >  View EventList');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  View EventList');
         observe_EEGDAT.eeg_panel_message =1;
         feval('EEG_evenlist_gui',observe_EEGDAT.ALLEEG(EEGArray));
-        LASTCOM = ['ERPArray=',vect2colon(EEGArray),'; feval("EEG_evenlist_gui",ALLEEG(EEGArray));'];
+        LASTCOM = ['feval("EEG_evenlist_gui",ALLEEG(',vect2colon(EEGArray),'));'];
         
         observe_EEGDAT.ALLEEG(EEGArray) = eegh(LASTCOM, observe_EEGDAT.ALLEEG(EEGArray));
         eegh(LASTCOM);
@@ -491,10 +490,10 @@ varargout{1} = EStudio_eeg_events_box;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Import');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Import');
         observe_EEGDAT.eeg_panel_message =1;
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -567,7 +566,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -588,7 +587,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
@@ -603,7 +602,7 @@ varargout{1} = EStudio_eeg_events_box;
         if isequal(fname,0)
             return
         end
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -661,7 +660,7 @@ varargout{1} = EStudio_eeg_events_box;
             end
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
@@ -684,10 +683,10 @@ varargout{1} = EStudio_eeg_events_box;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Import');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Import');
         observe_EEGDAT.eeg_panel_message =1;
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -760,7 +759,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -780,7 +779,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist to .xls file');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist to .xls file');
         observe_EEGDAT.eeg_panel_message =1;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
@@ -795,7 +794,7 @@ varargout{1} = EStudio_eeg_events_box;
         if isequal(fname,0)
             return
         end
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -851,7 +850,7 @@ varargout{1} = EStudio_eeg_events_box;
             end
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist to .xls file');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist to .xls file');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
@@ -875,16 +874,16 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Shuffle events/bins/samples');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Shuffle events/bins/samples');
         observe_EEGDAT.eeg_panel_message =1;
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
         %% Get previous input parameters
-        def = erpworkingmemory('pop_eventshuffler');
+        def = estudioworkingmemory('pop_eventshuffler');
         
         if isempty(def)
             def = {[] 0};
@@ -920,7 +919,7 @@ varargout{1} = EStudio_eeg_events_box;
                 return;
             end
         end
-        erpworkingmemory('pop_eventshuffler', {valueatfield specfield});
+        estudioworkingmemory('pop_eventshuffler', {valueatfield specfield});
         ALLEEG_out = [];
         ALLEEG = observe_EEGDAT.ALLEEG;
         for Numofeeg = 1:numel(EEGArray)
@@ -1009,7 +1008,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -1044,10 +1043,10 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-        erpworkingmemory('f_EEG_proces_messg','EventList >  Transfer event to EEG.event');
+        estudioworkingmemory('f_EEG_proces_messg','EventList >  Transfer event to EEG.event');
         observe_EEGDAT.eeg_panel_message =1;
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
@@ -1155,7 +1154,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -1170,9 +1169,9 @@ varargout{1} = EStudio_eeg_events_box;
         if observe_EEGDAT.count_current_eeg ~=9
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.event) ||EEGUpdate==1
             EnableFlag = 'off';

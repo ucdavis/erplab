@@ -24,7 +24,7 @@ function varargout = f_erp_viewerGUI(varargin)
 
 % Edit the above text to modify the response to help f_erp_viewerGUI
 
-% Last Modified by GUIDE v2.5 21-Mar-2024 09:35:02
+% Last Modified by GUIDE v2.5 09-Apr-2024 14:39:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -144,6 +144,19 @@ if ~isempty(ALLERP)
     end
 end
 handles.ALLERP = ALLERP;
+ALLERP = handles.ALLERP;
+
+handles.positive_up=1;
+handles.pushbutton5_polarity.Value=1;
+handles.pushbutton5_polarity.BackgroundColor = [0.7020 0.7647 0.8392];
+handles.radiobutton6.Value=0;
+
+if isempty(ALLERP)
+    return;
+end
+
+
+
 
 handles= plot_wave_viewer(hObject,handles);
 
@@ -263,15 +276,10 @@ ALLERP = handles.ALLERP;
 if isempty(ALLERP)
     return;
 end
-if get(hObject, 'Value')==1
-    word = 'positive';
-    handles.positive_up=1;
-else
-    word = 'negative';
-    handles.positive_up=-1;
-end
-set(hObject, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
-guidata(hObject, handles);
+
+handles.positive_up=1;
+handles.pushbutton5_polarity.Value=1;
+handles.radiobutton6.Value=0;
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -1138,12 +1146,6 @@ end
 GridposArray = handles.GridposArray;
 
 
-if positive_up==1
-    word = 'positive';
-else
-    word = 'negative';
-end
-set(handles.pushbutton5_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
 
 %%----------------------measurement name-----------------------------------
 measurearray = {'Instantaneous amplitude',...
@@ -1161,8 +1163,8 @@ meacodes    =      {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',..
 
 if ismember_bc2(indxmeaX,[6 7 8 13])%'areat','areap', 'arean','ninteg',
     meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...
-% elseif ismember_bc2(indxmeaX,[9 10 11 17])%
-%     meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
+    % elseif ismember_bc2(indxmeaX,[9 10 11 17])%
+    %     meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
 elseif ismember_bc2(indxmeaX,[9 10 11 12])%'fareatlat','fareaplat','fninteglat','fareanlat',
     meamenu = 7; %  'Fractional Area latency'
 elseif ismember_bc2(indxmeaX,1)%'instabl'
@@ -1954,9 +1956,9 @@ GridposArray = handles.GridposArray;
 % meacodes    =      {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
 %     'areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
 %     'fareaplat','fninteglat','fareanlat', 'ninteg','nintegz' };
-% 
+%
 % [tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
-% 
+%
 % if ismember_bc2(indxmeaX,[6 7 8 16])
 %     meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...
 % elseif ismember_bc2(indxmeaX,[9 10 11 17])
@@ -2930,5 +2932,21 @@ if isempty(ERPArray) || any(ERPArray(:)>length(ALLERP))
 end
 
 handles.edit5_erpset.String = num2str(ERPArray(1));
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+function pushbutton5_polarity_DeleteFcn(hObject, eventdata, handles)
+
+% --- Executes on button press in radiobutton6.
+function radiobutton6_Callback(hObject, eventdata, handles)
+ALLERP = handles.ALLERP;
+if isempty(ALLERP)
+    return;
+end
+
+handles.positive_up=0;
+handles.pushbutton5_polarity.Value=1;
+handles.radiobutton6.Value=-1;
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);

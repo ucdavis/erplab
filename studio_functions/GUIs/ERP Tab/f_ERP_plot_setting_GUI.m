@@ -40,8 +40,8 @@ drawui_erpplot(FonsizeDefault);
 varargout{1} = ERP_plotset_box;
     function drawui_erpplot(FonsizeDefault)
         
-        erpworkingmemory('erp_plot_set',0);
-        erpworkingmemory('erp_xtickstep',0);
+        estudioworkingmemory('erp_plot_set',0);
+        estudioworkingmemory('erp_xtickstep',0);
         %%--------------------x and y axes setting-------------------------
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
@@ -198,9 +198,9 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.chanorderIndex = 1;
         ERPTab_plotset.chanorder{1,1}=[];
         ERPTab_plotset.chanorder{1,2} = '';
-        erpworkingmemory('ERP_chanorders',{ERPTab_plotset.chanorderIndex,ERPTab_plotset.chanorder});
-        erpworkingmemory('ERPTab_plotset_pars',[]);
-        erpworkingmemory('ERPTab_plotset',0);
+        estudioworkingmemory('ERP_chanorders',{ERPTab_plotset.chanorderIndex,ERPTab_plotset.chanorder});
+        estudioworkingmemory('ERPTab_plotset_pars',[]);
+        estudioworkingmemory('ERPTab_plotset',0);
         ERPTab_plotset.timet_auto_reset = 1;
         ERPTab_plotset.timeticks_auto_reset = 1;
         ERPTab_plotset.gridlayputarray = [];
@@ -226,7 +226,7 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -256,7 +256,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -267,7 +267,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(xtixlk_min)|| numel(xtixlk_min)~=1
             src.String = num2str(observe_ERPDAT.ERP.times(1));
             msgboxText =  ['Plot Settings> Time Axis- Input of low edge must be a single numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            estudioworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -275,7 +275,7 @@ varargout{1} = ERP_plotset_box;
         if any(xtixlk_max<=xtixlk_min)
             src.String = num2str(observe_ERPDAT.ERP.times(1));
             msgboxText =  ['Plot Settings> Time Axis- Low edge must be  smaller than',32,num2str(xtixlk_max(1))];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            estudioworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -294,7 +294,7 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -308,14 +308,14 @@ varargout{1} = ERP_plotset_box;
             src.String = num2str(observe_ERPDAT.ERP.times(end));
             beep;
             msgboxText =  ['Plot Settings> Amplitude Axis- Input of ticks edge must be a single numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            estudioworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if any(xtixlk_max < xtixlk_min)
             src.String =  num2str(observe_ERPDAT.ERP.times(end));
             msgboxText =  ['Plot Settings> Time Axis- high edge must be higher than',32,num2str(xtixlk_min),'ms'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            estudioworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -334,7 +334,7 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -346,7 +346,7 @@ varargout{1} = ERP_plotset_box;
                 timeStart = observe_ERPDAT.ERP.times(1);
                 ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
                 msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: left edge of time range must be a single number and smaller than ',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                estudioworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
             end
             timEnd = str2num(ERPTab_plotset.timet_high.String);
@@ -354,7 +354,7 @@ varargout{1} = ERP_plotset_box;
                 timEnd = observe_ERPDAT.ERP.times(end);
                 ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
                 msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: right edge of time range must be a single number and larger than ',32,num2str(observe_ERPDAT.ERP.times(1)),'ms'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                estudioworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
             end
             if timeStart>timEnd
@@ -364,7 +364,7 @@ varargout{1} = ERP_plotset_box;
                 timEnd = observe_ERPDAT.ERP.times(end);
                 ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
                 msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: left edge of time range must be smaller than right one'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                estudioworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
             end
             [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [timeStart,timEnd]);
@@ -388,7 +388,7 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -407,7 +407,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(tick_step) || numel(tick_step)~=1 || any(tick_step<=0)
             src.String = num2str(xtickstepdef);
             msgboxText =  ['Plot Settings> Time Axis - The input of Step for time ticks must be a single positive value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            estudioworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -426,22 +426,22 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         if ERPTab_plotset.yscale_auto.Value ==1
-            BinArray= erpworkingmemory('ERP_BinArray');
+            BinArray= estudioworkingmemory('ERP_BinArray');
             BinNum = observe_ERPDAT.ERP.nbin;
             if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
                 BinArray = [1:BinNum];
             end
-            ChanArray=erpworkingmemory('ERP_ChanArray');
+            ChanArray=estudioworkingmemory('ERP_ChanArray');
             if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
                 ChanArray = [1:observe_ERPDAT.ERP.nchan];
-                erpworkingmemory('ERP_ChanArray',ChanArray);
+                estudioworkingmemory('ERP_ChanArray',ChanArray);
             end
             ERP1 = observe_ERPDAT.ERP;
             ERP1.bindata = ERP1.bindata(ChanArray,:,:);
@@ -471,21 +471,21 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         BinNum = observe_ERPDAT.ERP.nbin;
         if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
             BinArray = [1:BinNum];
         end
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
@@ -499,13 +499,13 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if any(Yscales_high<=Yscales_low)
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
             observe_ERPDAT.Process_messg =4;
         end
         
@@ -524,21 +524,21 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         BinNum = observe_ERPDAT.ERP.nbin;
         if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
             BinArray = [1:BinNum];
         end
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
@@ -552,13 +552,13 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_high) || numel(Yscales_high)~=1
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if any(Yscales_high<=Yscales_low)
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
             observe_ERPDAT.Process_messg =4;
         end
     end
@@ -575,21 +575,21 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         BinNum = observe_ERPDAT.ERP.nbin;
         if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
             BinArray = [1:BinNum];
         end
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
@@ -640,7 +640,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -650,7 +650,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(val)  || numel(val)~=1 || any(val(:)<=0)
             src.String = '';
             msgboxText =  ['Plot Settings> Amplitude Axis - Input must be a positive value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            estudioworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
         end
     end
@@ -666,7 +666,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -688,7 +688,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -709,22 +709,22 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         BinNum = observe_ERPDAT.ERP.nbin;
         if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
             BinArray = [1:BinNum];
         end
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         
         if ERPTab_plotset.pagesel.Value==1
@@ -779,7 +779,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -806,7 +806,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -825,7 +825,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -846,7 +846,7 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -862,15 +862,15 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.rowNum_set.Enable ='off';
         ERPTab_plotset.columns.Enable ='off';
         
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
-            erpworkingmemory('ERP_BinArray',BinArray);
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
         if ERPTab_plotset.pagesel.Value==1
             nplot = numel(ChanArray);
@@ -892,7 +892,7 @@ varargout{1} = ERP_plotset_box;
                 chanlocs = observe_ERPDAT.ERP.chanlocs;
                 if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
                     MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
-                    erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+                    estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
                     observe_ERPDAT.Process_messg=4;
                 end
             catch
@@ -966,7 +966,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -980,15 +980,15 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.rowNum_set.Enable ='off';
         ERPTab_plotset.columns.Enable ='off';
         
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
-            erpworkingmemory('ERP_BinArray',BinArray);
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
         if ERPTab_plotset.pagesel.Value==1
             nplot = numel(ChanArray);
@@ -1028,7 +1028,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -1056,7 +1056,7 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Export');
+        estudioworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Export');
         observe_ERPDAT.Process_messg =1;
         pathstr = pwd;
         namedef ='GridLocations';
@@ -1131,7 +1131,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -1149,12 +1149,12 @@ varargout{1} = ERP_plotset_box;
             DataInput =  readtable([filepath,filename], "FileType","text");
         catch
             DataInput =  readtable([filepath,filename], "FileType","text");
-            erpworkingmemory('f_ERP_proces_messg',['Plot Settings > Grid Layout > Import:','Cannot import:',filepath,filename]);
+            estudioworkingmemory('f_ERP_proces_messg',['Plot Settings > Grid Layout > Import:','Cannot import:',filepath,filename]);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if isempty(DataInput)
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid');
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -1163,7 +1163,7 @@ varargout{1} = ERP_plotset_box;
         
         [rows,columns] = size(DataInput);
         if columns<=2
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid and one column is designed besides the first column that is row title');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid and one column is designed besides the first column that is row title');
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -1171,7 +1171,7 @@ varargout{1} = ERP_plotset_box;
         DataInput = DataInput(:,2:end);
         [Griddata, checkflag,labelsIndex ]= f_tranf_check_import_grid(DataInput,overlapindex);
         if checkflag==0
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid or didnot match with existing labels');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid or didnot match with existing labels');
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -1193,7 +1193,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -1212,7 +1212,7 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('ERPTab_plotset',1);
+        estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
@@ -1233,21 +1233,21 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',0);
+        estudioworkingmemory('ERPTab_plotset',0);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_plotset.plot_apply.ForegroundColor = [0 0 0];
         ERP_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_plotset.plot_reset.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('f_ERP_proces_messg','Plot Settings>Cancel');
+        estudioworkingmemory('f_ERP_proces_messg','Plot Settings>Cancel');
         observe_ERPDAT.Process_messg =1;
         %
         %%------------------------------time range-------------------------
         ERPTab_plotset.timet_auto.Value=ERPTab_plotset.paras{1};
         ERPTab_plotset.timetick_auto.Value=ERPTab_plotset.paras{2};
         
-        ERPTab_plotset_pars =  erpworkingmemory('ERPTab_plotset_pars');
+        ERPTab_plotset_pars =  estudioworkingmemory('ERPTab_plotset_pars');
         timelowdef = observe_ERPDAT.ERP.times(1);
         timehighdef= observe_ERPDAT.ERP.times(end);
         [def xtickstepdef]= default_time_ticks_studio(observe_ERPDAT.ERP, [timelowdef,timehighdef]);
@@ -1305,15 +1305,15 @@ varargout{1} = ERP_plotset_box;
         
         ERPTab_plotset.yscale_auto.Value = ERPTab_plotset.paras{3};
         ERPTab_plotset.ytick_auto.Value = ERPTab_plotset.paras{4};
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
-            erpworkingmemory('ERP_BinArray',BinArray);
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
@@ -1327,7 +1327,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             ERPTab_plotset.yscale_low.String = str2num(minydef);
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if isempty(Yscales_high) || numel(Yscales_high)~=1
@@ -1403,7 +1403,7 @@ varargout{1} = ERP_plotset_box;
         
         %
         %%channel order
-        ERP_chanorders=  erpworkingmemory('ERP_chanorders');
+        ERP_chanorders=  estudioworkingmemory('ERP_chanorders');
         try
             chanordervalue = ERP_chanorders{1};
         catch
@@ -1498,7 +1498,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset_pars{11} = [0,ERPTab_plotset.SEM_custom.Value-1,(ERPTab_plotset.SEMtrans_custom.Value-1)/10];
         end
         
-        erpworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1515,14 +1515,14 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('ERPTab_plotset',0);
+        estudioworkingmemory('ERPTab_plotset',0);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_plotset.plot_apply.ForegroundColor = [0 0 0];
         ERP_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_plotset.plot_reset.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('f_ERP_proces_messg','Plot Settings>Apply');
+        estudioworkingmemory('f_ERP_proces_messg','Plot Settings>Apply');
         observe_ERPDAT.Process_messg =1;
         ERPTab_plotset.timet_auto_reset = ERPTab_plotset.timet_auto.Value;
         ERPTab_plotset.timeticks_auto_reset = ERPTab_plotset.yscale_auto.Value;
@@ -1537,7 +1537,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
             MessageViewer= char(['Plot Settings > Apply: Low edge of the time range should be smaller',32,num2str(observe_ERPDAT.ERP.times(end)),32,...
                 'we therefore set to be',32,num2str(timeStart)]);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
         
@@ -1547,7 +1547,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.timet_high.String = num2str(timEnd);
             MessageViewer= char(['Plot Settings > Apply: High edge of the time range should be larger',32,num2str(timeStartdef),32,...
                 'we therefore set to be',32,num2str(timEnddef)]);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
         
@@ -1557,7 +1557,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.timet_low.String = num2str(timeStart);
             ERPTab_plotset.timet_high.String = num2str(timEnd);
             MessageViewer= char(['Plot Settings > Apply: Low edge of the time range should be smaller than the high one and we therefore used the defaults']);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
         ERPTab_plotset_pars{1} = [timeStart,timEnd];
@@ -1567,22 +1567,22 @@ varargout{1} = ERP_plotset_box;
             xtickstep = xstepdef;
             ERPTab_plotset.timet_step.String = num2str(xtickstep);
             MessageViewer= char(['Plot Settings > Apply: the step of the time ticks should be a positive number that belows',32,num2str(floor((timEnd-timeStart)/2))]);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
         ERPTab_plotset_pars{2} = xtickstep;
         
         %
         %%Amplitude Axis
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
-            erpworkingmemory('ERP_BinArray',BinArray);
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
@@ -1595,13 +1595,13 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             ERPTab_plotset.yscale_low.String = str2num(minydef);
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if isempty(Yscales_high) || numel(Yscales_high)~=1
             ERPTab_plotset.yscale_high.String = str2num(maxydef);
             Yscales_high= maxydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if any(Yscales_high<=Yscales_low)
@@ -1609,7 +1609,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.yscale_high.String = str2num(maxydef);
             Yscales_high= maxydef;
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
             observe_ERPDAT.Process_messg =4;
         end
         ERPTab_plotset_pars{3} = [Yscales_low,Yscales_high];
@@ -1621,7 +1621,7 @@ varargout{1} = ERP_plotset_box;
             columNum =1;
             ERPTab_plotset.columns.String = '1';
             MessageViewer= char(['Plot Settings > Apply: the number of columns should be a positive value']);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
         ERPTab_plotset_pars{5} =columNum;
@@ -1669,10 +1669,10 @@ varargout{1} = ERP_plotset_box;
         [Griddata, checkflag,labelsIndex]= f_tranf_check_import_grid(ERPTab_plotset.gridlayputarray,ERPTab_plotset.pagesel.Value);
         if checkflag==1
             if ERPTab_plotset.pagesel.Value==1
-                erpworkingmemory('ERP_ChanArray',labelsIndex);
+                estudioworkingmemory('ERP_ChanArray',labelsIndex);
                 ChanArray = labelsIndex;
             else
-                erpworkingmemory('ERP_BinArray',labelsIndex);
+                estudioworkingmemory('ERP_BinArray',labelsIndex);
                 BinArray = labelsIndex;
             end
         else
@@ -1714,7 +1714,7 @@ varargout{1} = ERP_plotset_box;
                     end
                 end
             end
-            erpworkingmemory('ERP_ChanArray',chanindexnew);
+            estudioworkingmemory('ERP_ChanArray',chanindexnew);
             ERPTab_plotset.gridlayputarray=gridlayputarraydef;
         end
         
@@ -1731,7 +1731,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset_pars{11} = [0,SEM_custom,SEMtrans_custom];
         end
         
-        erpworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);%%save the changed paras to memory file
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);%%save the changed paras to memory file
         %%channel orders
         
         ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
@@ -1748,9 +1748,9 @@ varargout{1} = ERP_plotset_box;
         if observe_ERPDAT.Count_currentERP~=3
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
+        ViewerFlag=estudioworkingmemory('ViewerFlag');%%when open advanced wave viewer
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
-            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+            ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
         if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP) || ViewerFlag==1
             enbaleflag = 'off';
@@ -1827,15 +1827,15 @@ varargout{1} = ERP_plotset_box;
         %
         %%Amplitude Axis
         %%Yscale
-        BinArray= erpworkingmemory('ERP_BinArray');
+        BinArray= estudioworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
-            erpworkingmemory('ERP_BinArray',BinArray);
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
-        ChanArray=erpworkingmemory('ERP_ChanArray');
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            erpworkingmemory('ERP_ChanArray',ChanArray);
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         if ERPTab_plotset.gridlayoutdef.Value==1
             ChanArray = sort(ChanArray);
@@ -1980,7 +1980,7 @@ varargout{1} = ERP_plotset_box;
                 end
                 
             end
-            erpworkingmemory('ERP_ChanArray',chanindexnew);
+            estudioworkingmemory('ERP_ChanArray',chanindexnew);
             ERPTab_plotset.gridlayputarray=gridlayputarraydef;
         elseif ERPTab_plotset.gridlayoutdef.Value ==1
             ERPTab_plotset.gridlayputarray=  gridlayputarraydef;
@@ -2007,7 +2007,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.SEM_custom.Enable = 'off';
             ERPTab_plotset.SEMtrans_custom.Enable = 'off';
         end
-        erpworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
         ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
@@ -2020,12 +2020,12 @@ varargout{1} = ERP_plotset_box;
         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
             return;
         end
-        ChangeFlag =  erpworkingmemory('ERPTab_plotset');
+        ChangeFlag =  estudioworkingmemory('ERPTab_plotset');
         if ChangeFlag~=1
             return;
         end
         plot_setting_apply();
-        erpworkingmemory('ERPTab_plotset',0);
+        estudioworkingmemory('ERPTab_plotset',0);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_plotset.plot_apply.ForegroundColor = [0 0 0];
         ERP_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -2037,13 +2037,13 @@ varargout{1} = ERP_plotset_box;
 %%--------------press return to execute "Apply"----------------------------
     function erp_plotsetting_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('ERPTab_plotset');
+        ChangeFlag =  estudioworkingmemory('ERPTab_plotset');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             plot_setting_apply();
-            erpworkingmemory('ERPTab_plotset',0);
+            estudioworkingmemory('ERPTab_plotset',0);
             ERPTab_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
             ERPTab_plotset.plot_apply.ForegroundColor = [0 0 0];
             ERP_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -2094,7 +2094,7 @@ varargout{1} = ERP_plotset_box;
         if observe_ERPDAT.Reset_erp_paras_panel~=3
             return;
         end
-        erpworkingmemory('ERPTab_plotset',0);
+        estudioworkingmemory('ERPTab_plotset',0);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_plotset.plot_apply.ForegroundColor = [0 0 0];
         ERP_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
@@ -2224,7 +2224,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
         ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
-        erpworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         observe_ERPDAT.Reset_erp_paras_panel=4;
     end
 end

@@ -34,7 +34,7 @@ else
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
 
-erpworkingmemory('OverlayIndex',0);
+estudioworkingmemory('OverlayIndex',0);
 
 %-----------------------------Draw the panel-------------------------------------
 try
@@ -60,7 +60,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             SrateNum_mp(Numofselectederp,1)   =  ALLERP(indexerp(Numofselectederp)).srate;
         end
         
-        MERPWaveViewer_plotorg= erpworkingmemory('MERPWaveViewer_plotorg');%%call the memery for this panel
+        MERPWaveViewer_plotorg= estudioworkingmemory('MERPWaveViewer_plotorg');%%call the memery for this panel
         try
             plotorg_Index = MERPWaveViewer_plotorg{1};
         catch
@@ -73,7 +73,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         ERPtooltype = erpgettoolversion('tooltype');
         if strcmpi(ERPtooltype,'EStudio')
-            ERPTab_plotset_pars= erpworkingmemory('ERPTab_plotset_pars');
+            ERPTab_plotset_pars= estudioworkingmemory('ERPTab_plotset_pars');
             try
                 overlay = ERPTab_plotset_pars{7};
             catch
@@ -88,7 +88,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         if numel(unique(SrateNum_mp))~=1  && (plotorg_Index~=1 && plotorg_Index~=3)
             MessageViewer= char(strcat('Plot Organization - We will use "Channels,Bins, ERPsets" because Sampling rate varies across the selected ERPsets'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             plotorg_Index=1;
             MERPWaveViewer_plotorg{1}=1;
@@ -522,8 +522,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         set(gui_plotorg_waveviewer.DataSelBox,'Sizes',[150 25 25 25 25 25 25 25 25]);
         gui_plotorg_waveviewer.columFormatStr = '';
-        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
-        erpworkingmemory('MyViewer_plotorg',0);
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        estudioworkingmemory('MyViewer_plotorg',0);
     end
 
 
@@ -546,7 +546,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         if length(unique(Datype))~=1 || (numel(indexerp)==1 && strcmpi(char(Datype),'ERP')~=1)
             MessageViewer= char(strcat('Warning: Type of data varies across ERPsets. We only plot waves for ERPset'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -564,7 +564,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if y_Flag~=1 && y_Flag~= 3
                 MessageViewer= char(strcat('Sampling rate varies across ERPsets. Please select the first or third options'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -607,7 +607,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         
         gui_plotorg_waveviewer.plotorg_c1.Value = 1;
@@ -654,7 +654,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        erpworkingmemory('OverlayIndex',1);
+        estudioworkingmemory('OverlayIndex',1);
     end
 
 %%-------------------------Setting for Overlay--------------------------------
@@ -672,7 +672,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         if length(unique(Datype))~=1 || (numel(indexerp)==1 && strcmpi(char(Datype),'ERP')~=1)
             MessageViewer= char(strcat('Type of data varies across ERPsets. We only plot waves for ERPset'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -691,7 +691,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if  y_Flag~=1 && y_Flag~= 3
                 MessageViewer= char(strcat('Sampling rate varies across ERPsets. Please select the first or third options'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -736,7 +736,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 1;
@@ -782,7 +782,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        erpworkingmemory('OverlayIndex',1);
+        estudioworkingmemory('OverlayIndex',1);
     end
 
 %%-------------------------Setting for Pages--------------------------------
@@ -800,7 +800,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         if length(unique(Datype))~=1 || (numel(indexerp)==1 && strcmpi(char(Datype),'ERP')~=1)
             MessageViewer= char(strcat('Warning: Type of data varies across ERPsets. We only plot waves for ERPset'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -819,7 +819,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if y_Flag~=1 && y_Flag~=3
                 MessageViewer= char(strcat('Sampling rate varies across ERPsets. Please select the first or third options'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -861,7 +861,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -905,7 +905,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        erpworkingmemory('OverlayIndex',1);
+        estudioworkingmemory('OverlayIndex',1);
     end
 
 
@@ -923,7 +923,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         if length(unique(Datype))~=1 || (numel(indexerp)==1 && strcmpi(char(Datype),'ERP')~=1)
             MessageViewer= char(strcat('Warning: Type of data varies across ERPsets. We only plot waves for ERPset'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -942,7 +942,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if  y_Flag~=1 && y_Flag~= 3
                 MessageViewer= char(strcat('Sampling rate varies across ERPsets. Please select the first or third options'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -986,7 +986,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1032,7 +1032,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        erpworkingmemory('OverlayIndex',1);
+        estudioworkingmemory('OverlayIndex',1);
     end
 
 
@@ -1052,7 +1052,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         if length(unique(Datype))~=1 || (numel(indexerp)==1 && strcmpi(char(Datype),'ERP')~=1)
             MessageViewer= char(strcat('Warning: Type of data varies across ERPsets. We only plot waves for ERPset'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -1070,7 +1070,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if  y_Flag~=1 && y_Flag~= 3
                 MessageViewer= char(strcat('Sampling rate varies across ERPsets. Please select the first or third options'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1114,7 +1114,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1160,7 +1160,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        erpworkingmemory('OverlayIndex',1);
+        estudioworkingmemory('OverlayIndex',1);
     end
 
 
@@ -1178,7 +1178,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         if length(unique(Datype))~=1 || (numel(indexerp)==1 && strcmpi(char(Datype),'ERP')~=1)
             MessageViewer= char(strcat('Warning: Type of data varies across ERPsets. We only plot waves for ERPset'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -1196,7 +1196,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if  y_Flag~=1 && y_Flag~= 3
                 MessageViewer= char(strcat('Sampling rate varies across ERPsets. Please select the first or third options'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1242,7 +1242,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
         
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -1287,7 +1287,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
-        erpworkingmemory('OverlayIndex',1);
+        estudioworkingmemory('OverlayIndex',1);
     end
 
 
@@ -1297,7 +1297,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
@@ -1388,7 +1388,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.layout_auto.Value =0;
         gui_plotorg_waveviewer.layout_custom.Value = 1;
@@ -1443,7 +1443,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
     end
 
@@ -1454,7 +1454,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
     end
 
@@ -1466,7 +1466,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.rowgap_auto.Value = 1;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'on';
@@ -1480,12 +1480,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         rowgap = str2num(Source.String);
         if isempty(rowgap) || numel(rowgap)~=1 || rowgap<=0
             MessageViewer= char(strcat('Plot Organization > Row > Gap should be larger than 0'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             Source.String = '10';
             return;
@@ -1499,7 +1499,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();
         gui_plotorg_waveviewer.rowgap_auto.Value = 0;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
@@ -1513,13 +1513,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         rowoverlay = str2num(Source.String);
         if isempty(rowoverlay) || numel(rowoverlay)~=1 || rowoverlay<=0 || rowoverlay>=100
             MessageViewer= char(strcat('Plot Organization > Column > Overlap should be larger than 0 and smaller than 100'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             Source.String = '40';
             return;
@@ -1533,7 +1533,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
@@ -1551,13 +1551,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         columngap = str2num(Source.String);
         if isempty(columngap) || numel(columngap)~=1 || columngap<=0
             MessageViewer= char(strcat('Plot Organization > Column > Gap should be larger than 0'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             Source.String = '10';
             return;
@@ -1571,7 +1571,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         colnOverlay = str2num(char( gui_plotorg_waveviewer.columngapoverlapedit.String));
@@ -1591,7 +1591,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         columnoverlay = str2num(Source.String);
@@ -1609,7 +1609,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) %% && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         if Source.Value==1
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'on';
@@ -1685,10 +1685,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) %% && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',1);
+        estudioworkingmemory('MyViewer_plotorg',1);
         track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         MessageViewer= char(strcat('Plot Organization > Custom Grid Locations > Edit'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         columFormat =  gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columFormat;
@@ -1723,7 +1723,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         def =  ERP_layoutstringGUI(columFormat,GridinforData,plotBox,AllabelArray);
         if isempty(def)
-            erpworkingmemory('MyViewer_plotorg',0);
+            estudioworkingmemory('MyViewer_plotorg',0);
             gui_plotorg_waveviewer.apply.BackgroundColor =  [1,1,1];
             box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
             gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
@@ -1780,11 +1780,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.ERPset_Chan_bin_label=1;
         
         viewer_ERPDAT.Count_currentERP=1;
-        erpworkingmemory('MyViewer_plotorg',0);
+        estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1,1,1];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
@@ -1796,7 +1796,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
 %%-------load the saved parameters for plotting organization---------------
     function layout_custom_load(~,~)
         MessageViewer= char(strcat('Plot Organization > Load'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
@@ -1848,7 +1848,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             elseif strcmpi(ERPtooltype,'ERPLAB')
                 MessageViewer= char(strcat('Plot Organization > Load - This settings file was created using an older version of ERPLAB'));
             end
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
         end
         
@@ -1878,7 +1878,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if PageValue~= 3
                 MessageViewer= char(strcat('Plot Organization > Load - Sampling rate varies across ERPsets. We used the first option'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 GridValue  = 1;OverlayValue = 2;PageValue=3;
             end
@@ -2110,7 +2110,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
             if ~isempty(EmptyItemStr)
                 MessageViewer= char(strcat('Plot Organization > Load - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
             end
             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data =GridinforDataOrg;
@@ -2144,12 +2144,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         
         viewer_ERPDAT.Count_currentERP=1;
         
         MessageViewer= char(strcat('Plot Organization > Load'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -2158,13 +2158,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function layout_custom_save(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex==4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
+            estudioworkingmemory('ERPViewer_proces_messg',messgStr);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
         
         MessageViewer= char(strcat('Plot Organization > Save as'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         ERPtooltype = erpgettoolversion('tooltype');
@@ -2233,12 +2233,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
             save([erppathname,erpFilename],'Plot_orgpar','-v7.3');
         catch
             MessageViewer = ['Plot Organization > Save as: Cannot save the parameters for "Plot Organization", please try again'];
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
         MessageViewer= char(strcat('Plot Organization > Save as'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -2249,13 +2249,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        changeFlag =  erpworkingmemory('MyViewer_plotorg');
+        changeFlag =  estudioworkingmemory('MyViewer_plotorg');
         if changeFlag~=1
             return;
         end
         
         MessageViewer= char(strcat('Plot Organization > Cancel'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         try
             GridValue=gui_erp_waviewer.ERPwaviewer.plot_org.Grid ;
@@ -2397,14 +2397,14 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'on';
         end
         gui_plotorg_waveviewer.columFormatStr  = '';
-        erpworkingmemory('MyViewer_plotorg',0);
+        estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
         gui_plotorg_waveviewer.cancel.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Plot Organization > Cancel'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -2416,14 +2416,14 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        erpworkingmemory('MyViewer_plotorg',0);
+        estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
         gui_plotorg_waveviewer.cancel.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Plot Organization > Apply'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         binArray = gui_erp_waviewer.ERPwaviewer.bin;
@@ -2530,7 +2530,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
             if ~isempty(EmptyItemStr)
                 MessageViewer= char(strcat('Plot Organization > Apply-Undefined item(s) in grid locations:',EmptyItemStr,32,'because they donot match with the selected labels'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
             end
             if countEmp == size(GridinforDataOrg,1)*size(GridinforDataOrg,2) || isempty(EmptyItemStr)
@@ -2540,7 +2540,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 end
                 if ~isempty(EmptyItemStr)
                     MessageViewer= char(strcat('Plot Organization > Apply-Undefined item(s) in grid locations:',EmptyItemStr,32,'because they donot match with the selected labels'));
-                    erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                    estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                     viewer_ERPDAT.Process_messg =4;
                 end
             end
@@ -2576,7 +2576,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.Count_currentERP=1;
         viewer_ERPDAT.Process_messg =2;
     end
@@ -2601,7 +2601,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if  y_Flag~=1 && y_Flag~= 3
                 MessageViewer= char(strcat('Sampling rate varies across ERPsets.\n We used the first option (i.e., Channels, Bins, ERPsets)'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -2727,7 +2727,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             
             if ~isempty(EmptyItemStr)
                 MessageViewer= char(strcat('Plot Organization > v_currentERP_change() - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 return;
             end
@@ -2763,7 +2763,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.Count_currentERP =5;
     end
 
@@ -2801,7 +2801,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if PageValue ~=3
                 MessageViewer= char(strcat('Warning: Sampling rate varies across ERPsets. We used the first option'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 GridValue=1; OverlayValue = 2; PageValue =3;
                 gui_erp_waviewer.ERPwaviewer.plot_org.Grid = 1;
@@ -3000,7 +3000,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data = Datanew;
             if ~isempty(EmptyItemStr)
                 MessageViewer= char(strcat('Plot Organization > loadproper_change() - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 return;
             end
@@ -3092,7 +3092,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         viewer_ERPDAT.loadproper_count =5;
     end
 
@@ -3106,7 +3106,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if viewer_ERPDAT.count_twopanels==0
             return;
         end
-        changeFlag =  erpworkingmemory('MyViewer_plotorg');
+        changeFlag =  estudioworkingmemory('MyViewer_plotorg');
         if changeFlag~=1
             return;
         end
@@ -3128,7 +3128,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if  y_Flag~=1 && y_Flag~= 3
                 MessageViewer= char(strcat('Warning: Sampling rate varies across ERPsets. We used the first option'));
-                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 gui_plotorg_waveviewer.plotorg_c1.Value = 1;
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -3169,7 +3169,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_erp_waviewer.ERPwaviewer.plot_org.Grid = 1;
         gui_erp_waviewer.ERPwaviewer.plot_org.Overlay = 2;
         gui_erp_waviewer.ERPwaviewer.plot_org.Pages = 3;
-        erpworkingmemory('OverlayIndex',1);
+        estudioworkingmemory('OverlayIndex',1);
         %%check sampling rate and data type
         for Numofselectederp = 1:numel(indexerp)
             SrateNum_mp(Numofselectederp,1)   =  ALLERP(indexerp(Numofselectederp)).srate;
@@ -3177,7 +3177,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         if length(unique(Datype))~=1 || (numel(indexerp)==1 && strcmpi(char(Datype),'ERP')~=1)
             MessageViewer= char(strcat('Warning: Type of data varies across ERPsets. We only plot waves for ERPset'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -3277,7 +3277,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        erpworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
         %%execute next panel
         viewer_ERPDAT.Reset_Waviewer_panel=5;
     end%%end of reset
@@ -3288,7 +3288,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress, 'enter')
             plotorg_apply();
-            erpworkingmemory('MyViewer_plotorg',0);
+            estudioworkingmemory('MyViewer_plotorg',0);
             gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];

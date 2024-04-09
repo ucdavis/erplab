@@ -60,7 +60,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EnableFlag = 'on';
         end
         
-        def  = erpworkingmemory('pop_erplabShiftEventCodes');
+        def  = estudioworkingmemory('pop_erplabShiftEventCodes');
         if isempty(def)
             def = {};
         end
@@ -160,7 +160,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         set(EEG_shift_eventcode_conus.detar_run_title,'Sizes',[15 105  30 105 15]);
         
         set(EEG_shift_eventcode_conus.DataSelBox,'Sizes',[30 30 25 25 25 30]);
-        erpworkingmemory('EEGTab_shiftcodes_conus',0);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',0);
     end
 
 
@@ -183,7 +183,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_cancel.ForegroundColor = [1 1 1];
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_shiftcodes_conus',1);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',1);
     end
 
 %%--------------------------Browse event codes-----------------------------
@@ -272,7 +272,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [1 1 1];
         
-        erpworkingmemory('EEGTab_shiftcodes_conus',1);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',1);
         timeshiftnew= str2num(Source.String);
         if isempty(timeshiftnew) || numel(timeshiftnew)~=1
             msgboxText = ['Shift Event Codes (Continuous EEG) > Time shift meust be one number'];
@@ -313,7 +313,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [1 1 1];
         
-        erpworkingmemory('EEGTab_shiftcodes_conus',1);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',1);
         EEG_shift_eventcode_conus.roundearlier.Value = 1;
         EEG_shift_eventcode_conus.roundnearest.Value = 0;
         EEG_shift_eventcode_conus.roundlater.Value = 0;
@@ -335,7 +335,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_cancel.ForegroundColor = [1 1 1];
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_shiftcodes_conus',1);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',1);
         EEG_shift_eventcode_conus.roundearlier.Value = 0;
         EEG_shift_eventcode_conus.roundnearest.Value = 1;
         EEG_shift_eventcode_conus.roundlater.Value = 0;
@@ -357,7 +357,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_cancel.ForegroundColor = [1 1 1];
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [1 1 1];
-        erpworkingmemory('EEGTab_shiftcodes_conus',1);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',1);
         EEG_shift_eventcode_conus.roundearlier.Value = 0;
         EEG_shift_eventcode_conus.roundnearest.Value = 0;
         EEG_shift_eventcode_conus.roundlater.Value = 1;
@@ -374,7 +374,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if ~isempty(messgStr) && eegpanelIndex~=12
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Cancel');
+        estudioworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_shift_eventcode_conus.shiftcodes_cancel.BackgroundColor =  [1 1 1];
@@ -382,8 +382,8 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 1 1 1];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('EEGTab_shiftcodes_conus',0);
-        def  = erpworkingmemory('pop_erplabShiftEventCodes');
+        estudioworkingmemory('EEGTab_shiftcodes_conus',0);
+        def  = estudioworkingmemory('pop_erplabShiftEventCodes');
         if isempty(def)
             def = {};
         end
@@ -443,7 +443,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if ~isempty(messgStr) && eegpanelIndex~=12
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Shift events');
+        estudioworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Shift events');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -452,12 +452,12 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 1 1 1];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('EEGTab_shiftcodes_conus',0);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',0);
         %%--------Selected EEGsets-----------
-        EEGArray= erpworkingmemory('EEGArray');
+        EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
             EEGArray = observe_EEGDAT.CURRENTSET;
-            erpworkingmemory('EEGArray',EEGArray);
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         Eventcodes =  EEG_shift_eventcode_conus.event_codes_edit.String;
         try
@@ -508,7 +508,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         displayFeedback     = 'both';
         displayEEG = 0;
         
-        erpworkingmemory('pop_erplabShiftEventCodes', ...
+        estudioworkingmemory('pop_erplabShiftEventCodes', ...
             {Eventcodes, timeshift, rounding, displayEEG, displayFeedback});
         
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -580,7 +580,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -594,9 +594,9 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if observe_EEGDAT.count_current_eeg ~=17
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event) || EEGUpdate==1
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';
@@ -659,13 +659,13 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 %%--------------press return to execute "Apply"----------------------------
     function eeg_shiftcodes_presskey(hObject, eventdata)
         keypress = eventdata.Key;
-        ChangeFlag =  erpworkingmemory('EEGTab_shiftcodes_conus');
+        ChangeFlag =  estudioworkingmemory('EEGTab_shiftcodes_conus');
         if ChangeFlag~=1
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             shiftcodes_run();
-            erpworkingmemory('EEGTab_shiftcodes_conus',0);
+            estudioworkingmemory('EEGTab_shiftcodes_conus',0);
             Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
             EEG_shift_eventcode_conus.shiftcodes_cancel.BackgroundColor =  [1 1 1];
             EEG_shift_eventcode_conus.shiftcodes_cancel.ForegroundColor = [0 0 0];
@@ -681,7 +681,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if observe_EEGDAT.Reset_eeg_paras_panel~=14
             return;
         end
-        erpworkingmemory('EEGTab_shiftcodes_conus',0);
+        estudioworkingmemory('EEGTab_shiftcodes_conus',0);
         %         Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_shift_eventcode_conus.shiftcodes_cancel.BackgroundColor =  [1 1 1];
         EEG_shift_eventcode_conus.shiftcodes_cancel.ForegroundColor = [0 0 0];

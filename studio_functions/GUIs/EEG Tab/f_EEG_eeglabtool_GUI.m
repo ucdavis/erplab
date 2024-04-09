@@ -118,12 +118,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = 'EEGLAB Tools > About this dataset: Only works for one selected dataset';
@@ -148,7 +148,7 @@ varargout{1} = EStudio_box_eeglab_tool;
                 estudio_warning(msgboxText,titlNamerro);
             end
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=26;
@@ -165,12 +165,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Edit Dataset Info');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Edit Dataset Info');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         if numel(EEGArray)~=1
@@ -232,7 +232,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -250,12 +250,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Event values');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Event values');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET; erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET; estudioworkingmemory('EEGArray',EEGArray);
         end
         
         if numel(EEGArray)~=1
@@ -318,7 +318,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -337,12 +337,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan locations');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan locations');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         if numel(EEGArray)~=1
@@ -405,7 +405,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -424,12 +424,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Reject data using clean rawdata and ASR');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Reject data using clean rawdata and ASR');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET; erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET; estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB Tools > Reject data using clean rawdata and ASR: Only works for one selected dataset'];
@@ -493,7 +493,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        erpworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -523,12 +523,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Spectra and maps');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Spectra and maps');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB Tools > Spectra and maps: Only works for one selected dataset'];
@@ -573,7 +573,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             end
             result       = inputgui( geometry, promptstr, 'pophelp(''pop_spectopo'')', ['Channel spectra and maps for eegset:',num2str(EEGArray(Numofeeg))]);
             if size(result,1) == 0
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > EEGLAB Tools > Spectra and maps:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > EEGLAB Tools > Spectra and maps:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
@@ -647,12 +647,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB Tools > Chan properties: Only works for one selected dataset'];
@@ -675,7 +675,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         result = inputgui('geometry', uigeom, 'uilist', uitext, 'helpcom', 'pophelp(''pop_prop'');', ...
             'title', fastif( typecomp, 'Channel properties - pop_prop()', 'Component properties - pop_prop()'));
         if size( result, 1 ) == 0
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties:User selected cancel');
+            estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties:User selected cancel');
             observe_EEGDAT.eeg_panel_message =4;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             return;
@@ -694,7 +694,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         spec_opt     = eval( [ '{' result{2} '}' ] );
         if isempty(chanorcomp)
             msgboxText = ['EEGLAB Tools > Chan properties:Please define Channel index(ices)'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            estudioworkingmemory('f_EEG_proces_messg',msgboxText);
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
@@ -717,7 +717,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         eegh(LASTCOM);
         fprintf( ['\n',repmat('-',1,100) '\n']);
         observe_EEGDAT.EEG=observe_EEGDAT.ALLEEG(EEGArray);
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=26;
     end
@@ -733,12 +733,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:)<1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
             msgboxText = ['EEGLAB Tools > Time-frequency: Only works for one selected dataset'];
@@ -764,7 +764,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         fprintf(LASTCOM,'\n');
         eegh(LASTCOM);
         fprintf( ['\n',repmat('-',1,100) '\n']);
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
+        estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
         
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.EEG =  observe_EEGDAT.ALLEEG(EEGArray);
@@ -777,9 +777,9 @@ varargout{1} = EStudio_box_eeglab_tool;
         if observe_EEGDAT.count_current_eeg ~=11
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = estudioworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+            EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
         if  isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             EStduio_eegtab_eeglab_tool.about_eegdata.Enable =  'off';
@@ -796,9 +796,9 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        EEGArray =  erpworkingmemory('EEGArray');
+        EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;erpworkingmemory('EEGArray',EEGArray);
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         if numel(EEGArray)~=1
