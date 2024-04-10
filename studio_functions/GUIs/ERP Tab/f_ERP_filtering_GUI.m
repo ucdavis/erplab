@@ -774,43 +774,25 @@ varargout{1} = ERP_filtering_box;
         ChanArray = [];
         ALLERP = observe_ERPDAT.ALLERP;
         ALLERP_out = [];
+        if gui_erp_filtering.all_bin_chan.Value == 1
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+        else
+            BinArray = estudioworkingmemory('ERP_BinArray');
+            ChanArray = estudioworkingmemory('ERP_ChanArray');
+        end
         for Numoferp = 1:numel(ERPArray)
-            if (checked_ERPset_Index_bin_chan(1)==1 || checked_ERPset_Index_bin_chan(2)==2) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                if checked_ERPset_Index_bin_chan(1) ==1
-                    msgboxText =  ['Number of bins across the selected ERPsets is different!'];
-                elseif checked_ERPset_Index_bin_chan(2)==2
-                    msgboxText =  ['Number of channels across the selected ERPsets is different!'];
-                elseif checked_ERPset_Index_bin_chan(1)==1 && checked_ERPset_Index_bin_chan(2)==2
-                    msgboxText =  ['Number of channels and bins vary across the selected ERPsets'];
-                end
-                question = [  '%s\n\n "All" will be active instead of "Selected bin and chan".'];
-                title       = 'EStudio: Filtering';
-                button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
-                BinArray = [];
-                ChanArray = [];
-            end
-            
             ERP = ALLERP(ERPArray(Numoferp));
-            if (checked_ERPset_Index_bin_chan(1)==0 && checked_ERPset_Index_bin_chan(2)==0) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                BinArray = estudioworkingmemory('ERP_BinArray');
-                ChanArray = estudioworkingmemory('ERP_ChanArray');
-                [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
-                if chk(1)==1
-                    BinArray =  [1:ERP.nbin];
-                end
-                [chk, msgboxText] = f_ERP_chckbinandchan(ERP,[], ChanArray,2);
-                if chk(2)==1
-                    ChanArray =  [1:ERP.nchan];
-                end
-            end
-            
-            if gui_erp_filtering.all_bin_chan.Value == 1
-                BinArray = [1:ERP.nbin];
+            if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
                 ChanArray = [1:ERP.nchan];
             end
-            ERP_AF = ERP;
+            
+            if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+                BinArray = [1:ERP.nbin];
+            end
+            
             %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
-            [ERP, ERPCOM] = pop_filterp(ERP, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
+            [ERP, ERPCOM] = pop_filterp(ERP, ChanArray,'binArray',BinArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'Saveas', 'off', 'History', 'gui');
             if isempty(ERPCOM)
                 return;
@@ -820,13 +802,7 @@ varargout{1} = ERP_filtering_box;
             else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            if ~isempty(BinArray)&& ~isempty(ChanArray)
-                try
-                    ERP_AF.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
-                    ERP.bindata = ERP_AF.bindata;
-                catch
-                end
-            end
+            
             if isempty(ALLERP_out)
                 ALLERP_out = ERP;
             else
@@ -924,40 +900,14 @@ varargout{1} = ERP_filtering_box;
             observe_ERPDAT.Count_currentERP=1;
         end
         
-        checked_ERPset_Index_bin_chan =f_checkerpsets(observe_ERPDAT.ALLERP,ERPArray);
-        
-        if checked_ERPset_Index_bin_chan(1) ==1 || checked_ERPset_Index_bin_chan(2) ==2
-            BinArray = [];
-            ChanArray =[];
-            def{5} =1;
+        if gui_erp_filtering.all_bin_chan.Value==0
+            BinArray = estudioworkingmemory('ERP_BinArray');
+            ChanArray =  estudioworkingmemory('ERP_ChanArray');
         else
-            try
-                BinArray = estudioworkingmemory('ERP_BinArray');
-                ChanArray =  estudioworkingmemory('ERP_ChanArray');
-                [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
-                if chk(1)==1
-                    BinArray =  [1:observe_ERPDAT.ERP.nbin];
-                end
-                [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
-                if chk(2)==1
-                    ChanArray =  [1:observe_ERPDAT.ERP.nchan];
-                end
-                
-            catch
-                BinArray = [1:observe_ERPDAT.ERP.nbin];
-                ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            end
-            def{5} =0;
+            BinArray = 1:observe_ERPDAT.ERP.nchan;
+            ChanArray =  1:observe_ERPDAT.ERP.nbin;
         end
-        
-        if (checked_ERPset_Index_bin_chan(1)==1 && checked_ERPset_Index_bin_chan(2)==2)
-            BinArray = [];
-            ChanArray = [];
-        end
-        if (checked_ERPset_Index_bin_chan(1)==0 && checked_ERPset_Index_bin_chan(2)==0) && gui_erp_filtering.all_bin_chan.Value
-            BinArray = [];
-            ChanArray = [];
-        end
+        def{5} =0;
         
         def{9} = BinArray;
         def{4} = ChanArray;
@@ -969,7 +919,7 @@ varargout{1} = ERP_filtering_box;
         
         defx = {answer{1},answer{2},answer{3},answer{4},answer{5},answer{6},answer{7},answer{8}};
         estudioworkingmemory('pop_filterp',defx);
-        %         estudioworkingmemory('filterp_advanced', 1);
+        
         
         locutoff    = answer{1}; % for high pass filter
         hicutoff    = answer{2}; % for low pass filter
@@ -979,11 +929,6 @@ varargout{1} = ERP_filtering_box;
         fdesign     = answer{6};
         remove_dc   = answer{7};
         BinArray =  answer{9};
-        
-        if checked_ERPset_Index_bin_chan(1) ==1 || checked_ERPset_Index_bin_chan(2) ==2
-            BinArray = [];
-            ChanArray =[];
-        end
         
         if locutoff >= fs/2 || locutoff< 0
             locutoff  = floor(fs/2)-1;
@@ -1111,37 +1056,14 @@ varargout{1} = ERP_filtering_box;
         ALLERP = observe_ERPDAT.ALLERP;
         for Numoferp = 1:numel(ERPArray)
             ERP = ALLERP(ERPArray(Numoferp));
-            ERP_before_bl = ERP;
-            
-            if (checked_ERPset_Index_bin_chan(1)==1 || checked_ERPset_Index_bin_chan(2)==2) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                if checked_ERPset_Index_bin_chan(1) ==1
-                    msgboxText =  ['Number of bins across the selected ERPsets is different!'];
-                elseif checked_ERPset_Index_bin_chan(2)==2
-                    msgboxText =  ['Number of channels across the selected ERPsets is different!'];
-                elseif checked_ERPset_Index_bin_chan(1)==1 && checked_ERPset_Index_bin_chan(2)==2
-                    msgboxText =  ['Number of channels and bins vary across the selected ERPsets'];
-                end
-                question = [  '%s\n\n "All" will be active instead of "Selected bin and chan".'];
-                title       = 'EStudio: Filtering';
-                button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
-                BinArray = [];
-                ChanArray = [];
+            if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
+                ChanArray = [1:ERP.nchan];
+            end
+            if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+                BinArray = [1:ERP.nbin];
             end
             
-            if (checked_ERPset_Index_bin_chan(1)==0 && checked_ERPset_Index_bin_chan(2)==0) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                BinArray = estudioworkingmemory('ERP_BinArray');
-                ChanArray = estudioworkingmemory('ERP_ChanArray');
-                [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
-                if chk(1)==1
-                    BinArray =  [1:ERP.nbin];
-                end
-                [chk, msgboxText] = f_ERP_chckbinandchan(ERP,[], ChanArray,2);
-                if chk(2)==1
-                    ChanArray =  [1:ERP.nchan];
-                end
-            end
-            
-            [ERP, ERPCOM] = pop_filterp(ERP, [1:ERP.nchan], 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
+            [ERP, ERPCOM] = pop_filterp(ERP, ChanArray,'binArray',BinArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'Saveas', 'off', 'History', 'gui');
             if isempty(ERPCOM)
                 return;
@@ -1151,14 +1073,7 @@ varargout{1} = ERP_filtering_box;
             else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
-            if ~isempty(BinArray) && ~isempty(ChanArray)
-                try
-                    ERP_before_bl.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
-                    ERP.bindata = ERP_before_bl.bindata;
-                catch
-                end
-            end
+            
             if isempty(ALLERP_out)
                 ALLERP_out = ERP;
             else
@@ -1185,7 +1100,6 @@ varargout{1} = ERP_filtering_box;
                 else
                     [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
                 end
-                
             else
                 ERP.filename = '';
                 ERP.saved = 'no';
@@ -1239,7 +1153,7 @@ varargout{1} = ERP_filtering_box;
         %
         %%chans and bins
         gui_erp_filtering.all_bin_chan.Value = allbin_chan;
-        gui_erp_filtering.Selected_bin_chan.Value = allbin_chan;
+        gui_erp_filtering.Selected_bin_chan.Value = ~allbin_chan;
         %
         %%high-pass filter
         try  hp_tog= gui_erp_filtering.params{2};catch hp_tog=0; gui_erp_filtering.params{2}=1; end

@@ -2,7 +2,7 @@
 %
 % FORMAT   :
 %
-% >> EEG = pop_eeglindetrend( EEG, detwindow );
+% >> EEG = pop_eeglindetrend( EEG,  'Baseline',detwindow );
 %
 %
 % INPUTS   :
@@ -17,8 +17,8 @@
 %
 % EXAMPLE  :
 %
-% EEG = pop_eeglindetrend( EEG, 'pre');
-% EEG = pop_eeglindetrend( EEG, [-300 100]);
+% EEG = pop_eeglindetrend( EEG,  'Baseline','pre');
+% EEG = pop_eeglindetrend( EEG, 'Baseline', [-300 100]);
 %
 %
 % See also blcerpGUI.m lindetrend.m
@@ -154,7 +154,7 @@ end
 
 detwindow   = p.Results.Baseline;
 % in case of an error
-if ischar(detwindow) && ~strcmpi(detwindow,'all') && ~strcmpi(detwindow,'pre') && ~strcmpi(detwindow,'post')
+if ischar(detwindow) && ~strcmpi(detwindow,'all') && ~strcmpi(detwindow,'pre') && ~strcmpi(detwindow,'post') && ~strcmpi(detwindow,'none')
     internum = str2num(detwindow);
     if length(internum)~=2
         msgboxText = ['Unappropriated time range for detrending\n'...

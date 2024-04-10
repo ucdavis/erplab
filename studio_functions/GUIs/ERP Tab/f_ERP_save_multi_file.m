@@ -153,12 +153,6 @@ ALLERP = handles.ALLERP;
 EEGArray = handles.EEGArray;
 suffix_edit = handles.edit_suffix_name.String;
 
-% if isempty(suffix_edit)
-%     msgboxText =  'You must enter a suffix at least!';
-%     title = 'EStudio: f_ERP_save_multi_file() error';
-%     errorfound(msgboxText, title);
-%     return
-% end
 
 
 DataString_before = handles.uitable1_erpset_table.Data;
@@ -167,12 +161,7 @@ for Numoferpset = 1:numel(EEGArray)
     DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-% set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
-% if handles.checkbox2_save_label.Value
-%     set(handles.uitable1_erpset_table,'Enable','off');
-% else
 set(handles.uitable1_erpset_table,'Enable','on');
-% end
 
 
 
@@ -320,8 +309,6 @@ guidata(hObject, handles);
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-% beep;
-disp('User selected Cancel.');
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);

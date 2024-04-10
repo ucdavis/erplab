@@ -161,7 +161,7 @@ end
 detwindow   = p.Results.Baseline;
 
 if ischar(detwindow)
-    if ~strcmpi(detwindow,'all') && ~strcmpi(detwindow,'pre') && ~strcmpi(detwindow,'post')
+    if ~strcmpi(detwindow,'all') && ~strcmpi(detwindow,'pre') && ~strcmpi(detwindow,'post') && ~strcmpi(detwindow,'none')
         internum = str2num(detwindow);
         if length(internum)~=2
             msgboxText = 'Wrong interval. Linear detrending will not be performed.';

@@ -356,7 +356,7 @@ varargout{1} = eegtab_events_box;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         [xpath, suffixstr, ext] = fileparts(fname);
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
         
         
         for Numoferp = 1:numel(ERPArray)

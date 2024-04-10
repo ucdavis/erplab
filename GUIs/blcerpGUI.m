@@ -519,7 +519,7 @@ ERP = handles.ERP;
 if  ~isempty(ERP) && iserpstruct(ERP)
     if isempty(binArray) || any(binArray(:)>ERP.nbin) || any(binArray(:)<1)
         msgboxText = ['Bin index(es) should be between 1 and',32,num2str(ERP.nbin)];
-        title = 'ERPLAB: channel inputs';
+        title = 'ERPLAB: bin inputs';
         errorfound(sprintf(msgboxText), title);
     end
     handles.bin_browse.Enable = 'on';
