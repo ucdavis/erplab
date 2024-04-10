@@ -24,7 +24,7 @@ function varargout = f_erp_viewerGUI(varargin)
 
 % Edit the above text to modify the response to help f_erp_viewerGUI
 
-% Last Modified by GUIDE v2.5 09-Apr-2024 14:39:57
+% Last Modified by GUIDE v2.5 09-Apr-2024 14:56:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -147,8 +147,8 @@ handles.ALLERP = ALLERP;
 ALLERP = handles.ALLERP;
 
 handles.positive_up=1;
-handles.pushbutton5_polarity.Value=1;
-handles.pushbutton5_polarity.BackgroundColor = [0.7020 0.7647 0.8392];
+handles.radiobutton7.Value=1;
+handles.radiobutton7.BackgroundColor = [0.7020 0.7647 0.8392];
 handles.radiobutton6.Value=0;
 
 if isempty(ALLERP)
@@ -270,15 +270,15 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton5_polarity.
-function pushbutton5_polarity_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_polarity_up.
+function pushbutton_polarity_up_Callback(hObject, eventdata, handles)
 ALLERP = handles.ALLERP;
 if isempty(ALLERP)
     return;
 end
 
 handles.positive_up=1;
-handles.pushbutton5_polarity.Value=1;
+handles.pushbutton_polarity_up.Value=1;
 handles.radiobutton6.Value=0;
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
@@ -2936,7 +2936,7 @@ handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
 
-function pushbutton5_polarity_DeleteFcn(hObject, eventdata, handles)
+function pushbutton_polarity_up_DeleteFcn(hObject, eventdata, handles)
 
 % --- Executes on button press in radiobutton6.
 function radiobutton6_Callback(hObject, eventdata, handles)
@@ -2945,8 +2945,22 @@ if isempty(ALLERP)
     return;
 end
 
-handles.positive_up=0;
-handles.pushbutton5_polarity.Value=1;
-handles.radiobutton6.Value=-1;
+handles.positive_up=-1;
+handles.radiobutton7.Value=0;
+handles.radiobutton6.Value=1;
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+% --- Executes on button press in radiobutton7.
+function radiobutton7_Callback(hObject, eventdata, handles)
+ALLERP = handles.ALLERP;
+if isempty(ALLERP)
+    return;
+end
+
+handles.positive_up=1;
+handles.radiobutton7.Value=1;
+handles.radiobutton6.Value=0;
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);

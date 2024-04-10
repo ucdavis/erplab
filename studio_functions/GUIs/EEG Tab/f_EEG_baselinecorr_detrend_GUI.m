@@ -492,19 +492,15 @@ varargout{1} = EEG_basecorr_detrend_box;
             end
             
             if gui_eeg_blc_dt.dt.Value ==1
-                [EEG LASTCOM] = pop_eeglindetrend( EEG, BaselineMethod, 'History','gui' );
+                [EEG LASTCOM] = pop_eeglindetrend( EEG, 'Baseline', BaselineMethod,'ChanArray',ChanArray, 'History','gui' );
             else
-                [EEG LASTCOM]= pop_blceeg( EEG , 'Baseline', BaselineMethod, 'Saveas', 'off','History','gui');
+                [EEG LASTCOM]= pop_blceeg( EEG , 'Baseline', BaselineMethod,'ChanArray',ChanArray,...
+                    'Saveas', 'off','History','gui');
             end
             if isempty(LASTCOM)
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-            %%Only the selected bin and chan were selected to remove baseline and detrending and others are remiained.
-            EEG_before_bl = ALLEEG(EEGArray(Numofeeg));
-            EEG_before_bl.data(ChanArray,:,:) = EEG.data(ChanArray,:,:);
-            EEG_before_bl.history = EEG.history;
-            EEG = EEG_before_bl;
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);

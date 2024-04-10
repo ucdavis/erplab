@@ -33,9 +33,9 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % EStudio Toolbox
-% Created by Javier Lopez-Calderon and Steven Luck
+% Created by Guanghui Zhang and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
-% javlopez@ucdavis.edu, sjluck@ucdavis.edu
+% ghzhang@ucdavis.edu, sjluck@ucdavis.edu
 
 
 function [EEG, LATCOM] = pop_blceeg(EEG, varargin)
@@ -75,10 +75,13 @@ if nargin==1
     end
     blcorr = answer{1};
     
+    ChanArray = answer{2};
+    
     %
     % Somersault
     %
-    [EEG, LATCOM] = pop_blceeg(EEG, 'Baseline', blcorr, 'Saveas', 'off', 'History', 'gui');
+    [EEG, LATCOM] = pop_blceeg(EEG, 'Baseline', blcorr,'ChanArray',ChanArray,...
+        'Saveas', 'off', 'History', 'gui');
     return
 end
 
@@ -91,10 +94,15 @@ p.CaseSensitive = false;
 p.addRequired('EEG');
 % option(s)
 p.addParamValue('Baseline', 'pre'); % EEGset index or input file
+p.addParamValue('ChanArray', [], @isnumeric); % 'on', 'off'
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(EEG, varargin{:});
 
+ChanArray = p.Results.ChanArray;
+if isempty(ChanArray) || any(ChanArray(:)>EEG.nbchan) || any(ChanArray(:)<1)
+    ChanArray = [1:EEG.nbchan];
+end
 
 
 kktime = 1000;
@@ -208,6 +216,12 @@ else
 end
 
 EEG.saved  = 'no';
+
+ChanArrayleft = setdiff([1:EEG.nbchan],ChanArray);%% channles are not for baseline correction
+if ~isempty(ChanArrayleft)
+    EEG.data(ChanArrayleft,:,:)  = EEGaux.data(ChanArrayleft,:,:);
+end
+
 % LATCOM = sprintf('%s = pop_blceeg( %s, %s);', inputname(1), inputname(1), blcorrcomm);
 
 %

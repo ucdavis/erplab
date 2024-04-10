@@ -516,9 +516,11 @@ varargout{1} = ERP_basecorr_detrend_box;
             end
             
             if gui_erp_blc_dt.dt.Value ==1
-                [ERP ERPCOM] = pop_erplindetrend( ERP, BaselineMethod , 'Saveas', 'off','History','gui');
+                [ERP ERPCOM] = pop_erplindetrend( ERP,'Baseline', BaselineMethod ,'ChanArray',ChanArray,...
+                    'BinArray',BinArray, 'Saveas', 'off','History','gui');
             else
-                [ERP ERPCOM]= pop_blcerp( ERP , 'Baseline', BaselineMethod, 'Saveas', 'off','History','gui');
+                [ERP ERPCOM]= pop_blcerp( ERP , 'Baseline', BaselineMethod,'ChanArray',ChanArray,...
+                    'BinArray',BinArray,'Saveas', 'off','History','gui');
             end
             if isempty(ERPCOM)
                 return;
@@ -529,13 +531,6 @@ varargout{1} = ERP_basecorr_detrend_box;
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
             
-            %%Only the selected bin and chan were selected to remove baseline and detrending and others are remiained.
-            if ~isempty(BinArray)
-                ERP_before_bl = ALLERP(Selected_erpset(Numoferp));
-                ERP_before_bl.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
-                ERP_before_bl.history = ERP.history;
-                ERP = ERP_before_bl;
-            end
             if isempty(ALLERP_out)
                 ALLERP_out = ERP;
             else

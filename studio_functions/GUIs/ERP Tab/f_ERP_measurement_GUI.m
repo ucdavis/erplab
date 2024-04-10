@@ -446,7 +446,7 @@ varargout{1} = erp_measurement_box;
             return;
         end
         Measure = Answer{1};
-  
+        
         
         
         switch Measure%Find the label of the selected item, the defualt one is 1 (Mean amplitude between two fixed latencies)

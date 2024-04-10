@@ -51,65 +51,70 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG, com] = pop_eeglindetrend( EEG, detwindow, varargin)
+function [EEG, com] = pop_eeglindetrend( EEG, varargin)
 com = '';
 if nargin < 1
-        help pop_lindetrend
-        return
+    help pop_lindetrend
+    return
 end
 if isobject(EEG) % eegobj
-        whenEEGisanObject % calls a script for showing an error window
-        return
+    whenEEGisanObject % calls a script for showing an error window
+    return
 end
 if nargin==1
-        if isempty(EEG(1).data)
-                msgboxText =  'pop_lindetrend() cannot read an empty dataset!';
-                title = 'ERPLAB: pop_lindetrend error';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG(1).epoch)
-                msgboxText =  'pop_lindetrend has been tested for epoched data only';
-                title = 'ERPLAB: pop_lindetrend error';
-                errorfound(msgboxText, title);
-                return
-        end
-        
-        def  = erpworkingmemory('pop_eeglindetrend');
-        if isempty(def)
-                def = 'pre';
-        end 
-        
-        %
-        % Call GUI
-        %
-        titlegui = 'Linear Detrend';
-        answer = blcerpGUI(EEG(1), titlegui, def);  % open GUI
-        if isempty(answer)
-                disp('User selected Cancel')
-                return
-        end
-        detwindow = answer{1};        
-        if ischar(detwindow) && strcmpi(detwindow, 'none')
-                disp('User selected Cancel')
-                return
-        end
-        if isempty(detwindow) 
-                disp('User selected Cancel')
-                return
-        end
-        
-        erpworkingmemory('pop_eeglindetrend', detwindow);
-        
-        if length(EEG)==1
-                EEG.setname = [EEG.setname '_ld']; % suggested name (si queris no mas!)
-        end
-        %
-        % Somersault
-        %
-        wchmsgonstr ='off'; %temporary
-        [EEG, com] = pop_eeglindetrend( EEG, detwindow, 'Warning', wchmsgonstr, 'History', 'gui');
+    if isempty(EEG(1).data)
+        msgboxText =  'pop_lindetrend() cannot read an empty dataset!';
+        title = 'ERPLAB: pop_lindetrend error';
+        errorfound(msgboxText, title);
         return
+    end
+    if isempty(EEG(1).epoch)
+        msgboxText =  'pop_lindetrend has been tested for epoched data only';
+        title = 'ERPLAB: pop_lindetrend error';
+        errorfound(msgboxText, title);
+        return
+    end
+    
+    def  = erpworkingmemory('pop_eeglindetrend');
+    if isempty(def)
+        def = 'pre';
+    end
+    
+    %
+    % Call GUI
+    %
+    titlegui = 'Linear Detrend';
+    answer = blcerpGUI(EEG(1), titlegui, def);  % open GUI
+    if isempty(answer)
+        disp('User selected Cancel')
+        return
+    end
+    detwindow = answer{1};
+    if ischar(detwindow) && strcmpi(detwindow, 'none')
+        disp('User selected Cancel')
+        return
+    end
+    if isempty(detwindow)
+        disp('User selected Cancel')
+        return
+    end
+    
+    erpworkingmemory('pop_eeglindetrend', detwindow);
+    
+    if length(EEG)==1
+        EEG.setname = [EEG.setname '_ld']; % suggested name (si queris no mas!)
+    end
+    
+    ChanArray = answer{2};
+    
+    
+    %
+    % Somersault
+    %
+    wchmsgonstr ='off'; %temporary
+    [EEG, com] = pop_eeglindetrend( EEG, 'Baseline', detwindow,'ChanArray',ChanArray,...
+        'Warning', wchmsgonstr, 'History', 'gui');
+    return
 end
 
 %
@@ -119,116 +124,135 @@ p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 p.addRequired('EEG');
-p.addRequired('detwindow');
 % option(s)
+p.addParamValue('Baseline', 'pre');
 p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('ChanArray', [], @isnumeric); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
-p.parse(EEG, detwindow, varargin{:});
+p.parse(EEG, varargin{:});
 
 if strcmpi(p.Results.Warning,'on')
-        wchmsgon = 1;
+    wchmsgon = 1;
 else
-        wchmsgon = 0;
+    wchmsgon = 0;
 end
 if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
+    shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
+    shist = 2; % script
 elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
+    shist = 1; % gui
 else
-        shist = 0; % off
+    shist = 0; % off
 end
 
+ChanArray = p.Results.ChanArray;
+if isempty(ChanArray) || any(ChanArray(:)>EEG.nbchan) || any(ChanArray(:)<1)
+    ChanArray = [1:EEG.nbchan];
+end
+
+detwindow   = p.Results.Baseline;
 % in case of an error
 if ischar(detwindow) && ~strcmpi(detwindow,'all') && ~strcmpi(detwindow,'pre') && ~strcmpi(detwindow,'post')
-        internum = str2num(detwindow);
-        if length(internum)~=2
-                msgboxText = ['Unappropriated time range for detrending\n'...
-                        'lindetrend() was ended.\n'];
-                if shist == 1; % gui
-                        title = 'ERPLAB: pop_eeglindetrend() error';
-                        errorfound(sprintf(msgboxText), title);
-                        return
-                else
-                        error('prog:input', msgboxText)
-                end
+    internum = str2num(detwindow);
+    if length(internum)~=2
+        msgboxText = ['Unappropriated time range for detrending\n'...
+            'lindetrend() was ended.\n'];
+        if shist == 1; % gui
+            title = 'ERPLAB: pop_eeglindetrend() error';
+            errorfound(sprintf(msgboxText), title);
+            return
+        else
+            error('prog:input', msgboxText)
         end
+    end
 end
 
 %
 % process multiple datasets. Updated August 23, 2013 JLC
 %
-options1 = {detwindow, 'Warning', p.Results.Warning, 'History', 'gui'};
+options1 = {'Baseline',detwindow,'ChanArray',ChanArray, 'Warning', p.Results.Warning, 'History', 'gui'};
+EEGaux = EEG;
+ChanArrayleft = setdiff([1:EEG.nbchan],ChanArray);
 if length(EEG) > 1
-        [ EEG, com ] = eeg_eval( 'pop_eeglindetrend', EEG, 'warning', 'on', 'params', options1);       
-        return;
+    [ EEG, com ] = eeg_eval( 'pop_eeglindetrend', EEG, 'warning', 'on', 'params', options1);
+    if ~isempty(ChanArrayleft)
+        if length(EEG) > 1
+            for Numofeeg = 1:length(EEG)
+                EEG(Numofeeg).data(ChanArrayleft,:,:)  = EEGaux(Numofeeg).data(ChanArrayleft,:,:);
+            end
+        end
+    end
+    return;
 end;
+
+
 
 %
 % subroutine
 %
 EEG = lindetrend( EEG, detwindow);
+if ~isempty(ChanArrayleft)
+    EEG.data(ChanArrayleft,:,:)  = EEGaux.data(ChanArrayleft,:,:);
+end
+
+
 % com = sprintf( '%s = pop_eeglindetrend( %s, ''%s'' );', inputname(1), inputname(1), detwindow);
 %
 % History
 %
-skipfields = {'EEG', 'detwindow','Saveas','History'};
+skipfields = {'EEG','Saveas','History'};
 fn     = fieldnames(p.Results);
-if isnumeric(detwindow)
-        dtwin = vect2colon(detwindow);
-else
-        dtwin = ['''' detwindow ''''];
-end
-com = sprintf('%s = pop_eeglindetrend( %s, %s', inputname(1), inputname(1), dtwin);
-        
+
+com = sprintf('%s = pop_eeglindetrend( %s,', inputname(1), inputname(1));
+
 for q=1:length(fn)
-        fn2com = fn{q};
-        if ~ismember_bc2(fn2com, skipfields)
-                fn2res = p.Results.(fn2com);
-                if ~isempty(fn2res)
-                        if ischar(fn2res)
-                                if ~strcmpi(fn2res,'off')
-                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
-                                end
-                        else
-                                if iscell(fn2res)
-                                        if ischar([fn2res{:}])
-                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
-                                        else
-                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
-                                        end
-                                        fnformat = '{%s}';
-                                else
-                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
-                                        fnformat = '%s';
-                                end
-                                if strcmpi(fn2com,'Criterion')
-                                        if p.Results.Criterion<100
-                                                com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
-                                        end
-                                else
-                                        com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
-                                end
-                        end
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
                 end
+            else
+                if iscell(fn2res)
+                    if ischar([fn2res{:}])
+                        fn2resstr = sprintf('''%s'' ', fn2res{:});
+                    else
+                        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                    end
+                    fnformat = '{%s}';
+                else
+                    fn2resstr = vect2colon(fn2res, 'Sort','on');
+                    fnformat = '%s';
+                end
+                if strcmpi(fn2com,'Criterion')
+                    if p.Results.Criterion<100
+                        com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                    end
+                else
+                    com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                end
+            end
         end
+    end
 end
 com = sprintf( '%s );', com);
 
 % get history from script. EEG
 switch shist
-        case 1 % from GUI
-                com = sprintf('%s %% GUI: %s', com, datestr(now));
-                %fprintf('%%Equivalent command:\n%s\n\n', com);
-                displayEquiComERP(com);
-        case 2 % from script
-                EEG = erphistory(EEG, [], com, 1);
-        case 3
-                % implicit
-        otherwise %off or none
-                com = '';
+    case 1 % from GUI
+        com = sprintf('%s %% GUI: %s', com, datestr(now));
+        %fprintf('%%Equivalent command:\n%s\n\n', com);
+        displayEquiComERP(com);
+    case 2 % from script
+        EEG = erphistory(EEG, [], com, 1);
+    case 3
+        % implicit
+    otherwise %off or none
+        com = '';
 end
 
 %
