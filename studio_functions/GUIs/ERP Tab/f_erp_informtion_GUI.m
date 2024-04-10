@@ -104,9 +104,9 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_information.total_rejected = uiextras.HBox('Parent',gui_erp_information.DataSelBox);
         gui_erp_information.total_rejected_percentage  = uicontrol('Style','text','Parent', gui_erp_information.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_information.total_rejected_percentage,'HorizontalAlignment','left');
+
         
-        
-        %%------------totla rejected----------
+        %%----------------------totla rejected-----------------------------
         gui_erp_information.total_rejected_show = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_information.total_rejected_option2  = uicontrol('Style','pushbutton','Parent', gui_erp_information.total_rejected_show,'String','Bin Info Table',...
             'callback',@total_reject_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -242,7 +242,6 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_information.total_rejected_percentage.Enable = Enable_label;
         gui_erp_information.total_rejected_option.Enable = Enable_label;
         gui_erp_information.total_rejected_option2.Enable = Enable_label;
-        
         try
             filesetname{1,1} = ERP.erpname;
             filesetname{2,1} = ERP.filename;
@@ -269,8 +268,8 @@ drawui_erp_information(FonsizeDefault);
         feval('dq_trial_rejection',observe_ERPDAT.ALLERP(ERPArray),[],0);
         
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
-        ERPCOM = ['ERPArray=',vect2colon(ERPArray),'; feval("dq_trial_rejection",ALLERP(ERPArray),[],0);'];
-        ALLERPCOM{end+1} = char(ERPCOM);
+        ERPCOM = ['feval("dq_trial_rejection",ALLERP(',vect2colon(ERPArray),'),[],0);'];
+        [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ERP, ALLERPCOM, ERPCOM,2);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.Count_currentERP = 20;

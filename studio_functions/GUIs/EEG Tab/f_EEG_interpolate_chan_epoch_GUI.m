@@ -8,7 +8,7 @@
 % Oct.2023
 
 
-function varargout = f_EEG_interpolate_chan_epoch_GUI(varargin) 
+function varargout = f_EEG_interpolate_chan_epoch_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
@@ -269,7 +269,9 @@ varargout{1} = box_interpolate_chan_epoch;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        Source.String= vect2colon(Newchan);
+        Newchan =  vect2colon(Newchan);
+        Newchan = erase(Newchan,{'[',']'});
+        Source.String= Newchan;
     end
 
 
@@ -313,7 +315,9 @@ varargout{1} = box_interpolate_chan_epoch;
         
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String  = vect2colon(chan_label_select);
+            chan_label_select =  vect2colon(chan_label_select);
+            chan_label_select = erase(chan_label_select,{'[',']'});
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String  = chan_label_select;
         else
             return
         end

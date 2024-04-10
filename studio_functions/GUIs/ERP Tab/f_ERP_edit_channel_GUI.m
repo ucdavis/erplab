@@ -166,6 +166,9 @@ varargout{1} = EStudio_erp_box_edit_chan;
             Source.String = '';
             return;
         end
+        New_chans =  vect2colon(New_chans);
+        New_chans = erase(New_chans,{'[',']'});
+        Source.String = New_chans;
     end
 
 %%-----------------------browse channels-----------------------------------
@@ -204,7 +207,9 @@ varargout{1} = EStudio_erp_box_edit_chan;
         titlename = 'Select Channel(s):';
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            ERP_tab_edit_chan.select_edit_chan.String  = vect2colon(chan_label_select);
+            chan_label_select =  vect2colon(chan_label_select);
+            chan_label_select = erase(chan_label_select,{'[',']'});
+            ERP_tab_edit_chan.select_edit_chan.String  = chan_label_select;
         else
             return
         end
@@ -266,9 +271,9 @@ varargout{1} = EStudio_erp_box_edit_chan;
             Formula_str = strcat(['delerpchan(', vect2colon(ChanArray),')']);
             
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, {Formula_str}, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
-           if isempty(ERPCOM)
-              return; 
-           end
+            if isempty(ERPCOM)
+                return;
+            end
             if Numoferp ==numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             else
@@ -316,7 +321,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 ALLERP(length(ALLERP)+1) = ERP;
             end
         end
-          assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.ALLERP = ALLERP;
         if CreateERPFlag==1
@@ -408,7 +413,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             [ERP, ERPCOM] = pop_rename2chan(ALLERP,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'gui');
             if isempty(ERPCOM)
-               return; 
+                return;
             end
             if Numoferp ==numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);

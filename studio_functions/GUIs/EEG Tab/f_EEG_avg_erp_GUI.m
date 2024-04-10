@@ -617,7 +617,7 @@ varargout{1} = Eegtab_box_avg_erp;
             excboundstr = 'off';
         end
         
-        ALLEEG = observe_EEGDAT.ALLEEG;
+        ALLEEG1 = observe_EEGDAT.ALLEEG;
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
         catch
@@ -632,25 +632,25 @@ varargout{1} = Eegtab_box_avg_erp;
             assignin('base','ALLERPCOM',ERPCOM);
         end
         
-        Answer = f_ERP_save_multi_file(ALLEEG,EEGArray,'',0);
+        Answer = f_ERP_save_multi_file(ALLEEG1,EEGArray,'',0);
         if isempty(Answer)
             return;
         end
         if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
+            ALLEEG = Answer{1};
             Save_file_label = Answer{2};
         end
         ALLERP = [];
         for Numofeeg = 1:numel(EEGArray)
             setindex =EEGArray(Numofeeg);
-            EEG = ALLEEG_advance(setindex);
+            EEG = ALLEEG(setindex);
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Compute Averaged ERPs (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run the pop_ command with the user input from the GUI
             
-            [ERP, ERPCOM]  = pop_averager(ALLEEG_advance, 'DSindex', setindex, 'Criterion', artcritestr,...
+            [ERP, ERPCOM]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
                 'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
                 'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt, 'DQ_custom_wins', DQcustom_wins, ...
                 'History', 'implicit','Saveas','off');
@@ -663,7 +663,11 @@ varargout{1} = Eegtab_box_avg_erp;
                 eegh(ERPCOM);
             end
             fprintf([ERPCOM,'\n']);
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            if Numofeeg ==numel(EEGArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
             ERP.erpname = EEG.setname;
             [pathstr, file_name, ~] = fileparts(EEG.filename);
             ERP.filename = [file_name,'.erp'];
@@ -679,7 +683,11 @@ varargout{1} = Eegtab_box_avg_erp;
                 ERP.filepath = pathstr;
                 %%----------save the current sdata as--------------------
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                ERP = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                if Numofeeg ==numel(EEGArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
                 if Numofeeg==1
                     eegh(ERPCOM);
                 end
@@ -699,10 +707,12 @@ varargout{1} = Eegtab_box_avg_erp;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             estudioworkingmemory('EEGTab_eeg2erp',1);
         end%%end for loop of subjects
-        feval('dq_trial_rejection',ALLERP,ALLEEG(EEGArray));
+        feval('dq_trial_rejection',ALLERP,ALLEEG1(EEGArray));
+        ERPCOM = ['feval("dq_trial_rejection",ALLERP,ALLEEG(',vect2colon(EEGArray),'));'];
         observe_EEGDAT.eeg_panel_message =2;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+        [observe_ERPDAT.ERP,ALLERPCOM] = erphistory( observe_ERPDAT.ERP, ALLERPCOM, ERPCOM,2);
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);

@@ -158,7 +158,7 @@ varargout{1} = box_erp_history;
             return;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
-            Enableflag = 'off';
+            Enableflag = 'on';
         else
             Enableflag = 'on';
         end
@@ -204,9 +204,9 @@ varargout{1} = box_erp_history;
 
 %%-------------show history to command window------------------------------
     function show_cmd(~,~)
-        if isempty(observe_ERPDAT.ERP)
-            return;
-        end
+%         if isempty(observe_ERPDAT.ERP)
+%             return;
+%         end
         MessageViewer= char(strcat('History > Show in cmd window'));
         estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
         observe_ERPDAT.Process_messg=1;

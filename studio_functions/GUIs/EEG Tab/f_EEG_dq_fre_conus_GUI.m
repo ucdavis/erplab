@@ -194,6 +194,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
+        ChanArray =  vect2colon(ChanArray);
+        ChanArray = erase(ChanArray,{'[',']'});
+        Source.String = ChanArray;
     end
 
 
@@ -236,7 +239,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         titlename = 'Select Channel(s):';
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            EEG_dq_fre_conus.chans_edit.String  = vect2colon(chan_label_select);
+            chan_label_select =  vect2colon(chan_label_select);
+            chan_label_select = erase(chan_label_select,{'[',']'});
+            EEG_dq_fre_conus.chans_edit.String  = chan_label_select;
         else
             return
         end
@@ -443,9 +448,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-           
+            
             fprintf([LASTCOM,'\n']);
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG); 
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
@@ -486,7 +491,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         
         chanOld = str2num(EEG_dq_fre_conus.chans_edit.String);
         if isempty(chanOld)
-            EEG_dq_fre_conus.chans_edit.String= vect2colon(1:observe_EEGDAT.EEG.nbchan);
+            ChanArray =  vect2colon(1:observe_EEGDAT.EEG.nbchan);
+            ChanArray = erase(ChanArray,{'[',']'});
+            EEG_dq_fre_conus.chans_edit.String= ChanArray;
         end
         
         data_tab = EEG_dq_fre_conus.bandtable.Data;

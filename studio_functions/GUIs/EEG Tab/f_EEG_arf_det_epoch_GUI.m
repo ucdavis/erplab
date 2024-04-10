@@ -548,6 +548,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Source.String= vect2colon([1:ChaNum]);
             return;
         end
+        ChanArray =  vect2colon(ChanArray);
+        ChanArray = erase(ChanArray,{'[',']'});
+        Source.String = ChanArray;
     end
 
 %%----------------------------Browse chans---------------------------------
@@ -591,7 +594,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            Eegtab_EEG_art_det_epoch.chan_edit.String  = vect2colon(chan_label_select);
+            chan_label_select =  vect2colon(chan_label_select);
+            chan_label_select = erase(chan_label_select,{'[',']'});
+            Eegtab_EEG_art_det_epoch.chan_edit.String  = chan_label_select;
         else
             return
         end
