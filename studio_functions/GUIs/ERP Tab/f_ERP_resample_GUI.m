@@ -401,6 +401,7 @@ varargout{1} = box_erp_resample;
                 msgboxText='Sampling Rate & Epoch: New sampling rate must be a positive value';
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
         else
@@ -414,12 +415,14 @@ varargout{1} = box_erp_resample;
                 msgboxText='Sampling Rate & Epoch: the left edge for the new time window must be a single value';
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if NewStart>= observe_ERPDAT.ERP.times(end)
                 msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than',32,num2str(observe_ERPDAT.times(end)),'ms'];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             
@@ -427,6 +430,7 @@ varargout{1} = box_erp_resample;
                 msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than 0 ms'];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             Newend = str2num(gui_erp_resample.nwtimewindow_editright.String);
@@ -434,12 +438,14 @@ varargout{1} = box_erp_resample;
                 msgboxText='Sampling Rate & Epoch: the right edge for the new time window must be a single value';
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if Newend<= observe_ERPDAT.ERP.times(1)
                 msgboxText=['Sampling Rate & Epoch: the right edge for the new time window should be larger than',32,num2str(observe_ERPDAT.times(1)),'ms'];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             
@@ -447,6 +453,7 @@ varargout{1} = box_erp_resample;
                 msgboxText=['Sampling Rate & Epoch: the right edge for the new time window should be larger than 0 ms'];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
         else
@@ -492,7 +499,8 @@ varargout{1} = box_erp_resample;
             [ERP, ERPCOM] = pop_resamplerp(ERP, 'Freq2resamp',Freq2resamp, 'TimeRange',TimeRange,...
                 'Saveas', 'off', 'History', 'gui');
             if isempty(ERPCOM)
-               return; 
+                observe_ERPDAT.Process_messg =2;
+                return;
             end
             if Numoferp == numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
@@ -508,6 +516,7 @@ varargout{1} = box_erp_resample;
         
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_resampled');
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if ~isempty(Answer{1})

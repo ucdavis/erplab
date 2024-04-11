@@ -9,7 +9,7 @@
 % Sep. 2023
 
 
-function varargout = f_EEG_eeglabtool_GUI(varargin) 
+function varargout = f_EEG_eeglabtool_GUI(varargin)
 
 global observe_EEGDAT;
 % addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
@@ -130,6 +130,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -178,6 +179,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -190,12 +192,14 @@ varargout{1} = EStudio_box_eeglab_tool;
         fprintf(LASTCOM,'\n');
         if isempty(LASTCOM)
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            rerurn;
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
         end
         EEG = eegh(LASTCOM, EEG);
         eegh(LASTCOM);
         Answer = f_EEG_save_multi_file(EEG,1,'_eeginfo');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         Save_file_label =0;
@@ -263,6 +267,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -284,6 +289,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         
         Answer = f_EEG_save_multi_file(EEG,1,'_evetvalue');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         Save_file_label =0;
@@ -350,6 +356,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -361,6 +368,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         LASTCOM = ['EEG',LASTCOM];
         if isempty(LASTCOM)
             fprintf( ['\n',repmat('-',1,100) '\n']);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         fprintf(LASTCOM,'\n');
@@ -369,6 +377,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         
         Answer = f_EEG_save_multi_file(EEG,1,'_chanlos');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         Save_file_label =0;
@@ -436,6 +445,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -450,6 +460,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             msgboxText = ['EEGLAB Tools > Reject data using clean rawdata and ASR: Clean Rawdata tool was not included in EEGLAB plugin'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if isempty(LASTCOM)
@@ -462,6 +473,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         
         Answer = f_EEG_save_multi_file(EEG,1,'_asr');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         Save_file_label =0;
@@ -535,6 +547,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -574,7 +587,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             result       = inputgui( geometry, promptstr, 'pophelp(''pop_spectopo'')', ['Channel spectra and maps for eegset:',num2str(EEGArray(Numofeeg))]);
             if size(result,1) == 0
                 estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > EEGLAB Tools > Spectra and maps:User selected cancel');
-                observe_EEGDAT.eeg_panel_message =4;
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
             end
@@ -659,6 +672,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -676,7 +690,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             'title', fastif( typecomp, 'Channel properties - pop_prop()', 'Component properties - pop_prop()'));
         if size( result, 1 ) == 0
             estudioworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties:User selected cancel');
-            observe_EEGDAT.eeg_panel_message =4;
+            observe_EEGDAT.eeg_panel_message =2;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             return;
         end
@@ -699,6 +713,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -706,7 +721,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         EEG = observe_EEGDAT.ALLEEG(EEGArray);
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf(['*Chan properties*',32,32,32,32,datestr(datetime('now')),'\n']);
-        fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+        fprintf(['Your current data',32,num2str(EEGArray),':',EEG.setname,'\n']);
         for Numofchan = 1:numel(chanorcomp)
             LASTCOM =  pop_prop( EEG, 1, chanorcomp(Numofchan), NaN, spec_opt);
             set(gcf,'Name',['eegset',32,num2str(EEGArray),': Channel properties for',32,EEG.setname],'NumberTitle', 'off');
@@ -745,6 +760,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -754,7 +770,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         fprintf(['Your current data',32,num2str(EEGArray),':',EEG.setname,'\n']);
         LASTCOM =  pop_newtimef(EEG,1);
         if isempty(LASTCOM)
-            observe_EEGDAT.eeg_panel_message =1;
+            observe_EEGDAT.eeg_panel_message =2;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             return;
         end

@@ -1040,7 +1040,7 @@ varargout{1} = erp_measurement_box;
             ERPArraydef =  observe_ERPDAT.CURRENTERP;
         end
         ERPsetArray =  str2num(ERPMTops.m_t_erpset.String);
-        if isempty(ERPsetArray) || any(ERPsetArray>length(observe_ERPDAT.ALLERP))
+        if isempty(ERPsetArray) || any(ERPsetArray(:)>length(observe_ERPDAT.ALLERP))
             ERPsetArray =  ERPArraydef;
         end
         

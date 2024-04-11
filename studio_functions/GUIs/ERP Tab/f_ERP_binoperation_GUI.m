@@ -160,10 +160,10 @@ varargout{1} = ERP_bin_operation_gui;
         ERP = observe_ERPDAT.ERP;
         answer = binoperGUI(ERP, def);
         if isempty(answer)
+            observe_ERPDAT.Process_messg =2;
             return
         end
         
-        binopGUI = estudioworkingmemory('binopGUI');
         ModeValue = binopGUI.emode;
         if ModeValue ==0
             gui_erp_bin_operation.mode_modify.Value =1;
@@ -257,6 +257,7 @@ varargout{1} = ERP_bin_operation_gui;
             msgboxText =  ['Bin Operations >Save - You have not yet written a formula'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         pathName =  estudioworkingmemory('EEG_save_folder');
@@ -333,6 +334,9 @@ varargout{1} = ERP_bin_operation_gui;
         if isempty(FormulaArrayIn)
             val = 0;
             def =  estudioworkingmemory('pop_binoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             FormulaArrayIn_default = def{1};
             if ~isempty(FormulaArrayIn_default)
                 [val, formulaArray]= f_testsyntaxtype(FormulaArrayIn_default, 'recu');
@@ -346,6 +350,9 @@ varargout{1} = ERP_bin_operation_gui;
             gui_erp_bin_operation.edit_bineq.Data =formulaArray;
             set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             def =  estudioworkingmemory('pop_binoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             def{1} = formulaArray;
             estudioworkingmemory('pop_binoperator',def);
         end
@@ -395,6 +402,9 @@ varargout{1} = ERP_bin_operation_gui;
             gui_erp_bin_operation.edit_bineq.Data =formulaArray;
             set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             def =  estudioworkingmemory('pop_binoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             def{1} = formulaArray;
             estudioworkingmemory('pop_binoperator',def);
         end
@@ -471,6 +481,7 @@ varargout{1} = ERP_bin_operation_gui;
             ERP = ALLERP(ERPArray(Numoferp));
             [ERP ERPCOM]= pop_binoperator( ERP, Formula_str, 'Warning', 'on', 'ErrorMsg', 'command', 'Saveas', 'off', 'History', 'gui');
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if Numoferp ==numel(ERPArray)
@@ -488,6 +499,7 @@ varargout{1} = ERP_bin_operation_gui;
         if gui_erp_bin_operation.mode_create.Value
             Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_binop');
             if isempty(Answer)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if ~isempty(Answer{1})
@@ -504,7 +516,7 @@ varargout{1} = ERP_bin_operation_gui;
                 if Save_file_label==1
                     [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Numoferp).erpname,...
                         'filename', ALLERP_out(ERPArray(Numoferp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
-                     ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                    ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
                     if Numoferp ==numel(ERPArray)
                         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                     else

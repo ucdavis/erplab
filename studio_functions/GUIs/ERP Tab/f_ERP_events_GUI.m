@@ -94,6 +94,7 @@ varargout{1} = eegtab_events_box;
             msgboxText = ['EventList >  Export RTs: No EVETLIST, please create one first'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         
@@ -110,7 +111,7 @@ varargout{1} = eegtab_events_box;
         param  = saveRTGUI(def, e2);
         
         if isempty(param)
-            disp('User selected Cancel')
+            observe_ERPDAT.Process_messg =2;
             return
         end
         filenamei  = param{1};
@@ -144,7 +145,7 @@ varargout{1} = eegtab_events_box;
             ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
             if ~isfield(ERP, 'EVENTLIST')
                 estudioworkingmemory('f_ERP_proces_messg','EventList >  Export RTs:EVENTLIST structure is empty');
-                observe_ERPDAT.Process_messg =4;
+                observe_ERPDAT.Process_messg =2;
             else
                 filenameeeg = ERP.filename;
                 [pathxeeg, filenameeeg, ext] = fileparts(filenameeeg);
@@ -258,6 +259,7 @@ varargout{1} = eegtab_events_box;
             
             if isequal(filename,0)
                 fprintf( ['\n',repmat('-',1,100) '\n']);
+                observe_ERPDAT.Process_messg =2;
                 return
             else
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
@@ -280,6 +282,7 @@ varargout{1} = eegtab_events_box;
         Save_file_label = 0;
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray), '_impel');
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -340,12 +343,14 @@ varargout{1} = eegtab_events_box;
             msgboxText =  ['EventList >Export eventlist: Please check the current EEG.EVENTLIST'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         
         [fname, pathname] = uiputfile({'*.txt*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         
         if isequal(fname,0)
+            observe_ERPDAT.Process_messg =2;
             return
         end
         ERPArray =  estudioworkingmemory('selectederpstudio');
@@ -451,6 +456,7 @@ varargout{1} = eegtab_events_box;
             
             if isequal(filename,0)
                 fprintf( ['\n',repmat('-',1,100) '\n']);
+                observe_ERPDAT.Process_messg =2;
                 return
             else
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
@@ -470,6 +476,7 @@ varargout{1} = eegtab_events_box;
         Save_file_label = 0;
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray), '_impel');
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -534,6 +541,7 @@ varargout{1} = eegtab_events_box;
         
         [fname, pathname] = uiputfile({'*.xls*';'*.xlsx*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         if isequal(fname,0)
+            observe_ERPDAT.Process_messg =2;
             return
         end
         ERPArray =  estudioworkingmemory('selectederpstudio');

@@ -418,6 +418,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             msgboxText = ['Spectral Data Quality (Continuous EEG) > Run: Index(es) of the chans must be between 1 and ',32,num2str(bnchan)];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         

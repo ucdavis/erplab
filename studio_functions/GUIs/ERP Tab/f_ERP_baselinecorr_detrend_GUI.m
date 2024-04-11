@@ -523,6 +523,7 @@ varargout{1} = ERP_basecorr_detrend_box;
                     'BinArray',BinArray,'Saveas', 'off','History','gui');
             end
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if  Numoferp ==numel(Selected_erpset)
@@ -539,6 +540,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         end%%Loop end for the selected ERset
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(Selected_erpset),Suffix_str);
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if ~isempty(Answer{1})

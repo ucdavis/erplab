@@ -158,8 +158,7 @@ if strcmpi(RestoreEvent,'on')
     
 end
 
-% com = sprintf('%s = pop_epoch2continuous(%s);', inputname(1), inputname(1));
-com = sprintf( '%s = pop_bdfrecovery( %s ', inputname(1), inputname(1) );
+com = sprintf( '%s = pop_epoch2continuous( %s ', inputname(1), inputname(1) );
 skipfields = {'History'};
 fn     = fieldnames(p.Results);
 for q=1:length(fn)

@@ -143,6 +143,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             [EEG, LASTCOM] = pop_resetrej(EEG, 'ResetArtifactFields', arjmstr, 'ArtifactFlag', arflag, 'UserFlag', usflag, 'History', 'implicit');
@@ -165,6 +166,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end%%end for loop of subjects
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_resetrej');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -254,6 +256,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             [EEG, LASTCOM] = pop_syncroartifacts(EEG, 'Direction', dircom, 'History', 'implicit');
@@ -276,6 +279,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end%%end for loop of subjects
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_synctrej');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})

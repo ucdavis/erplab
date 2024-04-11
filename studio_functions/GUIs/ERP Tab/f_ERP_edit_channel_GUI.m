@@ -241,6 +241,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             msgboxText='Edit/Delete Channels & Locations >  Delete selected chan > Indexes of chans should be positive numbers';
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
@@ -257,6 +258,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             
@@ -265,6 +267,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 fprintf( ['\n',repmat('-',1,100) '\n']);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             keeplocs=1;
@@ -272,6 +275,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, {Formula_str}, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if Numoferp ==numel(ERPArray)
@@ -289,6 +293,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if CreateERPFlag==1
             Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_delchan');
             if isempty(Answer)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if ~isempty(Answer{1})
@@ -332,7 +337,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
@@ -393,7 +397,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Chanlabelsold = Chanlabelsold(ChanArray);
             catch
                 fprintf( [repmat('-',1,100) '\n']);
-                observe_ERPDAT.Process_messg =3;
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             CURRENTSET = ERPArray(Numoferp);
@@ -413,6 +417,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             [ERP, ERPCOM] = pop_rename2chan(ALLERP,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'gui');
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if Numoferp ==numel(ERPArray)
@@ -435,6 +440,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         else
             Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_rnchan');
             if isempty(Answer)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if ~isempty(Answer{1})
@@ -539,6 +545,8 @@ varargout{1} = EStudio_erp_box_edit_chan;
             [ERP, ERPCOM] = pop_editdatachanlocs(ALLERP,ERPArray(Numoferp),...
                 'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'gui');
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
+                fprintf( ['\n',repmat('-',1,100) '\n']);
                 return;
             end
             if Numoferp ==numel(ERPArray)
@@ -559,6 +567,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if CreateERPFlag==1
             Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_editchan');
             if isempty(Answer)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if ~isempty(Answer{1})

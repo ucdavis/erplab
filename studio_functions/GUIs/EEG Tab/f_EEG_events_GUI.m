@@ -75,7 +75,6 @@ varargout{1} = EStudio_eeg_events_box;
         
         EStduio_eegtab_EEG_events.vieweventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title,...
             'String','View ','callback',@vieweventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        %         EStduio_eegtab_EEG_events.transfer_event_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         
         EStduio_eegtab_EEG_events.imp_eventlist_exc = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title ,...
             'String','Import .xls','callback',@imp_eventlist_exc,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
@@ -284,11 +283,16 @@ varargout{1} = EStudio_eeg_events_box;
                 %% Run pop_ command again with the inputs from the GUI
                 [EEG, LASTCOM] = pop_creabasiceventlist(EEG, 'Eventlist', filename1, 'BoundaryString', boundarystrcode,...
                     'BoundaryNumeric', newboundarynumcode,'Warning', striswarning, 'AlphanumericCleaning', stralphanum, 'History', 'gui');
+                if isempty(LASTCOM)
+                    fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                    observe_EEGDAT.eeg_panel_message =2;
+                    return;
+                end
+                
                 EEG = eegh(LASTCOM, EEG);
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
-                
                 [ALLEEG_out, EEG, ~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
                 if Numofeeg==1
                     eegh(LASTCOM);
@@ -301,6 +305,7 @@ varargout{1} = EStudio_eeg_events_box;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray), '_elist');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -359,10 +364,11 @@ varargout{1} = EStudio_eeg_events_box;
         estudioworkingmemory('f_EEG_proces_messg','EventList >  Export RTs');
         observe_EEGDAT.eeg_panel_message =1;
         
-        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST')
+        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
             msgboxText = ['EventList >  Export RTs: No EVETLIST, please create one first'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -380,7 +386,7 @@ varargout{1} = EStudio_eeg_events_box;
         param  = saveRTGUI(def, e2);
         
         if isempty(param)
-            disp('User selected Cancel')
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         filenamei  = param{1};
@@ -435,6 +441,7 @@ varargout{1} = EStudio_eeg_events_box;
                 else
                     fprintf(2,['Cannot export reaction times for:',32,EEG.setname,'\n']);
                     fprintf( [repmat('-',1,100) '\n']);
+                    observe_EEGDAT.eeg_panel_message =2;
                 end
             end
         end
@@ -510,6 +517,7 @@ varargout{1} = EStudio_eeg_events_box;
             
             if isequal(filename,0)
                 fprintf( ['\n',repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return
             else
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
@@ -517,6 +525,8 @@ varargout{1} = EStudio_eeg_events_box;
             
             [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
             if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
+                fprintf( ['\n',repmat('-',1,100) '\n\n']);
                 return;
             end
             EEG = eegh(LASTCOM, EEG);
@@ -533,6 +543,7 @@ varargout{1} = EStudio_eeg_events_box;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray), '_impel');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -594,6 +605,7 @@ varargout{1} = EStudio_eeg_events_box;
             msgboxText =  ['EventList >Export eventlist: Please check the current EEG.EVENTLIST'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -645,6 +657,8 @@ varargout{1} = EStudio_eeg_events_box;
                 disp(['For EVENTLIST output user selected ', filenameeg])
                 [EEG, LASTCOM] = pop_exporteegeventlist( EEG , 'Filename', filenameeg,'History','gui');
                 if isempty(LASTCOM)
+                    observe_EEGDAT.eeg_panel_message =2;
+                    fprintf( [repmat('-',1,100) '\n']);
                     return;
                 end
                 EEG = eegh(LASTCOM, EEG);
@@ -703,6 +717,7 @@ varargout{1} = EStudio_eeg_events_box;
             
             if isequal(filename,0)
                 fprintf( ['\n',repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return
             else
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
@@ -710,6 +725,8 @@ varargout{1} = EStudio_eeg_events_box;
             
             [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
             if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
+                fprintf( ['\n',repmat('-',1,100) '\n\n']);
                 return;
             end
             EEG = eegh(LASTCOM, EEG);
@@ -726,6 +743,7 @@ varargout{1} = EStudio_eeg_events_box;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray), '_impel');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -786,12 +804,14 @@ varargout{1} = EStudio_eeg_events_box;
             msgboxText =  ['EventList >Export eventlist: Please check the current EEG.EVENTLIST'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
         [fname, pathname] = uiputfile({'*.xls*,*xlsx*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         
         if isequal(fname,0)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -891,6 +911,7 @@ varargout{1} = EStudio_eeg_events_box;
         %% Call GUI
         answer = shuffleGUI(def);
         if isempty(answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         valueatfield = answer{1};
@@ -962,6 +983,7 @@ varargout{1} = EStudio_eeg_events_box;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 break;
             end
             if Numofeeg==1
@@ -974,6 +996,7 @@ varargout{1} = EStudio_eeg_events_box;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray), '_shuffled');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -1054,6 +1077,7 @@ varargout{1} = EStudio_eeg_events_box;
         answer = overwriteventGUI;
         
         if isempty(answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         mainfield    = answer{1};
@@ -1074,6 +1098,8 @@ varargout{1} = EStudio_eeg_events_box;
             serror = erplab_eegscanner(EEG, 'pop_overwritevent', 0, 0, 0, 2, 1);
             msgboxText ='';
             if serror
+                fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             %%check current eeg data
@@ -1097,6 +1123,7 @@ varargout{1} = EStudio_eeg_events_box;
                     [EEG, LASTCOM] = pop_overwritevent(EEG, mainfield, 'RemoveRemCodes', rrcstr,'History', 'gui');
                     if  isempty(LASTCOM)
                         fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                        observe_EEGDAT.eeg_panel_message =2;
                         break;
                     end
                     EEG = eegh(LASTCOM, EEG);
@@ -1120,6 +1147,7 @@ varargout{1} = EStudio_eeg_events_box;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray), '_transf');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})

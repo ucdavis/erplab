@@ -231,6 +231,7 @@ varargout{1} = ERP_CSD_gui;
                 msgboxText =  ['Current Source Density: Some electrodes for ERPset ',num2str(ERPArray(Numoferp)),32,'are missing electrode channel locations. Please check channel locations and try again.'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             

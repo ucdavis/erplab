@@ -6,7 +6,7 @@
 
 % EEGLAB Studio
 
-function varargout = f_EEG_resample_GUI(varargin) 
+function varargout = f_EEG_resample_GUI(varargin)
 global observe_EEGDAT;
 
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
@@ -389,6 +389,7 @@ varargout{1} = box_eeg_resample;
         %
         answer = gui_eegtrim(def);
         if isempty(answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         
@@ -408,6 +409,7 @@ varargout{1} = box_eeg_resample;
             
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             fprintf([LASTCOM,'\n']);
@@ -424,6 +426,7 @@ varargout{1} = box_eeg_resample;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_trim');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -551,6 +554,7 @@ varargout{1} = box_eeg_resample;
                 msgboxText='Sampling Rate & Epoch: New sampling rate must be a positive value';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         else
@@ -564,12 +568,14 @@ varargout{1} = box_eeg_resample;
                 msgboxText='Sampling Rate & Epoch: the left edge for the new time window must be a single value';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if NewStart>= observe_EEGDAT.EEG.times(end)
                 msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than',32,num2str(observe_EEGDAT.times(end)),'ms'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if observe_EEGDAT.EEG.trials>1
@@ -577,6 +583,7 @@ varargout{1} = box_eeg_resample;
                     msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than 0 ms'];
                     titlNamerro = 'Warning for EEG Tab';
                     estudio_warning(msgboxText,titlNamerro);
+                    observe_EEGDAT.eeg_panel_message =2;
                     return;
                 end
             end
@@ -586,12 +593,14 @@ varargout{1} = box_eeg_resample;
                 msgboxText='Sampling Rate & Epoch: the right edge for the new time window must be a single value';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if Newend<= observe_EEGDAT.EEG.times(1)
                 msgboxText=['Sampling Rate & Epoch: the right edge for the new time window should be larger than',32,num2str(observe_EEGDAT.times(1)),'ms'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -599,6 +608,7 @@ varargout{1} = box_eeg_resample;
                 msgboxText=['Sampling Rate & Epoch: the right edge for the new time window should be larger than 0 ms'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         else
@@ -626,8 +636,6 @@ varargout{1} = box_eeg_resample;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         
-        estudioworkingmemory('f_EEG_proces_messg','Sampling Rate & Epoch');
-        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
@@ -671,6 +679,7 @@ varargout{1} = box_eeg_resample;
         suffixname = '_resampled';
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),suffixname);
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -766,7 +775,7 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.nwtimewindow_checkbox.Enable = Enableflag;
         gui_eeg_resample.nwtimewindow_editleft.Enable = Enableflag;
         gui_eeg_resample.nwtimewindow_editright.Enable = Enableflag;
-      
+        
         if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials==1
             gui_eeg_resample.Trimcont.Enable = 'on';
         else
@@ -797,7 +806,7 @@ varargout{1} = box_eeg_resample;
             gui_eeg_resample.nwtimewindow_editleft.Enable ='off';
             gui_eeg_resample.nwtimewindow_editright.Enable = 'off';
         end
-          gui_eeg_resample.Trimcont.Enable = Enableflag;
+        gui_eeg_resample.Trimcont.Enable = Enableflag;
         gui_eeg_resample.Paras{1} = gui_eeg_resample.nwsrate_checkbox.Value;
         gui_eeg_resample.Paras{2} = str2num(gui_eeg_resample.nwsrate_edit.String);
         gui_eeg_resample.Paras{3} = gui_eeg_resample.nwtimewindow_checkbox.Value;

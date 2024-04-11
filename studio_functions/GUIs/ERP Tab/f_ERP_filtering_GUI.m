@@ -744,7 +744,7 @@ varargout{1} = ERP_filtering_box;
             observe_ERPDAT.CURRENTERP = ERPArray;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        checked_ERPset_Index_bin_chan =f_checkerpsets(observe_ERPDAT.ALLERP,ERPArray);
+        
         
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         estudioworkingmemory('f_ERP_proces_messg','Filtering');
@@ -795,6 +795,7 @@ varargout{1} = ERP_filtering_box;
             [ERP, ERPCOM] = pop_filterp(ERP, ChanArray,'binArray',BinArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'Saveas', 'off', 'History', 'gui');
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if Numoferp ==numel(ERPArray)
@@ -812,6 +813,7 @@ varargout{1} = ERP_filtering_box;
         
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_filt');
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -1066,6 +1068,7 @@ varargout{1} = ERP_filtering_box;
             [ERP, ERPCOM] = pop_filterp(ERP, ChanArray,'binArray',BinArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'Saveas', 'off', 'History', 'gui');
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if Numoferp ==numel(ERPArray)
@@ -1082,6 +1085,7 @@ varargout{1} = ERP_filtering_box;
         end
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_filt');
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if ~isempty(Answer{1})

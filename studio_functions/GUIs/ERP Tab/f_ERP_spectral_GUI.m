@@ -478,8 +478,6 @@ varargout{1} = ERP_filtering_box;
             if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
                 BinArray = 1:ERP.nbin;
             end
-            
-            
             [~, ERPCOM] = pop_ERP_spectralanalysis(ERP, 'Amptype',Amptype,'TaperWindow',TaperWindow,...
                 'freqrange',freqrange,'BinArray',BinArray,'ChanArray',ChanArray,'Plotwave','on','Saveas', 'off','History','gui');
             if  Numoferpset == numel(ERPArray)

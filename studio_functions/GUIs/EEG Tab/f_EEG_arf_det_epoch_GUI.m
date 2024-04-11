@@ -1071,6 +1071,41 @@ varargout{1} = Eegtab_box_art_det_epoch;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         
+        try manuar_checkbox =  Eegtab_EEG_art_det_epoch.Paras{11}; catch  manuar_checkbox=0;end
+        if isempty(manuar_checkbox) || numel(manuar_checkbox)~=1 || any(manuar_checkbox~=0 && manuar_checkbox~=1)
+            manuar_checkbox=0;
+        end
+        Eegtab_EEG_art_det_epoch.manuar_checkbox.Value= manuar_checkbox;
+        if Eegtab_EEG_art_det_epoch.manuar_checkbox.Value==0
+            Eegtab_EEG_art_det_epoch.manuar_button.Enable ='off';
+            Eegtab_EEG_art_det_epoch.det_algo.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.chan_browse.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag2.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag3.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag4.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag5.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag6.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag7.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag8.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.periods_edit.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.voltage_edit.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.movewindow_edit.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.detectar_cancel.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.show_sumy_ar.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.prefilter_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value==0
+                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
+                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
+            else
+                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'on';
+                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'on';
+            end
+        end
+        
         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.detectar_cancel.BackgroundColor =  [1 1 1];
         Eegtab_EEG_art_det_epoch.detectar_cancel.ForegroundColor = [0 0 0];
@@ -1078,7 +1113,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.detectar_run.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
         Eegtab_EEG_art_det_epoch.det_algo.Value = Eegtab_EEG_art_det_epoch.Paras{1};
-        Eegtab_EEG_art_det_epoch.chan_edit.String = vect2colon(Eegtab_EEG_art_det_epoch.Paras{2});
+        ChanArray =  vect2colon(Eegtab_EEG_art_det_epoch.Paras{2});
+        ChanArray = erase(ChanArray,{'[',']'});
+        Eegtab_EEG_art_det_epoch.chan_edit.String = ChanArray;
         Eegtab_EEG_art_det_epoch.mflag=Eegtab_EEG_art_det_epoch.Paras{3};
         Eegtab_EEG_art_det_epoch.mflag1.Value=1;
         Eegtab_EEG_art_det_epoch.mflag2.Value=0;
@@ -1121,6 +1158,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.movewindow_text.String='';
             Eegtab_EEG_art_det_epoch.windowstep_text.String='';
             Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+            Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
             Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
         elseif Eegtab_EEG_art_det_epoch.det_algo.Value==2%%peak-to-peak
             Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
@@ -1211,40 +1249,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         else
             Eegtab_EEG_art_det_epoch.prefilter_edit.Enable = 'off';
         end
-        try manuar_checkbox =  Eegtab_EEG_art_det_epoch.Paras{11}; catch  manuar_checkbox=0;end
-        if isempty(manuar_checkbox) || numel(manuar_checkbox)~=1 || any(manuar_checkbox~=0 && manuar_checkbox~=1)
-            manuar_checkbox=0;
-        end
-        Eegtab_EEG_art_det_epoch.manuar_checkbox.Value= manuar_checkbox;
-        if Eegtab_EEG_art_det_epoch.manuar_checkbox.Value==0
-            Eegtab_EEG_art_det_epoch.manuar_button.Enable ='off';
-            Eegtab_EEG_art_det_epoch.det_algo.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.chan_browse.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag2.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag3.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag4.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag5.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag6.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag7.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag8.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.periods_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.voltage_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.movewindow_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.detectar_cancel.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.show_sumy_ar.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.prefilter_checkbox.Enable= 'on';
-            if Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value==0
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
-            else
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'on';
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'on';
-            end
-        else
+        
+        
+        if Eegtab_EEG_art_det_epoch.manuar_checkbox.Value==1
             Eegtab_EEG_art_det_epoch.manuar_button.Enable ='on';
             Eegtab_EEG_art_det_epoch.det_algo.Enable= 'off';
             Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'off';
@@ -1342,6 +1349,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             errorMessage = ['Artifact Detection (Epoched EEG) > Run: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(errorMessage,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         %%flags for marking artifacts
@@ -1354,6 +1362,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             errorMessage=['Artifact Detection (Epoched EEG) > Run: Time perid should have two numbers'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(errorMessage,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -1361,6 +1370,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             errorMessage=['Artifact Detection (Epoched EEG) > Run: Time perid should should be between',32,num2str(epochStart),32,'and',32,numstr(epochEnd)];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(errorMessage,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         Det_algostr = {'Simple voltage threshold','Moving window peak-to-peak threshold',...
@@ -1373,6 +1383,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 errorMessage=['Artifact Detection (Epoched EEG) > Run: Voltage limits should have two numbers for "simple voltage threshold"'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(errorMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         else
@@ -1389,6 +1400,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if ~isempty(erroMessage)
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         end
@@ -1416,6 +1428,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         if ~isempty(erroMessage)
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(erroMessage,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -1427,6 +1440,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 erroMessage= ['Artifact Detection (Epoched EEG) > Run: The minimun window step value should be equal to the sampling period (1/fs msec) for "',Det_algostr{AlgFlag},'"'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         end
@@ -1491,6 +1505,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         end%%end for loop of subjects
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_ar');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -1525,6 +1540,13 @@ varargout{1} = Eegtab_box_art_det_epoch;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        %%----------------------display summary of artifacts---------------
+        if Eegtab_EEG_art_det_epoch.show_sumy_ar.Value==1
+            feval('EEG_Summary_AR_GUI',observe_EEGDAT.ALLEEG(EEGArray),1);
+            LASTCOM = ['feval("EEG_Summary_AR_GUI",ALLERP(',vect2colon(EEGArray),'),1);'];
+            eegh(LASTCOM);
+        end
+        
         estudioworkingmemory('EEGArray',EEGArray);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
@@ -1556,10 +1578,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
         
-        %%----------------------display summary of artifacts---------------
-        if Eegtab_EEG_art_det_epoch.show_sumy_ar.Value==1
-            feval('EEG_Summary_AR_GUI',observe_EEGDAT.ALLEEG(EEGArray),1);
-        end
+        
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -1748,36 +1767,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.mflag= [1,0,0,0,0,0,0,0];
         end
         
-        
-        if Eegtab_EEG_art_det_epoch.manuar_checkbox.Value==0
-            Eegtab_EEG_art_det_epoch.manuar_button.Enable ='off';
-            Eegtab_EEG_art_det_epoch.det_algo.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.chan_browse.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag2.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag3.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag4.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag5.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag6.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag7.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag8.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.periods_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.voltage_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.movewindow_edit.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.detectar_cancel.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.show_sumy_ar.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.prefilter_checkbox.Enable= 'on';
-            if Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value==0
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
-            else
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'on';
-                Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'on';
-            end
-        else
+        if Eegtab_EEG_art_det_epoch.manuar_checkbox.Value==1
+            
             Eegtab_EEG_art_det_epoch.manuar_button.Enable ='on';
             Eegtab_EEG_art_det_epoch.det_algo.Enable= 'off';
             Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'off';

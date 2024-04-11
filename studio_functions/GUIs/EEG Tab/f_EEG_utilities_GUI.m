@@ -160,6 +160,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             setname = EEG.setname;
@@ -183,6 +184,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end%%end for loop of subjects
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_ep2con');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -254,6 +256,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end
         answer = inputvalue(prompt,dlg_title,num_lines,def);
         if isempty(answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         expression = answer{1};
@@ -327,6 +330,7 @@ varargout{1} = Eegtab_box_art_sumop;
         
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_delevents');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -374,7 +378,7 @@ varargout{1} = Eegtab_box_art_sumop;
     function rc_bdf(Source,~)
         if  isempty(observe_EEGDAT.EEG) || ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
             Source.Enable = 'off';
-             msgboxText = ['EEG Utilities > Recover bin descriptor file from EEG: Please check EVENTLIST for current EEG'];
+            msgboxText = ['EEG Utilities > Recover bin descriptor file from EEG: Please check EVENTLIST for current EEG'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -488,6 +492,7 @@ varargout{1} = Eegtab_box_art_sumop;
         
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_resetbyte');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -725,6 +730,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_rmerr');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})

@@ -1062,7 +1062,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 [EEG, LASTCOM] = pop_artinterp(EEG, 'FlagToUse', active_flags, 'InterpMethod', interpolationMethod, ...
                     'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
                     'InterpAnyChan', many_electrodes, 'Threshold',threshold_perc,...
-                    'Review', viewstr, 'History', 'implicit');
+                    'Review', 'off', 'History', 'implicit');
                 if isempty(LASTCOM)
                     estudioworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run: Please check you data or you selected cancel');
                     observe_EEGDAT.eeg_panel_message =4;
@@ -1232,23 +1232,6 @@ varargout{1} = box_interpolate_chan_epoch;
         catch
         end
     end
-
-
-%%-------------------------------------------------------------------------
-%%Automatically saving the changed parameters for the current panel if the
-%%user change parameters for the other panels.
-%%-------------------------------------------------------------------------
-%     function eeg_two_panels_change(~,~)
-%         if observe_EEGDAT.eeg_two_panels==0
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_interpolated_chan_epoch');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
-%         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
-%     end
 
 
 %%--------------press return to execute "Apply"----------------------------

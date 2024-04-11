@@ -9,7 +9,7 @@
 % Oct. 2023
 
 
-function varargout = f_EEG_arf_det_segmt_conus_GUI(varargin) 
+function varargout = f_EEG_arf_det_segmt_conus_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
@@ -485,6 +485,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             EEG_art_det_segmt_conus.time_threshold_edit.String= '7000';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -494,6 +495,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             EEG_art_det_segmt_conus.buffer_before_edit.String = '3000';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -503,6 +505,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             EEG_art_det_segmt_conus.buffer_after_edit.String = '3000';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -548,6 +551,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                 'History'                   , 'implicit');
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             fprintf([LASTCOM,'\n']);
@@ -564,6 +568,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_del');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})

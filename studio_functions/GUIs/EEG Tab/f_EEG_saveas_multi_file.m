@@ -64,7 +64,7 @@ catch
     EEGArray = 1;
 end
 try
-    pathName =  varargin{5};
+    pathName =  varargin{4};
 catch
     pathName = [cd,filesep];
 end

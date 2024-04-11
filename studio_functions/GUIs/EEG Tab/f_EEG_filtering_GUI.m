@@ -7,7 +7,7 @@
 % ERPLAB Studio
 
 function varargout = f_EEG_filtering_GUI(varargin)
- 
+
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
@@ -846,6 +846,10 @@ varargout{1} = EEG_filtering_box;
             %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
             [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'History', 'gui');
+            if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            end
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -855,6 +859,7 @@ varargout{1} = EEG_filtering_box;
         
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_filt');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -1092,6 +1097,10 @@ varargout{1} = EEG_filtering_box;
             %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
             [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'History', 'gui','Boundary', Boundaryflag);
+            if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            end
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -1101,6 +1110,7 @@ varargout{1} = EEG_filtering_box;
         
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_filt');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})
@@ -1115,6 +1125,7 @@ varargout{1} = EEG_filtering_box;
                 EEG.filename = [file_name,'.set'];
                 EEG.saved = 'yes';
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                
                 EEG = eegh(LASTCOM, EEG);
                 if Numofeeg==1
                     eegh(LASTCOM);

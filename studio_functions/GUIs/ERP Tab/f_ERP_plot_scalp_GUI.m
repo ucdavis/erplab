@@ -1148,6 +1148,7 @@ varargout{1} = ERP_plot_scalp_gui;
             msgboxText =  ['Plot Scalp Maps -',msgboxText];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         
@@ -1173,6 +1174,7 @@ varargout{1} = ERP_plot_scalp_gui;
             msgboxText =  ['Plot Scalp Maps - No latency was defined',];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         
@@ -1182,6 +1184,7 @@ varargout{1} = ERP_plot_scalp_gui;
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
             gui_erp_scalp_map.latency_plot_edit.String = '';
+            observe_ERPDAT.Process_messg =2;
             return
         end
         
@@ -1190,6 +1193,7 @@ varargout{1} = ERP_plot_scalp_gui;
             msgboxText =  ['Plot Scalp Maps - Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(ERP_times(1)) ' msec!'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return
         end
         
@@ -1201,6 +1205,7 @@ varargout{1} = ERP_plot_scalp_gui;
                         'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
+                    observe_ERPDAT.Process_messg =2;
                     return
                 end
             case {1,3} % insta, instalapla
@@ -1208,6 +1213,7 @@ varargout{1} = ERP_plot_scalp_gui;
                     msgboxText =  'Plot Scalp Maps - For you must specify as many latencies as maps you would like to plot.You cannot use semicolon-separated values.';
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
+                    observe_ERPDAT.Process_messg =2;
                     return
                 end
         end
@@ -1223,6 +1229,7 @@ varargout{1} = ERP_plot_scalp_gui;
                 msgboxText =  ['Plot Scalp Maps - No value was defined for "Color Bar Scale"'];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return;
             else
                 ncusca = length(cusca);
@@ -1233,12 +1240,14 @@ varargout{1} = ERP_plot_scalp_gui;
                         msgboxText =  ['Plot Scalp Maps - the first value should be smaller than the second one for "Color Bar Scale"'];
                         titlNamerro = 'Warning for ERP Tab';
                         estudio_warning(msgboxText,titlNamerro);
+                        observe_ERPDAT.Process_messg =2;
                         return;
                     end
                 else%%one value
                     msgboxText =  ['Plot Scalp Maps - "Color Bar Scale" needs 2 values'];
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
+                    observe_ERPDAT.Process_messg =2;
                     return;
                 end
             end
@@ -1386,6 +1395,7 @@ varargout{1} = ERP_plot_scalp_gui;
                         'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
+                    observe_ERPDAT.Process_messg =2;
                     return;
                 elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
                     %if splineinfo.new==1

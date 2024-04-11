@@ -8,7 +8,7 @@
 
 
 
-function varargout = f_EEG_chanoperation_GUI(varargin) 
+function varargout = f_EEG_chanoperation_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
@@ -249,6 +249,7 @@ varargout{1} = EEG_chan_operation_gui;
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         else
             fullname = fullfile(filepath, filename);
@@ -264,6 +265,7 @@ varargout{1} = EEG_chan_operation_gui;
                 fullname];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if size(formulas,2)>256
@@ -271,6 +273,7 @@ varargout{1} = EEG_chan_operation_gui;
                 'Be sure to press [Enter] after you have entered each formula.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         fclose(fid_formula);
@@ -306,10 +309,12 @@ varargout{1} = EEG_chan_operation_gui;
             msgboxText =  ['Channel Operations >Save - You have not yet written a formula'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as',pathName);
         if isequal(filename,0)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         else
             [px, fname, ext] = fileparts(filename);
@@ -480,6 +485,9 @@ varargout{1} = EEG_chan_operation_gui;
             gui_eegtab_chan_optn.edit_bineq.Data =formulaArray;
             set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             def =  estudioworkingmemory('pop_eegchanoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             def{1} = formulaArray;
             estudioworkingmemory('pop_eegchanoperator',def);
         end
@@ -508,6 +516,9 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(FormulaArrayIn)
             val = 0;
             def =  estudioworkingmemory('pop_eegchanoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             try
                 FormulaArrayIn_default = def{1};
             catch
@@ -536,6 +547,9 @@ varargout{1} = EEG_chan_operation_gui;
             gui_eegtab_chan_optn.edit_bineq.Data =formulaArray;
             set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             def =  estudioworkingmemory('pop_eegchanoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             def{1} = formulaArray;
             estudioworkingmemory('pop_eegchanoperator',def);
         end
@@ -612,9 +626,9 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(Formula_str)
             msgboxText =  ['Channel Operations - You have not yet written a formula'];
             estudioworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -628,9 +642,9 @@ varargout{1} = EEG_chan_operation_gui;
         if goeson==0
             msgboxText =  ['Channel Operations - error might be found and please see Command Window'];
             estudioworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -777,29 +791,6 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.cancel.Enable = Enable_label;
         observe_EEGDAT.count_current_eeg =7;
     end
-
-
-
-%%-------------------------------------------------------------------------
-%%Automatically saving the changed parameters for the current panel if the
-%%user change parameters for the other panels.
-%%-------------------------------------------------------------------------
-%     function eeg_two_panels_change(~,~)
-%         if observe_EEGDAT.eeg_two_panels==0
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_chanop');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         chanop_eeg_apply();
-%         estudioworkingmemory('EEGTab_chanop',0);
-%         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
-%         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
-%         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
-%         gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
-%         gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
-%     end
 
 
 %%--------------press return to execute "Apply"----------------------------

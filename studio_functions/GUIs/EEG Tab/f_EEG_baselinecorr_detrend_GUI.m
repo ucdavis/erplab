@@ -408,30 +408,35 @@ varargout{1} = EEG_basecorr_detrend_box;
                 msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Invalid input for baseline range; Please Cancel two values'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if numel(BaselineMethod) ==1
                 msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Wrong baseline range. Please, enter two values'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if BaselineMethod(1)>= BaselineMethod(2)
                 msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - The first value must be smaller than the second one'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if roundn(BaselineMethod(2),-3) > roundn(observe_EEGDAT.EEG.times(end),-3)
                 msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if roundn(BaselineMethod(1),-3) < roundn(observe_EEGDAT.EEG.times(1),-3)
                 msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         end
@@ -481,6 +486,7 @@ varargout{1} = EEG_basecorr_detrend_box;
                 msgboxText =  'Baseline Correction & Linear Detrend (Epoched EEG) cannot work for continous EEG';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if gui_eeg_blc_dt.all_bin_chan.Value == 1
@@ -510,6 +516,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),Suffix_str);
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         

@@ -446,7 +446,7 @@ varargout{1} = ERP_grdavg_box_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        pathName_def =  estudioworkingmemory('ERP_save_folder');
+        pathName_def =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
@@ -500,6 +500,7 @@ varargout{1} = ERP_grdavg_box_gui;
             Answer = f_ERP_save_single_file(strcat('grand'),'',length(observe_ERPDAT.ALLERP)+1);
         end
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         erpName_new = '';
@@ -582,6 +583,7 @@ varargout{1} = ERP_grdavg_box_gui;
                 'SEM', stdsstr, 'Weighted', Weightedstr, 'Erpname', jkerpname, 'Filename', jkfilename,...
                 'DQ_flag',dq_option,'DQ_spec',dq_spec,'Warning', wavgstr);
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             
@@ -612,6 +614,7 @@ varargout{1} = ERP_grdavg_box_gui;
                 'ExcludeNullBin', excnullbinstr,'Weighted', Weightedstr, 'Saveas', 'off',...
                 'DQ_flag',dq_option,'DQ_spec',dq_spec,'Warning', wavgstr, 'History', 'gui');
             if isempty(ERPCOM)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             ERP.erpname = erpName_new;

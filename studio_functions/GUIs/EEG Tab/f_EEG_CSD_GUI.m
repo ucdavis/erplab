@@ -229,6 +229,7 @@ varargout{1} = EEG_CSD_gui;
                 msgboxText =  ['Current Source Density: Some electrodes for EEGset:',num2str(EEGArray(Numofeeg)),32,'are missing electrode channel locations. Please check channel locations and try again.'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -243,6 +244,7 @@ varargout{1} = EEG_CSD_gui;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_CSD');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})

@@ -260,18 +260,21 @@ varargout{1} = box_erp_append;
             msgboxText = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if any(ERPArray <=0)
             msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if any(ERPArray > length(observe_ERPDAT.ALLERP))
             msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         %%check number of samples/channels, and data type
@@ -279,6 +282,7 @@ varargout{1} = box_erp_append;
         if ~isempty(msgboxText)
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return
         end
         
@@ -333,8 +337,8 @@ varargout{1} = box_erp_append;
         %
         answer = f_appenderpGUI(nloadedset, def);
         if isempty(answer)
-            disp('User selected Cancel')
-            return
+            observe_ERPDAT.Process_messg =2;
+            return;
         end
         optioni    = answer{1}; %1 means from hard drive, 0 means from erpsets menu
         ERPsetop = answer{2};
@@ -366,6 +370,7 @@ varargout{1} = box_erp_append;
             if ~isempty(msgboxText)
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return
             end
             %%check prefixes
@@ -374,6 +379,7 @@ varargout{1} = box_erp_append;
                 msgboxText = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg =2;
                 return
             end
         end
@@ -390,7 +396,7 @@ varargout{1} = box_erp_append;
                 if  numel(lista) ~= length(prefixliststr)
                     msgboxText = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
                     estudioworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg=4;
+                    observe_ERPDAT.Process_messg=2;
                     return
                 end
                 [ERP, ERPCOM] = pop_appenderp(erpset, 'Prefixes', prefixliststr, 'Saveas', 'off', 'History', 'gui');
@@ -403,10 +409,11 @@ varargout{1} = box_erp_append;
             end
         end
         if isempty(ERPCOM)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
-        pathName_def =  estudioworkingmemory('ERP_save_folder');
+        pathName_def =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
@@ -417,6 +424,7 @@ varargout{1} = box_erp_append;
         
         Answer = f_ERP_save_single_file(strcat('append'),'',length(observe_ERPDAT.ALLERP)+1);
         if isempty(Answer)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         
@@ -490,18 +498,21 @@ varargout{1} = box_erp_append;
             msgboxText = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if any(ERPArray <=0)
             msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if any(ERPArray > length(observe_ERPDAT.ALLERP))
             msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         %%check number of samples/channels, and data type
@@ -509,6 +520,7 @@ varargout{1} = box_erp_append;
         if ~isempty(msgboxText)
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return
         end
         estudioworkingmemory('ERPTab_append',0);
@@ -529,10 +541,11 @@ varargout{1} = box_erp_append;
         
         [ERP, ERPCOM] = pop_appenderp(ALLERP, 'Erpsets', ERPArray, 'Prefixes', prefixliststr, 'Saveas', 'off', 'History', 'gui');
         if isempty(ERPCOM)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
-        pathName_def =  estudioworkingmemory('ERP_save_folder');
+        pathName_def =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
@@ -542,7 +555,7 @@ varargout{1} = box_erp_append;
         Save_file_label =0;
         Answer = f_ERP_save_single_file(strcat('append'),'',length(observe_ERPDAT.ALLERP)+1);
         if isempty(Answer)
-            %             disp('User selected Cancel');
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         if ~isempty(Answer)

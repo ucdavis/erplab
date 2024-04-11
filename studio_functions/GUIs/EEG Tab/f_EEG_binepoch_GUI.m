@@ -6,7 +6,7 @@
 
 % ERPLAB Studio
 
-function varargout = f_EEG_binepoch_GUI(varargin) 
+function varargout = f_EEG_binepoch_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
@@ -470,6 +470,7 @@ varargout{1} = EEG_binepoch_box;
             gui_eegtab_binepoch.timerange_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if numel(EpochRange) ~=2
@@ -477,6 +478,7 @@ varargout{1} = EEG_binepoch_box;
             gui_eegtab_binepoch.timerange_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -485,6 +487,7 @@ varargout{1} = EEG_binepoch_box;
             gui_eegtab_binepoch.timerange_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -493,6 +496,7 @@ varargout{1} = EEG_binepoch_box;
             gui_eegtab_binepoch.timerange_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -505,6 +509,7 @@ varargout{1} = EEG_binepoch_box;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if numel(Baselineperiod) ~=2
@@ -512,6 +517,7 @@ varargout{1} = EEG_binepoch_box;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if Baselineperiod(1)>= Baselineperiod(2)
@@ -519,6 +525,7 @@ varargout{1} = EEG_binepoch_box;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if Baselineperiod(2) > EpochRange(2)
@@ -526,6 +533,7 @@ varargout{1} = EEG_binepoch_box;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if Baselineperiod(1) < EpochRange(1)
@@ -533,6 +541,7 @@ varargout{1} = EEG_binepoch_box;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         end
@@ -570,6 +579,8 @@ varargout{1} = EEG_binepoch_box;
             %%epoch EEG data
             [EEG, LASTCOM] = pop_epochbin( EEG , EpochRange, BaselineMethod, 'History', 'implicit');
             if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
+                fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
             fprintf([LASTCOM,'\n']);
@@ -587,6 +598,7 @@ varargout{1} = EEG_binepoch_box;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_be');
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if ~isempty(Answer{1})

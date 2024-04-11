@@ -186,7 +186,6 @@ varargout{1} = ERP_chan_operation_gui;
         if isempty(answer)
             return
         end
-        chanopGUI = estudioworkingmemory('chanopGUI');
         ModeValue = chanopGUI.emode;
         if ModeValue==0
             gui_erp_chan_operation.mode_modify.Value=1 ;
@@ -292,6 +291,7 @@ varargout{1} = ERP_chan_operation_gui;
             msgboxText =  ['Channel Operations >Save - You have not yet written a formula'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         pathName =  estudioworkingmemory('EEG_save_folder');
@@ -301,6 +301,7 @@ varargout{1} = ERP_chan_operation_gui;
         
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
+            observe_ERPDAT.Process_messg =2;
             return
         else
             [px, fname, ext] = fileparts(filename);
@@ -379,6 +380,7 @@ varargout{1} = ERP_chan_operation_gui;
         % open reference wizard
         formulalist = f_rerefassistantGUI(nchan, listch);
         if isempty(formulalist)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         formulas  = char(gui_erp_chan_operation.edit_bineq.Data);
@@ -464,6 +466,9 @@ varargout{1} = ERP_chan_operation_gui;
         if isempty(FormulaArrayIn)
             val = 0;
             def =  estudioworkingmemory('pop_erpchanoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             FormulaArrayIn_default = def{1};
             if ~isempty(FormulaArrayIn_default)
                 [val, formulaArray]= f_chan_testsyntaxtype(FormulaArrayIn_default, 'recu');
@@ -485,6 +490,9 @@ varargout{1} = ERP_chan_operation_gui;
             gui_erp_chan_operation.edit_bineq.Data =formulaArray;
             set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             def =  estudioworkingmemory('pop_erpchanoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             def{1} = formulaArray;
             estudioworkingmemory('pop_erpchanoperator',def);
         end
@@ -515,6 +523,9 @@ varargout{1} = ERP_chan_operation_gui;
         if isempty(FormulaArrayIn)
             val = 0;
             def =  estudioworkingmemory('pop_erpchanoperator');
+            if isempty(def)
+                def = { [], 1};
+            end
             FormulaArrayIn_default = def{1};
             if ~isempty(FormulaArrayIn_default)
                 [val, formulaArray]= f_chan_testsyntaxtype(FormulaArrayIn_default, 'norecu');
@@ -607,6 +618,7 @@ varargout{1} = ERP_chan_operation_gui;
             msgboxText =  ['Channel Operations - You have not yet written a formula'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         estudioworkingmemory('ERPTab_chanop',0);
@@ -644,7 +656,8 @@ varargout{1} = ERP_chan_operation_gui;
             ERP = ALLERP(ERPArray(Numoferp));
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
             if isempty(ERPCOM)
-               return; 
+                observe_ERPDAT.Process_messg =2;
+                return;
             end
             if Numoferp ==numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
@@ -662,6 +675,7 @@ varargout{1} = ERP_chan_operation_gui;
         if gui_erp_chan_operation.mode_create.Value==1
             Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_chop');
             if isempty(Answer)
+                observe_ERPDAT.Process_messg =2;
                 return;
             end
             if ~isempty(Answer{1})
