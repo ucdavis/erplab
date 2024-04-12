@@ -403,7 +403,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 end
                 [EEG, tprej, acce, rej, histoflags,LASTCOM ] = pop_summary_AR_eeg_detection(EEG);
                 if isempty(LASTCOM)
-                    fprintf( [repmat('-',1,100) '\n']);
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
                     observe_EEGDAT.eeg_panel_message =2;
                     return;
                 end
@@ -423,15 +423,17 @@ varargout{1} = Eegtab_box_art_sumop;
                 end
                 [EEG, goodbad, histeEF, histoflags,  LASTCOM] = pop_summary_rejectfields(EEG);
             end
-            fprintf([LASTCOM,'\n']);
-            
+           if  New_pos1(2)~=1
+            fprintf([LASTCOM,'\n']);  
+            fprintf( [repmat('-',1,100) '\n']);
+           end
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            fprintf( [repmat('-',1,100) '\n']);
+          
         end
-        
+
         estudioworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);

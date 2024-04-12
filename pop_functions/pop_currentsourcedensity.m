@@ -50,9 +50,9 @@ else
     isERP = 0;
 end
 try
-ERPtooltype = varargin{1};%%GH 2024
+    ERPtooltype = varargin{1};%%GH 2024
 catch
-  ERPtooltype = 'erplab';  
+    ERPtooltype = 'erplab';
 end
 
 % check input dataset
@@ -129,14 +129,15 @@ M = ExtractMontage('loc_csd.csd',chan_label);
 MapMontage(M)
 
 %%%changed by Guanghui August 10 2022
-csd_param = erpworkingmemory('csd_param');
 
 if strcmpi(ERPtooltype,'EStudio')
+    csd_param = estudioworkingmemory('csd_param');
     csd_param(4) = 0;
     erpworkingmemory('csd_param',csd_param);
     csd_param = csd_param(1:3);
     savepref=0;
 else
+    csd_param = erpworkingmemory('csd_param');
     [csd_param] = csd_generate;
     csd_param(4) = 1;
     erpworkingmemory('csd_param',csd_param);

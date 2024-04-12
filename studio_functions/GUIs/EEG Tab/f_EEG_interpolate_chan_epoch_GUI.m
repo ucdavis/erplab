@@ -160,7 +160,7 @@ varargout{1} = box_interpolate_chan_epoch;
             'String','Interpolate marked epochs','callback',@interpolate_marked_epoch_op,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.KeyPressFcn = @eeg_interpolatechan_presskey;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,...
-            'String','Advanced','callback',@interpolate_marked_epoch_op_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Settings','callback',@interpolate_marked_epoch_op_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title);
         set(Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,'Sizes',[180 70 -1]);
         
@@ -540,30 +540,25 @@ varargout{1} = box_interpolate_chan_epoch;
             Source.Enable= 'off';
             return;
         end
+        
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=8
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
-        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
-        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
-        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [0 0 0];
-        estudioworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Advanced options for interpolate marked epochs');
-        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        
+        
         if Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value==1
             interpolationMethod = 'spherical';
         else
             interpolationMethod =  'inverse_distance';
         end
         
-        CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
-        
-        EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:)<1)
-            EEGArray = observe_EEGDAT.CURRENTSET;
-        end
         
         if Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value==0
             ChanArrayig = [];
@@ -572,174 +567,108 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         
         %%loop for the selected EEGsets
-        %         try
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Interpolate marked epochs (advanced options)*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
-            %%%%---------------Call GUI--------------------------
-            dlg_title = {['Dataset',32,num2str(EEGArray(Numofeeg)),': Interpolate Marked Artifact Epochs']};
-            %defaults
-            defx = {0, 'spherical',[],[],[],0,10};
-            def = estudioworkingmemory('pop_artinterp');
-            def{2} = interpolationMethod;
-            
-            if ~isempty(ChanArrayig) && max(ChanArrayig(:)) <= EEG.nbchan
-                def{5} = ChanArrayig;
-            else
-                def{5} = [];
-            end
-            
-            if isempty(def)
-                def = defx;
-            else
-                try
-                    def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
-                catch
-                    def{3} = 1:EEG(1).nbchan;
-                end
-            end
+        
+        EEG = observe_EEGDAT.EEG;
+        
+        %%%%---------------Call GUI--------------------------
+        dlg_title = {['Dataset',32,num2str(observe_EEGDAT.CURRENTSET),': Interpolate Marked Artifact Epochs']};
+        %defaults
+        defx = {0, 'spherical',[],[],[],0,10};
+        def = estudioworkingmemory('pop_artinterp');
+        def{2} = interpolationMethod;
+        
+        if ~isempty(ChanArrayig) && max(ChanArrayig(:)) <= EEG.nbchan
+            def{5} = ChanArrayig;
+        else
+            def{5} = [];
+        end
+        
+        if isempty(def)
+            def = defx;
+        else
             try
-                aa = def{4};
+                def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
             catch
-                def{4} = [];
+                def{3} = 1:EEG(1).nbchan;
             end
-            
-            try
-                aa = def{6};
-            catch
-                def{6} = [];
-            end
-            
-            try
-                aa = def{7};
-            catch
-                def{7} = 10;
-            end
-            
-            try
-                chanlabels = {EEG(1).chanlocs.labels}; %only works on single datasets
-            catch
-                chanlabels = [];
-            end
-            histoflags = summary_rejectflags(EEG);
-            
-            %check currently activated flags
-            flagcheck = sum(histoflags);
-            active_flags = (flagcheck>1);
-            
-            answer = artifactinterpGUI(dlg_title, def, defx, chanlabels, active_flags);
-            
-            if isempty(answer)
-                observe_EEGDAT.eeg_panel_message =2;
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                return
-            end
-            
-            replaceFlag =  answer{1};
-            interpolationMethod      =  answer{2};
-            replaceChannelInd     =  answer{3};
-            replaceChannelLabel     =  answer{4};
-            ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
-            many_electrodes = answer{6};
-            threshold_perc = answer{7};
-            viewstr = 'off';
-            
-            
-            if isempty(replaceFlag)
-                msgboxText = ['Interpolate Channels >  Advanced options for interpolate marked epochs: None of epochs was marked'];
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
-            end
-            
-            if ~isempty(find(replaceFlag<1 | replaceFlag>16, 1))
-                msgboxText  ='Interpolate Channels >  Run: flag cannot be greater than 16 nor lesser than 1';
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
-            end
-            estudioworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
-                answer{6}, answer{7}});
-            
-            [EEG, LASTCOM] = pop_artinterp(EEG, 'FlagToUse', replaceFlag, 'InterpMethod', interpolationMethod, ...
-                'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
-                'InterpAnyChan', many_electrodes, 'Threshold',threshold_perc,...
-                'Review', viewstr, 'History', 'implicit');
-            
-            if isempty(LASTCOM)
-                estudioworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run: Please check you data or you selected cancel');
-                observe_EEGDAT.eeg_panel_message =4;
-                return;
-            end
-            EEG = eegh(LASTCOM, EEG);
-            fprintf(['\n',LASTCOM,'\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            if CreateeegFlag==0
-                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
-            else
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_interp')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    observe_EEGDAT.eeg_panel_message =2;
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                    [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
-                    if Numofeeg==1
-                        eegh(LASTCOM);
-                    end
-                end
-            end
+        end
+        try
+            aa = def{4};
+        catch
+            def{4} = [];
+        end
+        
+        try
+            aa = def{6};
+        catch
+            def{6} = [];
+        end
+        
+        try
+            aa = def{7};
+        catch
+            def{7} = 10;
+        end
+        
+        try
+            chanlabels = {EEG(1).chanlocs.labels}; %only works on single datasets
+        catch
+            chanlabels = [];
+        end
+        histoflags = summary_rejectflags(EEG);
+        
+        %check currently activated flags
+        flagcheck = sum(histoflags);
+        active_flags = (flagcheck>1);
+        
+        answer = artifactinterpGUI(dlg_title, def, defx, chanlabels, active_flags);
+        
+        if isempty(answer)
+            observe_EEGDAT.eeg_panel_message =2;
             fprintf( ['\n',repmat('-',1,100) '\n']);
+            return
         end
         
-        if CreateeegFlag==1
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        end
-        observe_EEGDAT.count_current_eeg=1;
-        observe_EEGDAT.eeg_panel_message =2;
+        replaceFlag =  answer{1};
+        interpolationMethod      =  answer{2};
+        replaceChannelInd     =  answer{3};
+        replaceChannelLabel     =  answer{4};
+        ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
+        many_electrodes = answer{6};
+        threshold_perc = answer{7};
+        viewstr = 'off';
         
+        estudioworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
+            answer{6}, answer{7}});
+        if ~isempty(ignoreChannels)
+            Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value=1;
+            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.Enable = 'on';
+            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse.Enable = 'on';
+        else
+            Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value=0;
+            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.Enable = 'off';
+            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse.Enable = 'off';
+        end
+        ignoreChannels =  vect2colon(ignoreChannels);
+        ignoreChannels = erase(ignoreChannels,{'[',']'});
+        Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String= ignoreChannels;
+        
+        if strcmpi(interpolationMethod,'spherical')
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=1 ;
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value=0;
+        else
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=0;
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value=1;
+        end
+        
+        if many_electrodes==1
+            chanArray = 1:EEG.nbchan;
+        else
+            chanArray =  replaceChannelInd;
+        end
+        chanArray =  vect2colon(chanArray);
+        chanArray = erase(chanArray,{'[',']'});
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = chanArray;
     end
 
 
@@ -947,8 +876,28 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
+         def =  estudioworkingmemory('pop_artinterp');
+        defx = {0, 'spherical',[],[],[],0,10};
+        if isempty(def)
+            def = defx;
+        end
+        try threshold_perc = def{7}; catch  threshold_perc = 10;end
+        if isempty(threshold_perc) || numel(threshold_perc)~=1 || any(threshold_perc(:)<0) || any(threshold_perc(:)>100)
+            threshold_perc = 10;
+        end
+        def{7} = 10;
+        try  many_electrodes = def{6}; catch  many_electrodes = 0;end
+        if isempty(many_electrodes) || numel(many_electrodes)~=1 || (many_electrodes~=0 && many_electrodes~=1)
+            many_electrodes=0;
+        end
+        def{6}=0;
+        
+        try replaceFlag  = def{1}; catch replaceFlag =[]; end
+        
+        
         if Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value==0
             ignoreChannels = [];
         else
@@ -961,6 +910,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -969,6 +919,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -977,6 +928,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
         end
@@ -992,12 +944,14 @@ varargout{1} = box_interpolate_chan_epoch;
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        if numel(ignoreChannels) + numel(replaceChannelIndes) ==observe_EEGDAT.EEG.nbchan
-            msgboxText = ['Interpolate Channels >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            return;
-        end
+%         if numel(ignoreChannels) + numel(replaceChannelIndes) ==observe_EEGDAT.EEG.nbchan
+%             msgboxText = ['Interpolate Channels >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others'];
+%             titlNamerro = 'Warning for EEG Tab';
+%             estudio_warning(msgboxText,titlNamerro);
+%             observe_EEGDAT.eeg_panel_message =2;
+%             return;
+%         end
+        
         %%loop for the selected EEGsets
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
@@ -1015,6 +969,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -1023,39 +978,38 @@ varargout{1} = box_interpolate_chan_epoch;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                
                 return;
             end
-            
-            histoflags = summary_rejectflags(EEG);
-            %check currently activated flags
-            flagcheck = sum(histoflags);
-            flagcheck(1) = 0;
-            [~, active_flags] = find(flagcheck>1);
-            
-            if isempty(active_flags)
-                msgboxText = ['Interpolate Channels >  Run: None of epochs was marked'];
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
+            if isempty(replaceFlag)
+                histoflags = summary_rejectflags(EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                flagcheck(1) = 0;
+                [~, active_flags] = find(flagcheck>1);
+                
+                if isempty(active_flags)
+                    msgboxText = ['Interpolate Channels >  Run: None of epochs was marked'];
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
+                    return;
+                end
+                
+                
+                if ~isempty(find(active_flags<1 | active_flags>16, 1))
+                    msgboxText  ='Interpolate Channels >  Run: flag cannot be greater than 16 nor lesser than 1';
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
+                    return;
+                end
+            else
+                active_flags=  replaceFlag;
             end
             
-            viewstr = 'off';
-            if ~isempty(find(active_flags<1 | active_flags>16, 1))
-                msgboxText  ='Interpolate Channels >  Run: flag cannot be greater than 16 nor lesser than 1';
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
-            end
-            
-            many_electrodes = 0;
-            threshold_perc = 10;
             for Numofchan = 1:numel(replaceChannelIndes)%%loop for each chan
                 replaceChannelInd = replaceChannelIndes(Numofchan);
-                
-                estudioworkingmemory('pop_artinterp', {active_flags, interpolationMethod, replaceChannelInd,[],ignoreChannels, ...
-                    0, 10});
                 
                 fprintf( ['\n Interpolating chan',32, num2str(replaceChannelInd),'...\n']);
                 %%Run ICA

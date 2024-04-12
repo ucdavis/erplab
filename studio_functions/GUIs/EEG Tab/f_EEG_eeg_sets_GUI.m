@@ -1010,7 +1010,6 @@ estudioworkingmemory('Startimes',0);%%set default value
             fprintf(['*Save EEG dataset*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
             
-            
             FileName = EEG.filename;
             if isempty(FileName)
                 FileName =EEG.setname;

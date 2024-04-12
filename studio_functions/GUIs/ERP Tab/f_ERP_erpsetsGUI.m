@@ -784,8 +784,11 @@ varargout{1} = box_erpset_gui;
         end
         
         if ischar(filename)
+            
             [ERP, ~, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
                 'History', 'gui');
+            ERP.filename = filename;
+            ERP.filepath = filepath;
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             if isempty(observe_ERPDAT.ALLERP)
                 observe_ERPDAT.ALLERP = ERP;
@@ -796,6 +799,8 @@ varargout{1} = box_erpset_gui;
             for numoferp = 1:length(filename)
                 [ERP, ~, ERPCOM] = pop_loaderp('filename', filename{numoferp}, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
                     'History', 'gui'); %If eeglab is not open, don't update
+                ERP.filename = filename{numoferp};
+                ERP.filepath = filepath;
                 if numoferp ==length(filename)
                     [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 else

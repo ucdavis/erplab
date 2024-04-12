@@ -123,7 +123,6 @@ varargout{1} = box_erp_history;
         if isempty(ERP_history)
             ERP_history = {'No command history was found in the current session'};
         end
-        
         set(gui_erp_history.uitable,'Data',ERP_history);
     end
 
@@ -131,10 +130,14 @@ varargout{1} = box_erp_history;
     function savescript(~,~)
         
         if gui_erp_history.erp_h_all.Value==1
-            MessageViewer= char(strcat('Save history script for the current ERPset'));
-            estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_ERPDAT.Process_messg=1;
-            LASTCOM = pop_saveh(observe_ERPDAT.ERP.history);
+            if ~isempty(observe_ERPDAT.ERP)
+                MessageViewer= char(strcat('Save history script for the current ERPset'));
+                estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
+                observe_ERPDAT.Process_messg=1;
+                LASTCOM = pop_saveh(observe_ERPDAT.ERP.history);
+            else
+                LASTCOM ='';
+            end
         else
             MessageViewer= char(strcat('Save history script for the current session'));
             estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
@@ -204,9 +207,9 @@ varargout{1} = box_erp_history;
 
 %%-------------show history to command window------------------------------
     function show_cmd(~,~)
-%         if isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
+        %         if isempty(observe_ERPDAT.ERP)
+        %             return;
+        %         end
         MessageViewer= char(strcat('History > Show in cmd window'));
         estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
         observe_ERPDAT.Process_messg=1;
@@ -217,7 +220,7 @@ varargout{1} = box_erp_history;
                 ERP_history = [];
             end
             if isempty(ERP_history)
-                disp(['No command history for',32,observe_ERPDAT.ERP.erpname]);
+                disp(['No command history']);
                 observe_ERPDAT.Process_messg=2;
                 return;
             end
