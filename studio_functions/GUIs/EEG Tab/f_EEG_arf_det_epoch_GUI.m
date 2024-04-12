@@ -222,7 +222,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.det_algo.Enable= 'on';
             Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'on';
             Eegtab_EEG_art_det_epoch.chan_browse.Enable= 'on';
-            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'off';
             Eegtab_EEG_art_det_epoch.mflag2.Enable= 'on';
             Eegtab_EEG_art_det_epoch.mflag3.Enable= 'on';
             Eegtab_EEG_art_det_epoch.mflag4.Enable= 'on';
@@ -246,12 +246,100 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'on';
             end
             
+            algValue =Eegtab_EEG_art_det_epoch.det_algo.Value;
+            
+            if algValue==1
+                Eegtab_EEG_art_det_epoch.periods_editext.String='Test period [ms] (start end)';
+                Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage limits[uV] (e.g., -100 100)';
+                set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
+                VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
+                if isempty(VoltageValue) || numel(VoltageValue)~=2
+                    Eegtab_EEG_art_det_epoch.voltage_edit.String = '-100 100';
+                end
+                Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
+                Eegtab_EEG_art_det_epoch.movewindow_text.String='';
+                Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+                Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
+                Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
+            elseif algValue==2%%peak-to-peak
+                Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
+                set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
+                Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='on';
+                Eegtab_EEG_art_det_epoch.movewindow_text.String='Moving window width [ms]';
+                VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
+                if isempty(VoltageValue) || numel(VoltageValue)~=1
+                    Eegtab_EEG_art_det_epoch.voltage_edit.String = '100';
+                end
+                windowlength = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);%%moving window
+                if isempty(windowlength) || numel(windowlength)~=1
+                    Eegtab_EEG_art_det_epoch.movewindow_edit.String = '200';
+                end
+                windwostep = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
+                Eegtab_EEG_art_det_epoch.windowstep_text.String='Window step [ms]';
+                if isempty(windwostep) || numel(windwostep)~=1
+                    Eegtab_EEG_art_det_epoch.windowstep_edit.String = '100';
+                end
+            elseif algValue==3
+                Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
+                set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
+                Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='on';
+                Eegtab_EEG_art_det_epoch.movewindow_text.String='Moving window width [ms]';
+                VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
+                if isempty(VoltageValue) || numel(VoltageValue)~=1
+                    Eegtab_EEG_art_det_epoch.voltage_edit.String = '100';
+                end
+                windowlength = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);%%moving window
+                if isempty(windowlength) || numel(windowlength)~=1
+                    Eegtab_EEG_art_det_epoch.movewindow_edit.String = '200';
+                end
+                windwostep = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
+                if isempty(windwostep) || numel(windwostep)~=1
+                    Eegtab_EEG_art_det_epoch.windowstep_edit.String = '50';
+                end
+                Eegtab_EEG_art_det_epoch.windowstep_text.String='Window step [ms]';
+            elseif algValue==4
+                Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
+                set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
+                Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
+                VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
+                if isempty(VoltageValue) || numel(VoltageValue)~=1
+                    Eegtab_EEG_art_det_epoch.voltage_edit.String = '30';
+                end
+                Eegtab_EEG_art_det_epoch.movewindow_text.String='';
+                Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+                Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
+            elseif algValue==5
+                Eegtab_EEG_art_det_epoch.voltage_text.String = 'Amp. tolerance [uV] (e.g., 2)';
+                set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
+                Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
+                Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
+                Eegtab_EEG_art_det_epoch.movewindow_text.String = 'Flat line    duration [ms]   ';
+                VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
+                if isempty(VoltageValue) || numel(VoltageValue)~=1
+                    Eegtab_EEG_art_det_epoch.voltage_edit.String = '1';
+                end
+                windowlength = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);%%moving window
+                if isempty(windowlength) || numel(windowlength)~=1
+                    Eegtab_EEG_art_det_epoch.movewindow_edit.String = num2str(floor((observe_EEGDAT.EEG.times(end)-observe_EEGDAT.EEG.times(1))/2));
+                end
+            end
+            
+            
+            
         else
             Eegtab_EEG_art_det_epoch.manuar_button.Enable ='on';
             Eegtab_EEG_art_det_epoch.det_algo.Enable= 'off';
             Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'off';
             Eegtab_EEG_art_det_epoch.chan_browse.Enable= 'off';
-            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'on';
+            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'off';
             Eegtab_EEG_art_det_epoch.mflag2.Enable= 'on';
             Eegtab_EEG_art_det_epoch.mflag3.Enable= 'on';
             Eegtab_EEG_art_det_epoch.mflag4.Enable= 'on';
@@ -320,12 +408,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Artifact Detection (Epoched EEG) > View & Mark*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
             [EEG, LASTCOM] = f_ploteeg(EEG);
-            
             if isempty(EEG) || isempty(LASTCOM)
                 estudioworkingmemory('EEGUpdate',0);
                 observe_EEGDAT.eeg_panel_message =2;
+                observe_EEGDAT.count_current_eeg=1;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -342,6 +429,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         end%%end for loop of subjects
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_manmark');
         if isempty(Answer)
+            estudioworkingmemory('EEGUpdate',0);
+            observe_EEGDAT.eeg_panel_message =2;
+            observe_EEGDAT.count_current_eeg=1;
             return;
         end
         if ~isempty(Answer{1})
@@ -1627,6 +1717,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         Eegtab_EEG_art_det_epoch.manuar_checkbox.Enable= 'on';
         Eegtab_EEG_art_det_epoch.manuar_button.Enable ='on';
+        if Eegtab_EEG_art_det_epoch.manuar_checkbox.Value==0
+            Eegtab_EEG_art_det_epoch.manuar_button.Enable ='off';
+        end
         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.det_algo.Enable= 'on';
         Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'on';

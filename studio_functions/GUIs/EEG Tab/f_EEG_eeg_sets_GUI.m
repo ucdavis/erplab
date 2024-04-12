@@ -994,9 +994,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         
         estudioworkingmemory('f_EEG_proces_messg','EEGsets > Save');
         observe_EEGDAT.eeg_panel_message =1;
-        pathName =  estudioworkingmemory('EEG_save_folder');%% the forlder to save the data.
-        if isempty(pathName)
-            pathName =  [cd,filesep];
+        pathNamedef =  estudioworkingmemory('EEG_save_folder');%% the forlder to save the data.
+        if isempty(pathNamedef)
+            pathNamedef =  [cd,filesep];
         end
         
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
@@ -1009,7 +1009,11 @@ estudioworkingmemory('Startimes',0);%%set default value
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Save EEG dataset*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-            
+            pathName = EEG.filepath;
+            if isempty(pathName)
+                pathName = pathNamedef;
+            end
+            [pathName, ~, ~] = fileparts(pathName);
             FileName = EEG.filename;
             if isempty(FileName)
                 FileName =EEG.setname;

@@ -243,7 +243,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             [~,LASTCOM] =  pop_selectcomps(EEG);%
             if isempty(LASTCOM)
                 estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs:User selected cancel');
-                observe_EEGDAT.eeg_panel_message =4;
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 estudioworkingmemory('EEGUpdate',0);
                 observe_EEGDAT.count_current_eeg=1;

@@ -235,17 +235,6 @@ drawui_EEG_info(FonsizeDefault);
             end
             gui_EEG_info.total_rejected_percentage.String = ['Total rejected trials:',32,Total_rejected_trials];
             Enable_label = 'on';
-            %             try
-            %                 for ii = 1:numel(ERP.ntrials.accepted)
-            %                     dsnames{ii,1} = ii;
-            %                     dsnames{ii,2} = ERP.ntrials.accepted(ii)+ ERP.ntrials.rejected(ii)+ERP.ntrials.invalid(ii);
-            %                     dsnames{ii,3} = ERP.ntrials.accepted(ii);
-            %                     dsnames{ii,4} = ERP.ntrials.rejected(ii);
-            %                     dsnames{ii,5} = ERP.ntrials.invalid(ii);
-            %                 end
-            %             catch
-            %                 dsnames = dsnamesdef;
-            %             end
         else
             gui_EEG_info.total_rejected_percentage.String = ['Total rejected trials:',32,'0 (0%)'];
             gui_EEG_info.numofepoch.Enable = 'off';
@@ -273,7 +262,7 @@ drawui_EEG_info(FonsizeDefault);
             dsnamesdef{ii,2} = '';
             dsnamesdef{ii,3} = '';
         end
-        if ~isempty(observe_EEGDAT.EEG)  && observe_EEGDAT.EEG.trials~=1 &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+        if ~isempty(observe_EEGDAT.EEG)  &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
             EEG = observe_EEGDAT.EEG;
             for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
                 try

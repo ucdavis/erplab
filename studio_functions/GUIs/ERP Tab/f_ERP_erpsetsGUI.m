@@ -927,9 +927,9 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save');
         observe_ERPDAT.Process_messg =1;
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  cd;
+        pathNamedef =  estudioworkingmemory('EEG_save_folder');
+        if isempty(pathNamedef)
+            pathNamedef =  cd;
         end
         ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
@@ -945,6 +945,12 @@ varargout{1} = box_erpset_gui;
         
         for Numoferp = 1:length(ERPArray)
             ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
+            pathName = ERP.filepath;
+            if isempty(pathName)
+                pathName = pathNamedef;
+            end
+            [pathName, ~, ~] = fileparts(pathName);
+            
             FileName = ERP.filename;
             if isempty(FileName)
                 FileName = ERP.erpname;

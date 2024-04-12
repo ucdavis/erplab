@@ -348,10 +348,11 @@ varargout{1} = Eegtab_box_art_det_conus;
             fprintf(['*Artifact Detection (Continuous EEG) > View & reject*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             [EEG, LASTCOM] = f_ploteeg(EEG);
-            if isempty(EEG) || isempty(LASTCOM)
-                estudioworkingmemory('EEGUpdate',0);
+            if  isempty(LASTCOM)
                 observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
+                estudioworkingmemory('EEGUpdate',0);
+                observe_EEGDAT.count_current_eeg=1;
                 return;
             end
             EEG = eegh(LASTCOM, EEG);
@@ -367,6 +368,9 @@ varargout{1} = Eegtab_box_art_det_conus;
         end%%end for loop of subjects
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_manreject');
         if isempty(Answer)
+            estudioworkingmemory('EEGUpdate',0);
+            observe_EEGDAT.eeg_panel_message =2;
+            observe_EEGDAT.count_current_eeg=1;
             return;
         end
         if ~isempty(Answer{1})
