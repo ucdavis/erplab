@@ -842,6 +842,13 @@ if EEG.trials>1
             'XTick',xtickstr,...
             'FontWeight','normal',...
             'xaxislocation', 'bottom','FontSize',FonsizeDefault);
+        XTickLabel = cellstr(hbig.XTickLabel);
+        for Numofxtick = 1:length(XTickLabel)
+            if strcmpi(XTickLabel{Numofxtick,:},'-0')
+                XTickLabel{Numofxtick} = '0';
+            end
+        end
+        set(hbig,'XTickLabel',XTickLabel);
         %%
         %%-----------------plot scale------------------
         leftintv = (Winlength*multiplier+epochNum*GapSize);

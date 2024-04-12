@@ -1938,12 +1938,18 @@ if EEG.trials>1
                 end
             end
         end
-        set(myeegviewer,'XTickLabel', tagtext,...
-            'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)],...
+        set(myeegviewer, 'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)],...
             'XTick',xtickstr,...
+            'XTickLabel', tagtext,...
             'FontWeight','normal',...
             'xaxislocation', 'bottom','FontSize',FonsizeDefault);
-        
+        XTickLabel = cellstr(myeegviewer.XTickLabel);
+        for Numofxtick = 1:length(XTickLabel)
+            if strcmpi(XTickLabel{Numofxtick,:},'-0')
+                XTickLabel{Numofxtick} = '0';
+            end
+        end
+        set(myeegviewer,'XTickLabel',XTickLabel);
         %%
         %%-----------------plot scale------------------
         leftintv = (Winlength*multiplier+epochNum*GapSize);

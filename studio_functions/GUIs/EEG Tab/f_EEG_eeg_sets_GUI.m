@@ -70,7 +70,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.datatype_title = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.eeg_contns = uicontrol('Parent',EStduio_eegtab_EEG_set.datatype_title, 'Style', 'radiobutton', 'String', 'Continuous EEG',...
             'Callback', @continuous_eeg,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
-        
         EStduio_eegtab_EEG_set.eeg_epoch = uicontrol('Parent',EStduio_eegtab_EEG_set.datatype_title, 'Style', 'radiobutton', 'String', 'Epoched EEG',...
             'Callback', @epoch_eeg,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
         
@@ -709,7 +708,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         else
             return;
         end
-        
         
         [~,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
         %%Only continuous EEG
