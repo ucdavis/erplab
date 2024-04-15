@@ -132,6 +132,10 @@ MapMontage(M)
 
 if strcmpi(ERPtooltype,'EStudio')
     csd_param = estudioworkingmemory('csd_param');
+    if isempty(csd_param)
+       csd_param = [4,0.00001,10,1];
+       estudioworkingmemory('csd_param',csd_param);
+    end
     csd_param(4) = 0;
     erpworkingmemory('csd_param',csd_param);
     csd_param = csd_param(1:3);

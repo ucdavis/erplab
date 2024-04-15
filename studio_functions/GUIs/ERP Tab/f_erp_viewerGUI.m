@@ -96,15 +96,15 @@ if ~isempty(ALLERP)
     handles.Matlab_ver = OutputViewerparerp{22};
     handles.GridposArray = OutputViewerparerp{24};
     ChanArray11 = ChanArray(1);
-    ChanArray11 = vect2colon(ChanArray11,'Sort', 'on');
+    ChanArray11 = vect2colon(ChanArray11,'Sort', 'off');
     ChanArray11 = erase(ChanArray11,{'[',']'});
     handles.edit_chans.String =  ChanArray11;
     BinArray1 = BinArray(1);
-    BinArray1 = vect2colon(BinArray1,'Sort', 'on');
+    BinArray1 = vect2colon(BinArray1,'Sort', 'off');
     BinArray1 = erase(BinArray1,{'[',']'});
     handles.edit_bin.String = BinArray1;
     CurrentERP = CurrentERP(1);
-    ERPArray1 = vect2colon(CurrentERP,'Sort', 'on');
+    ERPArray1 = vect2colon(CurrentERP,'Sort', 'off');
     ERPArray1 = erase(ERPArray1,{'[',']'});
     handles.edit5_erpset.String = ERPArray1;
     handles.CurrentERP=CurrentERP;
@@ -330,7 +330,7 @@ else
         handles.pushbutton_binlarge.Enable = 'on';
     end
 end
-binpos = vect2colon(BinArray(binpos),'Sort', 'on');
+binpos = vect2colon(BinArray(binpos),'Sort', 'off');
 binpos = erase(binpos,{'[',']'});
 handles.edit_bin.String = binpos;
 
@@ -387,7 +387,7 @@ else
     end
 end
 BinArraynew = BinArray(binpos);
-BinArraynew = vect2colon(BinArraynew,'Sort', 'on');
+BinArraynew = vect2colon(BinArraynew,'Sort', 'off');
 BinArraynew = erase(BinArraynew,{'[',']'});
 handles.edit_bin.String = BinArraynew;
 guidata(hObject, handles);
@@ -408,7 +408,7 @@ end
 
 BinArray = str2num(handles.edit_bin.String);
 if isempty(BinArray) || any(BinArray<=0) || any(BinArray>ERP.nbin)
-    BinArray1 = vect2colon(handles.BinArray,'Sort', 'on');
+    BinArray1 = vect2colon(handles.BinArray,'Sort', 'off');
     BinArray1 = erase(BinArray1,{'[',']'});
     handles.edit_bin.String =BinArray1;
     handles.text_warningmessage.String  = ['Input(s) for bin must be between 1 and ',32,num2str(ERP.nbin)];
@@ -464,7 +464,7 @@ end
 if isempty(ALLERP) || isempty(ERP)
     return;
 end
-BinArray = vect2colon(handles.BinArray,'Sort', 'on');
+BinArray = vect2colon(handles.BinArray,'Sort', 'off');
 BinArray = erase(BinArray,{'[',']'});
 handles.edit_bin.String = BinArray;
 
@@ -520,7 +520,7 @@ else
     end
 end
 
-ChanArray11 = vect2colon(ChanArray(chanpos),'Sort', 'on');
+ChanArray11 = vect2colon(ChanArray(chanpos),'Sort', 'off');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String =  ChanArray11;
 guidata(hObject, handles);
@@ -573,7 +573,7 @@ else
     end
 end
 
-ChanArray11 = vect2colon(ChanArray(chanpos),'Sort', 'on');
+ChanArray11 = vect2colon(ChanArray(chanpos),'Sort', 'off');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String =  ChanArray11;
 guidata(hObject, handles);
@@ -596,13 +596,13 @@ ChanArray = str2num(handles.edit_chans.String);
 if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>ERP.nchan)
     handles.text_warningmessage.String  = ['Inputs for channels must be between 1 and',32,num2str(ERP.nchan)];
     
-    ChanArray11 = vect2colon(handles.ChanArray,'Sort', 'on');
+    ChanArray11 = vect2colon(handles.ChanArray,'Sort', 'off');
     ChanArray11 = erase(ChanArray11,{'[',']'});
     handles.edit_chans.String = ChanArray11;
     return;
 end
 handles.ChanArray = ChanArray;
-ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
+ChanArray11 = vect2colon(ChanArray,'Sort', 'off');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String = ChanArray11;
 if numel(ChanArray)~=1
@@ -657,7 +657,7 @@ if isempty(ALLERP) || isempty(ERP)
     return;
 end
 
-ChanArray11 = vect2colon(handles.ChanArray,'Sort', 'on');
+ChanArray11 = vect2colon(handles.ChanArray,'Sort', 'off');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String = ChanArray11;
 % handles.ChanArray = 1:ERP.nchan;
@@ -845,7 +845,7 @@ end
 
 ERPArray = [1:length(ALLERP)];
 handles.edit5_erpset.String = num2str(ERPArray);
-ERPArray = vect2colon(ERPArray,'Sort', 'on');
+ERPArray = vect2colon(ERPArray,'Sort', 'off');
 ERPArray = erase(ERPArray,{'[',']'});
 handles.edit5_erpset.String = ERPArray;
 handles= plot_wave_viewer(hObject,handles);
@@ -990,7 +990,7 @@ if isempty(ChanArray_new) || any(ChanArray_new>nbchan) || any(ChanArray_new<=0)
 end
 
 
-[~,chanpos] = find(ChanArray ==ChanArray_new);
+[~,chanpos] = find(sort(ChanArray) ==sort(ChanArray_new));
 if isempty(chanpos)
     ChanArray_new = ChanArray(1);
     handles.edit_chans.String = num2str( ChanArray(1));
@@ -1017,7 +1017,7 @@ if numel(ChanArray_new) == numel(ChanArray)
     handles.pushbutton_chanlarge.Enable = 'off';
 end
 
-ChanArray11 = vect2colon(ChanArray_new,'Sort', 'on');
+ChanArray11 = vect2colon(ChanArray_new,'Sort', 'off');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String =  ChanArray11;
 
@@ -1032,7 +1032,7 @@ if isempty(BinArray_edit) || any(BinArray_edit>nbin) || any(BinArray_edit<=0)
 end
 BinArray = handles.BinArray;
 BinArray =reshape(BinArray,1,numel(BinArray));
-[~,binpos] = find(BinArray ==BinArray_edit);
+[~,binpos] = find(sort(BinArray) ==sort(BinArray_edit));
 if isempty(binpos)
     BinArray_edit = BinArray(1);
     handles.edit_bin.String = num2str(BinArray_edit);
@@ -1059,7 +1059,7 @@ if numel(BinArray_edit)== numel(BinArray)
     handles.pushbutton_binsmall.Enable = 'off';
     handles.pushbutton_binlarge.Enable = 'off';
 end
-BinArray1 = vect2colon(BinArray_edit,'Sort', 'on');
+BinArray1 = vect2colon(BinArray_edit,'Sort', 'off');
 BinArray1 = erase(BinArray1,{'[',']'});
 handles.edit_bin.String = BinArray1;
 
@@ -1768,7 +1768,7 @@ if ~isempty(hplot)
         p  = get(legendview,'position');
         h_legend = legend(legendview,hplot,qLegendName);
         rowNumlg = ceil(sqrt(length(qLegendName)));
-        set(h_legend,'NumColumns',rowNumlg,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault,'box','off');
+        set(h_legend,'NumColumns',1,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault,'box','off');
     else
         %         qLegendName = {'There are no legend names becuase you selected "Overlay" for chans'};
         %         text(legendview,0.5,0.8,qLegendName ,...
@@ -1785,8 +1785,6 @@ if isempty(ALLERP)
     return;
 end
 handles.ALLERP=ALLERP;
-
-
 %%current erp
 ERPArray=str2num(handles.edit5_erpset.String);
 if isempty(ERPArray)  || any(ERPArray(:)> length(ALLERP)) || any(ERPArray(:)<1)
@@ -1800,7 +1798,6 @@ if ~isempty(checkindex)
     handles.radiobutton_erppor.Value=1;
     ERPArray = ERPArray(1);
 end
-
 
 handles.edit5_erpset.String = num2str(ERPArray);
 if numel(ERPArray)==1
@@ -1818,46 +1815,102 @@ else
     handles.pushbutton_erpsetsmall.Enable = 'off';
     handles.pushbutton_erpsetlarge.Enable = 'off';
 end
-
-
-
-%%current erp
-CurrentERP=handles.CurrentERP;
-if isempty(CurrentERP) || numel(CurrentERP)~=1 || any(CurrentERP> length(ALLERP))
-    CurrentERP = length(ALLERP);
-    handles.CurrentERP = CurrentERP;
-end
-handles.edit5_erpset.String = num2str(CurrentERP);
-if CurrentERP==1
+if numel(ERPArray)== numel(ALLERP)
     handles.pushbutton_erpsetsmall.Enable = 'off';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
-elseif CurrentERP==length(ALLERP)
-    handles.pushbutton_erpsetsmall.Enable = 'on';
     handles.pushbutton_erpsetlarge.Enable = 'off';
-else
-    handles.pushbutton_erpsetsmall.Enable = 'on';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
 end
-%%channels
-ChanArray = handles.ChanArray;
-ERP = ALLERP(CurrentERP);
+ERP = ALLERP(ERPArray(1));
+if numel(ERPArray)==1
+    handles.text_erpname.String = ERP.erpname;
+else
+    handles.text_erpname.String = 'Multiple ERPsets were slected';
+end
 
-handles.text_erpname.String = ERP.erpname;
+%%channels
+ChanArray_new = str2num(handles.edit_chans.String);
 nbchan = ERP.nchan;
 handles.ERP = ERP;
-if isempty(ChanArray) || any(ChanArray>nbchan) || any(ChanArray<=0)
-    ChanArray = [1:nbchan];
-    
+ChanArray = handles.ChanArray;
+ChanArray =reshape(ChanArray,1,numel(ChanArray));
+if isempty(ChanArray_new) || any(ChanArray_new>nbchan) || any(ChanArray_new<=0)
+    ChanArray_new =ChanArray;
+    handles.ChanArray = ChanArray_new;
 end
-handles.ChanArray = ChanArray;
+
+
+[~,chanpos] = find(sort(ChanArray) ==sort(ChanArray_new));
+if isempty(chanpos)
+    ChanArray_new = ChanArray(1);
+    handles.edit_chans.String = num2str( ChanArray(1));
+    chanpos = 1;
+end
+
+if numel(ChanArray_new)~=1
+    handles.pushbutton8_chansmall.Enable = 'off';
+    handles.pushbutton_chanlarge.Enable = 'off';
+else
+    if chanpos==1
+        handles.pushbutton8_chansmall.Enable = 'off';
+        handles.pushbutton_chanlarge.Enable = 'on';
+    elseif chanpos==numel(ChanArray)
+        handles.pushbutton8_chansmall.Enable = 'on';
+        handles.pushbutton_chanlarge.Enable = 'off';
+    else
+        handles.pushbutton8_chansmall.Enable = 'on';
+        handles.pushbutton_chanlarge.Enable = 'on';
+    end
+end
+if numel(ChanArray_new) == numel(ChanArray)
+    handles.pushbutton8_chansmall.Enable = 'off';
+    handles.pushbutton_chanlarge.Enable = 'off';
+end
+ChanArray = ChanArray_new;
+ChanArray11 = vect2colon(ChanArray_new,'Sort', 'off');
+ChanArray11 = erase(ChanArray11,{'[',']'});
+handles.edit_chans.String =  ChanArray11;
+
+chanOverlay = handles.radiobutton_chanoverlay.Value;
 
 %%bin
 nbin = ERP.nbin;
-BinArray =handles.BinArray;
-if isempty(BinArray) || any(BinArray>nbin) || any(BinArray<=0)
-    BinArray = [1:nbin];
+BinArray_edit =str2num(handles.edit_bin.String);
+if isempty(BinArray_edit) || any(BinArray_edit>nbin) || any(BinArray_edit<=0)
+    BinArray_edit = [1:nbin];
+    handles.BinArray = BinArray;
 end
-handles.BinArray = BinArray;
+BinArray = handles.BinArray;
+BinArray =reshape(BinArray,1,numel(BinArray));
+[~,binpos] = find(sort(BinArray) ==sort(BinArray_edit));
+if isempty(binpos)
+    BinArray_edit = BinArray(1);
+    handles.edit_bin.String = num2str(BinArray_edit);
+    binpos = 1;
+end
+
+if numel(BinArray_edit)~=1
+    handles.pushbutton_binsmall.Enable = 'off';
+    handles.pushbutton_binlarge.Enable = 'off';
+else
+    if binpos==1
+        handles.pushbutton_binsmall.Enable = 'off';
+        handles.pushbutton_binlarge.Enable = 'on';
+    elseif binpos == numel(BinArray)
+        handles.pushbutton_binsmall.Enable = 'on';
+        handles.pushbutton_binlarge.Enable = 'off';
+    else
+        handles.pushbutton_binsmall.Enable = 'on';
+        handles.pushbutton_binlarge.Enable = 'on';
+    end
+end
+
+if numel(BinArray_edit)== numel(BinArray)
+    handles.pushbutton_binsmall.Enable = 'off';
+    handles.pushbutton_binlarge.Enable = 'off';
+end
+BinArray =BinArray_edit;
+BinArray1 = vect2colon(BinArray_edit,'Sort', 'off');
+BinArray1 = erase(BinArray1,{'[',']'});
+handles.edit_bin.String = BinArray1;
 
 %%-----------------------create the panel----------------------------------
 FonsizeDefault = f_get_default_fontsize();
@@ -1889,14 +1942,7 @@ erptabwaveiwer_legend = subplot(ceil(rowNums*5)+1, 1, 1,'align');
 hbig = subplot(ceil(rowNums*5)+1,1,[2:ceil(rowNums*5)+1]);
 hold(hbig,'on');
 set(erptabwaveiwer_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none','box','off');
-ax = hbig;
-% outerpos = ax.OuterPosition;
-% ti = ax.TightInset;
-% left = outerpos(1) + ti(1);
-% bottom = outerpos(2) + ti(2);
-% ax_width = outerpos(3) - ti(1) - ti(3);
-% ax_height = outerpos(4) - ti(2) - ti(4);
-% ax.Position = [left bottom ax_width ax_height];
+
 
 timeStart =handles.timeStart;
 timEnd =handles.timEnd;
@@ -1945,39 +1991,6 @@ end
 GridposArray = handles.GridposArray;
 
 %%----------------------measurement name-----------------------------------
-% measurearray = {'Instantaneous amplitude',...
-%     'Mean amplitude between two fixed latencies',...
-%     'Peak amplitude',...
-%     'Peak latency',...
-%     'Fractional Peak latency',...
-%     'Numerical integration/Area between two fixed latencies',...
-%     'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-%     'Fractional Area latency'};
-% meacodes    =      {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
-%     'areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
-%     'fareaplat','fninteglat','fareanlat', 'ninteg','nintegz' };
-%
-% [tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
-%
-% if ismember_bc2(indxmeaX,[6 7 8 16])
-%     meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...
-% elseif ismember_bc2(indxmeaX,[9 10 11 17])
-%     meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-% elseif ismember_bc2(indxmeaX,[12 13 14 15])
-%     meamenu = 8; %  'Fractional Area latency'
-% elseif ismember_bc2(indxmeaX,1)
-%     meamenu = 1; % 'Instantaneous amplitude',...
-% elseif ismember_bc2(indxmeaX,2)
-%     meamenu = 2; % 'mean amp
-% elseif ismember_bc2(indxmeaX,3)
-%     meamenu = 3; % 'peak amp',...
-% elseif ismember_bc2(indxmeaX,4)
-%     meamenu = 4; % 'peak lat',...
-% elseif ismember_bc2(indxmeaX,5)
-%     meamenu = 5; % 'Fractional Peak latency',..',...
-% else
-%     meamenu = 1; % 'Instantaneous amplitude',...
-% end
 
 offset = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
     positive_up,chanOverlay,rowNums,GridposArray,hbig,erptabwaveiwer_legend);

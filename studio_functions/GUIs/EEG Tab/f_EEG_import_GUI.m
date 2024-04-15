@@ -118,8 +118,6 @@ pause(0.1)
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-beep;
-disp('User selected Cancel')
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
@@ -174,23 +172,7 @@ if isempty(fileName)
     handles.listbox_plugins.Value=1;
     return;
 end
-% [EEG,LASTCOM] = pop_fileio();
-% if isempty(EEG)
-%     disp('User selected Cancel');
-%     return;
-% end
-% EEG = eegh(LASTCOM, EEG);
-% ALLEEG = handles.ALLEEG;
-% if isempty(ALLEEG)
-%     OLDSET=1;
-% else
-%     %  ALLEEG(length(ALLEEG)+1) = EEG;
-%     OLDSET = length(ALLEEG);
-% end
-% [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
-%
-% handles.ALLEEG = ALLEEG;
-% guidata(hObject, handles);
+
 ALLEEG = handles.ALLEEG;
 [filename, filepath,filterindex] = uigetfile('*.*', 'Choose files or header files -- pop_fileio()',...
     'MultiSelect', 'on');
@@ -217,7 +199,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -284,7 +265,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -324,7 +304,6 @@ end
 
 [EEG LASTCOM] = pop_importdata;
 if isempty(EEG)
-    disp('User selected Cancel');
     return;
 end
 EEG = eegh(LASTCOM, EEG);
@@ -333,7 +312,6 @@ ALLEEG = handles.ALLEEG;
 if isempty(ALLEEG)
     OLDSET=1;
 else
-    %  ALLEEG(length(ALLEEG)+1) = EEG;
     OLDSET = length(ALLEEG);
 end
 [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
@@ -392,7 +370,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -459,7 +436,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -515,7 +491,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -570,7 +545,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -627,7 +601,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -684,7 +657,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [~, myFilename, ~] = fileparts(filename{Numofile});
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -741,7 +713,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     end
     
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -789,7 +760,6 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         [EEG,LASTCOM] = pop_readbdf([filepath,filename{Numofile}]);
     end
     if isempty(EEG)
-        disp('User selected Cancel');
         return;
     end
     EEG = eegh(LASTCOM, EEG);
@@ -857,7 +827,7 @@ end
 
 % --- Executes on button press in pushbutton_eeglab_extension.
 function pushbutton_eeglab_extension_Callback(hObject, eventdata, handles)
- handles.text_message.String = 'We recommended you restart "Import EEG data GUI" after you updated the functions using "EEGLAB manage extensions".';
+handles.text_message.String = 'We recommended you restart "Import EEG data GUI" after you updated the functions using "EEGLAB manage extensions".';
 plugin_menu([]);
 
 

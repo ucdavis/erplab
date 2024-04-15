@@ -12,8 +12,6 @@
 function varargout = f_EEG_eeglabtool_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-% addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
 %---------------------------Initialize parameters------------------------------------
@@ -364,13 +362,14 @@ varargout{1} = EStudio_box_eeglab_tool;
         %%Edit the channel locations
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf(['Edit the channel locations for eegset(s):',32,num2str(EEGArray),'\n']);
-        [EEG, chaninfo, urchans, LASTCOM] =pop_chanedit(ALLEEG(EEGArray));
-        LASTCOM = ['EEG',LASTCOM];
+          EEG= ALLEEG(EEGArray);
+        [EEG, chaninfo, urchans, LASTCOM] =pop_chanedit(EEG); 
         if isempty(LASTCOM)
             fprintf( ['\n',repmat('-',1,100) '\n']);
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
+       
         fprintf(LASTCOM,'\n');
         EEG = eegh(LASTCOM, EEG);
         eegh(LASTCOM);

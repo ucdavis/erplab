@@ -97,7 +97,7 @@ else
 end
 
 if binlabop==1
-     set(handles.checkbox_binlabel, 'Value', 0);   
+     set(handles.checkbox_binlabel, 'Value', 1);   
 else
     set(handles.checkbox_binlabel, 'Value', 0);    
 end
@@ -220,7 +220,6 @@ title = 'Save output file as';
     title,pathName);
 
 if isequal(filterindex,0)
-    disp('User selected Cancel');
     return;
 else
     [px, fname, ext] = fileparts(filename);
@@ -242,8 +241,7 @@ end
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-beep;
-disp('User selected Cancel')
+
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);

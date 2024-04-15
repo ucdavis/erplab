@@ -55,8 +55,6 @@ varargout{1} = box_eegset_gui;
 
 estudioworkingmemory('Startimes',0);%%set default value
 
-% Grab local structure from global ERP (update local structure instead of
-% replacing it)
 
 % Draw the ui
     function drawui_EEGset(FonsizeDefault)
@@ -889,6 +887,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         else
             [ALLEEG,LASTCOM] = pop_delset( observe_EEGDAT.ALLEEG , EEGArray);
             if  isempty(LASTCOM)
+                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             ERPset_remained = setdiff([1:length(observe_EEGDAT.ALLEEG)],EEGArray);
@@ -1087,7 +1086,6 @@ estudioworkingmemory('Startimes',0);%%set default value
                 if Numofeeg ==length(EEGArray)
                     eegh(LASTCOM);
                 end
-                
                 disp(['Saved as to',32,EEG.filepath,filesep,filename]);
                 fprintf(['\n',LASTCOM,'\n']);
             end

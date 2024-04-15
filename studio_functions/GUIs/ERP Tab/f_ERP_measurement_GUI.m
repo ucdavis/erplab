@@ -447,8 +447,6 @@ varargout{1} = erp_measurement_box;
         end
         Measure = Answer{1};
         
-        
-        
         switch Measure%Find the label of the selected item, the defualt one is 1 (Mean amplitude between two fixed latencies)
             case 'meanbl'% Mean amplitude
                 set(ERPMTops.m_t_type,'Value',1);
@@ -927,9 +925,9 @@ varargout{1} = erp_measurement_box;
         estudioworkingmemory('ERPTab_mesuretool',1);
         
         if strcmp(ERPMTops.def_erpvalue{18},'wide')
-            FileFormat = 0;
-        else
             FileFormat = 1;
+        else
+            FileFormat = 0;
         end
         pathName_folder_default =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName_folder_default)
@@ -940,7 +938,9 @@ varargout{1} = erp_measurement_box;
         if isempty(fname)
             fname = 'save_erpvalues';
         end
-        
+        if isempty(pathNamex)
+            pathNamex = pathName_folder_default;
+        end
         
         try
             Binlabel = ERPMTops.def_erpvalue{11};
@@ -976,7 +976,9 @@ varargout{1} = erp_measurement_box;
         end
         
         
-        Answer = f_ERP_meas_format_path(FileFormat,fullfile(pathName_folder_default,fname),inclate,send2ws,binlabop);
+        
+        
+        Answer = f_ERP_meas_format_path(FileFormat,fullfile(pathNamex,fname),inclate,send2ws,binlabop);
         if isempty(Answer)
             return;
         end
@@ -1125,6 +1127,16 @@ varargout{1} = erp_measurement_box;
         FileName=ERPMTops.m_t_file.String;
         estudioworkingmemory('f_ERP_proces_messg',' Measurement Tool (Save values)');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
+        %%check if the file already exists?
+        if exist(FileName, 'file')~=0
+            msgboxText =  ['This file already exists.\n'...;
+                'Would you like to overwrite it?'];
+            title  = 'Estudio: WARNING!';
+            button = askquest(sprintf(msgboxText), title);
+            if ~strcmpi(button,'Yes')
+                return
+            end
+        end
         
         ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
         ERPMTops.m_t_value.ForegroundColor = [0 0 0];
@@ -1590,6 +1602,10 @@ varargout{1} = erp_measurement_box;
         ERPMTops.m_t_chan.String = ChanArray;
         ERPMTops.m_t_TW.String = '';
         ERPMTops.m_t_file.String = '';
+        ERPMTops.def_erpvalue{18} = 'wide';%%file format
+        ERPMTops.def_erpvalue{11} = 'off';%%Binlabel
+        ERPMTops.def_erpvalue{17} = 'off';%%send2ws
+        ERPMTops.def_erpvalue{20} = 'off' ;%%inclate
         observe_ERPDAT.Reset_erp_paras_panel=11;
     end
 
