@@ -369,7 +369,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         end
         ALLEEGIN = observe_EEGDAT.ALLEEG;
         CURRENTEEGIN= observe_EEGDAT.CURRENTSET;
-        if (~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)) || (isfield(observe_EEGDAT.EEG,'chanlocs') && ~isempty(observe_EEGDAT.EEG.chanlocs)) 
+        if (~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)) || (isfield(observe_EEGDAT.EEG,'chanlocs') && ~isempty(observe_EEGDAT.EEG.chanlocs))
             %The channels and bins will be modified if the ERPset is changed
             ChannelValue =  EStduio_eegtab_EEG_IC_chan.ElecRange.Value-1;
             try
@@ -401,9 +401,9 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.plot_reset.Enable = 'on';
             EStduio_eegtab_EEG_IC_chan.plot_apply.Enable = 'on';
             if EEGUpdate==1
-                 EStduio_eegtab_EEG_IC_chan.ElecRange.Enable = 'off';
-            EStduio_eegtab_EEG_IC_chan.plot_reset.Enable = 'off';
-            EStduio_eegtab_EEG_IC_chan.plot_apply.Enable = 'off';  
+                EStduio_eegtab_EEG_IC_chan.ElecRange.Enable = 'off';
+                EStduio_eegtab_EEG_IC_chan.plot_reset.Enable = 'off';
+                EStduio_eegtab_EEG_IC_chan.plot_apply.Enable = 'off';
             end
         else
             Chanlist_name = 'No EEG is available or  chanlocs is empty';
@@ -433,8 +433,8 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.ICRange.Enable = 'on';
             EStduio_eegtab_EEG_IC_chan.ICRange.Min = 1;
             EStduio_eegtab_EEG_IC_chan.ICRange.Max = numel(observe_EEGDAT.EEG.icachansind)+1;
-              if EEGUpdate==1
-                 EStduio_eegtab_EEG_IC_chan.ICRange.Enable = 'off';
+            if EEGUpdate==1
+                EStduio_eegtab_EEG_IC_chan.ICRange.Enable = 'off';
             end
         else
             %%ICs

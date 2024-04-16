@@ -931,7 +931,7 @@ end
 
 
 function handles = plot_wave_viewer(hObject,handles)
-ALLERP = handles.ALLERP;
+try ALLERP = handles.ALLERP;catch ALLERP = [];  end
 
 if isempty(ALLERP)
     return;
@@ -989,8 +989,11 @@ if isempty(ChanArray_new) || any(ChanArray_new>nbchan) || any(ChanArray_new<=0)
     handles.ChanArray = ChanArray_new;
 end
 
-
-[~,chanpos] = find(sort(ChanArray) ==sort(ChanArray_new));
+if handles.radiobutton_chanpor.Value==1
+    [~,chanpos] = find(ChanArray ==ChanArray_new);
+else
+    chanpos=1;
+end
 if isempty(chanpos)
     ChanArray_new = ChanArray(1);
     handles.edit_chans.String = num2str( ChanArray(1));
@@ -1032,7 +1035,11 @@ if isempty(BinArray_edit) || any(BinArray_edit>nbin) || any(BinArray_edit<=0)
 end
 BinArray = handles.BinArray;
 BinArray =reshape(BinArray,1,numel(BinArray));
-[~,binpos] = find(sort(BinArray) ==sort(BinArray_edit));
+if handles.radiobutton_erppor.Value==1
+    [~,binpos] = find(BinArray==BinArray_edit);
+else
+    BinArray = [];
+end
 if isempty(binpos)
     BinArray_edit = BinArray(1);
     handles.edit_bin.String = num2str(BinArray_edit);
@@ -1068,10 +1075,10 @@ FonsizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
-    ColorB_def = [0. 95 0.95 0.95];
+    ColorB_def = [0.7020 0.77 0.85];
 end
 if isempty(ColorB_def)
-    ColorB_def = [0. 95 0.95 0.95];
+    ColorB_def = [0.7020 0.77 0.85];
 end
 handles.ViewContainer = handles.uipanel1_viewer;
 handles.plotgrid = uiextras.VBox('Parent',handles.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
@@ -1869,7 +1876,6 @@ ChanArray11 = vect2colon(ChanArray_new,'Sort', 'off');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String =  ChanArray11;
 
-chanOverlay = handles.radiobutton_chanoverlay.Value;
 
 %%bin
 nbin = ERP.nbin;
@@ -1913,14 +1919,13 @@ BinArray1 = erase(BinArray1,{'[',']'});
 handles.edit_bin.String = BinArray1;
 
 %%-----------------------create the panel----------------------------------
-FonsizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
-    ColorB_def = [0. 95 0.95 0.95];
+    ColorB_def = [0.7020 0.77 0.85];
 end
 if isempty(ColorB_def)
-    ColorB_def = [0. 95 0.95 0.95];
+    ColorB_def = [0.7020 0.77 0.85];
 end
 
 Position = handles.erptabwaveiwer.OuterPosition;
@@ -1991,16 +1996,12 @@ end
 GridposArray = handles.GridposArray;
 
 %%----------------------measurement name-----------------------------------
-
 offset = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
     positive_up,chanOverlay,rowNums,GridposArray,hbig,erptabwaveiwer_legend);
 
 splot_n = numel(ChanArray);
 
-
 ndata = BinArray;
-
-
 pnts    = ERP.pnts;
 timeor  = ERP.times; % original time vector
 p1      = timeor(1);
@@ -2049,8 +2050,6 @@ end
 
 [Numchan,Numsamp,Numbin,Numerp] = size(plot_erp_data);
 if chanOverlay==1
-    %     plot_erp_data = permute(plot_erp_data,[2 1 3 4]);
-    %     plot_erp_data = reshape(plot_erp_data,1,Numsamp,Numchan*Numbin*Numerp);
     plot_erp_data11 = [];
     count = 0;
     for Numoferp = 1:Numerp
@@ -2063,7 +2062,6 @@ if chanOverlay==1
     end
     plot_erp_data = plot_erp_data11;
 else
-    %     plot_erp_data = reshape(plot_erp_data,Numchan,Numsamp,Numbin*Numerp);
     plot_erp_data11 = [];
     count = 0;
     for Numoferp = 1:Numerp
@@ -2078,8 +2076,6 @@ end
 [~,~,Num_plot] = size(plot_erp_data);
 line_colors = get_colors(Num_plot);
 
-% line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
-% return;
 if chanOverlay==1
     offset = zeros(size(plot_erp_data,3),1);
 end

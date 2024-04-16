@@ -1219,6 +1219,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
             ALLEEG = observe_EEGDAT.ALLEEG;
             EEGArray=   estudioworkingmemory('EEGArray');
+            if isempty(EEGArray) || any(EEGArray(:)>length(observe_EEGDAT.ALLEEG))
+               EEGArray =  length(observe_EEGDAT.ALLEEG);estudioworkingmemory('EEGArray',EEGArray);
+               observe_EEGDAT.CURRENTSET = EEGArray;
+            end
             CURRENTSET = observe_EEGDAT.CURRENTSET;
             ALLEEGArray = [1:length(ALLEEG)];
             [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();%%all EEGset

@@ -267,7 +267,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         
         %%ERPStudio Memory
         EStudio_gui_erp_totl.set_ERP_memory = uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'Memory Settings','separator','off');
-        uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset Working Memory', 'Callback', 'etudioamnesia(1)','separator','off');
+        uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset Working Memory', 'Callback', @resetmemory,'separator','off');
         uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Save a copy of the current working memory as...', 'Callback', 'estudioworking_mem_save_load(1)','separator','off');
         comLoadWM = ['clear vmemoryestudio; vmemoryestudio = estudioworking_mem_save_load(2); assignin(''base'',''vmemoryestudio'',vmemoryestudio);'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
@@ -446,7 +446,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
-            disp('User selected Cancel');
             return;
         end
         try New_pos1(2) = abs(New_pos1(2));catch; end;
@@ -694,6 +693,14 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         else
             return;
         end
+    end
+
+
+%%-------------------reset memory file-------------------------------------
+    function resetmemory(~,~)
+        etudioamnesia(1);
+        observe_EEGDAT.count_current_eeg =1;
+        observe_ERPDAT.Count_currentERP = 1;
     end
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function

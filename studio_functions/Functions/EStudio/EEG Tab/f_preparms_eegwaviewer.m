@@ -75,7 +75,7 @@ if isempty(EEG.icachansind)
     estudioworkingmemory('EEG_ICArray',[]);
 else
     nIC = numel(EEG.icachansind);
-    if isempty(ICArray) || min(ICArray(:))>nIC || max(ICArray(:)) >  nIC ||  min(ICArray(:))<=0
+    if isempty(ICArray) || any(ICArray(:)>nIC)  ||  any(ICArray(:)<=0)
         ICArray = [];
         estudioworkingmemory('EEG_ICArray',ICArray);
     end

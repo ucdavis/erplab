@@ -132,9 +132,11 @@ varargout{1} = Eegtab_box_art_sumop;
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if isempty(RestoreEvent)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         

@@ -43,7 +43,7 @@ end
 
 ERP_chanorders = estudioworkingmemory('ERP_chanorders');
 ChanArray = reshape(ChanArray,1,[]);
-chanOrder = ERP_chanorders{1};
+try chanOrder = ERP_chanorders{1};catch chanOrder = 1;  end
 if isempty(chanOrder) || any(chanOrder<=0) || numel(chanOrder)~=1 || (chanOrder~=1 && chanOrder~=2 && chanOrder~=3)
     chanOrder=1;
 end
@@ -264,9 +264,9 @@ if isempty(sampeak) ||numel(sampeak)~=1 || any(sampeak<1)
 end
 
 if matlabfig==1
-    [EEG, eegcom] = pop_ploterptab(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
-        'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
-        'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History',History);
+%     [EEG, eegcom] = pop_ploterptab(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
+%         'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
+%         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History',History);
 else
     OutputViewerparerp{1} = ChanArray;
     OutputViewerparerp{2} = BinArray;

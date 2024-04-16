@@ -1363,7 +1363,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTSET = ERPArray;
+            observe_ERPDAT.CURRENTERP = ERPArray;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
@@ -1646,7 +1646,7 @@ varargout{1} = ERP_plot_scalp_gui;
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTSET = ERPArray;
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             estudioworkingmemory('selectederpstudio',ERPArray);
             observe_ERPDAT.Count_currentERP =1;
         end
