@@ -698,9 +698,13 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
 %%-------------------reset memory file-------------------------------------
     function resetmemory(~,~)
-        etudioamnesia(1);
-        observe_EEGDAT.count_current_eeg =1;
-        observe_ERPDAT.Count_currentERP = 1;
+        runindex =  etudioamnesia(1);
+        if runindex==1
+            observe_EEGDAT.Reset_eeg_paras_panel=1;
+            observe_ERPDAT.Count_currentERP = 1;
+            f_redrawERP();
+            f_redrawEEG_Wave_Viewer();
+        end
     end
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function

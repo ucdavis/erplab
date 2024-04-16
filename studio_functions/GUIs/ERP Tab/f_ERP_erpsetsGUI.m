@@ -1177,6 +1177,13 @@ varargout{1} = box_erpset_gui;
         if observe_ERPDAT.Reset_erp_paras_panel~=1
             return;
         end
+        
+        if ~isempty(observe_ERPDAT.ALLERP)
+            observe_ERPDAT.ERP =  observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+            estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
+            ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
+        end
         observe_ERPDAT.Reset_erp_paras_panel=2;
     end
 

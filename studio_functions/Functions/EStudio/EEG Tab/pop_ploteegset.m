@@ -340,6 +340,9 @@ for q=1:length(fn)
         fn2res = p.Results.(fn2com); %  input value
         if ~isempty(fn2res)
             if ischar(fn2res)
+                if strcmpi(fn2com,'History') && strcmpi(fn2res,'command')
+                    fn2res = 'gui';
+                end
                 if ~strcmpi(fn2res,'off')
                     eegcom = sprintf( '%s, ''%s'', ''%s''', eegcom, fn2com, fn2res);
                 end

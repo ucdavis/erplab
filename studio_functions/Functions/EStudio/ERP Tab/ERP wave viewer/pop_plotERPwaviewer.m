@@ -1119,6 +1119,9 @@ for q=1:length(fn)
         fn2res = p.Results.(fn2com); %  input value
         if ~isempty(fn2res)
             if ischar(fn2res)
+                if strcmpi(fn2com,'History') && strcmpi(fn2res,'command')
+                    fn2res = 'gui';
+                end
                 if ~strcmpi(fn2res,'off')
                     erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
                 end
@@ -1168,10 +1171,10 @@ switch shist
             ALLERP(i) = erphistory(ALLERP(i), [], erpcom, 1);
         end
     case 3
-         % implicit 
+        % implicit
     case 4
         displayEquiComERP(erpcom);
-       
+        
     otherwise %off or none
         erpcom = '';
         return

@@ -887,7 +887,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         else
             [ALLEEG,LASTCOM] = pop_delset( observe_EEGDAT.ALLEEG , EEGArray);
             if  isempty(LASTCOM)
-                 observe_EEGDAT.eeg_panel_message =2;
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             ERPset_remained = setdiff([1:length(observe_EEGDAT.ALLEEG)],EEGArray);
@@ -1220,8 +1220,8 @@ estudioworkingmemory('Startimes',0);%%set default value
             ALLEEG = observe_EEGDAT.ALLEEG;
             EEGArray=   estudioworkingmemory('EEGArray');
             if isempty(EEGArray) || any(EEGArray(:)>length(observe_EEGDAT.ALLEEG))
-               EEGArray =  length(observe_EEGDAT.ALLEEG);estudioworkingmemory('EEGArray',EEGArray);
-               observe_EEGDAT.CURRENTSET = EEGArray;
+                EEGArray =  length(observe_EEGDAT.ALLEEG);estudioworkingmemory('EEGArray',EEGArray);
+                observe_EEGDAT.CURRENTSET = EEGArray;
             end
             CURRENTSET = observe_EEGDAT.CURRENTSET;
             ALLEEGArray = [1:length(ALLEEG)];
@@ -1369,6 +1369,25 @@ estudioworkingmemory('Startimes',0);%%set default value
     function Reset_eeg_panel_change(~,~)
         if observe_EEGDAT.Reset_eeg_paras_panel~=1
             return;
+        end
+        
+        if ~isempty(observe_EEGDAT.ALLEEG)
+            
+            CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            EEGArray = CURRENTSET;
+            estudioworkingmemory('EEGArray',EEGArray);
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);
+            if observe_EEGDAT.EEG.trials>1
+                EStduio_eegtab_EEG_set.eeg_epoch.Value =1;
+                EStduio_eegtab_EEG_set.eeg_contns.Value=0;
+            else
+                EStduio_eegtab_EEG_set.eeg_epoch.Value =0;
+                EStduio_eegtab_EEG_set.eeg_contns.Value=1;
+            end
+            EStduio_eegtab_EEG_set.butttons_datasets.Value = CURRENTSET;
+            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+            assignin('base','EEG',observe_EEGDAT.EEG);
+            assignin('base','CURRENTSET',CURRENTSET);
         end
         observe_EEGDAT.Reset_eeg_paras_panel=2;
     end

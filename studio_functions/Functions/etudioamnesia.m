@@ -18,7 +18,8 @@
 
 
 
-function etudioamnesia(warningop)
+function runindex = etudioamnesia(warningop)
+runindex =0;
 if nargin<1
         warningop = 0;
 end
@@ -31,10 +32,10 @@ if warningop>0
         button     = askquest(sprintf(question), title);
         
         if ~strcmpi(button,'yes')
-                disp('User selected Cancel')
                 return
         end
 end
+
 erplab_default_values % script
 % check variable at workspace
 try
@@ -93,3 +94,4 @@ end
 if mshock>=30 && rand>0.8
         fprintf('\n\nIs it not enough???\n\n')
 end
+runindex=1;

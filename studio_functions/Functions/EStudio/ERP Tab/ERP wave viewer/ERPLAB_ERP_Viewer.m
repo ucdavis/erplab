@@ -65,14 +65,9 @@ if ~strcmpi(ERPtooltype,'EStudio') &&  ~strcmpi(ERPtooltype,'ERPLAB')
     observe_ERPDAT.Process_messg = 0;
 end
 
-p_location = which('eegplugin_erplab','-all');
-if length(p_location)>1
-    fprintf('\nERPLAB Studio WARNING: More than one ERPLAB folder was found.\n\n');
-end
-p_location = p_location{1};
-p_location = p_location(1:findstr(p_location,'eegplugin_erplab.m')-1);
 
-if exist('memoryerp.erpm','file')==2
+
+if exist('memoryerpstudio.erpm','file')==2
     iserpmem = 1; % file for memory exists
 else
     iserpmem = 0; % does not exist file for memory
@@ -82,9 +77,9 @@ end
 if iserpmem==0
     mshock = 0;
     if iserpmem==0
-        p1 = which('eegplugin_erplab');
-        p1 = p1(1:findstr(p1,'eegplugin_erplab.m')-1);
-        save(fullfile(p1,'memoryerp.erpm'),'EStudioversion')
+        p1 = which('o_ERPDAT');
+        p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+        save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
     end
 end
 
