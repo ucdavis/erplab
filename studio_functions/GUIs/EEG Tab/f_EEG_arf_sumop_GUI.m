@@ -119,6 +119,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end
         inputoption = resetrejGUI; % open GUI
         if isempty(inputoption)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         arjm  = inputoption{1};
@@ -233,6 +234,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end
         direction = synchroartifactsGUI;
         if isempty(direction)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         if direction==1      % erplab to eeglab synchro
@@ -347,9 +349,11 @@ varargout{1} = Eegtab_box_art_sumop;
             app.delete; %delete app from view
             pause(0.01); %wait for app to leave
         catch
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if isempty(New_pos1)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -423,17 +427,17 @@ varargout{1} = Eegtab_box_art_sumop;
                 end
                 [EEG, goodbad, histeEF, histoflags,  LASTCOM] = pop_summary_rejectfields(EEG);
             end
-           if  New_pos1(2)~=1
-            fprintf([LASTCOM,'\n']);  
-            fprintf( [repmat('-',1,100) '\n']);
-           end
+            if  New_pos1(2)~=1
+                fprintf([LASTCOM,'\n']);
+                fprintf( [repmat('-',1,100) '\n']);
+            end
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-          
+            
         end
-
+        
         estudioworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -455,6 +459,7 @@ varargout{1} = Eegtab_box_art_sumop;
         ALLEEG =  observe_EEGDAT.ALLEEG(EEGArray);
         LASTCOM = f_eeg_ar_summary(ALLEEG,EEGArray);
         if isempty(LASTCOM)
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         for NumofEEG = 1:numel(EEGArray)

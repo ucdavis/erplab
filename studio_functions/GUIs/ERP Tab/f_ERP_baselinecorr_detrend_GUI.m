@@ -1,4 +1,4 @@
-%Author: Guanghui ZHANG--zhang.guanghui@foxmail.com
+%Author: Guanghui ZHANG
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
@@ -433,11 +433,7 @@ varargout{1} = ERP_basecorr_detrend_box;
                 return;
             end
         end
-        %%Run the function based on the defined parameters
-        Check_Selected_erpset = [0 0 0 0 0 0 0];
-        if numel(Selected_erpset)>1
-            Check_Selected_erpset = f_checkerpsets(observe_ERPDAT.ALLERP,Selected_erpset);
-        end
+        
         %%--------------Loop start for removeing baseline for the selected ERPsets------------
         if gui_erp_blc_dt.dt.Value ==1
             Suffix_str = char(strcat('_detrend'));
@@ -470,6 +466,13 @@ varargout{1} = ERP_basecorr_detrend_box;
             gui_erp_blc_dt.ERPTab_baseline_detrend{2} =1;
         end
         gui_erp_blc_dt.ERPTab_baseline_detrend{3} = gui_erp_blc_dt.all_bin_chan.Value;
+        if gui_erp_blc_dt.all_bin_chan.Value == 1
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+        else
+            BinArray =  estudioworkingmemory('ERP_BinArray');
+            ChanArray = estudioworkingmemory('ERP_ChanArray');
+        end
         
         ALLERP = observe_ERPDAT.ALLERP;
         BinArray = [];
@@ -477,44 +480,13 @@ varargout{1} = ERP_basecorr_detrend_box;
         ALLERP_out = [];
         for Numoferp = 1:numel(Selected_erpset)
             ERP = ALLERP(Selected_erpset(Numoferp));
-            if (Check_Selected_erpset(1)==1 || Check_Selected_erpset(2)==2) && gui_erp_blc_dt.Selected_bin_chan.Value ==1
-                if Check_Selected_erpset(1) ==1
-                    msgboxText =  ['Number of bins across the selected ERPsets is different!'];
-                elseif Check_Selected_erpset(2)==2
-                    msgboxText =  ['Number of channels across the selected ERPsets is different!'];
-                elseif Check_Selected_erpset(1)==1 && Check_Selected_erpset(2)==2
-                    msgboxText =  ['Number of channels and bins vary across the selected ERPsets'];
-                end
-                question = [  '%s\n\n "All" will be active instead of "Selected bin and chan".'];
-                title       = 'EStudio: Baseline correction & linear detrend';
-                button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
-                BinArray = [];
-                ChanArray = [];
-            end
             
-            if (Check_Selected_erpset(1)==0 && Check_Selected_erpset(2)==0) && gui_erp_blc_dt.Selected_bin_chan.Value ==1
-                try
-                    BinArray =  estudioworkingmemory('ERP_BinArray');
-                    ChanArray = estudioworkingmemory('ERP_ChanArray');
-                    [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
-                    if chk(1)==1
-                        BinArray =  [1:ERP.nbin];
-                    end
-                    [chk, msgboxText] = f_ERP_chckbinandchan(ERP,[], ChanArray,2);
-                    if chk(2)==1
-                        ChanArray =  [1:ERP.nchan];
-                    end
-                catch
-                    BinArray = [1:ERP.nbin];
-                    ChanArray = [1:ERP.nchan];
-                end
-            end
-            
-            if gui_erp_blc_dt.all_bin_chan.Value == 1
-                BinArray = [1:ERP.nbin];
+            if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
                 ChanArray = [1:ERP.nchan];
             end
-            
+            if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+                BinArray = [1:ERP.nbin];
+            end
             if gui_erp_blc_dt.dt.Value ==1
                 [ERP ERPCOM] = pop_erplindetrend( ERP,'Baseline', BaselineMethod ,'ChanArray',ChanArray,...
                     'BinArray',BinArray, 'Saveas', 'off','History','gui');
@@ -670,7 +642,6 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
         gui_erp_blc_dt.all_bin_chan.Value = all_bin_chan;
         gui_erp_blc_dt.Selected_bin_chan.Value = ~all_bin_chan;
-        
         
         estudioworkingmemory('ERPTab_baseline_detrend',0);
         gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];

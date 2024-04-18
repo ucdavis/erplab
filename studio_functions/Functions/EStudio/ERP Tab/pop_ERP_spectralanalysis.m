@@ -252,7 +252,7 @@ if strcmpi(p.Results.Plotwave,'on')
             axis(p_ax,[floor(ERP.times(1)),ceil(ERP.times(end)), 1.1*min(temp(:)) 1.1*max(temp(:))]);
             xticks(p_ax,FreqTick);
             if count == 1
-                title(p_ax,char(strrep(ERP.chanlocs(count).labels,'_','\_')),'FontSize',10,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
+                title(p_ax,char(strrep(ERP.chanlocs(count).labels,'_','\_')),'FontSize',FonsizeDefault,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
             else
                 title(p_ax,ERP.chanlocs(count).labels,'FontSize',FonsizeDefault,'FontWeight','normal','Color','k','Interpreter','none');
             end

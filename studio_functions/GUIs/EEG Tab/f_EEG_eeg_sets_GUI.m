@@ -490,6 +490,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         observe_EEGDAT.ALLEEG = ALLEEG;
         observe_EEGDAT.EEG =EEG;
         observe_EEGDAT.CURRENTSET  =CURRENTSET ;
+        observe_EEGDAT.ALLEEG(CURRENTSET) = observe_EEGDAT.EEG;
         if isempty(observe_EEGDAT.ALLEEG) && isempty(observe_EEGDAT.EEG)
             observe_EEGDAT.ALLEEG = [];
             observe_EEGDAT.EEG = [];

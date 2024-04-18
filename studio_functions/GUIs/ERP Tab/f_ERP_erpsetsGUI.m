@@ -380,6 +380,7 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.ALLERP= ALLERP;
         observe_ERPDAT.ERP= ERP;
         observe_ERPDAT.CURRENTERP= CURRENTERP;
+        observe_ERPDAT.ALLERP(CURRENTERP) = observe_ERPDAT.ERP;
         assignin('base','CURRENTERP',CURRENTERP);
         assignin('base','ERP',ERP);
         assignin('base','ALLERP',ALLERP);

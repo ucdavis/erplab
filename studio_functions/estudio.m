@@ -276,8 +276,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.set_reset = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Reset','separator','off','CallBack',@rest_estudio);
         EStudio_gui_erp_totl.help_title = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Help');
         EStudio_gui_erp_totl.estudio_about = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'About ERPLAB Studio','separator','off','CallBack',@about_estudio);
-        EStudio_gui_erp_totl.eegpanel_help = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'EEG Panel Help','separator','off','CallBack',@eegpanel_help);
-        EStudio_gui_erp_totl.erppanel_help = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERP Panel Help','separator','off','CallBack',@erppanel_help);
+        EStudio_gui_erp_totl.eegpanel_help = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'EEG Tab Help','separator','off','CallBack',@eegpanel_help);
+        EStudio_gui_erp_totl.erppanel_help = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERP Tab Help','separator','off','CallBack',@erppanel_help);
         
         %% Create tabs
         FonsizeDefault = f_get_default_fontsize();figbgdColor = [1 1 1];

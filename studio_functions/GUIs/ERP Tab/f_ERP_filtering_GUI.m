@@ -906,8 +906,8 @@ varargout{1} = ERP_filtering_box;
             BinArray = estudioworkingmemory('ERP_BinArray');
             ChanArray =  estudioworkingmemory('ERP_ChanArray');
         else
-            BinArray = 1:observe_ERPDAT.ERP.nchan;
-            ChanArray =  1:observe_ERPDAT.ERP.nbin;
+            BinArray = 1:observe_ERPDAT.ERP.nbin;
+            ChanArray =  1:observe_ERPDAT.ERP.nchan;
         end
         def{5} =0;
         

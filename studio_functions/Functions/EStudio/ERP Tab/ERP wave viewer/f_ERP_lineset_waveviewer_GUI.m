@@ -125,7 +125,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.line_customtable.ColumnWidth = {25 80 65 50};
         gui_erplinset_waveviewer.line_customtable.CellEditCallback  = @line_customtable;
         gui_erplinset_waveviewer.line_customtable.KeyPressFcn = @line_presskey;
-        %%setting for uitable: https://undocumentedmatlab.com/artiALLERPwaviewercles/multi-line-uitable-column-headers
+        %%setting for uitable: https://undocumentedmatlab.com/articles/multi-line-uitable-column-headers
         if gui_erplinset_waveviewer.linesauto.Value ==1
             gui_erplinset_waveviewer.line_customtable.Enable = 'off';
         else

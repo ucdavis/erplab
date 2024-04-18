@@ -2,16 +2,16 @@
 %
 % FORMAT  :
 %
-% ERP = pop_blcerp(ERP, blc)
+% ERP = pop_blcerp(ERP, 'Baseline',blc)
 %
 % ERP     -  ERPLAB structure
 % blc     - window for baseline correction in msec  or either a string like 'pre', 'post', or 'all'
 %           (strings with the baseline interval also works. e.g. '-300 100')
 %
 % Example :
-% >> ERP = pop_blcerp( ERP , [-200 800],  [-100 0]);
-% >> ERP = pop_blcerp( ERP , [-200 800],  '-100 0');
-% >> ERP = pop_blcerp( ERP , [-400 2000],  'post');
+% >> ERP = pop_blcerp( ERP , [-200 800], 'Baseline', [-100 0]);
+% >> ERP = pop_blcerp( ERP , [-200 800], 'Baseline', '-100 0');
+% >> ERP = pop_blcerp( ERP , [-400 2000], 'Baseline', 'post');
 %
 % INPUTS  :
 %
@@ -237,7 +237,7 @@ if ~isempty(ChanArrayleft)
 end
 
 
-BinArrayleft = setdiff([1:ERP.nbin],BinArray);%% channles are not for baseline correction
+BinArrayleft = setdiff([1:ERP.nbin],BinArray);%% bins are not for baseline correction
 if ~isempty(BinArrayleft)
     ERP.bindata(:,:,BinArrayleft)  = ERPaux.bindata(:,:,BinArrayleft);
 end
