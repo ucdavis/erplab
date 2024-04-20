@@ -186,7 +186,8 @@ varargout{1} = ERP_chan_operation_gui;
         if isempty(answer)
             return
         end
-        ModeValue = chanopGUI.emode;
+        chanopGUI=  estudioworkingmemory('chanopGUI');
+        try ModeValue = chanopGUI.emode;catch ModeValue=0; end
         if ModeValue==0
             gui_erp_chan_operation.mode_modify.Value=1 ;
             gui_erp_chan_operation.mode_create.Value = 0;
@@ -194,7 +195,7 @@ varargout{1} = ERP_chan_operation_gui;
             gui_erp_chan_operation.mode_modify.Value=0 ;
             gui_erp_chan_operation.mode_create.Value = 1;
         end
-        localInfor = chanopGUI.keeplocs;
+        try localInfor = chanopGUI.keeplocs;catch localInfor=1; end
         if localInfor==1
             gui_erp_chan_operation.locaInfor.Value=1;
         else

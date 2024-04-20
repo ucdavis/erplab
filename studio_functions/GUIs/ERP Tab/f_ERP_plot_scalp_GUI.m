@@ -75,13 +75,10 @@ varargout{1} = ERP_plot_scalp_gui;
         set(gui_erp_scalp_map.measurement,'String',measurearray,'Value',2);
         ERPTab_plotscalp{10} = gui_erp_scalp_map.measurement.Value;
         gui_erp_scalp_map.measurement.KeyPressFcn=  @erp_scalps_presskey;
-        
-        
+
         gui_erp_scalp_map.measurement_title1 = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.measurement_exp = uicontrol('Style', 'text','Parent', gui_erp_scalp_map.measurement_title1,...
             'String','(min max pairs e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
-        
         
         gui_erp_scalp_map.bin_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.bin_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.bin_plot_title,...

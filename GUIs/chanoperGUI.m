@@ -3,19 +3,19 @@
 function varargout = chanoperGUI(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-        'gui_Singleton',  gui_Singleton, ...
-        'gui_OpeningFcn', @chanoperGUI_OpeningFcn, ...
-        'gui_OutputFcn',  @chanoperGUI_OutputFcn, ...
-        'gui_LayoutFcn',  [] , ...
-        'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @chanoperGUI_OpeningFcn, ...
+    'gui_OutputFcn',  @chanoperGUI_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
-        gui_State.gui_Callback = str2func(varargin{1});
+    gui_State.gui_Callback = str2func(varargin{1});
 end
 
 if nargout
-        [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
-        gui_mainfcn(gui_State, varargin{:});
+    gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
 
@@ -33,36 +33,36 @@ example{7}  = 'CHAN@ = (ch11 + ch12 + ch13)/3 label ROI temporal';
 example{8}  = 'ch@ = abs(ch110) label E110 rectified ';
 
 try
-        ERPLAB = varargin{1};
-        
-        if iserpstruct(ERPLAB)
-                nchan      = ERPLAB.nchan; % Total number of channels
-                typedata   = 'ERP';
-                datastr    = 'ERPset';
-                formtype   = 'erpchanformulas';
-                example{5} = 'ch@ = mgfperp(ERP) label MGFPower';
-        else
-                example{3} = 'ch@ = chinterpol';
-                nchan    = ERPLAB.nbchan; % Total number of channels
-                typedata = 'EEG';
-                datastr  = 'dataset';
-                formtype = 'eegchanformulas';
-        end
+    ERPLAB = varargin{1};
+    
+    if iserpstruct(ERPLAB)
+        nchan      = ERPLAB.nchan; % Total number of channels
+        typedata   = 'ERP';
+        datastr    = 'ERPset';
+        formtype   = 'erpchanformulas';
+        example{5} = 'ch@ = mgfperp(ERP) label MGFPower';
+    else
+        example{3} = 'ch@ = chinterpol';
+        nchan    = ERPLAB.nbchan; % Total number of channels
+        typedata = 'EEG';
+        datastr  = 'dataset';
+        formtype = 'eegchanformulas';
+    end
 catch
-        ERPLAB.chanlocs = [];
-        listch   = '';
-        nchan    = 1;
-        formtype = [];
-        typedata = 'unspecific data';
-        datastr  = 'who-knows-what';
+    ERPLAB.chanlocs = [];
+    listch   = '';
+    nchan    = 1;
+    formtype = [];
+    typedata = 'unspecific data';
+    datastr  = 'who-knows-what';
 end
 try
-        def = varargin{2};
-        formulas = def{1};
-        wchmsgon = def{2};
+    def = varargin{2};
+    formulas = def{1};
+    wchmsgon = def{2};
 catch
-        formulas = [];
-        wchmsgon = 1;
+    formulas = [];
+    wchmsgon = 1;
 end
 
 handles.nchan    = nchan;
@@ -78,14 +78,14 @@ handles.formtype = formtype;
 ERPtooltype = erpgettoolversion('tooltype');
 if ~isempty(ERPtooltype)
     if strcmpi(ERPtooltype,'EStudio')
-        Toolabel = 1;%%Get  label from work space to confirm whether EStudio was executed. 
+        Toolabel = 1;%%Get  label from work space to confirm whether EStudio was executed.
     else
         Toolabel = 0;
     end
 else
     Toolabel = 1;
 end
-
+handles.Toolabel = Toolabel;
 if Toolabel
     erplab_studio_default_values;
     version = erplabstudiover;
@@ -95,7 +95,7 @@ if Toolabel
     handles.pushbutton_RUN.String = 'OK';
 else
     version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Channel Operation GUI for ' typedata])
+    set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Channel Operation GUI for ' typedata])
     %
     handles = painterplab(handles);
     handles = setfonterplab(handles);
@@ -107,9 +107,9 @@ end
 % formulas = erpworkingmemory(formtype);
 
 if isempty(formulas)
-        set(handles.editor,'String','');
+    set(handles.editor,'String','');
 else
-        set(handles.editor, 'String', formulas)
+    set(handles.editor, 'String', formulas)
 end
 
 % For undo & redo
@@ -123,13 +123,13 @@ end
 %
 listch=[];
 if isempty(ERPLAB.chanlocs)
-        for e=1:nchan
-                ERPLAB.chanlocs(e).labels = ['Ch' num2str(e)];
-        end
+    for e=1:nchan
+        ERPLAB.chanlocs(e).labels = ['Ch' num2str(e)];
+    end
 end
 listch = cell(1,nchan);
 for ch =1:nchan
-        listch{ch} = [num2str(ch) ' = ' ERPLAB.chanlocs(ch).labels ];
+    listch{ch} = [num2str(ch) ' = ' ERPLAB.chanlocs(ch).labels ];
 end
 
 set(handles.listboxchan1,'String', listch)
@@ -147,50 +147,54 @@ set(handles.button_no_recu, 'String', sprintf('Create new %s (independent transf
 %
 % Gui memory
 %
-chanopGUI = erpworkingmemory('chanopGUI');
+if Toolabel==0
+    chanopGUI = erpworkingmemory('chanopGUI');
+else
+    chanopGUI = estudioworkingmemory('chanopGUI');
+end
 
 if isempty(chanopGUI)
-        set(handles.button_recursive,'Value', 1); % default is Modify existing ERPset (recursive updating)
-        set(handles.button_savelist, 'Enable','off')
-        set(handles.chkeeplocs,'Value', 1) %default is Preserve Channel locations
-        
-        %
-        % File List
-        %
-        set(handles.edit_filelist,'String','');
-        set(handles.checkbox_sendfile2history,'Value',0)
-        handles.listname = [];
+    set(handles.button_recursive,'Value', 1); % default is Modify existing ERPset (recursive updating)
+    set(handles.button_savelist, 'Enable','off')
+    set(handles.chkeeplocs,'Value', 1) %default is Preserve Channel locations
+    
+    %
+    % File List
+    %
+    set(handles.edit_filelist,'String','');
+    set(handles.checkbox_sendfile2history,'Value',0)
+    handles.listname = [];
 else
-        if chanopGUI.emode==0
-                set(handles.button_recursive,'Value', 1);
-                set(handles.button_no_recu,'Value', 0);
-        else
-                set(handles.button_recursive,'Value', 0);
-                set(handles.button_no_recu,'Value', 1);
-        end
-        if chanopGUI.hmode==0
-                set(handles.checkbox_sendfile2history,'Value', 0);
-        else
-                set(handles.checkbox_sendfile2history,'Value', 1);
-        end
-        if chanopGUI.keeplocs ==1 
-            set(handles.chkeeplocs,'Value',1);
-        else
-            set(handles.chkeeplocs,'Value',0);
-        end
-        listname = chanopGUI.listname;
-        set(handles.edit_filelist,'String', listname );
-        handles.listname = listname; % JLC Sept 1, 2012
+    if chanopGUI.emode==0
+        set(handles.button_recursive,'Value', 1);
+        set(handles.button_no_recu,'Value', 0);
+    else
+        set(handles.button_recursive,'Value', 0);
+        set(handles.button_no_recu,'Value', 1);
+    end
+    if chanopGUI.hmode==0
+        set(handles.checkbox_sendfile2history,'Value', 0);
+    else
+        set(handles.checkbox_sendfile2history,'Value', 1);
+    end
+    if chanopGUI.keeplocs ==1
+        set(handles.chkeeplocs,'Value',1);
+    else
+        set(handles.chkeeplocs,'Value',0);
+    end
+    listname = chanopGUI.listname;
+    set(handles.edit_filelist,'String', listname );
+    handles.listname = listname; % JLC Sept 1, 2012
 end
 
 % wchmsgon = erpworkingmemory('wchmsgon');
 
 if isempty(wchmsgon) || wchmsgon==0
-        set(handles.chwarning,'Value', 0)
+    set(handles.chwarning,'Value', 0)
 elseif wchmsgon==1
-        set(handles.chwarning,'Value', 1)
+    set(handles.chwarning,'Value', 1)
 else
-        error('Oops...checkbox_warning memory failed')
+    error('Oops...checkbox_warning memory failed')
 end
 
 handles.locs = ERPLAB.chanlocs;
@@ -245,7 +249,7 @@ guidata(hObject, handles);
 %--------------------------------------------------------------------------
 function editor_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
@@ -263,65 +267,65 @@ keeplocs    = get(handles.chkeeplocs,'Value');
 
 
 if strcmp(formulalist,'')
-        msgboxText =  'You have not written any formula!';
-        title = 'ERPLAB: chanoperGUI few inputs';
-        errorfound(msgboxText, title);
-        return
+    msgboxText =  'You have not written any formula!';
+    title = 'ERPLAB: chanoperGUI few inputs';
+    errorfound(msgboxText, title);
+    return
 end
 if size(formulalist,2)>256
-        msgboxText = ['Formulas length exceed 256 characters.\n\n'...
-                'Be sure to press [Enter] after you have entered each formula.'];
-        title = 'ERPLAB: chanoperGUI few inputs';
-        errorfound(sprintf(msgboxText), title);
-        return
+    msgboxText = ['Formulas length exceed 256 characters.\n\n'...
+        'Be sure to press [Enter] after you have entered each formula.'];
+    title = 'ERPLAB: chanoperGUI few inputs';
+    errorfound(sprintf(msgboxText), title);
+    return
 end
 
 %
 % Check formulas
 %
 if get(handles.button_recursive,'Value')
-        editormode = 0;
+    editormode = 0;
 else
-        editormode = 1;
+    editormode = 1;
 end
 
 typedata = lower(handles.typedata);
 [option, recall, goeson] = checkformulas(cellstr(formulalist), [typedata 'chanoperGUI'], editormode);
 
 if goeson==0
-        return
+    return
 end
 if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
-        BackERPLABcolor = [1 0.9 0.3];    % yellow
-        question = ['Equations at editor window have not been saved yet.\n\n'...
-                'What would you like to do?'];
-        title = 'WARNING: Save List of edited chans';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor)
-        
-        if strcmpi(button,'Save and run')
-                fullname = savelist(hObject, eventdata, handles);
-                listname = fullname;
-                handles.output = {listname, wchmsgon}; % sent filenam string)
-        elseif strcmpi(button,'Run without saving')
-                handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
-        elseif strcmpi(button,'Cancel') || strcmpi(button,'')
-                handles.output   = [];
-                handles.listname = [];
-                % Update handles structure
-                guidata(hObject, handles);
-                return
-        end
+    BackERPLABcolor = [1 0.9 0.3];    % yellow
+    question = ['Equations at editor window have not been saved yet.\n\n'...
+        'What would you like to do?'];
+    title = 'WARNING: Save List of edited chans';
+    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
+    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    
+    if strcmpi(button,'Save and run')
+        fullname = savelist(hObject, eventdata, handles);
+        listname = fullname;
+        handles.output = {listname, wchmsgon}; % sent filenam string)
+    elseif strcmpi(button,'Run without saving')
+        handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
+    elseif strcmpi(button,'Cancel') || strcmpi(button,'')
+        handles.output   = [];
+        handles.listname = [];
+        % Update handles structure
+        guidata(hObject, handles);
+        return
+    end
 elseif isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==0
-        handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
-        
+    handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
+    
 elseif ~isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
-        handles.output = {listname, wchmsgon}; % sent filename string
-        
+    handles.output = {listname, wchmsgon}; % sent filename string
+    
 elseif ~isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==0
-        handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
+    handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
 end
 
 % handles.output
@@ -337,12 +341,16 @@ chanopGUI.listname  = listname;
 chanopGUI.keeplocs = keeplocs;
 chanopGUI.chanlocs = handles.locs;
 disp(chanopGUI.chanlocs)
-erpworkingmemory('chanopGUI', chanopGUI);
+if handles.Toolabel==0
+    erpworkingmemory('chanopGUI', chanopGUI);
+else
+    estudioworkingmemory('chanopGUI', chanopGUI);
+end
 
 try
     handles.output{3} = keeplocs;
 catch
-        disp('Problem setting location preference')
+    disp('Problem setting location preference')
 end
 
 
@@ -370,7 +378,7 @@ function eraser_Callback(hObject, eventdata, handles)
 % handles.undocount = undocount;
 formulas  = get(handles.editor, 'String');
 if isempty(formulas)
-        return
+    return
 end
 
 % handles = editorbackup(hObject, eventdata, handles);
@@ -395,29 +403,29 @@ compacteditor(hObject, eventdata, handles);
 fulltext = strtrim(get(handles.editor,'String'));
 
 if size(fulltext,2)>256
-        msgboxText =  ['Formulas length exceed 256 characters.\n\n'...
-                'Be sure to press [Enter] after you have entered each formula.'];
-        title = 'ERPLAB: chanoperGUI few inputs';
-        errorfound(sprintf(msgboxText), title);
-        return
+    msgboxText =  ['Formulas length exceed 256 characters.\n\n'...
+        'Be sure to press [Enter] after you have entered each formula.'];
+    title = 'ERPLAB: chanoperGUI few inputs';
+    errorfound(sprintf(msgboxText), title);
+    return
 end
 if ~strcmp(fulltext,'')
-        fullname = savelist(hObject, eventdata, handles);
-        if isempty(fullname)
-                return
-        end
-        set(handles.edit_filelist, 'String', fullname )
-        set(handles.button_savelist, 'Enable', 'on')
-        handles.listname = fullname;
-        % Update handles structure
-        guidata(hObject, handles);
-else
-        set(handles.button_saveaslist,'Enable','off')
-        msgboxText =  'You have not written any formula yet!';
-        title = 'ERPLAB: chanoperGUI few inputs';
-        errorfound(msgboxText, title);
-        set(handles.button_saveaslist,'Enable','on')
+    fullname = savelist(hObject, eventdata, handles);
+    if isempty(fullname)
         return
+    end
+    set(handles.edit_filelist, 'String', fullname )
+    set(handles.button_savelist, 'Enable', 'on')
+    handles.listname = fullname;
+    % Update handles structure
+    guidata(hObject, handles);
+else
+    set(handles.button_saveaslist,'Enable','off')
+    msgboxText =  'You have not written any formula yet!';
+    title = 'ERPLAB: chanoperGUI few inputs';
+    errorfound(msgboxText, title);
+    set(handles.button_saveaslist,'Enable','on')
+    return
 end
 
 %--------------------------------------------------------------------------
@@ -425,34 +433,34 @@ function button_loadlist_Callback(hObject, eventdata, handles)
 [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
 
 if isequal(filename,0)
-        disp('User selected Cancel')
-        return
+    disp('User selected Cancel')
+    return
 else
-        fullname = fullfile(filepath, filename);
-        disp(['pop_chanoperation(): For formulas-file, user selected ', fullname])
+    fullname = fullfile(filepath, filename);
+    disp(['pop_chanoperation(): For formulas-file, user selected ', fullname])
 end
 
 set(handles.edit_filelist,'String',fullname);
 fid_formula = fopen( fullname );
 
 try
-        formcell    = textscan(fid_formula, '%s','delimiter', '\r');
-        formulas    = char(formcell{:});
+    formcell    = textscan(fid_formula, '%s','delimiter', '\r');
+    formulas    = char(formcell{:});
 catch
-        serr = lasterror;
-        msgboxText =  ['Please, check your file: \n';
-                fullname '\n'...
-                serr.message];
-        title = 'ERPLAB: pop_chanoperation() error:';
-        errorfound(sprintf(msgboxText), title);
-        return
+    serr = lasterror;
+    msgboxText =  ['Please, check your file: \n';
+        fullname '\n'...
+        serr.message];
+    title = 'ERPLAB: pop_chanoperation() error:';
+    errorfound(sprintf(msgboxText), title);
+    return
 end
 if size(formulas,2)>256
-        msgboxText =  ['Formulas length exceed 256 characters.\n\n'...
-                'Be sure to press [Enter] after you have entered each formula.'];
-        title = 'ERPLAB: chanoperGUI few inputs';
-        errorfound(sprintf(msgboxText), title);
-        return
+    msgboxText =  ['Formulas length exceed 256 characters.\n\n'...
+        'Be sure to press [Enter] after you have entered each formula.'];
+    title = 'ERPLAB: chanoperGUI few inputs';
+    errorfound(sprintf(msgboxText), title);
+    return
 end
 
 compacteditor(hObject, eventdata, handles);
@@ -469,13 +477,13 @@ function listboxchan1_Callback(hObject, eventdata, handles)
 
 numchan   = get(hObject, 'Value');
 if isempty(numchan)
-        return
+    return
 end
 
 linet    = get(handles.editor, 'Value');
 
 if nnz(linet) == 0
-        linet = 1;
+    linet = 1;
 end
 
 formulas = cellstr(get(handles.editor, 'String'));
@@ -486,7 +494,7 @@ set(handles.editor, 'String', char(formulas));
 function listboxchan1_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
@@ -508,19 +516,19 @@ exacounter = exacounter + 1;
 text       = cellstr(get(handles.editor, 'String'));
 
 if get(handles.button_no_recu,'Value')
-        prechar = 'n';
+    prechar = 'n';
 else
-        prechar = '';
+    prechar = '';
 end
 if isempty([text{:}]) || exacounter>length(example)
-        exacounter = 1;
+    exacounter = 1;
 end
 if length(text)==1 && strcmp(text{1}, '')
-        exacurr = char(regexprep(example{exacounter},'@',num2str(nchan+exacounter)));
-        text{1} = [prechar exacurr];
+    exacurr = char(regexprep(example{exacounter},'@',num2str(nchan+exacounter)));
+    text{1} = [prechar exacurr];
 else
-        exacurr = char(regexprep(example{exacounter},'@',num2str(nchan+exacounter)));
-        text{end+1} = [prechar exacurr];
+    exacurr = char(regexprep(example{exacounter},'@',num2str(nchan+exacounter)));
+    text{end+1} = [prechar exacurr];
 end
 
 set(handles.editor, 'String', char(text));
@@ -534,7 +542,7 @@ function fullname = savelist(hObject, eventdata, handles)
 fulltext = char(get(handles.editor,'String'));
 
 if isempty(fulltext)
-        return
+    return
 end
 
 fullnamepre = get(handles.edit_filelist,'String');
@@ -545,31 +553,31 @@ fullnamepre = get(handles.edit_filelist,'String');
 [filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'},'Save formulas-file as', fullnamepre);
 
 if isequal(filename,0)
-        disp('User selected Cancel')
-        fullname = [];
-        return
+    disp('User selected Cancel')
+    fullname = [];
+    return
 else
-        [px, fname, ext] = fileparts(filename);
-        
-        if strcmp(ext,'')
-                if filterindex==1 || filterindex==3
-                        ext   = '.txt';
-                else
-                        ext   = '.dat';
-                end
+    [px, fname, ext] = fileparts(filename);
+    
+    if strcmp(ext,'')
+        if filterindex==1 || filterindex==3
+            ext   = '.txt';
+        else
+            ext   = '.dat';
         end
-        
-        fname = [ fname ext];
-        fullname = fullfile(filepath, fname);
-        
-        fid_list   = fopen( fullname , 'w');
-        
-        for i=1:size(fulltext,1)
-                fprintf(fid_list,'%s\n', fulltext(i,:));
-        end
-        
-        fclose(fid_list);
-        set(handles.button_savelist, 'Enable','on')
+    end
+    
+    fname = [ fname ext];
+    fullname = fullfile(filepath, fname);
+    
+    fid_list   = fopen( fullname , 'w');
+    
+    for i=1:size(fulltext,1)
+        fprintf(fid_list,'%s\n', fulltext(i,:));
+    end
+    
+    fclose(fid_list);
+    set(handles.button_savelist, 'Enable','on')
 end
 
 %--------------------------------------------------------------------------
@@ -577,7 +585,7 @@ function compacteditor(hObject, eventdata, handles)
 texteditor = strtrim(get(handles.editor,'String'));
 
 if isempty(texteditor)
-        return
+    return
 end
 
 formul = cellstr(texteditor);
@@ -587,11 +595,11 @@ formulalist = cell(1);
 
 % removes blank lines
 for i=1:nfl
-        if ~strcmp(formul{i},'')
-                % removes blank lines
-                formulalist{k} = regexprep(formul{i},'[^\s](label)[^\s]',' $1 ', 'ignorecase');
-                k = k+1;
-        end
+    if ~strcmp(formul{i},'')
+        % removes blank lines
+        formulalist{k} = regexprep(formul{i},'[^\s](label)[^\s]',' $1 ', 'ignorecase');
+        k = k+1;
+    end
 end
 
 formulalist = strtrimx(formulalist); % special white space removing
@@ -602,7 +610,7 @@ drawnow
 function check_aoperations(hObject, eventdata, handles)
 texteditor = strtrim(get(handles.editor,'String'));
 if isempty(texteditor)
-        return
+    return
 end
 
 formul = cellstr(texteditor);
@@ -611,10 +619,10 @@ k   = 1;
 formulalist = cell(1);
 
 for i=1:nfl
-        if ~strcmp(formul{i},'')
-                formulalist{k} = formul{i};
-                k = k+1;
-        end
+    if ~strcmp(formul{i},'')
+        formulalist{k} = formul{i};
+        k = k+1;
+    end
 end
 
 formulalist = strtrimx(formulalist);
@@ -626,39 +634,39 @@ compacteditor(hObject, eventdata, handles);
 fulltext = strtrim(get(handles.editor,'String'));
 
 if size(fulltext,2)>256
-        msgboxText = ['Formulas length exceed 256 characters.\n\n'...
-                'Be sure to press [Enter] after you have entered each formula.'];
-        title = 'ERPLAB: chanoperGUI few inputs';
-        errorfound(sprintf(msgboxText), title);
-        return
+    msgboxText = ['Formulas length exceed 256 characters.\n\n'...
+        'Be sure to press [Enter] after you have entered each formula.'];
+    title = 'ERPLAB: chanoperGUI few inputs';
+    errorfound(sprintf(msgboxText), title);
+    return
 end
 if ~isempty(fulltext)
+    
+    fullname = get(handles.edit_filelist, 'String');
+    
+    if ~strcmp(fullname,'')
+        fid_list   = fopen( fullname , 'w');
         
-        fullname = get(handles.edit_filelist, 'String');
-        
-        if ~strcmp(fullname,'')
-                fid_list   = fopen( fullname , 'w');
-                
-                for i=1:size(fulltext,1)
-                        fprintf(fid_list,'%s\n', fulltext(i,:));
-                end
-                
-                fclose(fid_list);
-                handles.listname = fullname;
-                % Update handles structure
-                guidata(hObject, handles);
-                disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
-        else
-                button_saveaslist_Callback(hObject, eventdata, handles)
-                return
+        for i=1:size(fulltext,1)
+            fprintf(fid_list,'%s\n', fulltext(i,:));
         end
-else
-        set(handles.button_saveaslist,'Enable','off')
-        msgboxText =  'You have not written any formula yet!';
-        title      = 'ERPLAB: chanoperGUI few inputs';
-        errorfound(msgboxText, title);
-        set(handles.button_saveaslist,'Enable','on')
+        
+        fclose(fid_list);
+        handles.listname = fullname;
+        % Update handles structure
+        guidata(hObject, handles);
+        disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
+    else
+        button_saveaslist_Callback(hObject, eventdata, handles)
         return
+    end
+else
+    set(handles.button_saveaslist,'Enable','off')
+    msgboxText =  'You have not written any formula yet!';
+    title      = 'ERPLAB: chanoperGUI few inputs';
+    errorfound(msgboxText, title);
+    set(handles.button_saveaslist,'Enable','on')
+    return
 end
 
 %--------------------------------------------------------------------------
@@ -671,7 +679,7 @@ function edit_filelist_Callback(hObject, eventdata, handles)
 function edit_filelist_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
@@ -682,35 +690,35 @@ set(handles.button_savelist, 'Enable', 'off')
 %--------------------------------------------------------------------------
 function button_recursive_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
-        set(handles.button_no_recu,'Value',0)
-        val = testsyntaxtype(hObject, eventdata, handles, 'recu');
-        
-        if val==0;
-                set(handles.button_recursive, 'Value', 0)
-                set(handles.button_no_recu, 'Value', 1)                
-        end
-        
-        %%%       handles = editorbackup(hObject, eventdata, handles);
-        %%% Update handles structure
-        %%guidata(hObject, handles);
+    set(handles.button_no_recu,'Value',0)
+    val = testsyntaxtype(hObject, eventdata, handles, 'recu');
+    
+    if val==0;
+        set(handles.button_recursive, 'Value', 0)
+        set(handles.button_no_recu, 'Value', 1)
+    end
+    
+    %%%       handles = editorbackup(hObject, eventdata, handles);
+    %%% Update handles structure
+    %%guidata(hObject, handles);
 else
-        set(hObject,'Value',1)
+    set(hObject,'Value',1)
 end
 
 %--------------------------------------------------------------------------
 function button_no_recu_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
-        set(handles.button_recursive,'Value',0)
-        val = testsyntaxtype(hObject, eventdata, handles, 'norecu');
-        if val==0
-                set(handles.button_recursive, 'Value', 1)
-                set(handles.button_no_recu, 'Value', 0)
-        end
-        %%%       handles = editorbackup(hObject, eventdata, handles);
-        %%% Update handles structure
-        %%%guidata(hObject, handles);
+    set(handles.button_recursive,'Value',0)
+    val = testsyntaxtype(hObject, eventdata, handles, 'norecu');
+    if val==0
+        set(handles.button_recursive, 'Value', 1)
+        set(handles.button_no_recu, 'Value', 0)
+    end
+    %%%       handles = editorbackup(hObject, eventdata, handles);
+    %%% Update handles structure
+    %%%guidata(hObject, handles);
 else
-        set(hObject,'Value',1)
+    set(hObject,'Value',1)
 end
 
 %--------------------------------------------------------------------------
@@ -719,9 +727,9 @@ val = 1;
 formulaArray = get(handles.editor,'String');
 
 if isempty(formulaArray)
-        return
+    return
 else
-        formulaArray = strtrim(cellstr(formulaArray));
+    formulaArray = strtrim(cellstr(formulaArray));
 end
 nformulas = length(formulaArray);
 
@@ -730,81 +738,81 @@ ask4fix = 1;
 wantfix = 0;
 newnumchan = 1;
 
-for t=1:nformulas        
-        fcomm = formulaArray{t};
-        tokcommentb  = regexpi(fcomm, '^#', 'match');  % comment symbol (June 3, 2013)     
+for t=1:nformulas
+    fcomm = formulaArray{t};
+    tokcommentb  = regexpi(fcomm, '^#', 'match');  % comment symbol (June 3, 2013)
+    
+    if isempty(tokcommentb) % skip comment symbol
+        pleft  = regexpi(parts{t}{1}, '(\s*nch[an]*\d+)', 'tokens');
+        plcom  = regexpi(parts{t}{1}, '(\s*ch[an]*\d+)', 'tokens');
         
-        if isempty(tokcommentb) % skip comment symbol               
-                pleft  = regexpi(parts{t}{1}, '(\s*nch[an]*\d+)', 'tokens');
-                plcom  = regexpi(parts{t}{1}, '(\s*ch[an]*\d+)', 'tokens');
+        if isempty(pleft) &&  ~isempty(plcom) && strcmpi(whocall,'norecu')
+            if ask4fix
+                BackERPLABcolor = [1 0.9 0.3];    % yellow
+                question = ['For non recursive mode, left side of equation\nmust be define as a new channel.\n'...
+                    'For instance, nchan1 = ...\n\n'...
+                    'Do you want that ERPLAB corrects the syntax for you?'];
+                title = 'WARNING: Syntax is not proper for non recursive mode';
+                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
+                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
                 
-                if isempty(pleft) &&  ~isempty(plcom) && strcmpi(whocall,'norecu')
-                        if ask4fix
-                                BackERPLABcolor = [1 0.9 0.3];    % yellow
-                                question = ['For non recursive mode, left side of equation\nmust be define as a new channel.\n'...
-                                            'For instance, nchan1 = ...\n\n'...
-                                            'Do you want that ERPLAB corrects the syntax for you?'];
-                                title = 'WARNING: Syntax is not proper for non recursive mode';
-                                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-                                button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-                                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
-                                
-                                if strcmpi(button,'Yes')
-                                        ask4fix = 0;
-                                        wantfix = 1;
-                                elseif strcmpi(button,'Cancel')
-                                        val = 0; % cancel
-                                        break
-                                else
-                                        ask4fix = 0;
-                                        wantfix = 0;
-                                end
-                                %else
-                                %      wantfix =1;
-                        end
-                elseif ~isempty(pleft) && strcmpi(whocall,'recu')
-                        if ask4fix
-                                BackERPLABcolor = [1 0.9 0.3];    % yellow
-                                question = ['For recursive mode, left side of equation cannot\nbe define as a new channel.\n'...
-                                            'For instance, you must write chan1 = ...\n\n'...
-                                            'Do you want that ERPLAB corrects the syntax for you?'];
-                                title = 'WARNING: Syntax is not proper for recursive mode';
-                                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-                                button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-                                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
-                                
-                                if strcmpi(button,'Yes')
-                                        ask4fix = 0;
-                                        wantfix =1;
-                                elseif strcmpi(button,'Cancel')
-                                        val = 0; % cancel
-                                        break
-                                else
-                                        ask4fix = 0;
-                                        wantfix = 0;
-                                end
-                                %else
-                                %      wantfix =1;
-                        end
-                        %else
-                        %      wantfix = 0;
+                if strcmpi(button,'Yes')
+                    ask4fix = 0;
+                    wantfix = 1;
+                elseif strcmpi(button,'Cancel')
+                    val = 0; % cancel
+                    break
+                else
+                    ask4fix = 0;
+                    wantfix = 0;
                 end
-                if wantfix && (~isempty(pleft) || ~isempty(plcom))% fixed  (June 3, 2013): JLC
-                        fprintf('WARNING: equation %s ', formulaArray{t})
-                        if strcmpi(whocall,'recu') % for recursive mode delete the n in nch
-                                formulaArray{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '^n*','','ignorecase')), strtrim(parts{t}{2}));
-                        else
-                                formulaArray{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '^n*ch(\D*)(\d*)',['nch$1' num2str(newnumchan)],'ignorecase')), strtrim(parts{t}{2}));
-                                newnumchan = newnumchan+1;
-                        end
-                        fprintf('was changed to equation %s \n', formulaArray{t})
+                %else
+                %      wantfix =1;
+            end
+        elseif ~isempty(pleft) && strcmpi(whocall,'recu')
+            if ask4fix
+                BackERPLABcolor = [1 0.9 0.3];    % yellow
+                question = ['For recursive mode, left side of equation cannot\nbe define as a new channel.\n'...
+                    'For instance, you must write chan1 = ...\n\n'...
+                    'Do you want that ERPLAB corrects the syntax for you?'];
+                title = 'WARNING: Syntax is not proper for recursive mode';
+                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
+                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                
+                if strcmpi(button,'Yes')
+                    ask4fix = 0;
+                    wantfix =1;
+                elseif strcmpi(button,'Cancel')
+                    val = 0; % cancel
+                    break
+                else
+                    ask4fix = 0;
+                    wantfix = 0;
                 end
+                %else
+                %      wantfix =1;
+            end
+            %else
+            %      wantfix = 0;
         end
+        if wantfix && (~isempty(pleft) || ~isempty(plcom))% fixed  (June 3, 2013): JLC
+            fprintf('WARNING: equation %s ', formulaArray{t})
+            if strcmpi(whocall,'recu') % for recursive mode delete the n in nch
+                formulaArray{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '^n*','','ignorecase')), strtrim(parts{t}{2}));
+            else
+                formulaArray{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '^n*ch(\D*)(\d*)',['nch$1' num2str(newnumchan)],'ignorecase')), strtrim(parts{t}{2}));
+                newnumchan = newnumchan+1;
+            end
+            fprintf('was changed to equation %s \n', formulaArray{t})
+        end
+    end
 end
 if val==1
-        set(handles.editor,'String', char(formulaArray));
+    set(handles.editor,'String', char(formulaArray));
 end
 
 %--------------------------------------------------------------------------
@@ -828,7 +836,7 @@ list_of_chans = get(handles.listboxchan1,'String');
 nloch = length(list_of_chans);
 
 for i=1:nloch
-        fprintf('%s\n',list_of_chans{i});
+    fprintf('%s\n',list_of_chans{i});
 end
 
 fprintf('\n\nEnd of list.\n\n')
@@ -840,45 +848,45 @@ chan2del = deletechanGUI(typedata);
 nchan    = handles.nchan;
 keeplocs = get(handles.chkeeplocs,'Value');
 
-if ~isempty(chan2del)        
-        chan2del = unique_bc2(cell2mat(chan2del));        
-        if max(chan2del)>nchan && nnz(isinf(chan2del))==0
-                msgboxText = 'You are specifying non-existing channels!';
-                title = 'ERPLAB: chanoperGUI  remove channels';
-                errorfound(sprintf(msgboxText), title);
-                return
-        end
-        if min(chan2del)<1 && nnz(isinf(chan2del))==0
-                msgboxText = 'You are specifying freaky non-existing channels!';
-                title = 'ERPLAB: chanoperGUI  remove channels';
-                errorfound(sprintf(msgboxText), title);
-                return
-        end
-        if nnz(isnan(chan2del))>0  || nnz(isinf(chan2del))>0
-                msgboxText = ['Channel problem\n'...
-                        'You are specifying freaky non-existing channels!'];
-                title = 'ERPLAB: chanoperGUI  remove channels';
-                errorfound(sprintf(msgboxText), title);
-                return
-        end
-        if strcmpi(typedata, 'EEG')
-                eqtn = sprintf('deletechan(%s)', vect2colon(chan2del, 'Delimiter','off'));
-        else
-                eqtn = sprintf('delerpchan(%s)', vect2colon(chan2del, 'Delimiter','off'));
-        end
-        
-        wchmsgon    = get(handles.chwarning,'Value');
-        handles.output = {{eqtn}, wchmsgon}; % sent like a cell string (with formulas)
-        try
-            handles.output{3} = keeplocs;
-        catch
-            disp('Problem setting location preference')
-        end
-        % Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.gui_chassis);
-else
+if ~isempty(chan2del)
+    chan2del = unique_bc2(cell2mat(chan2del));
+    if max(chan2del)>nchan && nnz(isinf(chan2del))==0
+        msgboxText = 'You are specifying non-existing channels!';
+        title = 'ERPLAB: chanoperGUI  remove channels';
+        errorfound(sprintf(msgboxText), title);
         return
+    end
+    if min(chan2del)<1 && nnz(isinf(chan2del))==0
+        msgboxText = 'You are specifying freaky non-existing channels!';
+        title = 'ERPLAB: chanoperGUI  remove channels';
+        errorfound(sprintf(msgboxText), title);
+        return
+    end
+    if nnz(isnan(chan2del))>0  || nnz(isinf(chan2del))>0
+        msgboxText = ['Channel problem\n'...
+            'You are specifying freaky non-existing channels!'];
+        title = 'ERPLAB: chanoperGUI  remove channels';
+        errorfound(sprintf(msgboxText), title);
+        return
+    end
+    if strcmpi(typedata, 'EEG')
+        eqtn = sprintf('deletechan(%s)', vect2colon(chan2del, 'Delimiter','off'));
+    else
+        eqtn = sprintf('delerpchan(%s)', vect2colon(chan2del, 'Delimiter','off'));
+    end
+    
+    wchmsgon    = get(handles.chwarning,'Value');
+    handles.output = {{eqtn}, wchmsgon}; % sent like a cell string (with formulas)
+    try
+        handles.output{3} = keeplocs;
+    catch
+        disp('Problem setting location preference')
+    end
+    % Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.gui_chassis);
+else
+    return
 end
 
 %--------------------------------------------------------------------------
@@ -890,29 +898,29 @@ set(handles.button_no_recu, 'Value', 1)
 % open reference wizard
 formulalist = rerefassistantGUI(handles.nchan, handles.listch);
 if isempty(formulalist)
-        return
+    return
 end
 
 compacteditor(hObject, eventdata, handles);
 formulas  = get(handles.editor, 'String');
 
 if get(handles.button_no_recu,'Value')
-        formulalist = cellstr([formulalist{:}]);
-        for t=1:length(formulalist)
-                [expspliter parts] = regexp(formulalist, '=','match','split');
-                formulalist{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '[^n]*ch','nch','ignorecase')), strtrim(parts{t}{2}));
-        end
-        formulalist = char(formulalist);
+    formulalist = cellstr([formulalist{:}]);
+    for t=1:length(formulalist)
+        [expspliter parts] = regexp(formulalist, '=','match','split');
+        formulalist{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '[^n]*ch','nch','ignorecase')), strtrim(parts{t}{2}));
+    end
+    formulalist = char(formulalist);
 end
 
 if isempty(formulas)
-        set(handles.editor,'String',formulalist);
+    set(handles.editor,'String',formulalist);
 else
-        formulalist = cellstr(formulalist);
-        formulas = cellstr(formulas);
-        formt = [formulas ;formulalist];
-        formt = char(formt);
-        set(handles.editor,'String',formt);
+    formulalist = cellstr(formulalist);
+    formulas = cellstr(formulas);
+    formt = [formulas ;formulalist];
+    formt = char(formt);
+    set(handles.editor,'String',formt);
 end
 
 % %--------------------------------------------------------------------------
@@ -1022,11 +1030,11 @@ function cancel_CreateFcn(hObject, eventdata, handles)
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 
 if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
-        % The GUI is still in UIWAIT, us UIRESUME
-        uiresume(handles.gui_chassis);
+    % The GUI is still in UIWAIT, us UIRESUME
+    uiresume(handles.gui_chassis);
 else
-        % The GUI is no longer waiting, just close it
-        delete(handles.gui_chassis);
+    % The GUI is no longer waiting, just close it
+    delete(handles.gui_chassis);
 end
 
 

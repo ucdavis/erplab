@@ -175,7 +175,7 @@ if ~isempty(ERPtooltype)
 else
     Toolabel = 1;
 end
-
+handles.Toolabel=Toolabel;
 if Toolabel
     erplab_studio_default_values;
     version = erplabstudiover;
@@ -203,7 +203,11 @@ set(handles.listbox_bin,'String', listb)
 %
 % Gui memory
 %
-binopGUI = erpworkingmemory('binopGUI');
+if Toolabel==0
+    binopGUI = erpworkingmemory('binopGUI');
+else
+    binopGUI = estudioworkingmemory('binopGUI');
+end
 
 if isempty(binopGUI)
     set(handles.button_recursive,'Value', 1); % default is Modify existing ERPset (recursive updating)
@@ -378,7 +382,11 @@ end
 binopGUI.emode = editormode;
 binopGUI.hmode = get(handles.checkbox_sendfile2history,'Value');
 binopGUI.listname  = listname;
-erpworkingmemory('binopGUI', binopGUI);
+if handles.Toolabel==0
+    erpworkingmemory('binopGUI', binopGUI);
+else
+    estudioworkingmemory('binopGUI', binopGUI);
+end
 
 % Update handles structure
 guidata(hObject, handles);

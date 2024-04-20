@@ -190,7 +190,7 @@ varargout{1} = EEG_chan_operation_gui;
             return
         end
         chanopGUI = estudioworkingmemory('chanopGUI');
-        ModeValue = chanopGUI.emode;
+        try ModeValue = chanopGUI.emode;catch ModeValue=0; end
         if ModeValue==0
             gui_eegtab_chan_optn.mode_modify.Value=1 ;
             gui_eegtab_chan_optn.mode_create.Value = 0;
@@ -198,7 +198,7 @@ varargout{1} = EEG_chan_operation_gui;
             gui_eegtab_chan_optn.mode_modify.Value=0 ;
             gui_eegtab_chan_optn.mode_create.Value = 1;
         end
-        localInfor = chanopGUI.keeplocs;
+        try localInfor = chanopGUI.keeplocs;catch localInfor=1; end
         if localInfor==1
             gui_eegtab_chan_optn.locaInfor.Value=1;
         else

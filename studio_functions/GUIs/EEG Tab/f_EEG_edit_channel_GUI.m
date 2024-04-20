@@ -8,7 +8,7 @@
 % Sep.2023
 
 
-function varargout = f_EEG_edit_channel_GUI(varargin) 
+function varargout = f_EEG_edit_channel_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
@@ -239,6 +239,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             msgboxText = ['Edit/Delete Channels & Locations >  Delete selected chan > Indexes of chans should be positive values'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
@@ -255,6 +256,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(Erromesg,titlNamerro);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -263,6 +265,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(Erromesg,titlNamerro);
                 fprintf( ['\n',repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -280,6 +283,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if CreateeegFlag==1
             Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_delchan');
             if isempty(Answer)
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if ~isempty(Answer{1})
@@ -351,6 +355,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             Erromesg = ['Edit/Delete Channels & Locations >  Rename selected chan > Indexes of chans should be positive values'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(Erromesg,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -372,7 +377,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             Chanlabelsold = Chanlabelsold(ChanArray);
         catch
             fprintf( [repmat('-',1,100) '\n']);
-            observe_EEGDAT.eeg_panel_message =3;
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         def =  estudioworkingmemory('pop_rename2chan');
@@ -398,7 +403,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             [EEG, LASTCOM] = pop_rename2chan(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'implicit');
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
-                observe_EEGDAT.eeg_panel_message =4;
+                observe_EEGDAT.eeg_panel_message =2;
                 return
             end
             EEG = eegh(LASTCOM, EEG);
@@ -414,6 +419,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if CreateeegFlag==1
             Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_rnchan');
             if isempty(Answer)
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if ~isempty(Answer{1})
@@ -497,11 +503,13 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             pause(0.5); %wait for app to leave
         catch
             fprintf( ['\n',repmat('-',1,100) '\n']);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
         if isempty(EEGoutput)
             fprintf( ['\n',repmat('-',1,100) '\n']);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         Chanlocs = EEGoutput.chanlocs;
@@ -516,7 +524,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'implicit');
             if isempty(LASTCOM)
                 estudioworkingmemory('f_EEG_proces_messg','Edit/Delete Channels & Locations >  Add or edit channel locations: Please check you data or you selected cancel');
-                observe_EEGDAT.eeg_panel_message =4;
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             EEG = eegh(LASTCOM, EEG);
@@ -532,6 +540,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if CreateeegFlag==1
             Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_editchan');
             if isempty(Answer)
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if ~isempty(Answer{1})

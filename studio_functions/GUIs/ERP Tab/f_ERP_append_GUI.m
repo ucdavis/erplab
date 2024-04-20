@@ -323,7 +323,7 @@ varargout{1} = box_erp_append;
         end
         
         ERPsetArraydef = str2num(gui_erp_append.erpset_edit.String);
-        if isempty(ERPsetArraydef) || max(ERPsetArraydef)> length(observe_ERPDAT.ALLERP)
+        if isempty(ERPsetArraydef) || any(ERPsetArraydef> length(observe_ERPDAT.ALLERP))
             ERPsetArraydef = observe_ERPDAT.CURRENTERP;
         end
         def{1} = 0;
@@ -474,7 +474,6 @@ varargout{1} = box_erp_append;
         gui_erp_append.erpset_custom.Value = ~OpValue;
         gui_erp_append.erpset_edit.String = num2str(answer{3});
         observe_ERPDAT.Count_currentERP = 1;
-        
     end
 
 %%--------------------------Run--------------------------------------------

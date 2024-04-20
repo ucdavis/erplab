@@ -513,7 +513,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         ERPArray =  estudioworkingmemory('selectederpstudio');
-        if isempty(ERPArray) ||  min(ERPArray(:)) > length(observe_ERPDAT.ALLERP) ||  max(ERPArray(:)) > length(observe_ERPDAT.ALLERP) ||  min(ERPArray(:)) <1
+        if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:) <1)
             ERPArray = observe_ERPDAT.CURRENTERP;
         end
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
@@ -528,10 +528,12 @@ varargout{1} = EStudio_erp_box_edit_chan;
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         
         if isempty(ERPoutput)
+            observe_ERPDAT.Process_messg =2;
             return;
         end
         Chanlocs = ERPoutput.chanlocs;

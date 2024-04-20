@@ -196,7 +196,6 @@ varargout{1} = EEG_filtering_box;
             else
                 gui_eegtab_filtering.hp_halfamp.String = '60';
             end
-            
         else
             gui_eegtab_filtering.hp_halfamp.String =  num2str(locutoff);
         end
@@ -247,14 +246,11 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.DC_remove = uicontrol('Style','checkbox','Parent', gui_eegtab_filtering.REMOVE_DC,...
             'String','Remove DC Offset (Strongly recommended)','Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);%,'callback',@remove_dc
         gui_eegtab_filtering.DC_remove.KeyPressFcn =@eeg_filter_presskey;
-        
         gui_eegtab_filtering.filt_buttons = uiextras.HBox('Parent', gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
-        
         gui_eegtab_filtering.cancel = uicontrol('Style','pushbutton','Parent',gui_eegtab_filtering.filt_buttons,'String','Cancel',...
             'callback',@EEG_filter_Cancel,'Enable',Apply_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_eegtab_filtering.advanced = uicontrol('Style','pushbutton','Parent',gui_eegtab_filtering.filt_buttons,'String','Advanced',...
             'callback',@advanced_EEG_filter,'Enable',Advance_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
         gui_eegtab_filtering.apply = uicontrol('Style','pushbutton','Parent',gui_eegtab_filtering.filt_buttons,'String','Run',...
             'callback',@EEG_filter_apply,'Enable',Apply_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set( gui_eegtab_filtering.filtering,'Sizes',[20 20 20 80 20 20 30]);

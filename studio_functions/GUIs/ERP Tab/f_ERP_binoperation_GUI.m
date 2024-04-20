@@ -163,8 +163,8 @@ varargout{1} = ERP_bin_operation_gui;
             observe_ERPDAT.Process_messg =2;
             return
         end
-        
-        ModeValue = binopGUI.emode;
+        binopGUI= estudioworkingmemory('binopGUI');
+        try ModeValue = binopGUI.emode;catch ModeValue=0; end
         if ModeValue ==0
             gui_erp_bin_operation.mode_modify.Value =1;
             gui_erp_bin_operation.mode_create.Value = 0;
