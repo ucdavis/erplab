@@ -278,23 +278,15 @@ timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\n\n']);
 
     function  createInterface_ERPWave_viewer(ERPtooltype);
+        try
+            erplabstudiover = num2str(geterplabeversion);
+        catch
+            erplabstudiover = '??';
+        end
+        
         if strcmpi(ERPtooltype,'EStudio')
-            try
-                [version reldate] = geterplabstudioversion;
-                erplabstudiover = version;
-            catch
-                erplabstudiover = '??';
-            end
-            
             currvers  = ['ERPLAB Studio ' erplabstudiover,'- My Viewer'];
         else
-            try
-                [version reldate] = geterplabversion;
-                erplabstudiover = version;
-            catch
-                erplabstudiover = '??';
-            end
-            
             currvers  = ['ERPLAB ' erplabstudiover,'- My Viewer'];
         end
         estudioworkingmemory('viewername','My Viewer');

@@ -689,10 +689,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
         
-        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;*.txt'}, ...
-            ['Import EEG channel order (for plotting only)'], 'MultiSelect','off');
+        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;*.txt';'*.*'}, ...
+            ['Import EEG channel order (for plotting only)']);
         if isequal(erpfilename,0) || indxs~=1
-            disp('User selected Cancel')
             return
         end
         

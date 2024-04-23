@@ -93,11 +93,11 @@ varargout{1} = box_erpset_gui;
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
             'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save As...', ...
+        ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save a Copy', ...
             'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons4,'Sizes',[70 70 115])
+        set(buttons4,'Sizes',[70 90 95])
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -985,7 +985,7 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save As');
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save a Copy');
         observe_ERPDAT.Process_messg =1;
         
         pathName =  estudioworkingmemory('EEG_save_folder');
@@ -1004,14 +1004,14 @@ varargout{1} = box_erpset_gui;
             ALLERPCOM = [];
             assignin('base','ALLERPCOM',ALLERPCOM);
         end
-        Answer = f_ERP_save_as_GUI(observe_ERPDAT.ALLERP,ERPArray,'',1,pathName);
+        Answer = f_ERP_save_as_GUI(observe_ERPDAT.ALLERP,ERPArray,'_copy',1,pathName);
         if isempty(Answer)
             return;
         end
         if ~isempty(Answer{1})
             ALLERP_out = Answer{1};
         end
-        
+        ALLERP = observe_ERPDAT.ALLERP;
         for Numoferp = 1:length(ERPArray)
             ERP = ALLERP_out(ERPArray(Numoferp));
             if ~isempty(ERP.filename)
@@ -1030,12 +1030,35 @@ varargout{1} = box_erpset_gui;
             else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
+            %             observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
+            ALLERP(length(ALLERP)+1) = ERP;
+        end
+        
+        observe_ERPDAT.ALLERP = ALLERP;
+        
+        ERPlistName =  getERPsets();
+        %%Reset the display in ERPset panel
+        ERPsetops.butttons_datasets.String = ERPlistName;
+        ERPsetops.butttons_datasets.Min = 1;
+        ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+        
+        try
+            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
+            ERPsetops.butttons_datasets.Value = Selected_ERP_afd;
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1;
+        catch
+            Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
+            ERPsetops.butttons_datasets.Value =  Selected_ERP_afd;
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+        
+        %         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
-        observe_ERPDAT.Count_currentERP = 20;
+        ERPsetops.butttons_datasets.Value = Selected_ERP_afd;
+        observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
 

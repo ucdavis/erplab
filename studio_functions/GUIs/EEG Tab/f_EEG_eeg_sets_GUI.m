@@ -116,10 +116,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
             'String', 'Save', 'Callback', @eegset_save,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
-            'String', 'Save As...', 'Callback', @eegset_saveas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String', 'Save a Copy', 'Callback', @eegset_saveas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons4,'Sizes',[70 70 115]);
+        set(buttons4,'Sizes',[70 90 95]);
         set(vBox, 'Sizes', [20 150 25 25 25]);
         estudioworkingmemory('EEGTab_eegset',0);
         EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
@@ -1033,7 +1033,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        observe_EEGDAT.count_current_eeg =26;
+        observe_EEGDAT.count_current_eeg =1;
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -1049,7 +1049,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('f_EEG_proces_messg','EEGsets>Save As');
+        estudioworkingmemory('f_EEG_proces_messg','EEGsets>Save a Copy');
         observe_EEGDAT.eeg_panel_message =1;
         pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
@@ -1060,14 +1060,14 @@ estudioworkingmemory('Startimes',0);%%set default value
             EEGArray =observe_EEGDAT.CURRENTSET;
         end
         
-        Answer =  f_EEG_saveas_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'',pathName);
+        Answer =  f_EEG_saveas_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'_copy',pathName);
         if isempty(Answer)
             return;
         end
         if ~isempty(Answer{1})
             ALLEEG_out = Answer{1};
         end
-        
+        ALLEEG = observe_EEGDAT.ALLEEG;
         for Numofeeg = 1:length(EEGArray)
             EEG = ALLEEG_out(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -1091,9 +1091,24 @@ estudioworkingmemory('Startimes',0);%%set default value
                 fprintf(['\n',LASTCOM,'\n']);
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
+            [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         end
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_ERP_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+        catch
+            Selected_ERP_afd = length(observe_EEGDAT.ALLEEG);
+        end
+        EStduio_eegtab_EEG_set.butttons_datasets.Value = Selected_ERP_afd;
+        observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        observe_EEGDAT.EEG  = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_ERP_afd);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        
+        %         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        %         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg =1;
         observe_EEGDAT.eeg_panel_message =2;
     end

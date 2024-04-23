@@ -84,8 +84,8 @@ handles.suffix = suffix;
 handles.ALLERP = ALLERP;
 handles.EEGArray =EEGArray;
 
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Save erpsets as GUI'])
 
 

@@ -75,8 +75,8 @@ handles.suffix = suffix;
 handles.ALLEEG = ALLEEG;
 handles.EEGArray =EEGArray;
 handles.pathName= pathName;
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Save eegsets as GUI'])
 
 handles.edit_path.String = pathName;

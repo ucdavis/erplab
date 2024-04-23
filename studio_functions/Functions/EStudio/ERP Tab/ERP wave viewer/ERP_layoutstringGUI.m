@@ -438,11 +438,9 @@ end
 % --- Executes on button press in pushbutton6_import.
 function pushbutton6_import_Callback(hObject, eventdata, handles)
 
-[filename, filepath] = uigetfile({'*.tsv*';'*.txt*'}, ...
-    'Load Gird Locations', ...
-    'MultiSelect', 'off');
+[filename, filepath] = uigetfile({'*.tsv;*.txt'}, ...
+    'Load Gird Locations');
 if isequal(filename,0)
-    disp('User selected Cancel');
     return;
 end
 try
@@ -641,6 +639,7 @@ for row = 1:nrows
     fprintf(fileID,formatSpec,rowdata{1,:});
 end
 fclose(fileID);
+ disp(['The file for ERP Viewer Grid layout was created at <a href="matlab: open(''' erpFilename ''')">' erpFilename '</a>'])
 
 
 function data = f_gridlocation_respace_addnan(data)

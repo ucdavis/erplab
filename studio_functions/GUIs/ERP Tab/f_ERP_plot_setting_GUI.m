@@ -508,7 +508,6 @@ varargout{1} = ERP_plotset_box;
             estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
             observe_ERPDAT.Process_messg =4;
         end
-        
     end
 
 
@@ -767,6 +766,15 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
         
+        if ERPTab_plotset.gridlayout_custom.Value==1
+            ERPTab_plotset.gridlayoutdef.Value = 1;
+            ERPTab_plotset.gridlayout_custom.Value = 0;
+            ERPTab_plotset.chanorder_front.Value = 0;
+            ERPTab_plotset.gridlayout_export.Enable ='off';
+            ERPTab_plotset.gridlayout_import.Enable ='off';
+            ERPTab_plotset.rowNum_set.Enable ='off';
+            ERPTab_plotset.columns.Enable ='off';
+        end
     end
 
     function showSEM(Source,~)
@@ -1064,7 +1072,6 @@ varargout{1} = ERP_plotset_box;
             ['Save Grid Locations as'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
-            disp('User selected Cancel')
             return
         end
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
@@ -1103,7 +1110,7 @@ varargout{1} = ERP_plotset_box;
             if jj==1
                 columName{1,jj} = '';
             else
-                columName{1,jj} = ['Column',32,num2str(jj-1)];
+                columName{1,jj} = ['Column',num2str(jj-1)];
             end
         end
         formatSpec = strcat(formatSpec,'\n');
@@ -1117,6 +1124,7 @@ varargout{1} = ERP_plotset_box;
             fprintf(fileID,formatSpec,rowdata{1,:});
         end
         fclose(fileID);
+        disp(['The file for ERP Tab Grid layout was created at <a href="matlab: open(''' erpFilename ''')">' erpFilename '</a>'])
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1138,11 +1146,9 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         
-        [filename, filepath] = uigetfile('*.tsv', ...
-            'Plot Setting > Grid Layout > Import', ...
-            'MultiSelect', 'off');
+        [filename, filepath] = uigetfile({'*.tsv;*.txt';'*.*'}, ...
+            'Plot Setting > Grid Layout > Import');
         if isequal(filename,0)
-            disp('User selected Cancel');
             return;
         end
         try
@@ -1158,7 +1164,7 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.Process_messg =4;
             return;
         end
-        overlapindex =1;% ERPTab_plotset.pagesel.Value;
+        overlapindex = ERPTab_plotset.pagesel.Value;
         DataInput = table2cell(DataInput);
         
         [rows,columns] = size(DataInput);
@@ -1175,7 +1181,6 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.Process_messg =4;
             return;
         end
-        
         
         ERPTab_plotset.rowNum_set.Value =size(Griddata,1);
         ERPTab_plotset.columns.Value =size(Griddata,2);
@@ -1420,10 +1425,10 @@ varargout{1} = ERP_plotset_box;
         end
         ERPTab_plotset.gridlayoutdef.Value=gridlayoutdef;%%default grid layout?
         ERPTab_plotset.gridlayout_custom.Value = ~gridlayoutdef;
-        if gridlayoutdef==1
-            EnableFlag= 'off';
-        else
+        if gridlayoutdef==3
             EnableFlag= 'on';
+        else
+            EnableFlag= 'off';
         end
         ERPTab_plotset.gridlayout_export.Enable =EnableFlag;
         ERPTab_plotset.gridlayout_import.Enable =EnableFlag;
@@ -1679,21 +1684,21 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
         if ERPTab_plotset.chanorder_front.Value==1
-        try
-            [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
-            ERPTab_plotset.chanorderIndex = 2;
-            chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(sort(ChanArray)));
-            if isempty(chanindexnew)
-                chanindexnew =   ChanArray;
-            else
-                ChanArray =  sort(ChanArray);
-                chanindexnew = ChanArray(chanindexnew);
+            try
+                [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+                ERPTab_plotset.chanorderIndex = 2;
+                chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(sort(ChanArray)));
+                if isempty(chanindexnew)
+                    chanindexnew =   ChanArray;
+                else
+                    ChanArray =  sort(ChanArray);
+                    chanindexnew = ChanArray(chanindexnew);
+                end
+            catch
+                chanindexnew = ChanArray;
             end
-        catch
+        else
             chanindexnew = ChanArray;
-        end
-        else 
-          chanindexnew = ChanArray;   
         end
         if ERPTab_plotset.chanorder_front.Value==1
             gridlayputarraydef = cell(rowNum,columNum);
