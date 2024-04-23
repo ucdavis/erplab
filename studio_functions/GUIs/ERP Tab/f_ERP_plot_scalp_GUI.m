@@ -1046,6 +1046,9 @@ varargout{1} = ERP_plot_scalp_gui;
         catch
             pscale_legend = {1,1,1,1,0,'on','off',0,is2Dmap};
         end
+        if isempty(pscale_legend)
+            pscale_legend = {1,1,1,1,0,'on','off',0,is2Dmap}; 
+        end
         
         try
             pscalp_agif =  estudioworkingmemory('pscalp_agif');
@@ -1055,6 +1058,9 @@ varargout{1} = ERP_plot_scalp_gui;
             pagif_legend{4}=latencyArray;
         catch
             pagif_legend = {0,[],'',latencyArray};
+        end
+        if isempty(pagif_legend)
+           pagif_legend = {0,[],'',latencyArray}; 
         end
         
         

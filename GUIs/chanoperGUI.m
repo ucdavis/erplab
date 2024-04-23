@@ -83,7 +83,7 @@ if ~isempty(ERPtooltype)
         Toolabel = 0;
     end
 else
-    Toolabel = 1;
+    Toolabel = 0;
 end
 handles.Toolabel = Toolabel;
 if Toolabel
