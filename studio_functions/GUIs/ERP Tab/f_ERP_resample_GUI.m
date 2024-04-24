@@ -304,7 +304,7 @@ varargout{1} = box_erp_resample;
             Source.String = '';
             return;
         end
-        if Newend< observe_ERPDAT.ERP.times(end)
+        if Newend> observe_ERPDAT.ERP.times(end)
             msgboxText=['Sampling Rate & Epoch: we will set 0 for the additional time range because the right edge for the new time window is larger than',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);

@@ -594,6 +594,10 @@ varargout{1} = EStudio_box_eeglab_ica;
         EEG = eegh(LASTCOM, EEG);
         eegh(LASTCOM);
         fprintf(['\n',LASTCOM,'\n']);
+        EEG.filename = '';
+        EEG.saved = 'no';
+        EEG.filepath = '';
+        
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(EEG,1, '_icaweights');
         if isempty(Answer)

@@ -116,9 +116,9 @@ varargout{1} = box_eeg_resample;
         %%------------------------Trim Continuous data-----------------------------
         gui_eeg_resample.Trimcont_title = uiextras.HBox('Parent',gui_eeg_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_resample.Trimcont= uicontrol('Style', 'pushbutton','Parent',gui_eeg_resample.Trimcont_title,...
-            'String','Trim continuous data','callback',@Trimcont,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Trim relative to first & last event','callback',@Trimcont,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_resample.Trimcont_title);
-        set(gui_eeg_resample.Trimcont_title,'Sizes',[-1 120]);
+        set(gui_eeg_resample.Trimcont_title,'Sizes',[-1 20]);
         
         %%------------------------cancel & apply-----------------------------
         gui_eeg_resample.advance_help_title = uiextras.HBox('Parent',gui_eeg_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -346,7 +346,7 @@ varargout{1} = box_eeg_resample;
         end
         
         if observe_EEGDAT.EEG.trials>1
-            if Newend< observe_EEGDAT.EEG.times(end)
+            if Newend> observe_EEGDAT.EEG.times(end)
                 msgboxText=['Sampling Rate & Epoch: we will set 0 for the additional time range because the right edge for the new time window is larger than',32,num2str(observe_EEGDAT.EEG.times(end)),'ms'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);

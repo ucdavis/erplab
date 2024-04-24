@@ -165,36 +165,17 @@ suffix_edit = handles.edit_suffix_name.String;
 
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
-    if isempty(char(DataString_before{Numoferpset,1}))
-        DataString_before{Numoferpset,1} = ALLERP(EEGArray(Numoferpset)).erpname;
+    DataString{Numoferpset,1} = strcat( ALLERP(EEGArray(Numoferpset)).erpname,suffix_edit);
+    if handles.checkbox3_filename_erpname.Value==1
+        DataString{Numoferpset,2}   =  [DataString{Numoferpset,1},'.erp'];
+    else
+        DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
     end
-    
-    DataString{Numoferpset,1} = strcat( DataString_before{Numoferpset,1},suffix_edit);
-    DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 % set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
 set(handles.uitable1_erpset_table,'Enable','on');
 
-if handles.checkbox3_filename_erpname.Value==1
-    DataString_before = handles.uitable1_erpset_table.Data;
-    
-    for Numoferpset = 1:size(DataString_before,1)
-        DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
-        fileName = char(DataString_before{Numoferpset,1});
-        if isempty(fileName)
-            fileName = strcat(num2str(Numoferpset),'.erp');
-        end
-        [pathstr, file_name, ext] = fileparts(fileName);
-        if isempty(file_name)
-            file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
-        else
-            file_name = [file_name,'.erp'];
-        end
-        DataString{Numoferpset,2} = file_name;
-    end
-    set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-end
 
 
 

@@ -959,12 +959,15 @@ varargout{1} = box_erpset_gui;
             end
             [pathx, filename, ext] = fileparts(FileName);
             filename = [filename '.erp'];
-            [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
-            ERPCOM = f_erp_save_history(ERP.erpname,filename,pathName);
-            if Numoferp == numel(ERPArray)
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
-            else
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            checkfileindex = checkfilexists([pathName,filename]);
+            if checkfileindex==1
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
+                ERPCOM = f_erp_save_history(ERP.erpname,filename,pathName);
+                if Numoferp == numel(ERPArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
             end
             observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
         end
@@ -1214,4 +1217,23 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Reset_erp_paras_panel=2;
     end
 
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%% 2024
+checkfileindex=1;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr,filesep, file_name,'.erp'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This ERP set already exists.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
 end
