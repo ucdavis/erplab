@@ -704,7 +704,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         
-        DataInput =  readtable(erpFilename, "FileType","text",'Delimiter', '\t');
+        DataInput =  readtable(erpFilename, "FileType","text",'Delimiter', '\t','PreserveVariableNames',true);
         if isempty(DataInput)
             EStduio_gui_EEG_plotset.chanorder{1,1}=[];
             EStduio_gui_EEG_plotset.chanorder{1,2} = '';

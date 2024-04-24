@@ -444,7 +444,7 @@ if isequal(filename,0)
     return;
 end
 try
-    DataInput =  readtable([filepath,filename], "FileType","text");
+    DataInput =  readtable([filepath,filename], "FileType","text",'PreserveVariableNames',true);
     CellNum=2;
 catch
     handles.text7_message.String = sprintf(['Cannot import:',filepath,filename]);

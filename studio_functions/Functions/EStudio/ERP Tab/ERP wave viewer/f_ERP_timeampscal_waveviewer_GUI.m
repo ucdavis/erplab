@@ -214,13 +214,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         if xdispysecondValue==1
             xprecisoonName = {'0','1','2','3','4','5','6'};
-            if xtick_precision<0 || xtick_precision>6
+            if isempty(xtick_precision) || xtick_precision<0 || xtick_precision>6
                 MERPWaveViewer_xaxis{6} = 0;
                 xtick_precision =0;
             end
         else
             xprecisoonName = {'1','2','3','4','5','6'};
-            if xtick_precision<1 || xtick_precision>6
+            if isempty(xtick_precision) || xtick_precision<1 || xtick_precision>6
                 MERPWaveViewer_xaxis{6} = 1;
                 xtick_precision =1;
                 MERPWaveViewer_xaxis{6} = xtick_precision;

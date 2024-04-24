@@ -134,7 +134,6 @@ varargout{1} = box_erpwave_viewer_property;
             'Load parametrs for "My viewer"', ...
             'MultiSelect', 'off');
         if isequal(filename,0)
-            disp('User selected Cancel');
             return;
         end
         
@@ -147,7 +146,6 @@ varargout{1} = box_erpwave_viewer_property;
             gui_erp_waviewer.ERPwaviewer = importdata([filepath,erpFilename]);
             gui_erp_waviewer.ERPwaviewer.ALLERP= ALLERP;
         catch
-            beep;
             MessageViewer=['My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
             estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
@@ -325,8 +323,8 @@ varargout{1} = box_erpwave_viewer_property;
             ViewerName = 'My Viewer';
         end
         try
-            [version1 reldate] = geterplabstudioversion;
-            erplabstudiover = version1;
+            erplab_default_values;
+            erplabstudiover = erplabver;
         catch
             erplabstudiover = '??';
         end
@@ -381,7 +379,7 @@ varargout{1} = box_erpwave_viewer_property;
         New_posin(2) = abs(New_posin(2));
         
         New_pos = gui_erp_waviewer.Window.Position;
-       
+        
         estudioworkingmemory('ERPWaviewerScreenPos',New_pos1);
         
         try
@@ -449,7 +447,7 @@ varargout{1} = box_erpwave_viewer_property;
         New_posin(2) = abs(New_posin(2));
         
         New_pos = gui_erp_waviewer.Window.Position;
-       
+        
         estudioworkingmemory('ERPWaviewerScreenPos',New_pos1);
         
         try
@@ -495,8 +493,8 @@ varargout{1} = box_erpwave_viewer_property;
         %%name
         ViewerName = 'My Viewer';
         try
-            [version1 reldate] = geterplabstudioversion;
-            erplabstudiover = version1;
+            erplab_default_values;
+            erplabstudiover = erplabver;
         catch
             erplabstudiover = '??';
         end

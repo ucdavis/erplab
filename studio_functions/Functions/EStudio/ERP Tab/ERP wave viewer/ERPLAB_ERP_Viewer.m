@@ -1,7 +1,6 @@
-
-% New ERP viewer GUI Layout - Simple ERP viewer 0.014
+% New ERP viewer GUI Layout 
 %
-% Author: Guanghui Zhang & Steve J. Luck & Andrew Stewart
+% Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -165,8 +164,6 @@ end
 
 estudioworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB
 
-
-
 viewer_ERPDAT.Count_currentERP = 0;
 % viewer_ERPDAT.Process_messg = 0;%0 is the default means there is no message for processing procedure;
 %1 means the processign procedure is running
@@ -187,8 +184,7 @@ viewer_ERPDAT.ERP_chan =  chanArray;
 try
     test = uix.HBoxFlex();
 catch
-    beep;
-    disp('The GUI Layout Toolbox might not be installed. Quitting')
+    disp('The GUI Layout Toolbox might not be included. Please download it from:https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox')
     return
 end
 
@@ -260,11 +256,9 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
             Parameterfile.ERP = gui_erp_waviewer.ERPwaviewer.ERP;
         else
             if strcmpi(button,'No')
-                beep;
                 viewer_ERPDAT.Process_messg =3;
                 fprintf(2,'\n\n My viewer > ERPLAB_ERP_Viewer: \n Cannot use the file because no ALLERP can be used.\n\n');
             else
-                beep
                 viewer_ERPDAT.Process_messg =3;
                 fprintf(2,'\n\n My viewer > ERPLAB_ERP_Viewer: \n User selected cancel.\n\n');
             end
@@ -295,8 +289,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         catch
             ColorBviewer_def = [0.7765,0.7294,0.8627];
         end
-        %         gui_erp_waviewer = struct();
-        % First, let's start the window
+        
         gui_erp_waviewer.Window = figure( 'Name', currvers, ...
             'NumberTitle', 'off', ...
             'MenuBar', 'none', ...

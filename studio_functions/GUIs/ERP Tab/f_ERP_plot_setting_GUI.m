@@ -1060,7 +1060,7 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) %%&& eegpanelIndex~=2
+        if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
@@ -1152,7 +1152,7 @@ varargout{1} = ERP_plotset_box;
             return;
         end
         try
-            DataInput =  readtable([filepath,filename], "FileType","text");
+            DataInput =  readtable([filepath,filename], "FileType","text",'PreserveVariableNames',true);
         catch
             DataInput =  readtable([filepath,filename], "FileType","text");
             estudioworkingmemory('f_ERP_proces_messg',['Plot Settings > Grid Layout > Import:','Cannot import:',filepath,filename]);

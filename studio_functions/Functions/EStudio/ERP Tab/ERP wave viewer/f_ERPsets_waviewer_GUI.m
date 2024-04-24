@@ -15,7 +15,6 @@
 function varargout = f_ERPsets_waviewer_GUI(varargin)
 %
 global viewer_ERPDAT
-global observe_ERPDAT;
 global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
@@ -25,7 +24,7 @@ addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 
 ERPwaveview_erpsetops = struct();
 %---------Setting the parameter which will be used in the other panels-----------
-% gui_erp_waviewer.Window.WindowButtonMotionFcn = {@erpselect_refresh};
+
 try
     [version reldate,ColorBviewer_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
 catch
@@ -50,8 +49,8 @@ elseif nargin == 4
 end
 
 %%Get local path
-sel_path = cd;
-estudioworkingmemory('EEG_save_folder',sel_path);
+% sel_path = cd;
+% estudioworkingmemory('EEG_save_folder',sel_path);
 
 
 varargout{1} = ERPsets_waveviewer_box;
@@ -251,23 +250,6 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             SrateNum_mp(Numofselectederp,1)   =  ALLERPIN(ERPsetArray(Numofselectederp)).srate;
         end
         
-        %         ERPtooltype = erpgettoolversion('tooltype');
-        %         if strcmpi(ERPtooltype,'EStudio')
-        %             ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
-        %             try chan_bin =ERPTab_plotset_pars{7};catch chan_bin=1; end;
-        %             if isempty(chan_bin) || numel(chan_bin)~=1  || (chan_bin~=1 && chan_bin~=2)
-        %                 chan_bin=1;
-        %             end
-        %             if chan_bin ==1
-        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Grid =2;
-        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=1;
-        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
-        %             elseif chan_bin==2
-        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Grid =1;
-        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=2;
-        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
-        %             end
-        %         end
         gui_erp_waviewer.ERPwaviewer.CURRENTERP = CurrentERP;
         gui_erp_waviewer.ERPwaviewer.ERP = gui_erp_waviewer.ERPwaviewer.ALLERP(CurrentERP);
         gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPwaveview_erpsetops.butttons_datasets.Value;
@@ -296,7 +278,6 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             SelectedIndex = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
             ALLERPup = gui_erp_waviewer.ERPwaviewer.ALLERP;
             if isempty(ALLERPup)
-                beep;
                 disp('f_ERPsets_waviewer_GUI()>loadproper_change() error: ALLERP is empty.');
                 return;
             end
@@ -305,7 +286,6 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
                 gui_erp_waviewer.ERPwaviewer.SelectERPIdx = SelectedIndex;
             end
         catch
-            beep;
             disp('f_ERPsets_waviewer_GUI()>loadproper_change() error: Restart ERPwave Viewer');
             return;
         end
@@ -322,7 +302,6 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         ERPwaveview_erpsetops.butttons_datasets.Max = ds_length+1;
         ERPwaveview_erpsetops.butttons_datasets.String = dsnames;
         ERPwaveview_erpsetops.butttons_datasets.Value = SelectedIndex;
-        
         viewer_ERPDAT.loadproper_count=2;
     end
 
@@ -348,7 +327,6 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
     function ERPdatasets = getERPDatasets(ALLERP)
         ERPdatasets = {};
         if isempty(ALLERP)
-            beep;
             disp('f_ERPsets_waveviewer_GUI>getERPDatasets error: ALLERP is empty.');
             return;
         end

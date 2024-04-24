@@ -413,8 +413,6 @@ varargout{1} = Chanbin_waveviewer_box;
         viewer_ERPDAT.Count_currentERP=3;
     end
 
-
-
 %%------------update this panel based on the imported parameters-----------
     function loadproper_change(~,~)
         if viewer_ERPDAT.loadproper_count ~=2
