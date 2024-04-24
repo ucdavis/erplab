@@ -12,7 +12,7 @@ function varargout = f_ERP_simulation_panel(varargin)
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 %%---------------------------gui-------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -597,7 +597,7 @@ varargout{1} = ERP_simulation_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -662,7 +662,7 @@ varargout{1} = ERP_simulation_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -736,7 +736,7 @@ varargout{1} = ERP_simulation_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -812,7 +812,7 @@ varargout{1} = ERP_simulation_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -868,7 +868,7 @@ varargout{1} = ERP_simulation_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -932,7 +932,7 @@ varargout{1} = ERP_simulation_box;
         end
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -988,7 +988,7 @@ varargout{1} = ERP_simulation_box;
         end
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1061,7 +1061,7 @@ varargout{1} = ERP_simulation_box;
     function epochstart(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1086,7 +1086,7 @@ varargout{1} = ERP_simulation_box;
     function epocstop(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1110,7 +1110,7 @@ varargout{1} = ERP_simulation_box;
     function srateop(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1130,7 +1130,7 @@ varargout{1} = ERP_simulation_box;
     function srateedit(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1156,7 +1156,7 @@ varargout{1} = ERP_simulation_box;
     function srateperiod(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1176,7 +1176,7 @@ varargout{1} = ERP_simulation_box;
     function srateperiodedit(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1201,7 +1201,7 @@ varargout{1} = ERP_simulation_box;
     function exguass_op(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1229,7 +1229,7 @@ varargout{1} = ERP_simulation_box;
     function exgau_peakamp(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1252,7 +1252,7 @@ varargout{1} = ERP_simulation_box;
     function exgau_mean(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1275,7 +1275,7 @@ varargout{1} = ERP_simulation_box;
     function exgau_sd(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1299,7 +1299,7 @@ varargout{1} = ERP_simulation_box;
     function exgau_tau(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1323,7 +1323,7 @@ varargout{1} = ERP_simulation_box;
     function impulse_op(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1350,7 +1350,7 @@ varargout{1} = ERP_simulation_box;
     function impulse_peakamp(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1373,7 +1373,7 @@ varargout{1} = ERP_simulation_box;
     function impulse_latency(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1396,7 +1396,7 @@ varargout{1} = ERP_simulation_box;
     function square_op(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1424,7 +1424,7 @@ varargout{1} = ERP_simulation_box;
     function square_peakamp(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1447,7 +1447,7 @@ varargout{1} = ERP_simulation_box;
     function square_onset(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1478,7 +1478,7 @@ varargout{1} = ERP_simulation_box;
     function square_offset(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1509,7 +1509,7 @@ varargout{1} = ERP_simulation_box;
     function newnoise_op(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1540,7 +1540,7 @@ varargout{1} = ERP_simulation_box;
     function sinoise_op(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1564,7 +1564,7 @@ varargout{1} = ERP_simulation_box;
     function sin_amp(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1587,7 +1587,7 @@ varargout{1} = ERP_simulation_box;
     function sinoise_fre(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1610,7 +1610,7 @@ varargout{1} = ERP_simulation_box;
     function whitenoise_op(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1630,7 +1630,7 @@ varargout{1} = ERP_simulation_box;
     function white_amp(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1654,7 +1654,7 @@ varargout{1} = ERP_simulation_box;
     function pinknoise_op(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1674,7 +1674,7 @@ varargout{1} = ERP_simulation_box;
     function pink_amp(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];
@@ -1698,11 +1698,11 @@ varargout{1} = ERP_simulation_box;
     function simulation_cancel(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 1 1 1];
         gui_erp_simulation.apply.ForegroundColor = [0 0 0];
@@ -1836,7 +1836,7 @@ varargout{1} = ERP_simulation_box;
     function simulation_apply(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_simulation.apply.ForegroundColor = [1 1 1];

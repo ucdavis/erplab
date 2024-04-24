@@ -178,8 +178,7 @@ observe_ERPDAT.ERP = ERP;
 observe_ERPDAT.Count_ERP = 0;
 observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg = 0;%0 is the default means there is no message for processing procedure;
-observe_ERPDAT.erp_two_panels = 0;
-observe_ERPDAT.Two_GUI = 0;
+observe_ERPDAT.two_panels_erp = 0;
 observe_ERPDAT.Reset_erp_paras_panel = 0;
 
 addlistener(observe_ERPDAT,'cerpchange',@indexERP);
@@ -188,7 +187,7 @@ addlistener(observe_ERPDAT,'erpschange',@allErpChanged);
 addlistener(observe_ERPDAT,'Count_ERP_change',@CountErpChanged);
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'Messg_change',@Process_messg_change_main);
-addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 estudioworkingmemory('f_EEG_proces_messg_pre',{'',0});

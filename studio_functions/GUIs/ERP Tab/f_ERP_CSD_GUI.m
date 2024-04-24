@@ -9,7 +9,7 @@
 function varargout = f_ERP_CSD_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 
@@ -105,7 +105,7 @@ varargout{1} = ERP_CSD_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=8
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_CSD.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_CSD.run.ForegroundColor = [1 1 1];
@@ -132,7 +132,7 @@ varargout{1} = ERP_CSD_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=8
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_CSD.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_CSD.run.ForegroundColor = [1 1 1];
@@ -159,7 +159,7 @@ varargout{1} = ERP_CSD_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=8
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_CSD.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_CSD.run.ForegroundColor = [1 1 1];
@@ -186,7 +186,7 @@ varargout{1} = ERP_CSD_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=8
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         
         csd_param(1) = str2double(gui_erp_CSD.sif_num.String);
@@ -301,7 +301,7 @@ varargout{1} = ERP_CSD_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=8
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
         end
         gui_erp_CSD.sif_num.String = num2str( gui_erp_CSD.Para{1});
         gui_erp_CSD.scl_num.String= num2str( gui_erp_CSD.Para{2});
