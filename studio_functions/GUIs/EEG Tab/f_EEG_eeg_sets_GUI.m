@@ -404,7 +404,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
         end
-        observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
+        observe_EEGDAT.count_current_eeg=1;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -443,7 +443,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             if EStudio_gui_erp_totl.EEG_autoplot==1
                 f_redrawEEG_Wave_Viewer();
             end
-            observe_EEGDAT.count_current_eeg=26;%%to channel & IC panel
+            observe_EEGDAT.count_current_eeg=1;%%to channel & IC panel
             observe_EEGDAT.eeg_panel_message =2;
         else
             return;
@@ -1191,23 +1191,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
     end
 
-
-% Gets [ind, erp] for input ds where ds is a dataset structure, ind is the
-% index of the corresponding ERP, and ERP is the corresponding ERP
-% structure.
-    function varargout = ds2erp(ds)
-        [~,cvtc] = size(observe_EEGDAT.ALLEEG);
-        for z = 1:cvtc
-            fp1 = observe_EEGDAT.ALLEEG(1,z).filepath;
-            fp2 = cell2mat(ds(5));
-            fp1(regexp(fp1,'[/]')) = [];
-            fp2(regexp(fp2,'[/]')) = [];
-            if strcmp(observe_EEGDAT.ALLEEG(1,z).erpname,cell2mat(ds(1)))&&strcmp(fp1,fp2)
-                varargout{1} = z;
-                varargout{2} = observe_EEGDAT.ALLEEG(1,z);
-            end
-        end
-    end
 
 %%%--------------Update this panel--------------------------------------
     function count_current_eeg_change(~,~)

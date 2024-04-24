@@ -1176,7 +1176,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.export.Enable = Edit_label;
         
         assignin('base','ERP',observe_ERPDAT.ERP);
-        assignin('base','ALLERP',ALLERP);
+        assignin('base','ALLERP',observe_ERPDAT.ALLERP);
         assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
         
         observe_ERPDAT.Count_currentERP = 2;
