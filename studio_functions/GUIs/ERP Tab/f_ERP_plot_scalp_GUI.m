@@ -75,7 +75,7 @@ varargout{1} = ERP_plot_scalp_gui;
         set(gui_erp_scalp_map.measurement,'String',measurearray,'Value',2);
         ERPTab_plotscalp{10} = gui_erp_scalp_map.measurement.Value;
         gui_erp_scalp_map.measurement.KeyPressFcn=  @erp_scalps_presskey;
-
+        
         gui_erp_scalp_map.measurement_title1 = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.measurement_exp = uicontrol('Style', 'text','Parent', gui_erp_scalp_map.measurement_title1,...
             'String','(min max pairs e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
@@ -603,8 +603,8 @@ varargout{1} = ERP_plot_scalp_gui;
         estudioworkingmemory('f_ERP_proces_messg','Plot Scalp Maps > 3D > Spline');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ALLERPCOM = evalin('base','ALLERPCOM');
-        for Numofselectederp = 1:length(ERPArray)
-            ERP = observe_ERPDAT.ALLERP(ERPArray(Numofselectederp));
+        for Numoferp = 1:length(ERPArray)
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
             ERP.filepath = pathName_def;
             try
                 splnfile =  ERP.splinefile;
@@ -634,7 +634,6 @@ varargout{1} = ERP_plot_scalp_gui;
             if splineinfo.save
                 if isempty(ERP.splinefile)
                     ERP.splinefile = splinefile;
-                    %                         ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
                 else
                     question = ['This ERPset already has spline file info.\n'...
                         'Would you like to replace it?'];
@@ -642,14 +641,13 @@ varargout{1} = ERP_plot_scalp_gui;
                     button   = askquest(sprintf(question), title_msg);
                     
                     if ~strcmpi(button,'yes')
-                        disp('User selected Cancel')
                         return
                     else
                         ERP.splinefile = splinefile;
                     end
                 end
                 
-                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_scalspline'),ERP.filename,ERPArray(Numofselectederp));
+                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_scalspline'),ERP.filename,ERPArray(Numoferp));
                 if isempty(Answer)
                     observe_ERPDAT.Process_messg =2;%%
                     return;
@@ -678,13 +676,11 @@ varargout{1} = ERP_plot_scalp_gui;
                 end
                 observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
                 count_scalp = count_scalp+1;%%Record the new data;
-                Selectederp_Index_save(count_scalp) = length(observe_ERPDAT.ALLERP);
+                Selectederp_Index_save(count_scalp) = ERPArray(Numoferp);
                 splineinfo.save = 0;
-                observe_ERPDAT.ERP = ERP;
             else
                 ERP.splinefile = splinefile;
-                observe_ERPDAT.ALLERP(ERPArray(Numofselectederp)) = ERP;
-                observe_ERPDAT.ERP = ERP;
+                observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
             end
             
             if Save_file_label==1
@@ -696,8 +692,8 @@ varargout{1} = ERP_plot_scalp_gui;
         
         if ~isempty(Selectederp_Index_save)
             try
-                Selected_ERP_afd =  Selectederp_Index_save;
-                observe_ERPDAT.CURRENTERP = Selectederp_Index_save(1);
+                Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
+                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1;
             catch
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
@@ -708,7 +704,7 @@ varargout{1} = ERP_plot_scalp_gui;
         
         assignin('base','ALLERPCOM',ALLERPCOM);
         estudioworkingmemory('f_ERP_bin_opt',1);
-        observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+        observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1047,7 +1043,7 @@ varargout{1} = ERP_plot_scalp_gui;
             pscale_legend = {1,1,1,1,0,'on','off',0,is2Dmap};
         end
         if isempty(pscale_legend)
-            pscale_legend = {1,1,1,1,0,'on','off',0,is2Dmap}; 
+            pscale_legend = {1,1,1,1,0,'on','off',0,is2Dmap};
         end
         
         try
@@ -1060,7 +1056,7 @@ varargout{1} = ERP_plot_scalp_gui;
             pagif_legend = {0,[],'',latencyArray};
         end
         if isempty(pagif_legend)
-           pagif_legend = {0,[],'',latencyArray}; 
+            pagif_legend = {0,[],'',latencyArray};
         end
         
         
@@ -1394,8 +1390,7 @@ varargout{1} = ERP_plot_scalp_gui;
             ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
             if strcmpi(mtype, '3d')
                 if isempty(ERP.splinefile) && isempty(splineinfo.path)
-                    msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.'...
-                        'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
+                    msgboxText =  ['Plot Scalp Maps - You must first set the spline file (by clicking the spline button) before creating a 3D plot for',32,ERP.erpname];
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
                     observe_ERPDAT.Process_messg =2;
@@ -1434,7 +1429,7 @@ varargout{1} = ERP_plot_scalp_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        observe_ERPDAT.Count_currentERP=20;
+        observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
     end
 

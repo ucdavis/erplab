@@ -1015,7 +1015,7 @@ else
         handles.pushbutton_chanlarge.Enable = 'on';
     end
 end
-if numel(ChanArray_new) == numel(ChanArray)
+if numel(ChanArray_new) == numel(handles.ChanArray)
     handles.pushbutton8_chansmall.Enable = 'off';
     handles.pushbutton_chanlarge.Enable = 'off';
 end
@@ -1039,6 +1039,7 @@ if handles.radiobutton_erppor.Value==1
     [~,binpos] = find(BinArray==BinArray_edit);
 else
     BinArray = [];
+    binpos =1;
 end
 if isempty(binpos)
     BinArray_edit = BinArray(1);
@@ -1062,7 +1063,7 @@ else
     end
 end
 
-if numel(BinArray_edit)== numel(BinArray)
+if numel(BinArray_edit)== numel(handles.BinArray)
     handles.pushbutton_binsmall.Enable = 'off';
     handles.pushbutton_binlarge.Enable = 'off';
 end
