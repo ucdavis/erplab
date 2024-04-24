@@ -1011,7 +1011,6 @@ estudioworkingmemory('Startimes',0);%%set default value
             if isempty(pathName)
                 pathName = pathNamedef;
             end
-            [pathName, ~, ~] = fileparts(pathName);
             FileName = EEG.filename;
             if isempty(FileName)
                 FileName =EEG.setname;
@@ -1107,8 +1106,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         
-        %         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        %         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg =1;
         observe_EEGDAT.eeg_panel_message =2;
     end

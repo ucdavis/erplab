@@ -92,9 +92,9 @@ varargout{1} = box_erpset_gui;
         
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
-            'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @save_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save a Copy', ...
-            'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @save_erpas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 90 95])
@@ -202,6 +202,9 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        assignin('base','ERP',observe_ERPDAT.ERP);
+        assignin('base','ALLERP',ALLERP);
+        assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
         estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
@@ -758,7 +761,7 @@ varargout{1} = box_erpset_gui;
                 end
                 assignin('base','ALLERPCOM',ALLERPCOM);
                 assignin('base','ERPCOM',ERPCOM);
-                observe_ERPDAT.Count_currentERP = 20;
+                observe_ERPDAT.Count_currentERP = 1;
                 observe_ERPDAT.Process_messg =2;
             end
         end
@@ -914,7 +917,7 @@ varargout{1} = box_erpset_gui;
 
 
 %-------------------------- Save selected ERPsets-------------------------------------------
-    function savechecked(source,~)
+    function save_erp(source,~)
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=1;
             return;
@@ -950,8 +953,6 @@ varargout{1} = box_erpset_gui;
             if isempty(pathName)
                 pathName = pathNamedef;
             end
-            [pathName, ~, ~] = fileparts(pathName);
-            
             FileName = ERP.filename;
             if isempty(FileName)
                 FileName = ERP.erpname;
@@ -970,12 +971,12 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
-        observe_ERPDAT.Count_currentERP = 20;
+        observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
 
 %------------------------- Save as-----------------------------------------
-    function savecheckedas(~,~)
+    function save_erpas(~,~)
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=1;
             return;
@@ -1030,7 +1031,6 @@ varargout{1} = box_erpset_gui;
             else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            %             observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
             ALLERP(length(ALLERP)+1) = ERP;
         end
         
@@ -1054,7 +1054,6 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         
-        %         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         ERPsetops.butttons_datasets.Value = Selected_ERP_afd;
@@ -1175,7 +1174,11 @@ varargout{1} = box_erpset_gui;
         ERPsetops.curr_folder.Enable='on';
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
-        observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
+        
+        assignin('base','ERP',observe_ERPDAT.ERP);
+        assignin('base','ALLERP',ALLERP);
+        assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
+        
         observe_ERPDAT.Count_currentERP = 2;
         if EStudio_gui_erp_totl.ERP_autoplot==1
             f_redrawERP();
