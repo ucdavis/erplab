@@ -10,7 +10,7 @@ function varargout = f_ERP_spectral_GUI(varargin)
 
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
+addlistener(observe_ERPDAT,'erp_between_panels_change',@erp_between_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 
@@ -139,7 +139,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_spectral.plot.ForegroundColor = [1 1 1];
@@ -167,7 +167,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_spectral.plot.ForegroundColor = [1 1 1];
@@ -194,7 +194,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_spectral.plot.ForegroundColor = [1 1 1];
@@ -221,7 +221,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_spectral.plot.ForegroundColor = [1 1 1];
@@ -249,7 +249,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_spectral.plot.ForegroundColor = [1 1 1];
@@ -274,7 +274,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_spectral.plot.ForegroundColor = [1 1 1];
@@ -298,7 +298,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_spectral.plot.ForegroundColor = [1 1 1];
@@ -330,7 +330,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
         gui_erp_spectral.plot.ForegroundColor = [0 0 0];
@@ -404,7 +404,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
         gui_erp_spectral.plot.ForegroundColor = [0 0 0];
@@ -503,7 +503,7 @@ varargout{1} = ERP_filtering_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=9
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
         gui_erp_spectral.plot.ForegroundColor = [0 0 0];

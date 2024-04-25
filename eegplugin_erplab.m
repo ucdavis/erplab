@@ -92,6 +92,7 @@ observe_ERPDAT.ERP = [];
 observe_ERPDAT.Count_ERP = 0;
 observe_ERPDAT.Count_currentERP = 0;
 observe_ERPDAT.Process_messg = 0;%%change end
+observe_ERPDAT.erp_between_panels = 0;
 
 %
 % CHECK VERSION NUMBER & FOLDER NAME

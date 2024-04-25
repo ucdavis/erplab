@@ -12,7 +12,7 @@ function varargout = f_ERP_edit_channel_GUI(varargin)
 
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
+addlistener(observe_ERPDAT,'erp_between_panels_change',@erp_between_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 %---------------------------Initialize parameters------------------------------------
 
@@ -112,7 +112,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();%%execute the other panels if any parameter was changed
         if ~isempty(messgStr) && ERPpanelIndex~=15
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
@@ -129,7 +129,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && ERPpanelIndex~=15
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
@@ -145,7 +145,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && ERPpanelIndex~=15
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
@@ -180,7 +180,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && ERPpanelIndex~=15
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
@@ -223,7 +223,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && ERPpanelIndex~=15
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
@@ -356,7 +356,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && ERPpanelIndex~=15
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
@@ -504,7 +504,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && ERPpanelIndex~=15
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);

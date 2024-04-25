@@ -8,7 +8,7 @@ classdef o_ERPDAT < handle
         ERP_bin
         Count_currentERP
         Process_messg
-        two_panels_erp
+        erp_between_panels
         Reset_erp_paras_panel
     end
     
@@ -22,7 +22,7 @@ classdef o_ERPDAT < handle
         ERP_bin_change
         Count_currentERP_change
         Messg_change
-        two_panels_erp_change
+        erp_between_panels_change
         Reset_erp_panel_change
     end
     
@@ -104,8 +104,6 @@ classdef o_ERPDAT < handle
             warning('on');
         end
         
-        
-        
         %Modified bins of the selected ERP
         function set.Process_messg(obj,value)
             try
@@ -116,22 +114,17 @@ classdef o_ERPDAT < handle
             end
             warning('on');
         end
-        
-        
-        
+
         %%two panels
-        function set.two_panels_erp(obj_erp,values_erp)
+        function set.erp_between_panels(obj_erp,values_erp)
             try
-                warning('off');
-                obj_erp.two_panels_erp = values_erp;
-                notify(obj_erp,'two_panels_erp_change');
-                warning('off');
+                warning('off', 'all');
+                obj_erp.erp_between_panels = values_erp;
+                notify(obj_erp,'erp_between_panels_change');
             catch
-                warning('off');
+                warning('on');
             end
         end
-        
-        
         
         %%two panels
         function set.Reset_erp_paras_panel(obj_erp,values_erp)

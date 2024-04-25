@@ -1017,7 +1017,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
             [pathx, filename, ext] = fileparts(FileName);
             filename = [filename '.set'];
-            checkfileindex = checkfilexists([pathName,filename]);
+            checkfileindex = checkfilexists([pathName,filesep,filename]);
             if checkfileindex==1
                 [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
@@ -1026,8 +1026,6 @@ estudioworkingmemory('Startimes',0);%%set default value
                 end
                 disp(['Saved to',32,pathName,filesep,filename]);
                 fprintf(['\n',LASTCOM,'\n']);
-            else
-                disp(['User selected Cancel for saving',32,filename]);
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end

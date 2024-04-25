@@ -959,7 +959,7 @@ varargout{1} = box_erpset_gui;
             end
             [pathx, filename, ext] = fileparts(FileName);
             filename = [filename '.erp'];
-            checkfileindex = checkfilexists([pathName,filename]);
+            checkfileindex = checkfilexists([pathName,filesep,filename]);
             if checkfileindex==1
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
                 ERPCOM = f_erp_save_history(ERP.erpname,filename,pathName);
@@ -973,7 +973,7 @@ varargout{1} = box_erpset_gui;
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
+        try assignin('base','ERPCOM',ERPCOM);catch; end
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end

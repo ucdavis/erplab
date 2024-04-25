@@ -9,7 +9,7 @@
 function varargout = f_ERP_resample_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
+addlistener(observe_ERPDAT,'erp_between_panels_change',@erp_between_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 gui_erp_resample = struct();
@@ -141,7 +141,7 @@ varargout{1} = box_erp_resample;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=14
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -171,7 +171,7 @@ varargout{1} = box_erp_resample;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=14
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -199,7 +199,7 @@ varargout{1} = box_erp_resample;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=14
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -233,7 +233,7 @@ varargout{1} = box_erp_resample;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=14
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -281,7 +281,7 @@ varargout{1} = box_erp_resample;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=14
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_resample',1);
         gui_erp_resample.resample_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -330,7 +330,7 @@ varargout{1} = box_erp_resample;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=14
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_resample',0);
         gui_erp_resample.resample_run.BackgroundColor =  [1 1 1];
@@ -382,7 +382,7 @@ varargout{1} = box_erp_resample;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=14
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         if gui_erp_resample.nwsrate_checkbox.Value==0 && gui_erp_resample.nwtimewindow_checkbox.Value==0
             msgboxText='Sampling Rate & Epoch: Please select "New sampling rate" or "New epoch"';

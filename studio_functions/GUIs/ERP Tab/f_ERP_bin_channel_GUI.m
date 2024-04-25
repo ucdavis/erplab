@@ -12,7 +12,7 @@ function varargout = f_ERP_bin_channel_GUI(varargin)
 
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
+addlistener(observe_ERPDAT,'erp_between_panels_change',@erp_between_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 ERPTab_bin_chan = struct();
@@ -98,8 +98,8 @@ varargout{1} = EStudio_box_bin_chan;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==2
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_chanbin',1);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -129,8 +129,8 @@ varargout{1} = EStudio_box_bin_chan;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==2
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_chanbin',1);
@@ -160,8 +160,8 @@ varargout{1} = EStudio_box_bin_chan;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==2
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Cancel');
         observe_ERPDAT.Process_messg =1;
@@ -208,8 +208,8 @@ varargout{1} = EStudio_box_bin_chan;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==2
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_chanbin',0);
@@ -292,7 +292,7 @@ varargout{1} = EStudio_box_bin_chan;
                 ERPTab_bin_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)-1];
                 if numel(ChanArray) ~= length(Chanlist_name)-1
-                estudioworkingmemory('ERP_ChanArray',ChanArray);
+                    estudioworkingmemory('ERP_ChanArray',ChanArray);
                 end
             else
                 ERPTab_bin_chan.ElecRange.Value =ChanArray+1;
@@ -324,7 +324,7 @@ varargout{1} = EStudio_box_bin_chan;
                 BinArray = [1:BinNum];
                 ERPTab_bin_chan.BinRange.Value=1;
                 if numel(BinArray) ~= BinNum
-                estudioworkingmemory('ERP_BinArray',BinArray);
+                    estudioworkingmemory('ERP_BinArray',BinArray);
                 end
             else
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
@@ -342,7 +342,7 @@ varargout{1} = EStudio_box_bin_chan;
     end
 
 
-    function two_panels_erp_change(~,~)
+    function erp_between_panels_change(~,~)
         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
             return;
         end
@@ -350,6 +350,7 @@ varargout{1} = EStudio_box_bin_chan;
         if ChangeFlag~=1
             return;
         end
+        warning('off', 'all');
         binchan_apply();
         estudioworkingmemory('ERPTab_chanbin',0);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
@@ -357,6 +358,7 @@ varargout{1} = EStudio_box_bin_chan;
         EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_bin_chan.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_bin_chan.plot_reset.ForegroundColor = [0 0 0];
+          warning('on');
     end
 
 

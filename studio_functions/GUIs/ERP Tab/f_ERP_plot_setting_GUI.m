@@ -12,7 +12,7 @@ function varargout = f_ERP_plot_setting_GUI(varargin)
 
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
+addlistener(observe_ERPDAT,'erp_between_panels_change',@erp_between_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 ERPTab_plotset = struct();
@@ -222,8 +222,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -253,8 +253,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -290,8 +290,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -330,8 +330,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -384,8 +384,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -422,8 +422,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -467,8 +467,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -519,8 +519,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -570,8 +570,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -636,8 +636,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -662,8 +662,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -684,8 +684,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -705,8 +705,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -784,8 +784,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -811,8 +811,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -830,8 +830,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -850,8 +850,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',1);
@@ -971,8 +971,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -1033,8 +1033,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -1060,8 +1060,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-           try observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1; catch  end%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+           try observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1; catch  end%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Export');
@@ -1136,8 +1136,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -1195,8 +1195,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -1214,8 +1214,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -1234,8 +1234,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',0);
@@ -1516,8 +1516,8 @@ varargout{1} = ERP_plotset_box;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+        if ~isempty(messgStr) && eegpanelIndex==1
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_plotset',0);
@@ -2021,7 +2021,7 @@ varargout{1} = ERP_plotset_box;
     end
 
 
-    function two_panels_erp_change(~,~)
+    function erp_between_panels_change(~,~)
         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
             return;
         end

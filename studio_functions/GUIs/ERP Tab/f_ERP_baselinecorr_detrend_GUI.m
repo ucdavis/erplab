@@ -10,7 +10,7 @@ function varargout = f_ERP_baselinecorr_detrend_GUI(varargin)
 
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-addlistener(observe_ERPDAT,'two_panels_erp_change',@two_panels_erp_change);
+addlistener(observe_ERPDAT,'erp_between_panels_change',@erp_between_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 %%---------------------------gui-------------------------------------------
@@ -130,7 +130,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -152,7 +152,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -174,7 +174,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -205,7 +205,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -235,7 +235,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -261,7 +261,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -285,7 +285,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -337,7 +337,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -358,7 +358,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         gui_erp_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -378,7 +378,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset)
@@ -565,7 +565,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
-            observe_ERPDAT.two_panels_erp = observe_ERPDAT.two_panels_erp+1;%%call the functions from the other panel
+            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
         end
         try
             methodtype =   gui_erp_blc_dt.ERPTab_baseline_detrend{1};
