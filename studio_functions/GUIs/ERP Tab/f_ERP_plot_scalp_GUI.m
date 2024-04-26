@@ -291,7 +291,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -320,7 +320,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -349,7 +349,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -398,7 +398,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -480,7 +480,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -513,7 +513,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -547,7 +547,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -569,7 +569,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -717,7 +717,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_topos',1);
@@ -745,7 +745,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -771,7 +771,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_topos',1);
@@ -796,7 +796,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -825,7 +825,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -880,7 +880,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -902,7 +902,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -924,7 +924,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -946,7 +946,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
         gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -957,7 +957,6 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_scalp_map.advanced.ForegroundColor = [1 1 1];
         is2Dmap  = gui_erp_scalp_map.map_type_2d.Value;
-        
         
         latencyArray = str2num(gui_erp_scalp_map.latency_plot_edit.String);
         if isempty(latencyArray)
@@ -1096,7 +1095,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',0);
         gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
@@ -1443,7 +1442,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',0);
         gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];

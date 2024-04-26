@@ -103,7 +103,7 @@ varargout{1} = box_erp_append;
         %%first checking if the changes on the other panels have been applied
         [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(msgboxText) && eegpanelIndex~=12
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',1);
         gui_erp_append.append_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -131,7 +131,7 @@ varargout{1} = box_erp_append;
         %%first checking if the changes on the other panels have been applied
         [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(msgboxText) && eegpanelIndex~=12
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',1);
         gui_erp_append.append_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -157,7 +157,7 @@ varargout{1} = box_erp_append;
         %%first checking if the changes on the other panels have been applied
         [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(msgboxText) && eegpanelIndex~=12
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',1);
         gui_erp_append.append_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -203,7 +203,7 @@ varargout{1} = box_erp_append;
         %%first checking if the changes on the other panels have been applied
         [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(msgboxText) && eegpanelIndex~=12
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',0);
         gui_erp_append.append_run.BackgroundColor =  [1 1 1];
@@ -248,7 +248,7 @@ varargout{1} = box_erp_append;
         %%first checking if the changes on the other panels have been applied
         [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(msgboxText) && eegpanelIndex~=12
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         %%Send message to Message panel
@@ -485,7 +485,7 @@ varargout{1} = box_erp_append;
         %%first checking if the changes on the other panels have been applied
         [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(msgboxText) && eegpanelIndex~=12
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         %%Send message to Message panel

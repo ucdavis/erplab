@@ -122,7 +122,7 @@ varargout{1} = ERP_bin_operation_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=7
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         gui_erp_bin_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_bin_operation.run.ForegroundColor = [1 1 1];
@@ -200,7 +200,7 @@ varargout{1} = ERP_bin_operation_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=7
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         gui_erp_bin_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_bin_operation.run.ForegroundColor = [1 1 1];
@@ -294,7 +294,7 @@ varargout{1} = ERP_bin_operation_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=7
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         gui_erp_bin_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_bin_operation.run.ForegroundColor = [1 1 1];
@@ -320,7 +320,7 @@ varargout{1} = ERP_bin_operation_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=7
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         gui_erp_bin_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_bin_operation.run.ForegroundColor = [1 1 1];
@@ -368,7 +368,7 @@ varargout{1} = ERP_bin_operation_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=7
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         gui_erp_bin_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_bin_operation.run.ForegroundColor = [1 1 1];
@@ -420,7 +420,7 @@ varargout{1} = ERP_bin_operation_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=7
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         pathName_def =  estudioworkingmemory('EEG_save_folder');
@@ -559,7 +559,7 @@ varargout{1} = ERP_bin_operation_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=7
-            observe_ERPDAT.erp_between_panels = observe_ERPDAT.erp_between_panels+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         gui_erp_bin_operation.run.BackgroundColor =  [1 1 1];
         gui_erp_bin_operation.run.ForegroundColor = [0 0 0];

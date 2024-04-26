@@ -310,9 +310,9 @@ end
 function zoomin(~,~)
 global observe_ERPDAT;
 
-[messgStr,viewerpanelIndex] = f_check_erptab_panelchanges();
+[messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
 if ~isempty(messgStr)
-    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
+    observe_ERPDAT.Count_currentERP=eegpanelIndex+1;
 end
 zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
@@ -339,9 +339,9 @@ end
 function zoomedit(Source,~)
 global observe_ERPDAT;
 
-[messgStr,viewerpanelIndex] = f_check_erptab_panelchanges();
+[messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
 if ~isempty(messgStr)
-    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
+    observe_ERPDAT.Count_currentERP=eegpanelIndex+1;
 end
 
 zoomspaceEdit = str2num(Source.String);
@@ -383,9 +383,9 @@ end
 function zoomout(~,~)
 global observe_ERPDAT;
 
-[messgStr,viewerpanelIndex] = f_check_erptab_panelchanges();
+[messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
 if ~isempty(messgStr)
-    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
+    observe_ERPDAT.Count_currentERP=eegpanelIndex+1;
 end
 
 zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
@@ -687,7 +687,7 @@ if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
 end
 [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
 if ~isempty(messgStr)
-    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+    observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
 end
 estudioworkingmemory('f_ERP_proces_messg','Show Command');
 observe_ERPDAT.Process_messg =1;
@@ -703,7 +703,7 @@ if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
 end
 [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
 if ~isempty(messgStr)
-    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+    observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
 end
 
 estudioworkingmemory('f_ERP_proces_messg','Save figure as');
@@ -742,7 +742,7 @@ if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
 end
 [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
 if ~isempty(messgStr)
-    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+    observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
 end
 
 MessageViewer= char(strcat('Create Static/Exportable Plot'));

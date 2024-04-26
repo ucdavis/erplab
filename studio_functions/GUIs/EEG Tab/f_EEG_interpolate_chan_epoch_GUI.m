@@ -1092,7 +1092,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.mflag8.Value];
         [~,active_flags] = find(Eegtab_EEG_interpolate_chan_epoch.mflag==1);
         if isempty(active_flags)
-            msgboxText = ['Interpolate Channels >  Run: No epoch was marked'];
+            msgboxText = ['Interpolate Channels >  Run: No epochs were actually flagged, so no epochswere needed  to interpolate'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
