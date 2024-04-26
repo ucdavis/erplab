@@ -157,13 +157,32 @@ varargout{1} = box_interpolate_chan_epoch;
         %%interpoate marked epochs  and its advanced options
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,...
-            'String','Interpolate marked epochs','callback',@interpolate_marked_epoch_op,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
+            'String','Interpolate epochs with this flag:','callback',@interpolate_marked_epoch_op,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.KeyPressFcn = @eeg_interpolatechan_presskey;
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,...
-            'String','Settings','callback',@interpolate_marked_epoch_op_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title);
-        set(Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,'Sizes',[180 70 -1]);
+        set(Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,'Sizes',[250 -1]);
         
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+        
+        Eegtab_EEG_interpolate_chan_epoch.mflag1 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag1,'String','1','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag2 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag2,'String','2','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag3 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag3,'String','3','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag4 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag4,'String','4','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag5 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag5,'String','5','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag6 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag6,'String','6','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag7 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag7,'String','7','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag8 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
+            'callback',@mflag8,'String','8','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+        Eegtab_EEG_interpolate_chan_epoch.mflag = [1,0,0,0,0,0,0,0];
+        set( Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,'Sizes',[33 33 33 33 33 33 33 33]);
+        Eegtab_EEG_interpolate_chan_epoch.Parameters{7}= Eegtab_EEG_interpolate_chan_epoch.mflag;
         
         %%-----------------------Cancel and Run----------------------------
         Eegtab_EEG_interpolate_chan_epoch.advanced_run_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
@@ -177,7 +196,7 @@ varargout{1} = box_interpolate_chan_epoch;
         set(Eegtab_EEG_interpolate_chan_epoch.advanced_run_title,'Sizes',[10,-1,30,-1,10]);
         
         %%resize each row
-        set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[30 30 25 30 25 30 30 30])
+        set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[30 30 25 30 25 30 30 20 30])
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
     end
 %%**************************************************************************%%
@@ -510,6 +529,16 @@ varargout{1} = box_interpolate_chan_epoch;
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value=1;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0;
+        Enable_flag = 'off';
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Enable = Enable_flag;
+        
     end
 
 
@@ -531,16 +560,45 @@ varargout{1} = box_interpolate_chan_epoch;
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value=0;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=1;
+        Enable_flag = 'on';
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Enable = Enable_flag;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Enable = Enable_flag;
+        histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+        %check currently activated flags
+        flagcheck = sum(histoflags);
+        flagx= (flagcheck>1);
+        count =0;
+        for f = 1:length(flagx)
+            if flagx(f)>0 && flagx(f)<9
+                count = count+1;
+                set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable','on');
+                if count==1
+                    set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
+                else
+                    set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                end
+            else
+                %turn off/invisible all not-active-flag choices
+                if f < 9 %no flags over 8
+                    set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable','off');
+                    set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                end
+            end
+        end
     end
 
-
-%%------------------Inerpolate the marked epochs of advanced---------------
-    function interpolate_marked_epoch_op_advanced(Source,~)
-        if isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials==1
+%%-------------------------------Flag one----------------------------------
+    function mflag1(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
             Source.Enable= 'off';
             return;
         end
-        
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=8
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -551,124 +609,202 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
-        
-        
-        if Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value==1
-            interpolationMethod = 'spherical';
-        else
-            interpolationMethod =  'inverse_distance';
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=1;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=0;
+    end
+
+
+%%-------------------------------Flag one----------------------------------
+    function mflag2(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
         end
-        
-        
-        if Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value==0
-            ChanArrayig = [];
-        else
-            ChanArrayig =  str2num(Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String);
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=8
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
-        %%loop for the selected EEGsets
-        
-        EEG = observe_EEGDAT.EEG;
-        
-        %%%%---------------Call GUI--------------------------
-        dlg_title = {['Dataset',32,num2str(observe_EEGDAT.CURRENTSET),': Interpolate Marked Artifact Epochs']};
-        %defaults
-        defx = {0, 'spherical',[],[],[],0,10};
-        def = estudioworkingmemory('pop_artinterp');
-        def{2} = interpolationMethod;
-        
-        if ~isempty(ChanArrayig) && max(ChanArrayig(:)) <= EEG.nbchan
-            def{5} = ChanArrayig;
-        else
-            def{5} = [];
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=1;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=0;
+    end
+
+
+%%-------------------------------Flag one----------------------------------
+    function mflag3(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
         end
-        
-        if isempty(def)
-            def = defx;
-        else
-            try
-                def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
-            catch
-                def{3} = 1:EEG(1).nbchan;
-            end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=8
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        try
-            aa = def{4};
-        catch
-            def{4} = [];
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=1;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=0;
+    end
+
+
+
+%%-------------------------------Flag one----------------------------------
+    function mflag4(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
         end
-        
-        try
-            aa = def{6};
-        catch
-            def{6} = [];
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=8
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
-        try
-            aa = def{7};
-        catch
-            def{7} = 10;
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=1;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=0;
+    end
+
+
+%%-------------------------------Flag one----------------------------------
+    function mflag5(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
         end
-        
-        try
-            chanlabels = {EEG(1).chanlocs.labels}; %only works on single datasets
-        catch
-            chanlabels = [];
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=8
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        histoflags = summary_rejectflags(EEG);
-        
-        %check currently activated flags
-        flagcheck = sum(histoflags);
-        active_flags = (flagcheck>1);
-        
-        answer = artifactinterpGUI(dlg_title, def, defx, chanlabels, active_flags);
-        
-        if isempty(answer)
-            observe_EEGDAT.eeg_panel_message =2;
-            fprintf( ['\n',repmat('-',1,100) '\n']);
-            return
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=1;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=0;
+    end
+
+%%-------------------------------Flag one----------------------------------
+    function mflag6(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
         end
-        
-        replaceFlag =  answer{1};
-        interpolationMethod      =  answer{2};
-        replaceChannelInd     =  answer{3};
-        replaceChannelLabel     =  answer{4};
-        ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
-        many_electrodes = answer{6};
-        threshold_perc = answer{7};
-        viewstr = 'off';
-        
-        estudioworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
-            answer{6}, answer{7}});
-        if ~isempty(ignoreChannels)
-            Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value=1;
-            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.Enable = 'on';
-            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse.Enable = 'on';
-        else
-            Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value=0;
-            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.Enable = 'off';
-            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse.Enable = 'off';
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=8
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        ignoreChannels =  vect2colon(ignoreChannels);
-        ignoreChannels = erase(ignoreChannels,{'[',']'});
-        Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String= ignoreChannels;
-        
-        if strcmpi(interpolationMethod,'spherical')
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=1 ;
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value=0;
-        else
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=0;
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value=1;
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=1;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=0;
+    end
+
+%%-------------------------------Flag one----------------------------------
+    function mflag7(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
         end
-        
-        if many_electrodes==1
-            chanArray = 1:EEG.nbchan;
-        else
-            chanArray =  replaceChannelInd;
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=8
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        chanArray =  vect2colon(chanArray);
-        chanArray = erase(chanArray,{'[',']'});
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = chanArray;
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=1;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=0;
+    end
+
+
+%%-------------------------------Flag one----------------------------------
+    function mflag8(Source,~)
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=8
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        box_interpolate_chan_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
+        Eegtab_EEG_interpolate_chan_epoch.mflag1.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag2.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag3.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag4.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag5.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag6.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag7.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.mflag8.Value=1;
     end
 
 
@@ -694,6 +830,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.Parameters{4}  = Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value;
         Eegtab_EEG_interpolate_chan_epoch.Parameters{5} = str2num(Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String);
         Eegtab_EEG_interpolate_chan_epoch.Parameters{6} =Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value;
+        
     end
 
 %%------------------Interpolate all time points----------------------------
@@ -879,7 +1016,7 @@ varargout{1} = box_interpolate_chan_epoch;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-         def =  estudioworkingmemory('pop_artinterp');
+        def =  estudioworkingmemory('pop_artinterp');
         defx = {0, 'spherical',[],[],[],0,10};
         if isempty(def)
             def = defx;
@@ -944,14 +1081,26 @@ varargout{1} = box_interpolate_chan_epoch;
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-%         if numel(ignoreChannels) + numel(replaceChannelIndes) ==observe_EEGDAT.EEG.nbchan
-%             msgboxText = ['Interpolate Channels >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others'];
-%             titlNamerro = 'Warning for EEG Tab';
-%             estudio_warning(msgboxText,titlNamerro);
-%             observe_EEGDAT.eeg_panel_message =2;
-%             return;
-%         end
         
+        Eegtab_EEG_interpolate_chan_epoch.mflag = [ Eegtab_EEG_interpolate_chan_epoch.mflag1.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag2.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag3.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag4.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag5.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag6.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag7.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag8.Value];
+        [~,active_flags] = find(Eegtab_EEG_interpolate_chan_epoch.mflag==1);
+        if isempty(active_flags)
+            msgboxText = ['Interpolate Channels >  Run: No epoch was marked'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
+        end
+        
+        
+        Eegtab_EEG_interpolate_chan_epoch.Parameters{7}= Eegtab_EEG_interpolate_chan_epoch.mflag;
         %%loop for the selected EEGsets
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
@@ -978,39 +1127,11 @@ varargout{1} = box_interpolate_chan_epoch;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
-                
                 return;
-            end
-            if isempty(replaceFlag)
-                histoflags = summary_rejectflags(EEG);
-                %check currently activated flags
-                flagcheck = sum(histoflags);
-                flagcheck(1) = 0;
-                [~, active_flags] = find(flagcheck>1);
-                
-                if isempty(active_flags)
-                    msgboxText = ['Interpolate Channels >  Run: None of epochs was marked'];
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    titlNamerro = 'Warning for EEG Tab';
-                    estudio_warning(msgboxText,titlNamerro);
-                    return;
-                end
-                
-                
-                if ~isempty(find(active_flags<1 | active_flags>16, 1))
-                    msgboxText  ='Interpolate Channels >  Run: flag cannot be greater than 16 nor lesser than 1';
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    titlNamerro = 'Warning for EEG Tab';
-                    estudio_warning(msgboxText,titlNamerro);
-                    return;
-                end
-            else
-                active_flags=  replaceFlag;
             end
             
             for Numofchan = 1:numel(replaceChannelIndes)%%loop for each chan
                 replaceChannelInd = replaceChannelIndes(Numofchan);
-                
                 fprintf( ['\n Interpolating chan',32, num2str(replaceChannelInd),'...\n']);
                 %%Run ICA
                 [EEG, LASTCOM] = pop_artinterp(EEG, 'FlagToUse', active_flags, 'InterpMethod', interpolationMethod, ...
@@ -1033,7 +1154,7 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         Save_file_label=0;
         if CreateeegFlag==1
-            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_ar');
+            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_arInterp');
             if isempty(Answer)
                 return;
             end
@@ -1112,7 +1233,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_run.Enable='off';
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
+            
             Eegtab_EEG_interpolate_chan_epoch.cancel.Enable='off';
             observe_EEGDAT.count_current_eeg=6;
             return;
@@ -1129,19 +1250,82 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Enable='on';
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='on';
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.Enable='on';
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='on';
+        
         Eegtab_EEG_interpolate_chan_epoch.cancel.Enable='on';
         if Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value==0
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse.Enable='off';
         end
         if observe_EEGDAT.EEG.trials ==1
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value = 1;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value = 0;
             Eegtab_EEG_interpolate_chan_epoch.Parameters{6} =  Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value ;
         end
+        
+        if ~isempty(observe_EEGDAT.EEG)
+            if observe_EEGDAT.EEG.trials ==1%%Force the "interpolate marked epochs" to be grayed out.
+                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
+                Enable_flag = 'off';
+            else
+                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='on';
+                if Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value==0
+                    Enable_flag = 'off';
+                else
+                    histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+                    %check currently activated flags
+                    flagcheck = sum(histoflags);
+                    flagcheck(1) = 0;
+                    [~, active_flags] = find(flagcheck>=1);
+                    if isempty(active_flags)
+                        Enable_flag = 'off';
+                    else
+                        Enable_flag = 'on';
+                    end
+                end
+            end
+            Eegtab_EEG_interpolate_chan_epoch.mflag1.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag2.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag3.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag4.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag5.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag6.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag7.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag8.Enable = Enable_flag;
+            if observe_EEGDAT.EEG.trials>1
+                histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                flagx= (flagcheck>1);
+                count =0;
+                for f = 1:length(flagx)
+                    if flagx(f)>0 && flagx(f)<9
+                        count = count+1;
+                        set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable',Enable_flag);
+                        if count==1
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
+                        else
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        end
+                    else
+                        %turn off/invisible all not-active-flag choices
+                        if f < 9 %no flags over 8
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable','off');
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        end
+                    end
+                end
+                
+            end
+        end
+        Eegtab_EEG_interpolate_chan_epoch.mflag = [ Eegtab_EEG_interpolate_chan_epoch.mflag1.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag2.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag3.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag4.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag5.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag6.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag7.Value,...
+            Eegtab_EEG_interpolate_chan_epoch.mflag8.Value];
         observe_EEGDAT.count_current_eeg=6;
     end
 
@@ -1177,12 +1361,81 @@ varargout{1} = box_interpolate_chan_epoch;
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse.Enable='off';
             end
             if observe_EEGDAT.EEG.trials ==1%%Force the "interpolate marked epochs" to be grayed out.
-                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
                 Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
                 Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value = 1;
                 Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value = 0;
                 Eegtab_EEG_interpolate_chan_epoch.Parameters{6} =  Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value ;
             end
+            if Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value == 0
+                Enable_flag = 'off';
+            else
+                if ~isempty(observe_EEGDAT.EEG)
+                    histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+                    %check currently activated flags
+                    flagcheck = sum(histoflags);
+                    [~, active_flags] = find(flagcheck>=1);
+                    if isempty(active_flags)
+                        Enable_flag = 'off';
+                    else
+                        Enable_flag = 'on';
+                    end
+                else
+                    Enable_flag = 'off';
+                end
+            end
+            [~,active_flags] = find(Eegtab_EEG_interpolate_chan_epoch.mflag==1);
+            if isempty(active_flags) || numel(active_flags)~=1 || any(active_flags(:)<1) || any(active_flags(:)>8)
+                active_flags=1;Eegtab_EEG_interpolate_chan_epoch.mflag = [1 0 0 0 0 0 0 0];
+            end
+            Indexflag = zeros(1,8);
+            Indexflag(active_flags) = 1;
+            Eegtab_EEG_interpolate_chan_epoch.mflag1.Value = Indexflag(1);
+            Eegtab_EEG_interpolate_chan_epoch.mflag2.Value = Indexflag(2);
+            Eegtab_EEG_interpolate_chan_epoch.mflag3.Value = Indexflag(3);
+            Eegtab_EEG_interpolate_chan_epoch.mflag4.Value = Indexflag(4);
+            Eegtab_EEG_interpolate_chan_epoch.mflag5.Value = Indexflag(5);
+            Eegtab_EEG_interpolate_chan_epoch.mflag6.Value = Indexflag(6);
+            Eegtab_EEG_interpolate_chan_epoch.mflag7.Value = Indexflag(7);
+            Eegtab_EEG_interpolate_chan_epoch.mflag8.Value = Indexflag(8);
+            Eegtab_EEG_interpolate_chan_epoch.mflag1.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag2.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag3.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag4.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag5.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag6.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag7.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag8.Enable = Enable_flag;
+            if ~isempty(observe_EEGDAT.EEG)
+                histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                flagx= (flagcheck>1);
+                count =0;
+                for f = 1:length(flagx)
+                    if flagx(f)>0 && flagx(f)<9
+                        count = count+1;
+                        set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable',Enable_flag);
+                        if count==1
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
+                        else
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        end
+                    else
+                        if f < 9 %no flags over 8
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable','off');
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        end
+                    end
+                end
+            end
+            Eegtab_EEG_interpolate_chan_epoch.mflag = [ Eegtab_EEG_interpolate_chan_epoch.mflag1.Value,...
+                Eegtab_EEG_interpolate_chan_epoch.mflag2.Value,...
+                Eegtab_EEG_interpolate_chan_epoch.mflag3.Value,...
+                Eegtab_EEG_interpolate_chan_epoch.mflag4.Value,...
+                Eegtab_EEG_interpolate_chan_epoch.mflag5.Value,...
+                Eegtab_EEG_interpolate_chan_epoch.mflag6.Value,...
+                Eegtab_EEG_interpolate_chan_epoch.mflag7.Value,...
+                Eegtab_EEG_interpolate_chan_epoch.mflag8.Value];
         catch
         end
     end
@@ -1214,6 +1467,7 @@ varargout{1} = box_interpolate_chan_epoch;
             return;
         end
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+        box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];
@@ -1229,11 +1483,52 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0;
         if ~isempty(observe_EEGDAT.EEG)
             if observe_EEGDAT.EEG.trials ==1%%Force the "interpolate marked epochs" to be grayed out.
-                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
                 Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
+                Enable_flag = 'off';
             else
-                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
                 Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='on';
+                histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                flagcheck(1) = 0;
+                [~, active_flags] = find(flagcheck>1);
+                if isempty(active_flags)
+                    Enable_flag = 'off';
+                else
+                    Enable_flag = 'on';
+                end
+            end
+            Eegtab_EEG_interpolate_chan_epoch.mflag1.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag2.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag3.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag4.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag5.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag6.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag7.Enable = Enable_flag;
+            Eegtab_EEG_interpolate_chan_epoch.mflag8.Enable = Enable_flag;
+            if ~isempty(observe_EEGDAT.EEG)
+                histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                flagx= (flagcheck>1);
+                count =0;
+                for f = 1:length(flagx)
+                    if flagx(f)>0 && flagx(f)<9
+                        count = count+1;
+                        set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable',Enable_flag);
+                        if count==1
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
+                        else
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        end
+                    else
+                        %turn off/invisible all not-active-flag choices
+                        if f < 9 %no flags over 8
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable','off');
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        end
+                    end
+                end
             end
         end
         observe_EEGDAT.Reset_eeg_paras_panel=6;

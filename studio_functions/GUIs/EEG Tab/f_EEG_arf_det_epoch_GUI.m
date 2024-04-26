@@ -331,9 +331,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
                     Eegtab_EEG_art_det_epoch.movewindow_edit.String = num2str(floor((observe_EEGDAT.EEG.times(end)-observe_EEGDAT.EEG.times(1))/2));
                 end
             end
-            
-            
-            
         else
             Eegtab_EEG_art_det_epoch.manuar_button.Enable ='on';
             Eegtab_EEG_art_det_epoch.det_algo.Enable= 'off';
@@ -399,6 +396,17 @@ varargout{1} = Eegtab_box_art_det_epoch;
         estudioworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > View & Mark: The main ERPLAB Studio window will be fronzen until you close that window for marking epochs');
         observe_EEGDAT.eeg_panel_message =1;
         
+        mflag = [Eegtab_EEG_art_det_epoch.mflag1.Value,...
+            Eegtab_EEG_art_det_epoch.mflag2.Value,...
+            Eegtab_EEG_art_det_epoch.mflag3.Value,...
+            Eegtab_EEG_art_det_epoch.mflag4.Value,...
+            Eegtab_EEG_art_det_epoch.mflag5.Value,...
+            Eegtab_EEG_art_det_epoch.mflag6.Value,...
+            Eegtab_EEG_art_det_epoch.mflag7.Value,...
+            Eegtab_EEG_art_det_epoch.mflag8.Value];
+        [~,Flagmarks] = find(mflag==1);
+
+        
         estudioworkingmemory('EEGUpdate',1);
         observe_EEGDAT.count_current_eeg=1;
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -408,7 +416,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Artifact Detection (Epoched EEG) > View & Mark*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            [EEG, LASTCOM] = f_ploteeg(EEG);
+            [EEG, LASTCOM] = f_ploteeg(EEG,Flagmarks);
             if isempty(EEG) || isempty(LASTCOM)
                 estudioworkingmemory('EEGUpdate',0);
                 observe_EEGDAT.eeg_panel_message =2;
@@ -1443,7 +1451,15 @@ varargout{1} = Eegtab_box_art_det_epoch;
             return;
         end
         %%flags for marking artifacts
-        [~,Flagmarks] = find(Eegtab_EEG_art_det_epoch.mflag==1);
+        mflag = [Eegtab_EEG_art_det_epoch.mflag1.Value,...
+            Eegtab_EEG_art_det_epoch.mflag2.Value,...
+            Eegtab_EEG_art_det_epoch.mflag3.Value,...
+            Eegtab_EEG_art_det_epoch.mflag4.Value,...
+            Eegtab_EEG_art_det_epoch.mflag5.Value,...
+            Eegtab_EEG_art_det_epoch.mflag6.Value,...
+            Eegtab_EEG_art_det_epoch.mflag7.Value,...
+            Eegtab_EEG_art_det_epoch.mflag8.Value];
+        [~,Flagmarks] = find(mflag==1);
         
         epochStart = roundn(observe_EEGDAT.EEG.times(1),-1); epochEnd = roundn(observe_EEGDAT.EEG.times(end),-1);
         %%test time period

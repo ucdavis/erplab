@@ -151,7 +151,7 @@ if nargin==1
         
        % displayEEG       =  answer{6}; %no display EEG for now
        % viewer     =  answer{end}; %no viewer for Now 
-        
+       
         viewer = 0; % no viewer 
         if viewer
                 viewstr = 'on';

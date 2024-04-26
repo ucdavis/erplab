@@ -43,7 +43,7 @@ function varargout = artifactinterpGUI(varargin)
 
 % Edit the above text to modify the response to help artifactinterpGUI
 
-% Last Modified by GUIDE v2.5 31-May-2023 11:45:41
+% Last Modified by GUIDE v2.5 25-Apr-2024 15:15:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -179,7 +179,7 @@ end
 set(handles.flag_1, 'Value',1); %flag 1 is reserved 
 set(handles.flag_1, 'Enable', 'inactive');% flag 1 is pressed but inactive
 %set(handles.flag_1, 'Visible', 'off');
-set(handles.radiobutton1, 'Enable', 'inactive'); 
+set(handles.radiobutton1, 'Enable', 'on'); 
 %set(handles.radiobutton1, 'Visibile', 'off'); 
 
 %set interpolate method choice 
@@ -337,7 +337,7 @@ function pushbutton_interpolate_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 %query flag selected 
-for i=2:8 %only flags 2-8 for now
+for i=1:8 %only flags 2-8 for now
         if get(handles.(['radiobutton' num2str(i)]),'Value')
                 handles.flagx = i;
         end;
@@ -348,7 +348,6 @@ if handles.flagx == 0
     error_msg = sprintf('Error: No flags on epoched data. Cannot selectively interpolate epochs!');
     error(error_msg); 
     
-    
 end
 
 %query interpolation method
@@ -356,7 +355,7 @@ end
 if get(handles.radiobutton_spherical,'Value') 
     handles.methodx = 'spherical';
 else
-    handles.methodx = 'inverse_distance';
+    handles.methodx = 'invdist';
 end
 
 %query channel selected
@@ -718,3 +717,12 @@ end
 
 %set channels popup menu
 set(handles.popupmenu1, 'string', listch); 
+
+
+% --- Executes on button press in radiobutton2.
+function radiobutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton2
