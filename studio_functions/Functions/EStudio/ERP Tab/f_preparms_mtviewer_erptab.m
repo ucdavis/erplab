@@ -246,10 +246,12 @@ if isempty(locpeakrep) || numel(locpeakrep)~=1 || (locpeakrep~=0 && locpeakrep~=
     locpeakrep=1;
 end
 
-try fracmearep= geterpvaluesparas{16};catch fracmearep=1;  end
-if isempty(fracmearep) || numel(fracmearep)~=1 || (fracmearep~=0 && fracmearep~=1 && fracmearep~=2)
-    fracmearep=0;
-end
+% try fracmearep= geterpvaluesparas{16};catch fracmearep=1;  end
+% if isempty(fracmearep) || numel(fracmearep)~=1 || (fracmearep~=0 && fracmearep~=1 && fracmearep~=2)
+%     fracmearep=0;
+% end
+fracmearep=0;%%always NAN for preview: Apr 2024 GH
+
 try PeakOnset = geterpvaluesparas{22};catch PeakOnset=1;  end
 if isempty(PeakOnset) || numel(PeakOnset)~=1 || (PeakOnset~=0 && PeakOnset~=1)
     PeakOnset=1;

@@ -400,11 +400,26 @@ varargout{1} = erp_measurement_box;
             Fracreplace = 'NaN';
         end
         
-        if strcmpi(Fracreplace,'NaN')
-            fracmearep = 0; %  NaN
+        if ismember_bc2({op}, {'fareatlat', 'fninteglat','fareanlat','fareaplat'})
+            if strcmpi(Fracreplace,'NaN')%% latency : closet 0, NAN 1, error 2
+                fracmearep = 0; %  NaN
+            else
+                fracmearep = 2;
+            end
         else
-            fracmearep = 1; % def{19}; NaN
+            
+            if strcmpi(Fracreplace,'absolute')
+                fracmearep = 1;
+            elseif  strcmpi(Fracreplace,'errormsg')
+                fracmearep = -1;
+            else
+                fracmearep = 0;
+            end
+            
         end
+        
+        
+        
         try
             SendtoWorkspace = ERPMTops.def_erpvalue{17};
         catch

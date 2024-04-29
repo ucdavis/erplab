@@ -892,12 +892,12 @@ switch indxmea
         set(handles.text_fraca,'String', 'Fractional Area')
         set(handles.popupmenu_areatype,'Enable','on')
         set(handles.popupmenu_areatype,'Value',areatype)
-        set(handles.popupmenu_fracreplacement, 'String', {'show error message','"not a number" (NaN)'});
-        if strcmpi(fracmearep,'NaN')
-            set(handles.popupmenu_fracreplacement, 'Value', 2);
-        else
-            set(handles.popupmenu_fracreplacement, 'Value', 1);
-        end
+        set(handles.popupmenu_fracreplacement, 'String', {'"not a number" (NaN)','show error message'});
+%         if strcmpi(fracmearep,'NaN')
+%             set(handles.popupmenu_fracreplacement, 'Value', 2);
+%         else
+%             set(handles.popupmenu_fracreplacement, 'Value', 1);
+%         end
         
     otherwise
         menupeakoff(hObject, eventdata, handles)

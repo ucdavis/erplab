@@ -184,16 +184,6 @@ for Numoferp = 1:numel(qERParray)
             end
         end
         if Numoferp==1
-%             try
-%                 blank_cell = {''};
-%                 blank_T = table(blank_cell);
-%                 writetable(blank_T, erpFilename,'Sheet',1,'Sheet', ['Data',32,num2str(Numoferp)]);
-%             catch
-%                 msgboxText =  ['Excel XLS write server unavailible on this computer? We suggest exporting to a Matlab *.txt file instead.'];
-%                 titlNamerro = 'Warning for pop_ERP_save_trial_information';
-%                 estudio_warning(msgboxText,titlNamerro);
-%                 return
-%             end
         end
         sheet_label_T = table(columName2);
         sheetname = char(ERP.erpname);
