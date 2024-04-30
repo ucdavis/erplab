@@ -457,7 +457,7 @@ varargout{1} = Eegtab_box_art_sumop;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG =  observe_EEGDAT.ALLEEG(EEGArray);
-        LASTCOM = f_eeg_ar_summary(ALLEEG,EEGArray);
+        LASTCOM = pop_eeg_ar_summary(ALLEEG,EEGArray);
         if isempty(LASTCOM)
             observe_EEGDAT.eeg_panel_message =2;
             return;
@@ -471,8 +471,6 @@ varargout{1} = Eegtab_box_art_sumop;
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=26;%%to history panel
     end
-
-
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)

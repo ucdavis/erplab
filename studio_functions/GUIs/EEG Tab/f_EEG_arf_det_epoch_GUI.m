@@ -405,7 +405,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.mflag7.Value,...
             Eegtab_EEG_art_det_epoch.mflag8.Value];
         [~,Flagmarks] = find(mflag==1);
-
+        
         
         estudioworkingmemory('EEGUpdate',1);
         observe_EEGDAT.count_current_eeg=1;
@@ -1648,9 +1648,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         %%----------------------display summary of artifacts---------------
         if Eegtab_EEG_art_det_epoch.show_sumy_ar.Value==1
-            feval('EEG_Summary_AR_GUI',observe_EEGDAT.ALLEEG(EEGArray),1);
-            LASTCOM = ['feval("EEG_Summary_AR_GUI",ALLERP(',vect2colon(EEGArray),'),1);'];
-            eegh(LASTCOM);
+            LASTCOM = pop_eeg_ar_summary(ALLEEG,EEGArray);
+            if ~isempty(LASTCOM)
+                eegh(LASTCOM);
+            end
+            
         end
         
         estudioworkingmemory('EEGArray',EEGArray);
