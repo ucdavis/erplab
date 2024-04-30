@@ -1,12 +1,12 @@
 % PURPOSE:  summarizes marked flag for artifact detection
 %
 % FORMAT
-% 
+%
 % histoflags = summary_rejectflags(EEG);
-% 
+%
 %
 % *** This function is part of ERPLAB Toolbox ***
-% Author: Javier Lopez-Calderon 
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -36,7 +36,7 @@
 function histoflags = summary_rejectflags(EEG)
 
 if isempty(EEG.epoch)
-        error('ERPLAB: summary_rejectflags() only works with epoched dataset')
+    error('ERPLAB: summary_rejectflags() only works with epoched dataset')
 end
 
 ntrial  = EEG.trials;
@@ -44,40 +44,40 @@ nbin    = EEG.EVENTLIST.nbin;
 oldflag = zeros(1,ntrial);
 
 for b=1:nbin
-        for i=1:ntrial
-                if length(EEG.epoch(i).eventlatency) == 1
-                        binix = [EEG.epoch(i).eventbini];
-                        if iscell(binix)
-                                binix = cell2mat(binix);
-                        end
-                        if ismember(b, binix)                                
-                                flagx = [EEG.epoch(i).eventflag];                                
-                                if iscell(flagx)
-                                        flagx = cell2mat(flagx);
-                                end                                
-                                oldflag(b,i)   = flagx;
-                        else
-                                oldflag(b,i) =0;
-                        end
-                elseif length(EEG.epoch(i).eventlatency) > 1                        
-                        indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0,1,'first'); % catch zero-time locked type                        
-                        if ismember(b, EEG.epoch(i).eventbini{indxtimelock})
-                                oldflag(b,i)   = EEG.epoch(i).eventflag{indxtimelock};
-                        else
-                                oldflag(b,i) =0;
-                        end
-                else
-                        errorm  = 1;
+    for i=1:ntrial
+        if length(EEG.epoch(i).eventlatency) == 1
+            binix = [EEG.epoch(i).eventbini];
+            if iscell(binix)
+                binix = cell2mat(binix);
+            end
+            if ismember(b, binix)
+                flagx = [EEG.epoch(i).eventflag];
+                if iscell(flagx)
+                    flagx = cell2mat(flagx);
                 end
+                oldflag(b,i)   = flagx;
+            else
+                oldflag(b,i) =0;
+            end
+        elseif length(EEG.epoch(i).eventlatency) > 1
+            indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0,1,'first'); % catch zero-time locked type
+            if ismember(b, EEG.epoch(i).eventbini{indxtimelock})
+                oldflag(b,i)   = EEG.epoch(i).eventflag{indxtimelock};
+            else
+                oldflag(b,i) =0;
+            end
+        else
+            errorm  = 1;
         end
+    end
 end
 
 histoflags = zeros(1,16);
 flagbit    = bitshift(1, 0:15);
 
 for b=1:nbin
-        for j=1:16
-                C = bitand(flagbit(j), oldflag(b,:));
-                histoflags(b,j) = nnz(C);
-        end
+    for j=1:16
+        C = bitand(flagbit(j), oldflag(b,:));
+        histoflags(b,j) = nnz(C);
+    end
 end

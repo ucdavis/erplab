@@ -698,17 +698,16 @@ varargout{1} = Eegtab_box_avg_erp;
             else
                 observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
             end
-            if Numofeeg==1
-                ALLERP = ERP;
-                eegh(ERPCOM);
-            else
-                ALLERP(length(ALLERP)+1) = ERP;
-            end
             fprintf( ['\n',repmat('-',1,100) '\n']);
             estudioworkingmemory('EEGTab_eeg2erp',1);
         end%%end for loop of subjects
-        feval('dq_trial_rejection',ALLERP,ALLEEG1(EEGArray));
-        ERPCOM = ['feval("dq_trial_rejection",ALLERP,ALLEEG(',vect2colon(EEGArray),'));'];
+        ALLERP =  observe_ERPDAT.ALLERP;
+        for numofeeg = 1:numel(EEGArray)
+            EEGNames{numofeeg} = ALLEEG1(EEGArray(numofeeg)).setname;
+        end
+        ERPArray = [length(ALLERP)-numel(EEGArray)+1:length(ALLERP)];
+        ERPCOM = pop_erp_ar_summary(ALLERP,ERPArray,EEGNames);
+        
         observe_EEGDAT.eeg_panel_message =2;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);

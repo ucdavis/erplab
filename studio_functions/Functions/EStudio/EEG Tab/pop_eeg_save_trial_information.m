@@ -102,6 +102,7 @@ end
 
 erpFilename = char(strcat(erppathname,erpfilename,ext));
 
+delete(erpFilename);%%delete the exist file
 
 qEEGArray = p_Results.EEGArray;
 EEGArray = qEEGArray;
@@ -142,25 +143,25 @@ for Numoferp = 1:numel(qEEGArray)
                 data{1,3} =      [num2str(ERP.ntrials.accepted(qbinArray(ii)))];
                 data{1,4} =     [num2str(ERP.ntrials.rejected(qbinArray(ii)))];
                 data{1,5} =     [num2str(ERP.ntrials.invalid(qbinArray(ii)))];
-                data{ii,6} = [num2str(histoflags(ii,2))];%%F2
-                data{ii,7} = [num2str(histoflags(ii,3))];%%F3
-                data{ii,8} = [num2str(histoflags(ii,4))];
-                data{ii,9} = [num2str(histoflags(ii,5))];
-                data{ii,10} = [num2str(histoflags(ii,6))];
-                data{ii,11} = [num2str(histoflags(ii,7))];
-                data{ii,12} = [num2str(histoflags(ii,8))];
+                data{1,6} = [num2str(histoflags(ii,2))];%%F2
+                data{1,7} = [num2str(histoflags(ii,3))];%%F3
+                data{1,8} = [num2str(histoflags(ii,4))];
+                data{1,9} = [num2str(histoflags(ii,5))];
+                data{1,10} = [num2str(histoflags(ii,6))];
+                data{1,11} = [num2str(histoflags(ii,7))];
+                data{1,12} = [num2str(histoflags(ii,8))];
             catch
                 data{1,1} = '';
                 data{1,3} = '';
                 data{1,4} = '';
                 data{1,5} = '';
-                data{ii,6} = '';%%F2
-                data{ii,7} = '';%%F3
-                data{ii,8} = '';
-                data{ii,9} = '';
-                data{ii,10} = '';
-                data{ii,11} = '';
-                data{ii,12} = '';
+                data{1,6} = '';%%F2
+                data{1,7} = '';%%F3
+                data{1,8} = '';
+                data{1,9} = '';
+                data{1,10} = '';
+                data{1,11} = '';
+                data{1,12} = '';
             end
             fprintf(fileID,formatSpec2,data{1,:});
         end
@@ -171,8 +172,15 @@ for Numoferp = 1:numel(qEEGArray)
             data1{1,3} = '';
             data1{1,4} = '';
             data1{1,5} = '';
+            data1{1,6} = '';%%F2
+            data1{1,7} = '';%%F3
+            data1{1,8} = '';
+            data1{1,9} = '';
+            data1{1,10} = '';
+            data1{1,11} = '';
+            data1{1,12} = '';
             formatSpec3 =['%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t','%s\n\n\n\n\n\n'];
-            fprintf(fileID,formatSpec3,data{1,:});
+            fprintf(fileID,formatSpec3,data1{1,:});
         end
     end
     

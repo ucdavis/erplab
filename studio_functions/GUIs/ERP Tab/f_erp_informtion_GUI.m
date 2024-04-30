@@ -265,10 +265,9 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        feval('dq_trial_rejection',observe_ERPDAT.ALLERP(ERPArray),[],0);
+        ERPCOM = pop_erp_ar_summary(observe_ERPDAT.ALLERP,ERPArray);
         
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
-        ERPCOM = ['feval("dq_trial_rejection",ALLERP(',vect2colon(ERPArray),'),[],0);'];
         [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ERP, ALLERPCOM, ERPCOM,2);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);

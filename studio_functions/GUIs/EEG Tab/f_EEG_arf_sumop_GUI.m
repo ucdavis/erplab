@@ -456,7 +456,7 @@ varargout{1} = Eegtab_box_art_sumop;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        ALLEEG =  observe_EEGDAT.ALLEEG(EEGArray);
+        ALLEEG =  observe_EEGDAT.ALLEEG;
         LASTCOM = pop_eeg_ar_summary(ALLEEG,EEGArray);
         if isempty(LASTCOM)
             observe_EEGDAT.eeg_panel_message =2;
