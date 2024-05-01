@@ -374,13 +374,14 @@ varargout{1} = box_erp_append;
                 return
             end
             %%check prefixes
-            
-            if ~isempty(prefixliststr) && numel(erpset) ~= length(prefixliststr)
-                msgboxText = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
-                titlNamerro = 'Warning for ERP Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                observe_ERPDAT.Process_messg =2;
-                return
+            if ~isnumeric(prefixlist)
+                if ~isempty(prefixliststr) && numel(erpset) ~= length(prefixliststr)
+                    msgboxText = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
+                    observe_ERPDAT.Process_messg =2;
+                    return
+                end
             end
         end
         %
