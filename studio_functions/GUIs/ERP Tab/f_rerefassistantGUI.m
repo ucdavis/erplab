@@ -87,8 +87,8 @@ handles.chArray = chArray;
 %
 % Name & version
 %
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Rereference GUI'])
 
 %

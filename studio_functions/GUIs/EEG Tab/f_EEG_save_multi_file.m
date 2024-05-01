@@ -71,8 +71,8 @@ handles.suffix = suffix;
 handles.ALLEEG = ALLEEG;
 handles.EEGArray =EEGArray;
 
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Save multiple eegsets GUI'])
 
 

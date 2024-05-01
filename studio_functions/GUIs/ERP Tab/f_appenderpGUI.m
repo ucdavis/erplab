@@ -82,8 +82,9 @@ handles.erpsetPanel = erpsetPanel;
 % set GUI
 handles = setbuttonsgui(hObject, eventdata, handles);
 
-erplab_studio_default_values;
-version = erplabstudiover;
+
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   APPEND ERPs GUI'])
 
 handles = painterplabstudio(handles);

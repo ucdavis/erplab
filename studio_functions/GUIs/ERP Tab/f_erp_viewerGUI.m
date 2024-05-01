@@ -156,15 +156,13 @@ if isempty(ALLERP)
 end
 
 
-
-
 handles= plot_wave_viewer(hObject,handles);
 
 % handles.checkbox_erp.Enable = 'off';
 
-erplab_studio_default_values;
-version = erplabstudiover;
 
+erplab_default_values;
+version = erplabver;
 set(handles.figure1,'Name', ['EStudio ' version '   -   Viewer for Measurement GUI'])
 handles.figure1.Color = [0.7020 0.7647 0.8392];
 

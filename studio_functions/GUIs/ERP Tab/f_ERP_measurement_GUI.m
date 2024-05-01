@@ -386,8 +386,10 @@ varargout{1} = erp_measurement_box;
         end
         if strcmpi(Peakreplace,'absolute')
             locpeakrep = 1;
-        else
+        elseif strcmpi(Peakreplace,'Nan')
             locpeakrep = 0; % 1 abs peak , 0 Nan
+        elseif strcmpi(Peakreplace,'errormsg')
+            locpeakrep = -1;
         end
         try
             frac =  ERPMTops.def_erpvalue{15};
@@ -407,7 +409,6 @@ varargout{1} = erp_measurement_box;
                 fracmearep = 2;
             end
         else
-            
             if strcmpi(Fracreplace,'absolute')
                 fracmearep = 1;
             elseif  strcmpi(Fracreplace,'errormsg')
@@ -415,10 +416,7 @@ varargout{1} = erp_measurement_box;
             else
                 fracmearep = 0;
             end
-            
         end
-        
-        
         
         try
             SendtoWorkspace = ERPMTops.def_erpvalue{17};
@@ -508,10 +506,13 @@ varargout{1} = erp_measurement_box;
         ERPMTops.def_erpvalue{13} = Answer{5};%%Neighborhood
         
         locpeakrep = Answer{6};%%Peak replacement
+        
         if locpeakrep==0
             ERPMTops.def_erpvalue{14} = 'NaN';
-        else
+        elseif locpeakrep==1
             ERPMTops.def_erpvalue{14} = 'absolute';
+        elseif locpeakrep==-1
+            ERPMTops.def_erpvalue{14}   = 'errormsg';
         end
         
         ERPMTops.def_erpvalue{15} = Answer{7};%%Afraction
@@ -523,7 +524,11 @@ varargout{1} = erp_measurement_box;
             if ismember_bc2({ERPMTops.def_erpvalue{7}}, {'fareatlat', 'fninteglat','fareanlat','fareaplat'})
                 ERPMTops.def_erpvalue{16} = 'errormsg';
             else
-                ERPMTops.def_erpvalue{16} = 'absolute';
+                if fracmearep==1
+                    ERPMTops.def_erpvalue{16} = 'absolute';
+                elseif fracmearep==-1
+                    ERPMTops.def_erpvalue{16} = 'errormsg';
+                end
             end
         end
         
@@ -990,9 +995,6 @@ varargout{1} = erp_measurement_box;
             inclate    = 0;
         end
         
-        
-        
-        
         Answer = f_ERP_meas_format_path(FileFormat,fullfile(pathNamex,fname),inclate,send2ws,binlabop);
         if isempty(Answer)
             return;
@@ -1024,7 +1026,6 @@ varargout{1} = erp_measurement_box;
         else
             ERPMTops.def_erpvalue{20} = 'off' ;
         end
-        
     end
 
 
@@ -1168,13 +1169,17 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
-        %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
+        if strcmpi(ERPMTops.def_erpvalue{14},'NaN')
+            Peakreplace = 'NaN';
+        else
+            Peakreplace = 'absolute';
+        end
         ALLERP =observe_ERPDAT.ALLERP;
         if ~isempty(latency)
             [~, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP, latency, binArray, chanArray,...
                 'Erpsets', ERPsetArray, 'Measure',MeasureName{IA}, 'Component', ERPMTops.def_erpvalue{8},...
                 'Resolution', ERPMTops.def_erpvalue{9}, 'Baseline', ERPMTops.def_erpvalue{10}, 'Binlabel', ERPMTops.def_erpvalue{11},...
-                'Peakpolarity',ERPMTops.def_erpvalue{12}, 'Neighborhood', ERPMTops.def_erpvalue{13}, 'Peakreplace', ERPMTops.def_erpvalue{14},...
+                'Peakpolarity',ERPMTops.def_erpvalue{12}, 'Neighborhood', ERPMTops.def_erpvalue{13}, 'Peakreplace',Peakreplace,...
                 'Filename', FileName, 'Warning','on','SendtoWorkspace', ERPMTops.def_erpvalue{17}, 'Append', 'off',...
                 'FileFormat',ERPMTops.def_erpvalue{18},'Afraction', ERPMTops.def_erpvalue{15}, 'Mlabel', ERPMTops.def_erpvalue{19},...
                 'Fracreplace', ERPMTops.def_erpvalue{16},'IncludeLat',ERPMTops.def_erpvalue{20}, 'InterpFactor',ERPMTops.def_erpvalue{21},...
@@ -1203,17 +1208,32 @@ varargout{1} = erp_measurement_box;
             else
                 Peakpolarity = 1;
             end
-            if strcmp(ERPMTops.def_erpvalue{14},'NaN')
-                Peakreplace = 0;
-            else
+            
+            if strcmpi(ERPMTops.def_erpvalue{14},'absolute')
                 Peakreplace = 1;
+            elseif strcmpi(ERPMTops.def_erpvalue{14},'NaN')
+                Peakreplace = 0; % 1 abs peak , 0 Nan
+            elseif strcmpi(ERPMTops.def_erpvalue{14},'errormsg')
+                Peakreplace = -1;
             end
             
-            if strcmp(ERPMTops.def_erpvalue{16},'NaN') % Fractional area latency replacement
-                Fracreplace = 0;
+            %%Fractional area latency replacement
+            if ismember_bc2({Measure}, {'fareatlat', 'fninteglat','fareanlat','fareaplat'}) % Fractional area latency replacement
+                if strcmpi(ERPMTops.def_erpvalue{16},'NaN')%% latency : closet 0, NAN 1, error 2
+                    Fracreplace = 0; %  NaN
+                else
+                    Fracreplace = 2;
+                end
             else
-                Fracreplace = 1;
+                if strcmpi(ERPMTops.def_erpvalue{16},'absolute')
+                    Fracreplace = 1;
+                elseif  strcmpi(ERPMTops.def_erpvalue{16},'errormsg')
+                    Fracreplace = -1;
+                else
+                    Fracreplace = 0;
+                end
             end
+            
             
             if strcmp(ERPMTops.def_erpvalue{17},'off')
                 SendtoWorkspace=0;
@@ -1350,7 +1370,6 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
-        %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
         estudioworkingmemory('ERPTab_mtviewer',1);
         
         if ~isempty(latency)
@@ -1366,16 +1385,32 @@ varargout{1} = erp_measurement_box;
             else
                 Peakpolarity = 1;
             end
-            if strcmp(ERPMTops.def_erpvalue{14},'NaN')
-                Peakreplace = 0;
-            else
+            
+            if strcmpi(ERPMTops.def_erpvalue{14},'absolute')
                 Peakreplace = 1;
+            elseif strcmpi(ERPMTops.def_erpvalue{14},'NaN')
+                Peakreplace = 0; % 1 abs peak , 0 Nan
+            elseif strcmpi(ERPMTops.def_erpvalue{14},'errormsg')
+                Peakreplace = -1;
             end
-            if strcmp(ERPMTops.def_erpvalue{16},'NaN') % Fractional area latency replacement
-                Fracreplace = 0;
+            
+            %%Fractional area latency replacement
+            if ismember_bc2({Measure}, {'fareatlat', 'fninteglat','fareanlat','fareaplat'}) % Fractional area latency replacement
+                if strcmpi(ERPMTops.def_erpvalue{16},'NaN')%% latency : closet 0, NAN 1, error 2
+                    Fracreplace = 0; %  NaN
+                else
+                    Fracreplace = 2;
+                end
             else
-                Fracreplace = 1;
+                if strcmpi(ERPMTops.def_erpvalue{16},'absolute')
+                    Fracreplace = 1;
+                elseif  strcmpi(ERPMTops.def_erpvalue{16},'errormsg')
+                    Fracreplace = -1;
+                else
+                    Fracreplace = 0;
+                end
             end
+            
             if strcmp(ERPMTops.def_erpvalue{17},'off')
                 SendtoWorkspace=0;
             else
@@ -1391,6 +1426,7 @@ varargout{1} = erp_measurement_box;
             else
                 IncludeLat = 1;
             end
+            
             estudioworkingmemory('pop_geterpvalues', {0, ERPsetArray, FileName, latency,...
                 binArray, chanArray, Measure, ERPMTops.def_erpvalue{8}, ERPMTops.def_erpvalue{9}, ERPMTops.def_erpvalue{10},...
                 Binlabel, Peakpolarity,ERPMTops.def_erpvalue{13},Peakreplace,...
@@ -1625,7 +1661,3 @@ varargout{1} = erp_measurement_box;
     end
 
 end%Progem end
-
-
-
-

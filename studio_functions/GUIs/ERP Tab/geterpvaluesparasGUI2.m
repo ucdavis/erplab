@@ -124,17 +124,7 @@ setall(hObject, eventdata, handles)
 % viewerbutton
 
 %
-% Set Measurement menu
-%
-% set(handles.listbox_erpnames, 'Value',1)
-% set(handles.popupmenu_measurement, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_pol_amp, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_samp_amp, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_locpeakreplacement, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_fracreplacement, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_precision, 'Backgroundcolor',[1 1 0.8])
-%set(handles.text_fraca,'String', {''});
-%set(handles.text_fa3,'String',{''});
+
 drawnow
 
 % UIWAIT makes geterpvaluesparasGUI2 wait for user response (see UIRESUME)
@@ -274,34 +264,25 @@ switch measure_option
         %             return
         %         end
         moption = 'instabl';
-        fprintf('\nInstantaneous amplitude measurement in progress...\n');
+        
     case 2  % meanbl
-  
+        
         moption = 'meanbl';
-        fprintf('\nMean amplitude measurement in progress...\n');
+        
     case 3  % peakampbl
-
+        
         moption = 'peakampbl';
         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
-        
-     
-        fprintf('\nLocal peak measurement in progress...\n');
     case 4  % peaklatbl
-
+        
         moption = 'peaklatbl';
         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
-        
-        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-            fprintf('\nLocal peak frequency measurement in progress...\n');
-        else
-            fprintf('\nLocal peak latency measurement in progress...\n');
-        end
     case 5  % fpeaklat
-  
+        
         set(handles.text_fraca,'String', 'Fractional Peak')
         moption = 'fpeaklat';
         frac    = (get(handles.popupmenu_fraca,'Value') - 1)/100; % 0 to 1
@@ -309,28 +290,17 @@ switch measure_option
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
         fracmearep = 2-get(handles.popupmenu_fracreplacement,'Value');
-        
-      
-        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-            fprintf('\nFractional Peak Frequency measurement in progress...\n');
-        else
-            fprintf('\nFractional Peak Latency measurement in progress...\n');
-        end
     case 6  % inte/area value (fixed latencies)
-       
+        
         switch areatype
             case 1
                 moption = 'areat';
-                fprintf('\nTotal area measurement in progress...\n');
             case 2
                 moption = 'ninteg';
-                fprintf('\nNumerical integration in progress...\n');
             case 3
                 moption = 'areap';
-                fprintf('\nPositive area measurement in progress...\n');
             case 4
                 moption = 'arean';
-                fprintf('\nNegative area measurement in progress...\n');
         end
         
     case 7   % inte/area value (auto latencies)
@@ -340,45 +310,31 @@ switch measure_option
             errorfound(sprintf(msgboxText), title);
             return
         end
-       
+        
         switch areatype
             case 1
                 moption = 'areazt';
-                fprintf('\nTotal area measurement in progress...\n');
             case 2
                 moption = 'nintegz';
-                fprintf('\nNumerical integration (automatic limits) in progress...\n');
             case 3
                 moption = 'areazp';
-                fprintf('\nPositive area measurement (automatic limits) in progress...\n');
             case 4
                 moption = 'areazn';
-                fprintf('\nNegative area measurement (automatic limits) in progress...\n');
         end
         
     case 8   % fractional inte/area latency
-       
+        
         set(handles.text_fraca,'String', 'Fractional Area')
         frac = (get(handles.popupmenu_fraca,'Value') - 1)/100; % 0 to 1
-        if strcmpi(datatype, 'ERP')
-            meawordx = 'Latency';
-        else
-            meawordx = 'Frequency';
-        end
         switch areatype
             case 1
                 moption = 'fareatlat';
-                fprintf('\nFractional Total Area %s measurement in progress...\n', meawordx);
             case 2
                 moption = 'fninteglat';
-                fprintf('\nFractional Total Area %s measurement in progress...\n', meawordx);
             case 3
                 moption = 'fareaplat';
-                fprintf('\nFractional Positive Area %s measurement in progress...\n', meawordx);
-                
             case 4
                 moption = 'fareanlat';
-                fprintf('\nFractional Negative Area %s measurement in progress...\n', meawordx);
             otherwise
                 error('wrong area type.')
         end
@@ -717,7 +673,7 @@ def = handles.def;
 if ~isempty(def)
     op         = def{1};  % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
     dig        = def{2};  %Resolution
-%     binlabop   = def{3}; % 0: bin# as bin label for table, 1 bin label
+    %     binlabop   = def{3}; % 0: bin# as bin label for table, 1 bin label
     polpeak    = def{4}; % local peak polarity
     sampeak    = def{5}; % number of samples (one-side) for local peak detection criteria
     locpeakrep = def{6}; % 1 abs peak , 0 Nan
@@ -735,7 +691,7 @@ else
     %%def = {'fareaplat', 3, 0, 1, 3, 0, 0.5, NaN, 0, 0, 1, 1};
     op         = 'meanbl';  % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
     dig        = 3;  %Resolution
-%     binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
+    %     binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
     polpeak    = 1; % local peak polarity
     sampeak    = 3; % number of samples (one-side) for local peak detection criteria
     locpeakrep = 0; % 1 abs peak , 0 Nan
@@ -861,13 +817,7 @@ switch indxmea
         set(handles.popupmenu_locpeakreplacement,'value',2-locpeakrep);
         set(handles.popupmenu_fracreplacement,'value',2-fracmearep);
         set(handles.popupmenu_areatype,'Enable','off');
-        %         set(handles.popupmenu_fracreplacement, 'String', {'"not a number" (NaN)','show error message'});
         
-        if strcmpi(fracmearep,'NaN')
-            set(handles.popupmenu_fracreplacement, 'Value', 1);
-        else
-            set(handles.popupmenu_fracreplacement, 'Value', 2);
-        end
     case 7     % area and integral with auto limits
         menupeakoff(hObject, eventdata, handles);
         menufareaoff(hObject, eventdata, handles);
@@ -893,11 +843,7 @@ switch indxmea
         set(handles.popupmenu_areatype,'Enable','on')
         set(handles.popupmenu_areatype,'Value',areatype)
         set(handles.popupmenu_fracreplacement, 'String', {'"not a number" (NaN)','show error message'});
-%         if strcmpi(fracmearep,'NaN')
-%             set(handles.popupmenu_fracreplacement, 'Value', 2);
-%         else
-%             set(handles.popupmenu_fracreplacement, 'Value', 1);
-%         end
+        
         
     otherwise
         menupeakoff(hObject, eventdata, handles)
@@ -921,8 +867,8 @@ set(handles.text_samp,'String',msecstr)
 %
 meamenu  = get(handles.popupmenu_measurement, 'String');
 currentm = get(handles.popupmenu_measurement, 'Value');
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   ERP Measurement Tool > Type > Option'])
 handles.frac = frac;
 

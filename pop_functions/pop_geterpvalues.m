@@ -774,6 +774,9 @@ end
 if conti==0
     return
 end
+
+ERPtooltype = erpgettoolversion('tooltype');%%GH May 2024
+
 if serror~=0
     switch serror
         case 1
@@ -785,14 +788,24 @@ if serror~=0
             msgboxText = ['The bin description set among datasets is different.\n'...
                 'You must use ERPset related to the same experiment.'];
         case 4
-            msgboxText = errmsg ;
+            
+            switch moption
+                case 'fareanlat'
+                    msgboxText = [errmsg,', erpset',num2str(k) ];
+                case 'fareaplat'
+                    msgboxText = [errmsg,', erpset',num2str(k) ];
+                otherwise
+                    msgboxText = errmsg ;
+            end
         otherwise
             msgboxText = 'Sorry, something went wrong.';
     end
     if shist == 1; % gui
         tittle = 'ERPLAB: geterpvalues() error:';
         errorfound(sprintf(msgboxText), tittle);
-        [ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP);
+        if strcmpi(ERPtooltype,'ERPLAB')%%GH May 2024
+            [ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP);
+        end
         pause(0.1)
         return
     else
@@ -903,7 +916,9 @@ if viewmea==1
             def{4} = latfromviewer;
             erpworkingmemory('pop_geterpvalues', def);
         end
-        [ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP);
+        if strcmpi(ERPtooltype,'ERPLAB')%%GH May 2024
+            [ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP);
+        end
         pause(0.1)
         return
     elseif isnan(mout) % when viewer is open from plotted figure

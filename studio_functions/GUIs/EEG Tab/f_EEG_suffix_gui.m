@@ -65,8 +65,8 @@ if ~isempty(erpmenu)
     set(handles.menuerp.Children, 'Enable','off');
 end
 
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix to EEG GUI'])
 set(handles.edit_erpname, 'String', erpname);
@@ -104,9 +104,9 @@ function varargout = f_EEG_suffix_gui_OutputFcn(hObject, eventdata, handles)
 %     disp('ERPset menu was not found...')
 % end
 try
-varargout{1} = handles.output;
+    varargout{1} = handles.output;
 catch
-  varargout{1} ='';  
+    varargout{1} ='';
 end
 % delete(handles.gui_chassis);
 pause(0.1)

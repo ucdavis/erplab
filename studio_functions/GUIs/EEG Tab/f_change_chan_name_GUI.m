@@ -48,9 +48,11 @@ listnameOlder = listnameOlder1;
 try
     titlename = varargin{3};
 catch
-    erplab_studio_default_values;
-    version = erplabstudiover;
-    titlename = ['ERPLAB',32,num2str(version),32,'Change Channel Name'];
+    
+    erplab_default_values;
+    version = erplabver;
+    
+    titlename = ['Estudio',32,version,32,'Change Channel Name'];
 end
 
 [Numrows,Numcolumns]  = size(listname);

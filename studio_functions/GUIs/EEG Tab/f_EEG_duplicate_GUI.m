@@ -64,8 +64,9 @@ end
 handles.output = [];
 handles.EEG = EEG;
 
-erplab_studio_default_values;
-version = erplabstudiover;
+
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Duplicate EEGset GUI'])
 
 

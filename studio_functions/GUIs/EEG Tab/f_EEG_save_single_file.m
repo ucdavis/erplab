@@ -69,32 +69,32 @@ if ~isempty(erpmenu)
     set(handles.menuerp.Children, 'Enable','off');
 end
 
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Save single EEGset GUI'])
 set(handles.edit_erpname, 'String', erpname);
 set(handles.radio_erpname,'Value',1);
 if isempty(CURRENTSET)
     set(handles.current_erp_label,'String', ['No active EEGset was found'],...
-                'FontWeight','Bold', 'FontSize', 16);
+        'FontWeight','Bold', 'FontSize', 16);
 else
     
     set(handles.current_erp_label,'String', ['Your active EEGset is # ' num2str(CURRENTSET)],...
-                'FontWeight','Bold', 'FontSize', 16)
+        'FontWeight','Bold', 'FontSize', 16)
 end
 if ~isempty(filename)
     set(handles.edit_filename, 'Enable', 'off');
     set(handles.edit_filename, 'String', '');
     set(handles.radiobutton_saveas, 'Value', 0);
     set(handles.filename_erpname, 'Enable', 'off');
-%     set(handles.erpname_filename, 'Enable', 'off');
+    %     set(handles.erpname_filename, 'Enable', 'off');
     set(handles.pushbutton_browse, 'Enable', 'off');
 else
     set(handles.edit_filename, 'String', '');
     set(handles.radiobutton_saveas, 'Value', 0);
     set(handles.edit_filename, 'Enable', 'off');
     set(handles.filename_erpname, 'Enable', 'off');
-%     set(handles.erpname_filename, 'Enable', 'off');
+    %     set(handles.erpname_filename, 'Enable', 'off');
     set(handles.pushbutton_browse, 'Enable', 'off');
 end
 %

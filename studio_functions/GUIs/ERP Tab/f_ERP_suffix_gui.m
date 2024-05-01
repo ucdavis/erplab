@@ -65,9 +65,9 @@ if ~isempty(erpmenu)
     set(handles.menuerp.Children, 'Enable','off');
 end
 
-erplab_studio_default_values;
-version = erplabstudiover;
 
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix GUI'])
 set(handles.edit_erpname, 'String', erpname);
 

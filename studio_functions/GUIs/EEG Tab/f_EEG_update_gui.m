@@ -65,9 +65,8 @@ if ~isempty(erpmenu)
     set(handles.menuerp.Children, 'Enable','off');
 end
 
-erplab_studio_default_values;
-version = erplabstudiover;
-
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['Estudio ' version '   -   Inspect/Label ICs tool GUI'])
 % set(handles.edit_erpname, 'String', '_processed');
 handles.current_erp_label.String = 'While you are using the Inspect/Label ICs tool, the main ERPLAB Studio window will be frozen. Click "Okay" when you have closed the Inspect/Label ICs tool.';
@@ -104,9 +103,9 @@ function varargout = f_EEG_update_gui_OutputFcn(hObject, eventdata, handles)
 %     disp('ERPset menu was not found...')
 % end
 try
-varargout{1} = handles.output;
+    varargout{1} = handles.output;
 catch
-  varargout{1} =0;  
+    varargout{1} =0;
 end
 pause(0.1)
 

@@ -2661,9 +2661,9 @@ end
 %
 % Name & version
 %
-erplab_studio_default_values;
-version = erplabstudiover;
-set(handles.gui_chassis,'Name', ['EStudio V.', version  '  -   ERP Filtering > Advanced' ])
+erplab_default_values;
+version = erplabver;
+set(handles.gui_chassis,'Name', ['EStudio ', version  '  -   ERP Filtering > Advanced' ])
 highpasscutoff = locutoff;
 lowpasscutoff  = hicutoff;
 maxsliders     = handles.maxsliders;
