@@ -278,6 +278,8 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             end
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
+            ALLEEG_out(end).filename = EEG.filename;
+            ALLEEG_out(end).filepath = EEG.filepath;
         end
         
         if CreateeegFlag==1
@@ -413,6 +415,8 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             fprintf([LASTCOM,'\n']);
             fprintf( [repmat('-',1,100) '\n']);
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            ALLEEG_out(end).filename = EEG.filename;
+            ALLEEG_out(end).filepath = EEG.filepath;
         end
         
         Save_file_label=0;
@@ -534,6 +538,8 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             end
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( ['\n',repmat('-',1,100) '\n']);
+            ALLEEG_out(end).filename = EEG.filename;
+            ALLEEG_out(end).filepath = EEG.filepath;
         end
         
         Save_file_label=0;

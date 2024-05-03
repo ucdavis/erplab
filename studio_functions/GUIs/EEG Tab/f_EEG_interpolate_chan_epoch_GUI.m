@@ -1138,13 +1138,15 @@ varargout{1} = box_interpolate_chan_epoch;
                     'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
                     'InterpAnyChan', many_electrodes, ...%'Threshold',threshold_perc,
                     'Review', 'off', 'History', 'implicit');
-                if isempty(LASTCOM)
-                    estudioworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run: Please check you data or you selected cancel');
-                    observe_EEGDAT.eeg_panel_message =4;
-                    return;
-                end
+%                 if isempty(LASTCOM)
+%                     estudioworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run: Please check you data or you selected cancel');
+%                     observe_EEGDAT.eeg_panel_message =4;
+%                     return;
+%                 end
+                if Numofchan==1 && ~isempty(LASTCOM)
                 EEG = eegh(LASTCOM, EEG);
                 fprintf(['\n',LASTCOM,'\n']);
+                end
             end
             if Numofeeg==1
                 eegh(LASTCOM);

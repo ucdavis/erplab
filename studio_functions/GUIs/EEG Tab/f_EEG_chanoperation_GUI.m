@@ -667,6 +667,8 @@ varargout{1} = EEG_chan_operation_gui;
                 eegh(LASTCOM);
             end
             [ALLEEG_out EEG,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            ALLEEG_out(end).filename = EEG.filename;
+            ALLEEG_out(end).filepath = EEG.filepath;
         end
         
         Save_file_label = [];
@@ -704,6 +706,7 @@ varargout{1} = EEG_chan_operation_gui;
                     EEG.filepath = '';
                 end
                 [ALLEEG EEG,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                
             end
         end
         observe_EEGDAT.ALLEEG = ALLEEG;
