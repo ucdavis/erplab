@@ -936,6 +936,8 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             [ALLEEG_out,~, ~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
+            ALLEEG_out(end).filename = EEG.filename;
+            ALLEEG_out(end).filepath = EEG.filepath;
         end
         Save_file_label=0;
         if CreateeegFlag==1
@@ -1138,14 +1140,14 @@ varargout{1} = box_interpolate_chan_epoch;
                     'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
                     'InterpAnyChan', many_electrodes, ...%'Threshold',threshold_perc,
                     'Review', 'off', 'History', 'implicit');
-%                 if isempty(LASTCOM)
-%                     estudioworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run: Please check you data or you selected cancel');
-%                     observe_EEGDAT.eeg_panel_message =4;
-%                     return;
-%                 end
+                %                 if isempty(LASTCOM)
+                %                     estudioworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run: Please check you data or you selected cancel');
+                %                     observe_EEGDAT.eeg_panel_message =4;
+                %                     return;
+                %                 end
                 if Numofchan==1 && ~isempty(LASTCOM)
-                EEG = eegh(LASTCOM, EEG);
-                fprintf(['\n',LASTCOM,'\n']);
+                    EEG = eegh(LASTCOM, EEG);
+                    fprintf(['\n',LASTCOM,'\n']);
                 end
             end
             if Numofeeg==1
@@ -1153,6 +1155,8 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( ['\n',repmat('-',1,100) '\n']);
+            ALLEEG_out(end).filename = EEG.filename;
+            ALLEEG_out(end).filepath = EEG.filepath;
         end
         Save_file_label=0;
         if CreateeegFlag==1
@@ -1299,15 +1303,20 @@ varargout{1} = box_interpolate_chan_epoch;
                 %check currently activated flags
                 flagcheck = sum(histoflags);
                 flagx= (flagcheck>1);
+                [~,ypos] = find(Eegtab_EEG_interpolate_chan_epoch.mflag==1);
+                [~,ypos1] = find(flagx==1);
+                AA = intersect(ypos1,ypos);
                 count =0;
                 for f = 1:length(flagx)
                     if flagx(f)>0 && flagx(f)<9
-                        count = count+1;
-                        set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable',Enable_flag);
-                        if count==1
-                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
-                        else
-                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        if isempty(AA)
+                            count = count+1;
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable',Enable_flag);
+                            if count==1
+                                set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
+                            else
+                                set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                            end
                         end
                     else
                         %turn off/invisible all not-active-flag choices
