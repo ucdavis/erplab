@@ -237,6 +237,8 @@ if nargin==1  % GUI
     end
     if locpeakrep==0
         locpeakrepstr = 'NaN';
+    elseif locpeakrep==-1
+        locpeakrepstr = 'errormsg';%%GH May 2024
     else
         locpeakrepstr = 'absolute';
     end
@@ -429,12 +431,15 @@ if ischar(localrep)
     if isempty(lr)
         if strcmpi(localrep,'absolute')
             locpeakrep = 1;
+        elseif strcmpi(localrep,'error') || strcmpi(localrep,'errormsg')  %%GH May 2024
+            locpeakrep = 2; % shows error message. Stop measuring.
         else
             error(['ERPLAB says: error at pop_geterpvalues(). Unrecognizable input ' localrep])
         end
     else
         if isnan(lr)
             locpeakrep = 0;
+            
         else
             error(['ERPLAB says: error at pop_geterpvalues(). Unrecognizable input ' localrep])
         end
@@ -789,10 +794,8 @@ if serror~=0
                 'You must use ERPset related to the same experiment.'];
         case 4
             
-            switch moption
-                case 'fareanlat'
-                    msgboxText = [errmsg,', erpset',num2str(k) ];
-                case 'fareaplat'
+            switch moption%%GH May 2024
+                case {'fareanlat','fareaplat','peakampbl','peaklatbl','fpeaklat'}
                     msgboxText = [errmsg,', erpset',num2str(k) ];
                 otherwise
                     msgboxText = errmsg ;

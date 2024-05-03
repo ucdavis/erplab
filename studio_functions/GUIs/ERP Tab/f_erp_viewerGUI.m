@@ -151,15 +151,6 @@ handles.radiobutton7.Value=1;
 handles.radiobutton7.BackgroundColor = [0.7020 0.7647 0.8392];
 handles.radiobutton6.Value=0;
 
-if isempty(ALLERP)
-    return;
-end
-
-
-handles= plot_wave_viewer(hObject,handles);
-
-% handles.checkbox_erp.Enable = 'off';
-
 
 erplab_default_values;
 version = erplabver;
@@ -172,6 +163,14 @@ handles = painterplabstudio(handles);
 % % Set font size
 % %
 handles = setfonterplabestudio(handles);
+
+if isempty(ALLERP)
+    return;
+end
+
+
+handles= plot_wave_viewer(hObject,handles);
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -1331,28 +1330,16 @@ for Numofsub = 1:numel(ERPArray)
     for Numofbin = 1:numel(BinArray)
         count = count+1;
         Data_display1(count,:) = Data_display(Numofbin,:,Numofsub);
-        %         if chanOverlay==0
-        %             Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(0),'f'], BinArray(Numofbin));
-        %         else
         Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(0),'f'], BinArray(Numofbin));
-        %         end
     end
 end
 
 for Numofone = 1:size(Data_display1,1)
     for Numoftwo = 1:size(Data_display1,2)
         if ~isnan(Data_display1(Numofone,Numoftwo))
-            %             if chanOverlay==0
-            %                 Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
-            %             else
             Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
-            %             end
         else
-            %             if chanOverlay==0
-            %                 Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
-            %             else
             Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="black">NaN'];
-            %             end
         end
     end
 end
@@ -1360,9 +1347,7 @@ end
 handles.ERP_M_T_Viewer_table = uitable(handles.ERP_M_T_Viewer,'Data',Data_display_tra,'Units','Normalize');
 handles.ERP_M_T_Viewer_table.RowName = RowName;
 handles.ERP_M_T_Viewer_table.ColumnName = ColumnName;
-% if chanOverlay==0
-%     handles.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
-% end
+
 
 if numel(ChanArray)<12
     ColumnWidth = {};

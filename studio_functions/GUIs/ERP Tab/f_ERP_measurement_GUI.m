@@ -117,10 +117,12 @@ varargout{1} = erp_measurement_box;
             def_erpvalue{12} = 'positive';
         end
         
-        if def_erpvalue{14}==0%%locpeakrep
+        if def_erpvalue{14}==-1%%locpeakrep
+            def_erpvalue{14} =  'errormsg';
+        elseif def_erpvalue{14}==0
             def_erpvalue{14} = 'NaN';
         else
-            def_erpvalue{14} = 'absolute';
+            def_erpvalue{14} = 'absolute';  
         end
         
         if def_erpvalue{16}==0 % Fractional area latency replacement
@@ -1169,17 +1171,14 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
-        if strcmpi(ERPMTops.def_erpvalue{14},'NaN')
-            Peakreplace = 'NaN';
-        else
-            Peakreplace = 'absolute';
-        end
+      
+   
         ALLERP =observe_ERPDAT.ALLERP;
         if ~isempty(latency)
             [~, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP, latency, binArray, chanArray,...
                 'Erpsets', ERPsetArray, 'Measure',MeasureName{IA}, 'Component', ERPMTops.def_erpvalue{8},...
                 'Resolution', ERPMTops.def_erpvalue{9}, 'Baseline', ERPMTops.def_erpvalue{10}, 'Binlabel', ERPMTops.def_erpvalue{11},...
-                'Peakpolarity',ERPMTops.def_erpvalue{12}, 'Neighborhood', ERPMTops.def_erpvalue{13}, 'Peakreplace',Peakreplace,...
+                'Peakpolarity',ERPMTops.def_erpvalue{12}, 'Neighborhood', ERPMTops.def_erpvalue{13}, 'Peakreplace',ERPMTops.def_erpvalue{14},...
                 'Filename', FileName, 'Warning','on','SendtoWorkspace', ERPMTops.def_erpvalue{17}, 'Append', 'off',...
                 'FileFormat',ERPMTops.def_erpvalue{18},'Afraction', ERPMTops.def_erpvalue{15}, 'Mlabel', ERPMTops.def_erpvalue{19},...
                 'Fracreplace', ERPMTops.def_erpvalue{16},'IncludeLat',ERPMTops.def_erpvalue{20}, 'InterpFactor',ERPMTops.def_erpvalue{21},...

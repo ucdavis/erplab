@@ -243,7 +243,7 @@ end
 
 try locpeakrep= geterpvaluesparas{14};catch locpeakrep=1;  end
 if isempty(locpeakrep) || numel(locpeakrep)~=1 || (locpeakrep~=0 && locpeakrep~=1)
-    locpeakrep=1;
+    locpeakrep=0;%%NaN
 end
 
 % try fracmearep= geterpvaluesparas{16};catch fracmearep=1;  end

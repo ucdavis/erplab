@@ -109,7 +109,7 @@ if nargin<11
     frac = 0.5; % 50% area latency (if needed, by default)
 end
 if nargin<10
-    localopt = 0; % 0=write a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
+    localopt = 0; % 0=write a NaN when local peak is not found.  1=export absolute peak when local peak is not found.; 2=shows error message
 end
 if nargin<9
     sampeak = 0; % absolute peak. No neighbor samples
@@ -356,6 +356,8 @@ try
                     
                     if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
                         localoptstr = 'abs';
+                    elseif localopt==2 %% GH May 2024
+                        localoptstr = 'errormsg';
                     else
                         localoptstr = 'NaN';
                     end
@@ -386,6 +388,9 @@ try
                     end
                     if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
                         localoptstr = 'abs';
+                    elseif localopt==2 %% GH May 2024
+                        localoptstr = 'errormsg';
+                        
                     else
                         localoptstr = 'NaN';
                     end
@@ -475,11 +480,14 @@ try
                     end
                     if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
                         localoptstr = 'abs';
+                    elseif localopt==2 %% GH May 2024
+                        localoptstr = 'errormsg';
                     else
                         localoptstr = 'NaN';
                     end
                     if fracmearep==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
                         fracmearepstr = 'abs';
+                        
                     else
                         fracmearepstr = 'NaN';
                     end
@@ -566,11 +574,39 @@ catch
     serr = lasterror;
     switch moption%%GH May 2024
         case 'fareanlat'
-            varargout{1} = ['Error: There was no negative area (i.e., area below the baseline) in one or more of the waveforms during the specified measurement window. It is impossible to quantify the fractional area latency when there is no negative area. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a negative area exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no negative area. Here are the waveforms in which there was no negative area: bin',num2str(b),', chan',num2str(ch)];
+            varargout{1} = ['Error: There was no negative area (i.e., area below the baseline) in one or more of the waveforms during the specified measurement window. It is impossible to quantify the fractional area latency when there is no negative area. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a negative area exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no negative area.  Here is the first waveform in which there was no negative area detected: bin',num2str(b),', chan',num2str(ch)];
         case 'fareaplat'
-              varargout{1} = ['Error: There was no positive area (i.e., area above the baseline) in one or more of the waveforms during the specified measurement window. It is impossible to quantify the fractional area latency when there is no positive area. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a positive area exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no positive area. Here are the waveforms in which there was no positive area: bin',num2str(b),', chan',num2str(ch)];
+            varargout{1} = ['Error: There was no positive area (i.e., area above the baseline) in one or more of the waveforms during the specified measurement window. It is impossible to quantify the fractional area latency when there is no positive area. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a positive area exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no positive area.  Here is the first waveform in which there was no positive area detected: bin',num2str(b),', chan',num2str(ch)];
+        case 'peakampbl'
+            if polpeak==1
+                polpeakstr = 'positive';
+            else
+                polpeakstr = 'negative';
+            end
+            varargout{1} = ['Error: There was no',32,polpeakstr,32,'amplitude in one or more of the waveforms during the specified measurement window. It is impossible to quantify the peak amplitude when there is no',...
+                32,polpeakstr,32,'amplitude. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a',32,polpeakstr,32,'amplitude exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no',32,polpeakstr,32,...
+                'amplitude.  Here is the first waveform in which there was no',32,polpeakstr,32,'amplitude detected: bin',num2str(b),', chan',num2str(ch)];
+        case 'peaklatbl'
+            if polpeak==1
+                polpeakstr = 'positive';
+            else
+                polpeakstr = 'negative';
+            end
+            varargout{1} = ['Error: There was no',32,polpeakstr,32,'latency in one or more of the waveforms during the specified measurement window. It is impossible to quantify the peak latency when there is no',...
+                32,polpeakstr,32,'latency. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a',32,polpeakstr,32,'latency exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no',32,polpeakstr,32,...
+                'latency.  Here is the first waveform in which there was no',32,polpeakstr,32,'latency detected: bin',num2str(b),', chan',num2str(ch)];
+            
+        case 'fpeaklat'
+            if polpeak==1
+                polpeakstr = 'positive';
+            else
+                polpeakstr = 'negative';
+            end
+            varargout{1} = ['Error: There was no',32,polpeakstr,32,'latency in one or more of the waveforms during the specified measurement window. It is impossible to quantify the fractional peak latency when there is no',...
+                32,polpeakstr,32,'latency. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a',32,polpeakstr,32,'latency exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no',32,polpeakstr,32,...
+                'latency.  Here is the first waveform in which there was no',32,polpeakstr,32,'latency detected: bin',num2str(b),', chan',num2str(ch)];
         otherwise
-        varargout{1} = serr.message;
+            varargout{1} = serr.message;
     end
     
     varargout{2} = [];
