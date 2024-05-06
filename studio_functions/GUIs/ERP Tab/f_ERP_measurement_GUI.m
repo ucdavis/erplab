@@ -1146,6 +1146,8 @@ varargout{1} = erp_measurement_box;
         estudioworkingmemory('f_ERP_proces_messg',' Measurement Tool (Save values)');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         %%check if the file already exists?
+        [pathtest, filtest, ext] = fileparts(FileName);
+        FileName = strcat(pathtest, filesep,filtest,'.txt');
         if exist(FileName, 'file')~=0
             msgboxText =  ['This file already exists.\n'...;
                 'Would you like to overwrite it?'];
