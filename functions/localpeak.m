@@ -226,7 +226,7 @@ if npoints>0
             poslocalpf   = posabspf;
             latlocalpeak = timex(posabspf);
             ltypeoutput  = 2; % abs peak
-        elseif isnan(p.Results.Peakreplace) % replace with NaN   %%GH May 2024
+        elseif strcmpi(p.Results.Peakreplace,'NaN') % replace with NaN   %%GH May 2024
             vlocalpf     = NaN;
             poslocalpf   = NaN;
             latlocalpeak = NaN;

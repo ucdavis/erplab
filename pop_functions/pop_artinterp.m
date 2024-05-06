@@ -410,30 +410,30 @@ else
             end
             
             %adjust bad channel count with updated ignored channels
-            total_chans = numel(all_chans) - numel(ignoreChannelsE);
+%             total_chans = numel(all_chans) - numel(ignoreChannelsE);
             
             
-            if sum(all_chans)/(total_chans) >= (threshold_perc/100)
-                fprintf('\nSkipping epoch #%s by flag %s since amount of channels with artifact threshold %i percent exceeded\n', ...
-                    num2str(epoch_ind(e)),num2str(replaceFlag), threshold_perc);
-                continue
-            else
-                
-                fprintf('\nInterpolating epoch #%s by flag %s \n', num2str(epoch_ind(e)), ...
-                    num2str(replaceFlag));
-                
-                fprintf('\nFlag for epoch %s has been reset in EEG.rejmanual \n', num2str(epoch_ind(e)));
-                
-                tmpEEG = erplab_interpolateElectrodes(tmpEEG, replaceChannelInd, ...
-                    ignoreChannelsE,interpolationMethod);
-                
-                %reset flag at EEG.reject.manual%%GH May 2024
-                EEG.reject.rejmanualE(replaceChannelInd,epoch_ind(e))=0;
-                [xpos,~] =  find(EEG.reject.rejmanualE(:,epoch_ind(e))==1);
-                if isempty(xpos)
-                    EEG.reject.rejmanual(epoch_ind(e)) = 0;
-                end
+            %             if sum(all_chans)/(total_chans) >= (threshold_perc/100)
+            %                 fprintf('\nSkipping epoch #%s by flag %s since amount of channels with artifact threshold %i percent exceeded\n', ...
+            %                     num2str(epoch_ind(e)),num2str(replaceFlag), threshold_perc);
+            %                 continue
+            %             else
+            %
+            fprintf('\nInterpolating epoch #%s by flag %s \n', num2str(epoch_ind(e)), ...
+                num2str(replaceFlag));
+            
+            fprintf('\nFlag for epoch %s has been reset in EEG.rejmanual \n', num2str(epoch_ind(e)));
+            
+            tmpEEG = erplab_interpolateElectrodes(tmpEEG, replaceChannelInd, ...
+                ignoreChannelsE,interpolationMethod);
+            
+            %reset flag at EEG.reject.manual%%GH May 2024
+            EEG.reject.rejmanualE(replaceChannelInd,epoch_ind(e))=0;
+            [xpos,~] =  find(EEG.reject.rejmanualE(:,epoch_ind(e))==1);
+            if isempty(xpos)
+                EEG.reject.rejmanual(epoch_ind(e)) = 0;
             end
+            %             end
             
             %re-add interpolated temp EEG epoch into original EEG
             EEG.data(:,:,epoch_ind(e)) = tmpEEG.data;

@@ -573,15 +573,20 @@ varargout{1} = box_interpolate_chan_epoch;
         %check currently activated flags
         flagcheck = sum(histoflags);
         flagx= (flagcheck>1);
+        [~,ypos] = find(Eegtab_EEG_interpolate_chan_epoch.mflag==1);
+        [~,ypos1] = find(flagx==1);
+        AA = intersect(ypos1,ypos);
         count =0;
         for f = 1:length(flagx)
             if flagx(f)>0 && flagx(f)<9
-                count = count+1;
-                set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable','on');
-                if count==1
-                    set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
-                else
-                    set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                if isempty(AA)
+                    count = count+1;
+                    set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable','on');
+                    if count==1
+                        set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
+                    else
+                        set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                    end
                 end
             else
                 %turn off/invisible all not-active-flag choices
@@ -1421,15 +1426,20 @@ varargout{1} = box_interpolate_chan_epoch;
                 %check currently activated flags
                 flagcheck = sum(histoflags);
                 flagx= (flagcheck>1);
+                [~,ypos] = find(Eegtab_EEG_interpolate_chan_epoch.mflag==1);
+                [~,ypos1] = find(flagx==1);
+                AA = intersect(ypos1,ypos);
                 count =0;
                 for f = 1:length(flagx)
                     if flagx(f)>0 && flagx(f)<9
-                        count = count+1;
-                        set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable',Enable_flag);
-                        if count==1
-                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
-                        else
-                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                        if isempty(AA)
+                            count = count+1;
+                            set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Enable',Enable_flag);
+                            if count==1
+                                set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',1);
+                            else
+                                set(Eegtab_EEG_interpolate_chan_epoch.(['mflag' num2str(f)]), 'Value',0);
+                            end
                         end
                     else
                         if f < 9 %no flags over 8

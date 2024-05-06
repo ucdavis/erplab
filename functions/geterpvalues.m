@@ -578,14 +578,7 @@ catch
         case 'fareaplat'
             varargout{1} = ['Error: There was no positive area (i.e., area above the baseline) in one or more of the waveforms during the specified measurement window. It is impossible to quantify the fractional area latency when there is no positive area. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a positive area exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no positive area.  Here is the first waveform in which there was no positive area detected: bin',num2str(b),', chan',num2str(ch)];
         case 'peakampbl'
-            if polpeak==1
-                polpeakstr = 'positive';
-            else
-                polpeakstr = 'negative';
-            end
-            varargout{1} = ['Error: There was no',32,polpeakstr,32,'amplitude in one or more of the waveforms during the specified measurement window. It is impossible to quantify the peak amplitude when there is no',...
-                32,polpeakstr,32,'amplitude. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a',32,polpeakstr,32,'amplitude exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no',32,polpeakstr,32,...
-                'amplitude.  Here is the first waveform in which there was no',32,polpeakstr,32,'amplitude detected: bin',num2str(b),', chan',num2str(ch)];
+            varargout{1} = ['Error: There was no local peak in one or more of the waveforms during the specified measurement window. To solve this problem, you can either change the measurement parameters (e.g., reducing the number of points required for a local peak) so that a local peak exists for all waveforms, or you can use the Options button to output a value of "non a number (NaN)" when there is no local peak. Here is the first waveform in which there was no local peak detected: bin',num2str(b),', chan',num2str(ch)];
         case 'peaklatbl'
             if polpeak==1
                 polpeakstr = 'positive';
@@ -595,7 +588,6 @@ catch
             varargout{1} = ['Error: There was no',32,polpeakstr,32,'latency in one or more of the waveforms during the specified measurement window. It is impossible to quantify the peak latency when there is no',...
                 32,polpeakstr,32,'latency. To solve this problem, you can either change the measurement parameters (e.g., the time window) so that a',32,polpeakstr,32,'latency exists for all waveforms, or you can use the Options button to output a value of "not a number (NaN)" when there is no',32,polpeakstr,32,...
                 'latency.  Here is the first waveform in which there was no',32,polpeakstr,32,'latency detected: bin',num2str(b),', chan',num2str(ch)];
-            
         case 'fpeaklat'
             if polpeak==1
                 polpeakstr = 'positive';
