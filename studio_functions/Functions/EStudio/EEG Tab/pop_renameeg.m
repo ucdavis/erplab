@@ -83,7 +83,6 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(ALLEEG, varargin{:});
 
 
-
 eegnames = p.Results.eegnames;
 if ischar(eegnames) && numel(ALLEEG)==1
     ALLEEG.erpname = eegnames;

@@ -469,10 +469,12 @@ varargout{1} = EStudio_eeg_events_box;
         end
         estudioworkingmemory('f_EEG_proces_messg','EventList >  View EventList');
         observe_EEGDAT.eeg_panel_message =1;
-        feval('EEG_evenlist_gui',observe_EEGDAT.ALLEEG(EEGArray));
-        LASTCOM = ['feval("EEG_evenlist_gui",ALLEEG(',vect2colon(EEGArray),'));'];
         
-        observe_EEGDAT.ALLEEG(EEGArray) = eegh(LASTCOM, observe_EEGDAT.ALLEEG(EEGArray));
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        [ALLEEG, LASTCOM] = pop_eeg_eventlist_view( ALLEEG, 'EEGArray',EEGArray,...
+        'Saveas', 'off', 'History', 'script');
+    
+        observe_EEGDAT.ALLEEG = ALLEEG;
         eegh(LASTCOM);
         observe_EEGDAT.EEG=observe_EEGDAT.ALLEEG(EEGArray);
         observe_EEGDAT.count_current_eeg=26;
