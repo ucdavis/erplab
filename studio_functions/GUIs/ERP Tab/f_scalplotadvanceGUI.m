@@ -71,8 +71,8 @@ is2Dmap = pscale_legend{9};
 handles.is2Dmap = is2Dmap;
 % Name & version
 %
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   SCALP MAPPING ADVANCED GUI'])
 
 

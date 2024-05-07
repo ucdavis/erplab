@@ -48,10 +48,8 @@ listnameOlder = listnameOlder1;
 try
     titlename = varargin{3};
 catch
-    
     erplab_default_values;
     version = erplabver;
-    
     titlename = ['Estudio',32,version,32,'Change Channel Name'];
 end
 
