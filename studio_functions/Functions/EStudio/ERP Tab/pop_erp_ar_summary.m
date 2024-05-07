@@ -6,7 +6,7 @@
 %
 % ALLERP        - structure array of EEG structures
 % ERPArray      -index of erpsets
-
+%EEGNames       -EEGset names
 
 
 
@@ -47,7 +47,7 @@ end
 
 if ~isempty(ERPArray)
     app = feval('dq_trial_rejection',ALLERP,ERPArray,EEGNames);
-    waitfor(app,'Finishbutton',1);
+%     waitfor(app,'Finishbutton',1);
 end
 ERPArraystr= vect2colon(ERPArray);
 if ~isempty(EEGNames)

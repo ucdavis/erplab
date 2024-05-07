@@ -36,7 +36,7 @@ if isempty(ALLEEG)
     errorfound(msgboxText, title);
     return
 end
-if isempty(ALLEEG(1).data)
+if isempty(ALLEEG(1))
     msgboxText =  'Cannot handle an empty EEGset';
     title = 'ERPLAB: pop_eeg_eventlist_view() error';
     errorfound(msgboxText, title);

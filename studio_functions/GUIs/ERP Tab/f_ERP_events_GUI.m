@@ -84,7 +84,7 @@ varargout{1} = eegtab_events_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','EventList >  Export RTs');
@@ -192,7 +192,7 @@ varargout{1} = eegtab_events_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         ERPArray =  estudioworkingmemory('selectederpstudio');
@@ -204,10 +204,13 @@ varargout{1} = eegtab_events_box;
         end
         estudioworkingmemory('f_ERP_proces_messg','EventList >  View EventList');
         observe_ERPDAT.Process_messg =1;
-        feval('ERP_evenlist_gui',observe_ERPDAT.ALLERP(ERPArray));
         
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
-        ERPCOM = ['feval("ERP_evenlist_gui",ALLERP(',vect2colon(ERPArray),'));'];
+        
+        ALLERP = observe_ERPDAT.ALLERP;
+        [ALLERP, ERPCOM] = pop_erp_eventlist_view( ALLERP, 'ERPArray',ERPArray,...
+            'Saveas', 'off', 'History', 'script');
+        
         for Numoferp = 1:numel(ERPArray)
             if Numoferp ==length(ERPArray)
                 [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM, ERPCOM,2);
@@ -232,7 +235,7 @@ varargout{1} = eegtab_events_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','EventList >  Import');
@@ -333,7 +336,7 @@ varargout{1} = eegtab_events_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist');
@@ -428,7 +431,7 @@ varargout{1} = eegtab_events_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','EventList >  Import');
@@ -526,7 +529,7 @@ varargout{1} = eegtab_events_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','EventList >  Export eventlist to .xls file');
