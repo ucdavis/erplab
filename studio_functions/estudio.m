@@ -45,6 +45,7 @@ EStudioversion = erplabver1;
 SignalProcessingToolboxCheck;
 %%--------------------check memory file------------------------------------
 
+disp('Initializing Parameters...');
 
 if exist('memoryerpstudio.erpm','file')==2
     iserpmem = 1; % file for memory exists
@@ -209,6 +210,7 @@ timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
     function EStudio_gui_erp_totl = createInterface()
+        disp('Launching Main Window...');
         try
             version = geterplabeversion;
             erplabstudiover = num2str(version);
