@@ -25,7 +25,7 @@ EStduio_gui_EEG_plotset = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_box_EEG_plot_set = uiextras.BoxPanel('Parent', fig, 'Title', ' Plot Settings', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_box_EEG_plot_set = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot Settings', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EStudio_box_EEG_plot_set = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings', 'Padding', 5,'BackgroundColor',ColorB_def);
 else

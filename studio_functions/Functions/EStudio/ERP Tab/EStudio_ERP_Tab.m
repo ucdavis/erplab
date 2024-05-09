@@ -37,6 +37,7 @@ EStudio_gui_erp_totl.panel{3} = f_ERP_plot_setting_GUI(EStudio_gui_erp_totl.sett
 EStudio_gui_erp_totl.panelSizes(3) = 390;
 EStudio_gui_erp_totl.panel{4} = f_ERP_plot_scalp_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(4) = 390;
+disp('ERP Tab: Launching ERPsets, Bin & Channel Selection, Plot Settings, Plot Scalp Maps,...');
 EStudio_gui_erp_totl.panel{5} = f_ERP_edit_channel_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(5) = 170;
 EStudio_gui_erp_totl.panel{6} = f_ERP_chanoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -45,6 +46,8 @@ EStudio_gui_erp_totl.panel{7} = f_erp_informtion_GUI(EStudio_gui_erp_totl.settin
 EStudio_gui_erp_totl.panelSizes(7) = 410;
 EStudio_gui_erp_totl.panel{8} = f_ERP_resample_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(8) = 190;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Edit/Delete Channels & Locations, Channel Operation, ERP & Bin Information, Sampling Rate & Epoch,...']);
 EStudio_gui_erp_totl.panel{9} = f_ERP_binoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(9) = 310;
 EStudio_gui_erp_totl.panel{10} = f_ERP_filtering_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -53,6 +56,8 @@ EStudio_gui_erp_totl.panel{11} =  f_ERP_baselinecorr_detrend_GUI(EStudio_gui_erp
 EStudio_gui_erp_totl.panelSizes(11) = 220;
 EStudio_gui_erp_totl.panel{12} = f_ERP_grandaverageGUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(12) = 260;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Bin Operations, Filtering, Baseline Correction & Linear Detrend, Average Across ERPsets (Grand Average),...']);
 EStudio_gui_erp_totl.panel{13} = f_ERP_append_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(13) = 120;
 EStudio_gui_erp_totl.panel{14} = f_ERP_measurement_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -61,6 +66,8 @@ EStudio_gui_erp_totl.panel{15} = f_ERP_events_GUI(EStudio_gui_erp_totl.settingLa
 EStudio_gui_erp_totl.panelSizes(15) = 100;
 EStudio_gui_erp_totl.panel{16} = f_erp_dataquality_SME_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(16) = 130;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Append ERPsets, Measurement Tool, EventList, View Data Quality Metrics,...']);
 EStudio_gui_erp_totl.panel{17} = f_ERP_CSD_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(17) = 190;
 EStudio_gui_erp_totl.panel{18} = f_ERP_spectral_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -69,6 +76,8 @@ EStudio_gui_erp_totl.panel{19} = f_ERP_simulation_panel(EStudio_gui_erp_totl.set
 EStudio_gui_erp_totl.panelSizes(19) = 820;
 EStudio_gui_erp_totl.panel{20} =  f_ERP_history_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(20) = 280;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Convert Voltage to CSD, Spectral Analysi, Create Artificial ERP Waveform, and History panels']);
 set(EStudio_gui_erp_totl.settingLayout, 'Heights', EStudio_gui_erp_totl.panelSizes);
 EStudio_gui_erp_totl.panelscroll.Heights = sum(EStudio_gui_erp_totl.panelSizes);
 

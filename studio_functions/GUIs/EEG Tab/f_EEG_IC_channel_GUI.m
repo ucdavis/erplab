@@ -16,7 +16,6 @@ addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change)
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
-
 EStduio_eegtab_EEG_IC_chan = struct();
 
 %-----------------------------Name the title----------------------------------------------

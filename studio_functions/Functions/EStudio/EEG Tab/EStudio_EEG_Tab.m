@@ -42,6 +42,7 @@ EStudio_gui_erp_totl.eegpanel{3} = f_EEG_Plot_setting_GUI(EStudio_gui_erp_totl.e
 EStudio_gui_erp_totl.eegpanelSizes(3) = 290;
 EStudio_gui_erp_totl.eegpanel{4} = f_EEG_edit_channel_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(4) = 170;
+disp('EEG Tab: Launching EEGsets, Channel and IC Selection, Plot Settings, Edit/Delete Channels & Locations,...');
 EStudio_gui_erp_totl.eegpanel{5} = f_EEG_interpolate_chan_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(5) = 290;
 EStudio_gui_erp_totl.eegpanel{6} = f_EEG_chanoperation_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
@@ -50,6 +51,8 @@ EStudio_gui_erp_totl.eegpanel{7} = f_EEG_informtion_GUI(EStudio_gui_erp_totl.eeg
 EStudio_gui_erp_totl.eegpanelSizes(7) = 400;
 EStudio_gui_erp_totl.eegpanel{8} = f_EEG_resample_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(8) = 215;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Interpolate Channels, Channel Operations, EEG & Bin Information, Sampling Rate & Epoch,...']);
 EStudio_gui_erp_totl.eegpanel{9} = f_EEG_events_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(9) = 350;
 EStudio_gui_erp_totl.eegpanel{10} = f_EEG_filtering_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
@@ -58,6 +61,8 @@ EStudio_gui_erp_totl.eegpanel{11} = f_EEG_eeglabtool_GUI(EStudio_gui_erp_totl.ee
 EStudio_gui_erp_totl.eegpanelSizes(11) = 210;
 EStudio_gui_erp_totl.eegpanel{12} = f_EEG_eeglabica_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(12) = 250;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'EventList, Filtering, EEGLAB Tools (only for one selected dataset), EEGLAB ICA (only for one selected dataset),...']);
 EStudio_gui_erp_totl.eegpanel{13} = f_EEG_event2bin_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(13) = 200;
 EStudio_gui_erp_totl.eegpanel{14} = f_EEG_binepoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
@@ -66,6 +71,8 @@ EStudio_gui_erp_totl.eegpanel{15} = f_EEG_arf_det_segmt_conus_GUI(EStudio_gui_er
 EStudio_gui_erp_totl.eegpanelSizes(15) = 290;
 EStudio_gui_erp_totl.eegpanel{16} = f_EEG_arf_det_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(16) = 470;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Assign Events to Bins (BINLISTER), Extract Bin-Based Epochs (Continuous EEG), Delete Time Segments (Continuous EEG), Reject Artifactual Time Segments (Continuous EEG),...']);
 EStudio_gui_erp_totl.eegpanel{17} = f_EEG_shift_eventcode_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(17) = 200;
 EStudio_gui_erp_totl.eegpanel{18} = f_EEG_dq_fre_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
@@ -74,18 +81,25 @@ EStudio_gui_erp_totl.eegpanel{19} = f_EEG_arf_det_epoch_GUI(EStudio_gui_erp_totl
 EStudio_gui_erp_totl.eegpanelSizes(19) = 380;
 EStudio_gui_erp_totl.eegpanel{20} = f_EEG_arf_sumop_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(20) = 160;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Shift Event Codes (Continuous EEG), Spectral Data Quality (Continuous EEG), Artifact Detection (Epoched EEG), Artifact Info & Tools (Epoched EEG),...']);
 EStudio_gui_erp_totl.eegpanel{21} = f_EEG_baselinecorr_detrend_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(21) = 220;
 EStudio_gui_erp_totl.eegpanel{22} = f_EEG_dq_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(22) = 240;
 EStudio_gui_erp_totl.eegpanel{23} = f_EEG_avg_erp_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(23) = 300;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Baseline Correction & Linear Detrend (Epoched EEG), Compute Data Quality Metrics (Epoched EEG), Compute Averaged ERPs (Epoched EEG),...']);
 EStudio_gui_erp_totl.eegpanel{24} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(24) = 190;
 EStudio_gui_erp_totl.eegpanel{25} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(25) = 190;
 EStudio_gui_erp_totl.eegpanel{26} = f_EEG_history_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(26) = 300;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Convert Voltage to CSD, EEG Utilities, and History panels.']);
+
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
 
