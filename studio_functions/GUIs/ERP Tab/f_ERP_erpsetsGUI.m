@@ -77,7 +77,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.suffix = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.refresh_erpset = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Refresh',...
-            'Callback', @refresh_erpset,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -113,7 +113,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Duplicate');
@@ -220,7 +220,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Rename');
         observe_ERPDAT.Process_messg =1;
@@ -287,7 +287,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Add Suffix');
@@ -345,7 +345,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Refresh');
@@ -381,9 +381,11 @@ varargout{1} = box_erpset_gui;
             end
         end
         observe_ERPDAT.ALLERP= ALLERP;
+        try observe_ERPDAT.ALLERP(CURRENTERP) = ERP;catch  end
+        
         observe_ERPDAT.ERP= ERP;
         observe_ERPDAT.CURRENTERP= CURRENTERP;
-        observe_ERPDAT.ALLERP(CURRENTERP) = observe_ERPDAT.ERP;
+        
         assignin('base','CURRENTERP',CURRENTERP);
         assignin('base','ERP',ERP);
         assignin('base','ALLERP',ALLERP);
@@ -402,7 +404,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Import');
         observe_ERPDAT.Process_messg =1;
@@ -618,7 +620,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
-        ERPsetops.refresh_erpset.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= 'on';
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
@@ -643,7 +645,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Export');
@@ -772,7 +774,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Load');
@@ -834,7 +836,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
-        ERPsetops.refresh_erpset.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= 'on';
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
@@ -861,7 +863,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Clear');
         observe_ERPDAT.Process_messg =1;
@@ -897,7 +899,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
-        ERPsetops.refresh_erpset.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= 'on';
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
@@ -925,7 +927,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save');
@@ -987,7 +989,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save a Copy');
         observe_ERPDAT.Process_messg =1;
@@ -1074,7 +1076,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         pathName =  estudioworkingmemory('EEG_save_folder');
@@ -1108,7 +1110,7 @@ varargout{1} = box_erpset_gui;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         ERPArray = source.Value;
         estudioworkingmemory('selectederpstudio',ERPArray);
@@ -1170,7 +1172,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
-        ERPsetops.refresh_erpset.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= 'on';
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;

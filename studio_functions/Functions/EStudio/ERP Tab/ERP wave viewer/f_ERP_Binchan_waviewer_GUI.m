@@ -290,15 +290,30 @@ varargout{1} = Chanbin_waveviewer_box;
         else
             ChanArray =  ChanArrayValue-1;
         end
-        gui_erp_waviewer.ERPwaviewer.chan = ChanArray;
+        chandef = gui_erp_waviewer.ERPwaviewer.chan;
+        if numel(ChanArray)> numel(chandef)
+            chandiff = setdiff(ChanArray,chandef);
+        else
+            chandiff = setdiff(chandef,ChanArray);
+        end
+        if ~isempty(chandiff)
+            gui_erp_waviewer.ERPwaviewer.chan = ChanArray;
+        end
         BinArrayValue = ERPwaveview_binchan.BinRange.Value;
         if BinArrayValue ==1
             BinArray = [1:length(ERPwaveview_binchan.BinRange.String)-1];
         else
             BinArray =  BinArrayValue-1;
         end
-        gui_erp_waviewer.ERPwaviewer.bin = BinArray;
-        
+        bindef = gui_erp_waviewer.ERPwaviewer.bin;
+        if numel(BinArray)>numel(bindef)
+            bindiff = setdiff(BinArray,bindef);
+        else
+            bindiff = setdiff(bindef,BinArray);
+        end
+        if ~isempty(bindiff)
+            gui_erp_waviewer.ERPwaviewer.bin = BinArray;
+        end
         estudioworkingmemory('MyViewer_chanbin',0);
         ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
@@ -348,12 +363,12 @@ varargout{1} = Chanbin_waveviewer_box;
         Chanlist = chanStr;
         Chan_selindex = gui_erp_waviewer.ERPwaviewer.chan;
         if isempty(Chan_selindex) || any(Chan_selindex>length(Chanlist)) || any(Chan_selindex(:)<=0)
-           Chan_selindex =[1:length(Chanlist)]; 
-           gui_erp_waviewer.ERPwaviewer.chan= Chan_selindex;
+            Chan_selindex =[1:length(Chanlist)];
+            gui_erp_waviewer.ERPwaviewer.chan= Chan_selindex;
         end
-     
-         Chan_sel =Chan_selindex;
-         
+        
+        Chan_sel =Chan_selindex;
+        
         ERPwaveview_binchan.ElecRange.String = Chanlist_name;
         try
             if length(Chan_sel) ==  numel(chanStr)

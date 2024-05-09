@@ -99,7 +99,7 @@ varargout{1} = EStudio_box_bin_chan;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex==2
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_chanbin',1);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -130,7 +130,7 @@ varargout{1} = EStudio_box_bin_chan;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex==2
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_chanbin',1);
@@ -161,7 +161,7 @@ varargout{1} = EStudio_box_bin_chan;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex==2
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         estudioworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Cancel');
         observe_ERPDAT.Process_messg =1;
@@ -209,7 +209,7 @@ varargout{1} = EStudio_box_bin_chan;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex==2
-             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('ERPTab_chanbin',0);
@@ -234,7 +234,15 @@ varargout{1} = EStudio_box_bin_chan;
         if any(ChanArray(:)<=0)
             ChanArray = [1:ChanNum];
         end
-        estudioworkingmemory('ERP_ChanArray',ChanArray);
+        ChanArrayef = estudioworkingmemory('ERP_ChanArray');
+        if numel(ChanArray)>numel(ChanArrayef)
+            chandiff = setdiff(ChanArray,ChanArrayef);
+        else
+            chandiff = setdiff(ChanArrayef,ChanArray);
+        end
+        if ~isempty(chandiff)
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
         %
         %%selectd bins
         BinArray=  ERPTab_bin_chan.BinRange.Value;
@@ -248,7 +256,15 @@ varargout{1} = EStudio_box_bin_chan;
         if any(BinArray(:)<=0)
             BinArray = [1:BinNum];
         end
-        estudioworkingmemory('ERP_BinArray',BinArray);
+        BinArraydef =  estudioworkingmemory('ERP_BinArray');
+        if numel(BinArray)>= numel(BinArraydef)
+            bindiff = setdiff(BinArray,BinArraydef);
+        else
+            bindiff = setdiff(BinArraydef,BinArray);
+        end
+        if ~isempty(bindiff)
+            estudioworkingmemory('ERP_BinArray',BinArray);
+        end
         observe_ERPDAT.Count_currentERP=3;
         f_redrawERP();
         estudioworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Apply');
@@ -263,9 +279,9 @@ varargout{1} = EStudio_box_bin_chan;
         end
         ChangeFlag =  estudioworkingmemory('ERPTab_chanbin');
         if ChangeFlag==1
-          erp_between_panels_change();  
-          observe_ERPDAT.Count_currentERP=0;
-          return;
+            erp_between_panels_change();
+            observe_ERPDAT.Count_currentERP=0;
+            return;
         end
         ViewerFlag=estudioworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
