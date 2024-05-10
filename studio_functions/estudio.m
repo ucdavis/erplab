@@ -166,7 +166,7 @@ addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 ERP              = [];  % Start ERP Structure on workspace
 ALLERP           = [];    %Start ALLERP Structure on workspace
 ALLERPCOM        = [];
-CURRENTERP       = 1;
+CURRENTERP       = 0;
 assignin('base','ERP',ERP);
 assignin('base','ALLERP', ALLERP);
 assignin('base','CURRENTERP', CURRENTERP);

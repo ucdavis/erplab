@@ -881,7 +881,7 @@ varargout{1} = box_erpset_gui;
         if isempty(ALLERP)
             observe_ERPDAT.ALLERP = [];
             observe_ERPDAT.ERP = [];
-            observe_ERPDAT.CURRENTERP  = 1;
+            observe_ERPDAT.CURRENTERP  = 0;
             assignin('base','ERP',observe_ERPDAT.ERP)
         else
             observe_ERPDAT.ALLERP = ALLERP;
@@ -895,7 +895,11 @@ varargout{1} = box_erpset_gui;
             Edit_label = 'on';
         end
         ERPsetops.butttons_datasets.String = ERPlistName;
+        if observe_ERPDAT.CURRENTERP>0
         ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
+        else
+          ERPsetops.butttons_datasets.Value=1;  
+        end
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;

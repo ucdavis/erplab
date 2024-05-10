@@ -221,7 +221,7 @@ drawui_EEG_info(FonsizeDefault);
         if ~isempty(EEG) && EEG.trials>1
             gui_EEG_info.numofepoch.String = ['Number of epochs:',32,num2str(EEG.trials)];
             gui_EEG_info.numofepoch.Enable = 'on';
-            [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],1);
+            [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],0);
             ERP.ntrials.accepted = countbinOK;
             ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
             ERP.ntrials.invalid = countbinINV;

@@ -441,7 +441,7 @@ elseif dcompu==2  % TFFT
     ERP.datatype = 'TFFT';
 end
 ERP.pnts  = size(ERP.bindata, 2);
-if ~iscell(artcrite)
+if ~iscell(artcrite) && avgText == 1
     fprintf('----------------------------------------------------------------------------------------\n');
 else
     countbiORI  = countbinOK;

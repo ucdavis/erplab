@@ -362,14 +362,14 @@ varargout{1} = EStudio_box_eeglab_tool;
         %%Edit the channel locations
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf(['Edit the channel locations for eegset(s):',32,num2str(EEGArray),'\n']);
-          EEG= ALLEEG(EEGArray);
-        [EEG, chaninfo, urchans, LASTCOM] =pop_chanedit(EEG); 
+        EEG= ALLEEG(EEGArray);
+        [EEG, chaninfo, urchans, LASTCOM] =pop_chanedit(EEG);
         if isempty(LASTCOM)
             fprintf( ['\n',repmat('-',1,100) '\n']);
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-       
+        
         fprintf(LASTCOM,'\n');
         EEG = eegh(LASTCOM, EEG);
         eegh(LASTCOM);
@@ -605,17 +605,21 @@ varargout{1} = EStudio_box_eeglab_tool;
                 frerange = str2num(result{4});
             end
             Newfile = split(Electrodelabel,',');
-            if strcmpi( Newfile{2},'on')
+            toklinenoise1 = regexpi(Newfile{2}, 'on', 'match','ignorecase');
+            toklinenoise3 = regexpi(Newfile{2}, 'labels', 'match','ignorecase');
+            toklinenoise4 = regexpi(Newfile{2}, 'numbers', 'match','ignorecase');
+            toklinenoise5 = regexpi(Newfile{2}, 'ptslabels', 'match','ignorecase');
+            toklinenoise6 = regexpi(Newfile{2}, 'ptsnumbers', 'match','ignorecase');
+            
+            if ~isempty(toklinenoise1) && strcmpi(toklinenoise1{1,1},'on')
                 Electrodelabel = 'on';
-            elseif strcmpi( Newfile{2},'off')
-                Electrodelabel = 'off';
-            elseif strcmpi( Newfile{2},'labels')
+            elseif ~isempty(toklinenoise3) && strcmpi( toklinenoise3{1,1},'labels')
                 Electrodelabel = 'labels';
-            elseif strcmpi( Newfile{2},'numbers')
+            elseif ~isempty(toklinenoise4) &&  strcmpi( toklinenoise4{1,1},'numbers')
                 Electrodelabel = 'numbers';
-            elseif strcmpi( Newfile{2},'ptslabels')
+            elseif ~isempty(toklinenoise5) &&  strcmpi( toklinenoise5{1,1},'ptslabels')
                 Electrodelabel = 'ptslabels';
-            elseif strcmpi( Newfile{2},'ptsnumbers')
+            elseif ~isempty(toklinenoise6) &&  strcmpi( toklinenoise6{1,1},'ptsnumbers')
                 Electrodelabel = 'ptsnumbers';
             else
                 Electrodelabel = 'off';
