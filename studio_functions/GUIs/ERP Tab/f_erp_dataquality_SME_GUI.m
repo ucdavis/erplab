@@ -50,6 +50,27 @@ drawui_erp_information(FonsizeDefault);
         
         gui_erp_DQSME.DataSelBox = uiextras.VBox('Parent', Erp_information, 'Spacing',1,'BackgroundColor',ColorB_def);
         
+        
+        %%ERP setname and file name
+        gui_erp_DQSME.setfilename_title = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', gui_erp_DQSME.setfilename_title,'String','Current ERP setname & file name',...
+            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+        
+        
+        gui_erp_DQSME.setfilename_title2 = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+            dsnames{ii,2} = '';
+        end
+        gui_erp_DQSME.table_setfilenames = uitable(  ...
+            'Parent'        , gui_erp_DQSME.setfilename_title2,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {500}, ...
+            'ColumnName'    , {''}, ...
+            'RowName'       , {'ERP name','File name'},...
+            'ColumnEditable',[false]);
+        
+        
         %%----------------------------Setting midian SME---------------------
         gui_erp_DQSME.Median_sme = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_DQSME.Median_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','Median aSME:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
@@ -87,7 +108,7 @@ drawui_erp_information(FonsizeDefault);
         
         set(gui_erp_DQSME.DQSME_option_table,'Enable','off');
         set(gui_erp_DQSME.DQSME_option_file,'Enable','off');
-        set(gui_erp_DQSME.DataSelBox,'Sizes',[20 20 20 30]);
+        set(gui_erp_DQSME.DataSelBox,'Sizes',[20 70 20 20 20 30]);
     end
 
 
@@ -158,6 +179,17 @@ drawui_erp_information(FonsizeDefault);
         end
         gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
         gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
+        
+        try
+            filesetname{1,1} = observe_ERPDAT.ERP.erpname;
+            filesetname{2,1} = observe_ERPDAT.ERP.filename;
+        catch
+            filesetname{1,1} = '';
+            filesetname{2,1} = '';
+        end
+        gui_erp_DQSME.table_setfilenames.Data= filesetname;
+        
+        
         observe_ERPDAT.Count_currentERP=17;
     end
 
@@ -177,9 +209,9 @@ drawui_erp_information(FonsizeDefault);
         estudioworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show in a table');
         observe_ERPDAT.Process_messg =1;
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM=[];  end
+        DQ_Table_GUI(observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP),observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,1);
         for Numoferp = 1:numel(SelectedERP)
-            DQ_Table_GUI(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)),observe_ERPDAT.ALLERP,SelectedERP(Numoferp),1);
-            ERPCOM = [' DQ_Table_GUI(ERP,ALLERP,',num2str(Numoferp),',2);'];
+            ERPCOM = [' DQ_Table_GUI(ERP,ALLERP,',num2str(Numoferp),',1);'];
             [ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)), ALLERPCOM, ERPCOM,2);
             observe_ERPDAT.ALLERP(SelectedERP(Numoferp)) = ERP;
         end
@@ -223,14 +255,12 @@ drawui_erp_information(FonsizeDefault);
                     observe_ERPDAT.ALLERP(SelectedERP(Numoferp)) = ERP;
                     countr=1;
                 end
-                
             catch
                 msgboxText =  ['No information for data quality is found!'];
                 question = [  'No information for data quality is found!'];
                 title       = 'ERPLAB Studio: "Save to file" on "View Data Quality Metrics".';
                 button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
             end
-            
         end
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
         if countr==1

@@ -1156,7 +1156,7 @@ handles.dq_table.ColumnName = tw_labels;
 % Set font size of DQ Table
 desired_fontsize = erpworkingmemory('fontsizeGUI');
 handles.dq_table.FontSize = desired_fontsize;
-handles.heatmap_on = 0;
+handles.heatmap_on = handles.checkbox_heatmap.Value;
 
 %
 % Prepare List of current Channels
@@ -1191,7 +1191,7 @@ handles.ALLERP = ERPs;
 
 %clear all perviously set options
 set(handles.checkbox_outliers,'Value',0);
-set(handles.checkbox_heatmap,'Value',0);
+% set(handles.checkbox_heatmap,'Value',0);
 set(handles.checkbox_text_labels,'Value',0);
 set(handles.stdwindow,'Enable','Off');
 set(handles.chwindow,'Enable','Off');
@@ -1200,24 +1200,24 @@ set(handles.chbutton,'Enable','Off');
 %check to see if outliers is on prior to switching active erpset?
 %checkbox_outliers_Callback(hObject, eventdata, handles)
 
-% outliers_on = get(handles.checkbox_outliers,'Value');
-%
-% if outliers_on == 1
-%     handles.outliers_on = 1;
-%     set(handles.stdwindow,'Enable','On');
-%     set(handles.chwindow,'Enable','On');
-%     set(handles.chbutton,'Enable','On');
-%     redraw_outliers(hObject, eventdata, handles);
-%
-% else
-%     handles.heatmap_on = 0;
-%     set(handles.stdwindow,'Enable','Off');
-%     set(handles.chwindow,'Enable','Off');
-%     set(handles.chbutton,'Enable','Off');
-%     clear_outliers(hObject, eventdata, handles);
-%
-%
-% end
+heatmap_on = handles.heatmap_on ;
+if heatmap_on == 1
+    
+    %if heatmap_on, then outliers not possible so clear outliers
+    clear_outliers(hObject, eventdata, handles);
+    handles.outliers_on = 0;
+    set(handles.checkbox_outliers, 'Value', 0);
+    redraw_heatmap(hObject, eventdata, handles);
+    handles.heatmap_on = 1;
+else
+    clear_heatmap(hObject, eventdata, handles);
+    handles.heatmap_on = 0;
+    
+    %if outliers is on, then keep outliers active
+    if handles.outliers_on == 1
+        redraw_outliers(hOBject, eventdata,handles);
+    end
+end
 
 guidata(hObject, handles);
 

@@ -12,8 +12,6 @@ function varargout = f_EEG_events_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-% addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
 
 EStduio_eegtab_EEG_events = struct();
@@ -126,7 +124,28 @@ varargout{1} = EStudio_eeg_events_box;
             'ColumnName'    , {'Event Code','#Occurrences'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false]);
-        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 30 20 30 30 20 100]);
+        
+        %%EEG setname and file name
+        EStduio_eegtab_EEG_events.setfilename_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', EStduio_eegtab_EEG_events.setfilename_title,'String','Current EEG setname & file name',...
+            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+        
+        
+        EStduio_eegtab_EEG_events.setfilename_title2 = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+            dsnames{ii,2} = '';
+        end
+        EStduio_eegtab_EEG_events.table_setfilenames = uitable(  ...
+            'Parent'        , EStduio_eegtab_EEG_events.setfilename_title2,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {500}, ...
+            'ColumnName'    , {''}, ...
+            'RowName'       , {'Set name','File name'},...
+            'ColumnEditable',[false]);
+        
+        
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 30 20 30 30 20 100 20 70]);
     end
 
 %%**************************************************************************%%
@@ -472,8 +491,8 @@ varargout{1} = EStudio_eeg_events_box;
         
         ALLEEG = observe_EEGDAT.ALLEEG;
         [ALLEEG, LASTCOM] = pop_eeg_eventlist_view( ALLEEG, 'EEGArray',EEGArray,...
-        'Saveas', 'off', 'History', 'script');
-    
+            'Saveas', 'off', 'History', 'script');
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         eegh(LASTCOM);
         observe_EEGDAT.EEG=observe_EEGDAT.ALLEEG(EEGArray);
@@ -1299,6 +1318,16 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
             EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='off';
         end
+        
+        try
+            filesetname{1,1} = observe_EEGDAT.EEG.setname;
+            filesetname{2,1} = observe_EEGDAT.EEG.filename;
+        catch
+            filesetname{1,1} = '';
+            filesetname{2,1} = '';
+        end
+        EStduio_eegtab_EEG_events.table_setfilenames.Data= filesetname;
+        
         observe_EEGDAT.count_current_eeg=10;
     end
 end

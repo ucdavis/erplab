@@ -9,7 +9,7 @@
 
 function varargout = f_EEG_informtion_GUI(varargin)
 global observe_EEGDAT;
-addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change); 
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 catch

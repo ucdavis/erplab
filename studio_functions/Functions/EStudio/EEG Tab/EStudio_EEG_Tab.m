@@ -10,9 +10,6 @@
 
 
 function EStudio_gui_erp_totl = EStudio_EEG_Tab(EStudio_gui_erp_totl,ColorB_def)
-% global observe_ERPDAT;
-% global viewer_ERPDAT;
-% global EStudio_gui_erp_totl;
 
 if isempty(ColorB_def)
     ColorB_def = [0.7020 0.77 0.85];
@@ -54,7 +51,7 @@ EStudio_gui_erp_totl.eegpanelSizes(8) = 215;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Interpolate Channels, Channel Operations, EEG & Bin Information, Sampling Rate & Epoch,...']);
 EStudio_gui_erp_totl.eegpanel{9} = f_EEG_events_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(9) = 350;
+EStudio_gui_erp_totl.eegpanelSizes(9) = 430;
 EStudio_gui_erp_totl.eegpanel{10} = f_EEG_filtering_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(10) = 245;
 EStudio_gui_erp_totl.eegpanel{11} = f_EEG_eeglabtool_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);

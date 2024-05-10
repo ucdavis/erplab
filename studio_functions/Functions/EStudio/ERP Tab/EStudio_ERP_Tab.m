@@ -65,7 +65,7 @@ EStudio_gui_erp_totl.panelSizes(14) = 230;
 EStudio_gui_erp_totl.panel{15} = f_ERP_events_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(15) = 100;
 EStudio_gui_erp_totl.panel{16} = f_erp_dataquality_SME_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(16) = 130;
+EStudio_gui_erp_totl.panelSizes(16) = 220;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Append ERPsets, Measurement Tool, EventList, View Data Quality Metrics,...']);
 EStudio_gui_erp_totl.panel{17} = f_ERP_CSD_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
