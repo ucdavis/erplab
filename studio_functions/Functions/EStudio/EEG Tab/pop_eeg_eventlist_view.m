@@ -75,9 +75,6 @@ end
 
 feval("EEG_evenlist_gui",ALLEEG(EEGArray));
 
-
-
-
 if strcmpi(p.Results.Saveas,'on')
     issaveas = 1;
 else

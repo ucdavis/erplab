@@ -66,7 +66,12 @@ if nargin<1
 end
 
 if nargin<8
-    avgText = 1; 
+    ERPtooltype = erpgettoolversion('tooltype');
+    if strcmpi(ERPtooltype,'EStudio')
+        avgText = 0;
+    else
+        avgText = 1;
+    end
 end
 
 if nargin<7
@@ -401,9 +406,9 @@ for k=1:nbin
             if stderror == 1
                 sample_SD_rearrange = sqrt((sumERP2(:,:,k) - N*ERP.bindata(:,:,k).^2)/(N-1)); % get ERP's standard deviation
             elseif stderror == 2 %corrected point-wise SEM
-                sample_SD_rearrange = sqrt((sumERP2(:,:,k) - N*ERP.bindata(:,:,k).^2)/(N-(3/2)+(1/(8*(N-1))))); 
+                sample_SD_rearrange = sqrt((sumERP2(:,:,k) - N*ERP.bindata(:,:,k).^2)/(N-(3/2)+(1/(8*(N-1)))));
             end
-                
+            
             % The Standard Error of the Mean is then:
             ERP.binerror(:,:,k) = sample_SD_rearrange./sqrt(N); % get ERP's standard error
         end
@@ -472,8 +477,8 @@ if ~isempty(apodization)
             tapwin(s1:s2,1) = hann(winpnts);
         case 'blackmanharris'
             tapwin(s1:s2,1) = blackmanharris(winpnts);
-        case 'rectangular'            
-            tapwin(s1:s2,1) = rectwin(winpnts);            
+        case 'rectangular'
+            tapwin(s1:s2,1) = rectwin(winpnts);
         otherwise
             error('Invalid taper function name (only ''Hamming'', ''Hanning'', ''blackmanharris'' or ''rectangular'' can be used)')
     end

@@ -148,21 +148,21 @@ drawui_erp_information(FonsizeDefault);
         end
         Median_tw =ERP_SME_summary{3,1};
         try
-            Median_name = strcat(num2str(roundn(ERP_SME_summary{1,1},-2)),', chan.',num2str(ERP_SME_summary{2,1}),',',32,num2str(Median_tw(1)),'-',num2str(Median_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,1}));
+            Median_name = strcat(num2str(roundn(ERP_SME_summary{1,1},-2)),', chan',32,num2str(ERP_SME_summary{2,1}),',',32,num2str(Median_tw(1)),'-',num2str(Median_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,1}));
         catch
             Median_name = '';
         end
         gui_erp_DQSME.Median_sme_name.String = Median_name;
         Min_tw =ERP_SME_summary{3,2};
         try
-            Min_name = strcat(num2str(roundn(ERP_SME_summary{1,2},-2)),', chan.',num2str(ERP_SME_summary{2,2}),',',32,num2str(Min_tw(1)),'-',num2str(Min_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,2}));
+            Min_name = strcat(num2str(roundn(ERP_SME_summary{1,2},-2)),', chan',32,num2str(ERP_SME_summary{2,2}),',',32,num2str(Min_tw(1)),'-',num2str(Min_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,2}));
         catch
             Min_name = '';
         end
         gui_erp_DQSME.min_sme_name.String = Min_name;
         Max_tw =ERP_SME_summary{3,3};
         try
-            Max_name = strcat(num2str(roundn(ERP_SME_summary{1,3},-2)),', chan.',num2str(ERP_SME_summary{2,3}),',',32,num2str(Max_tw(1)),'-',num2str(Max_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,3}));
+            Max_name = strcat(num2str(roundn(ERP_SME_summary{1,3},-2)),', chan',32,num2str(ERP_SME_summary{2,3}),',',32,num2str(Max_tw(1)),'-',num2str(Max_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,3}));
         catch
             Max_name = '';
         end
