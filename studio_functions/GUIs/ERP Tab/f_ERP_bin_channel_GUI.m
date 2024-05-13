@@ -310,16 +310,17 @@ varargout{1} = EStudio_box_bin_chan;
             ERPTab_bin_chan.ElecRange.String=Chanlist_name;
             ERPTab_bin_chan.ElecRange.Min = 1;
             ERPTab_bin_chan.ElecRange.Max = length(Chanlist_name)+1;
+            ChanArraydef = ERPTab_bin_chan.ElecRange.Value;
+            if numel(ChanArraydef)==1 && ChanArraydef==1
+                ChanArray = [1:length(Chanlist_name)-1];
+            end
             if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:) >length(Chanlist_name)-1) || numel(ChanArray) == length(Chanlist_name)-1
                 ERPTab_bin_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)-1];
-                if numel(ChanArray) ~= length(Chanlist_name)-1
-                    estudioworkingmemory('ERP_ChanArray',ChanArray);
-                end
             else
                 ERPTab_bin_chan.ElecRange.Value =ChanArray+1;
-                ChanArray = ChanArray;
             end
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
             %
             %%setting for bins
             bindescr =  observe_ERPDAT.ERP.bindescr;
@@ -338,19 +339,22 @@ varargout{1} = EStudio_box_bin_chan;
             BinNum = observe_ERPDAT.ERP.nbin;
             if ERPTab_bin_chan.ERPFlag ==1
                 if ERPTab_bin_chan.BinRange.Value==1
-                    BinArray = 1:BinNum; estudioworkingmemory('ERP_BinArray',BinArray);
+                    BinArray = 1:BinNum;
                 end
+            end
+            BinArraydef= ERPTab_bin_chan.BinRange.Value;
+            
+            if numel(BinArraydef)==1 && BinArraydef==1
+                BinArray = [1:BinNum];
             end
             
             if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum) || numel(BinArray) >= BinNum
                 BinArray = [1:BinNum];
                 ERPTab_bin_chan.BinRange.Value=1;
-                if numel(BinArray) ~= BinNum
-                    estudioworkingmemory('ERP_BinArray',BinArray);
-                end
             else
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
             end
+            estudioworkingmemory('ERP_BinArray',BinArray);
             ERPTab_bin_chan.ERPFlag = 1;
         end
         if ViewerFlag==1
