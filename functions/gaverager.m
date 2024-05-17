@@ -112,6 +112,8 @@ for j=1:nfile
         % basic test for number of channels (for now...)
         if  pre_nchan ~= ERPT.nchan
             msgboxText =  sprintf('Erpsets #%g and #%g have different number of channels!', j-1, j);
+            msgboxText = sprintf([msgboxText,'\n','ERPset',32, num2str(j-1),32,'has',32,num2str(ALLERP(j-1).nchan),32,'chans.\n',...
+                'ERPset',32, num2str(j),32,'has',32,num2str(ALLERP(j).nchan),32,'chans.\n']);
             %title = 'ERPLAB: pop_gaverager() Error';
             %errorfound(msgboxText, title);
             serror = 1;
@@ -120,6 +122,8 @@ for j=1:nfile
         % basic test for number of points (for now...)
         if pre_pnts  ~= ERPT.pnts
             msgboxText =  sprintf('Erpsets #%g and #%g have different number of points!', j-1, j);
+            msgboxText = sprintf([msgboxText,'\n','ERPset',32, num2str(j-1),32,'has',32,num2str(ALLERP(j-1).pnts),32,'points.\n',...
+                'ERPset',32, num2str(j),32,'has',32,num2str(ALLERP(j).pnts),32,'points.\n']);
             %title = 'ERPLAB: pop_gaverager() Error';
             %errorfound(msgboxText, title);
             %return
@@ -129,6 +133,8 @@ for j=1:nfile
         % basic test for number of bins (for now...)
         if pre_nbin  ~= ERPT.nbin
             msgboxText =  sprintf('Erpsets #%g and #%g have different number of bins!', j-1, j);
+            msgboxText = sprintf([msgboxText,'\n','ERPset',32, num2str(j-1),32,'has',32,num2str(ALLERP(j-1).nbin),32,'bins.\n',...
+                'ERPset',32, num2str(j),32,'has',32,num2str(ALLERP(j).nbin),32,'bins.\n']);
             %title = 'ERPLAB: pop_gaverager() Error';
             %errorfound(msgboxText, title);
             %return
@@ -138,8 +144,10 @@ for j=1:nfile
         % basic test for data type (for now...)
         if ~strcmpi(pre_dtype, ERPT.datatype)
             msgboxText =  sprintf('Erpsets #%g and #%g have different type of data (see ERP.datatype)', j-1, j);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
+            msgboxText = sprintf([msgboxText,'\n','ERPset',32, num2str(j-1),32,'is "',ALLERP(j-1).datatype,'".\n',...
+                'ERPset',32, num2str(j),32,'is "',ALLERP(j).datatype,'".\n']);
+            %             title = 'ERPLAB: pop_gaverager() Error';
+            %             errorfound(msgboxText, title);
             %return
             serror = 1;
             break
@@ -165,6 +173,9 @@ for j=1:nfile
         callwarning(sprintf('%d) ', j),'');
         fprintf(' ERPset # %d "%s" has %.1f %% of mean artifact detection.\n', j, ERPT.erpname, ERPT.pexcluded);
         fprintf(' ERP #%g is being included anyway...\n', j);
+        
+        warndlg(['WARNING: ERPset #',32,num2str(j),32,'"',ERPT.erpname,'" has',32,num2str(roundn(ERPT.pexcluded,-1)),'%  of trials rejected because of artifacts.',],...
+            'ERPLAB: pop_gaverager()');%%GH Feb 20 2024
     else
         fprintf(' %d) Including %s...\n', j, ERPT.erpname);
     end
@@ -417,7 +428,13 @@ if dq_flag == 1
             end
             
             if s==1
-                dim_data = [size(ERPT.dataquality(where_dqm_indx).data),nfile]; % Dimensions can change, so match dimensions here. Final dim is number of files in this Grand Avg
+                if ndims( ERPT.dataquality(where_dqm_indx).data )==1
+                    dim_data = [size(ERPT.dataquality(where_dqm_indx).data),1,1,nfile]; % Dimensions can change, so match dimensions here. Final dim is number of files in this Grand Avg
+                elseif ndims( ERPT.dataquality(where_dqm_indx).data )==2
+                    dim_data = [size(ERPT.dataquality(where_dqm_indx).data),1,nfile];
+                elseif ndims( ERPT.dataquality(where_dqm_indx).data ) == 3
+                    dim_data = [size(ERPT.dataquality(where_dqm_indx).data),nfile];
+                end
                 dq_data_here = zeros(dim_data);
                 dq.times = ERPT.dataquality(where_dqm_indx).times;
                 if isfield(ERPT.dataquality(where_dqm_indx),'time_window_labels')

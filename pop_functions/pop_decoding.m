@@ -578,7 +578,12 @@ for b = 1:k
     %select chosen classes
     ALLBEST(b).binwise_data = ALLBEST(b).binwise_data(decodeClasses);
     ALLBEST(b).bindesc = ALLBEST(b).bindesc(decodeClasses);
-    ALLBEST(b).original_bin = ALLBEST(b).original_bin(decodeClasses);
+
+    if isempty(ALLBEST(b).original_bin) %quick fix for issue where original_bin is not transferred when combining bins - DRG 5/9/24
+    else
+        ALLBEST(b).original_bin = ALLBEST(b).original_bin(decodeClasses);
+    end
+
     ALLBEST(b).n_trials_per_bin = ALLBEST(b).n_trials_per_bin(decodeClasses);
     ALLBEST(b).nbin = numel(decodeClasses);
 

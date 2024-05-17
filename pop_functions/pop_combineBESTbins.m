@@ -118,7 +118,7 @@ if nargin == 1 %open GUI
     
     [BEST] = pop_combineBESTbins(ALLBEST,'BESTindex',currdata, 'bins_to_combine',nbins,'bin_labels',nlabels, ...
         'Saveas','on', 'History','gui'); 
-    
+
     pause(0.1);
     return
     
@@ -194,59 +194,45 @@ else
     inputvari = inputname(1);
 end
 bestcom = sprintf( 'BEST = pop_combineBESTbins( %s ', inputvari);
-for q=1:length(fn)
-    fn2com = fn{q};
-    if ~ismember_bc2(fn2com, skipfields)
-        fn2res = p.Results.(fn2com);
-        if ~isempty(fn2res)
-            if ischar(fn2res)
-                if ~strcmpi(fn2res,'off')
-                    bestcom = sprintf( '%s, ''%s'', ''%s''', bestcom, fn2com, fn2res);
-                end
-            else
-                if iscell(fn2res)
-                    if all(cellfun(@isnumeric, fn2res))
-                        %fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
-                        fn2resstr =cell2mat(cellfun(@vect2colon,fn2res,'UniformOutput',false));
-                        
-                    else
-                        fn2resstr = '';
-                        for kk=1:numel(fn2res)
-                            auxcont = fn2res{kk};
-                            if ischar(auxcont)
-                                fn2resstr = [fn2resstr '''' auxcont ''',' ];
-                            else
-                                fn2resstr = [fn2resstr ' ' vect2colon(auxcont, 'Delimiter', 'on')];
-                            end
-                            
-                        end
-                        fn2resstr(end) = []; %take out last comma
 
-                    end
-                    fnformat = '{%s}';
-                elseif isnumeric(fn2res)
-                    %fn2resstr = num2str(fn2res); fnformat = '%s';
-                    fn2res = mat2colon(fn2res);
-                    fn2resstr = num2str(fn2res); fnformat = '%s';
-                elseif isstruct(fn2res)
-                    fn2resstr = 'ALLBEST'; fnformat = '%s';
-                else
-                    fn2resstr = vect2colon(fn2res, 'Sort','on');
-                    fnformat = '%s';
+% Iterate through each field name
+% Loop through each field name
+for q = 1:length(fn)
+    fn2com = fn{q};  % Current field name
+    if ~ismember_bc2(fn2com, skipfields)  % If not in skipfields
+        fn2res = p.Results.(fn2com);  % Get the result for the current field
+        if ~isempty(fn2res)
+            if ischar(fn2res)  % If it's a character array
+                if ~strcmpi(fn2res, 'off')
+                    bestcom = sprintf('%s, ''%s'', ''%s''', bestcom, fn2com, fn2res);
                 end
-                
-%                 if strcmpi(fn2com,'BESTindex') 
-%                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
-%                 else
-                bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
-               % end
-                
-                %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+            elseif iscell(fn2res)  % If it's a cell array
+                fn2resstr = '';  % Initialize temporary storage
+                for kk = 1:numel(fn2res)
+                    auxcont = fn2res{kk};  % Extract the cell content
+                    if isnumeric(auxcont)  % If it's a numeric array
+                        formattedArray = sprintf('[%s]', sprintf('%d ', auxcont));  % Format with brackets
+                        formattedArray = strtrim(formattedArray);  % Trim spaces at the ends
+                        fn2resstr = [fn2resstr formattedArray ', '];  % Add comma
+                    elseif ischar(auxcont)  % If it's a string
+                        fn2resstr = [fn2resstr '''' auxcont ''', '];  % Add quotes and comma
+                    end
+                end
+                fn2resstr = fn2resstr(1:end - 2);  % Remove trailing comma and space
+                bestcom = sprintf('%s, ''%s'', {%s}', bestcom, fn2com, fn2resstr);  % Append to bestcom
+            elseif isnumeric(fn2res)  % If it's a numeric array
+                formattedArray = sprintf('[%s]', sprintf('%d ', fn2res));  % Format with brackets
+                formattedArray = strtrim(formattedArray);  % Trim spaces
+                bestcom = sprintf('%s, ''%s'', %s', bestcom, fn2com, formattedArray);  % Append
             end
         end
     end
 end
-bestcom = sprintf( '%s );', bestcom);
+
+% Add closing parenthesis and semicolon to the final string
+bestcom = sprintf('%s )', bestcom);
+
+% Execute or display the final command
 eegh(bestcom);
 
 %% save function
@@ -284,6 +270,5 @@ switch shist
     otherwise % off or none
         bestcom = '';
 end
-
 
 return

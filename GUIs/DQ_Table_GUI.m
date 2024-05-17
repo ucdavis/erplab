@@ -159,21 +159,24 @@ if n_elec == 0
     n_bin = ERP.nbin;
 end
 
-n_bin_names = numel(ERP.bindescr);
-if n_bin_names == n_bin
-    
+bin_names = numel(ERP.bindescr);
+if bin_names == n_bin
     for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+        n_bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
     end
-else
+elseif bin_names ~= n_bin
     % if not every bin has a bin description, leave then off
-    for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i)];
+    for i=1:bin_names
+        if i <= n_bin
+        n_bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+        elseif i > n_bin
+            n_bin_names{i} = ['BIN ' num2str(i) ' - NO DQ INFO EXISTS' ];
+        end
     end
 end
 
 
-handles.popupmenu_bin.String = bin_names;
+handles.popupmenu_bin.String = n_bin_names;
 
 % handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
 selected_DQ_type = handles.popupmenu_DQ_type.Value;
@@ -336,23 +339,20 @@ if isempty(handles.ERP.dataquality(selected_DQ_type).data)
     
     % if pointwise SEM, use ERP.binerror
     if any(strcmpi(pointwise_str, handles.ERP.dataquality(selected_DQ_type).type)) && isempty(handles.ERP.binerror) == 0
-        table_data = handles.ERP.binerror(:,:,selected_bin);
+        table_data = real(handles.ERP.binerror(:,:,selected_bin));
     else
-%     elseif strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM (Corrected)') && isempty(handles.ERP.binerror) == 0
-%         table_data = handles.ERP.binerror(:,:,selected_bin); 
-%     else
-%         
-        
-        
         % Data empty here.
         table_data = nan(1);
         disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
     end
+
+elseif selected_bin > length(handles.ERP.dataquality(1).data)
+    table_data = nan(1);
+    disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
     
 else
     % data is present and correct
-    
-    
+        
     if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(handles.ERP.binerror) == 0
         table_data = handles.ERP.dataquality(selected_DQ_type).data.SD_bias(:,:,selected_bin); %SD (Divided by N-1)
         set(handles.sdcorrection,'Enable','On');
@@ -360,14 +360,10 @@ else
     else
         table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
         set(handles.sdcorrection,'Enable','Off');
-        set(handles.sdcorrection,'Visible','Off');   
+        set(handles.sdcorrection,'Visible','Off');
     end
     
 end
-
-handles.dq_table.Data = table_data;
-handles.orig_data = table_data;
-
 
 % Time-window labels
 clear tw_labels
@@ -377,6 +373,10 @@ if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && 
     [n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type).data.SD_bias);
 else
     [n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type).data);
+end
+
+if selected_DQ_type == 2 % if Point-wise SEM
+    [n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type-1).data);
 end
 
 if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0 && handles.checkbox_text_labels.Value == 1
@@ -391,6 +391,27 @@ else
     end
 end
 handles.dq_table.ColumnName = tw_labels;
+
+bin_names = numel(ERP.bindescr);
+% Bin refresh
+if bin_names == n_bin
+    for i=1:n_bin
+        n_bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+    end
+elseif bin_names ~= n_bin
+    % if not every bin has a bin description, leave then off
+    for i=1:bin_names
+        if i <= n_bin
+        n_bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+        elseif i > n_bin
+            n_bin_names{i} = ['BIN ' num2str(i) ' - NO DQ INFO EXISTS' ];
+        end
+    end
+end
+
+handles.popupmenu_bin.String = n_bin_names;
+handles.dq_table.Data = table_data;
+handles.orig_data = table_data;
 
 
 if handles.heatmap_on
@@ -440,20 +461,23 @@ pointwise_str = handles.pointwise_str;
 if isempty(handles.ERP.dataquality(selected_DQ_type).data)
     
     % if pointwise SEM, use ERP.binerror
-    if any(strcmpi(pointwise_str,handles.ERP.dataquality(selected_DQ_type).type)) && isempty(handles.ERP.binerror) == 0
-        table_data = handles.ERP.binerror(:,:,selected_bin);
+    if any(strcmpi(pointwise_str,handles.ERP.dataquality(selected_DQ_type).type)) && isempty(handles.ERP.binerror) == 0 
+        table_data = real(handles.ERP.binerror(:,:,selected_bin));
     else
         
         % Data empty here.
         table_data = nan(1);
         disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
     end
+
+elseif selected_bin > length(handles.ERP.dataquality(1).data)
+            table_data = nan(1);
+        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
     
 else
     % data is present and correct
     table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
 end
-
 
 handles.dq_table.Data = table_data;
 handles.orig_data = table_data;
@@ -619,9 +643,8 @@ else
     clear_heatmap(hObject, eventdata, handles);
     handles.heatmap_on = 0;
     
-    %if outliers is on, then keep outliers active
     if handles.outliers_on == 1
-        redraw_outliers(hOBject, eventdata,handles);     
+        redraw_outliers(hObject, eventdata,handles);     
     end
     
 end
@@ -1060,6 +1083,7 @@ function active_erpset_Callback(hObject, eventdata, handles)
 newactive = get(hObject,'Value');
 ERPs = handles.ALLERP; 
 ERP = ERPs(newactive); 
+handles.ERP = ERP;
 
 n_dq = numel(ERP.dataquality);
 for i=1:n_dq
@@ -1067,10 +1091,10 @@ for i=1:n_dq
 end
 
 handles.popupmenu_DQ_type.String = type_names;
-handles.popupmenu_DQ_type.Value = n_dq;
+%handles.popupmenu_DQ_type.Value = n_dq;
 
 
-[n_elec, n_tw, n_bin] = size(ERP.dataquality(n_dq).data);
+[n_elec, n_tw, n_bin] = size(ERP.dataquality(handles.popupmenu_DQ_type.Value).data);
 
 if n_elec == 0
     % if the dq data is of zero size, then the 3rd dim may be mis-sized.
@@ -1078,41 +1102,74 @@ if n_elec == 0
     n_bin = ERP.nbin;
 end
 
-n_bin_names = numel(ERP.bindescr);
-if n_bin_names == n_bin
-    
+bin_names = numel(ERP.bindescr);
+if bin_names == n_bin
     for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+        n_bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
     end
-else
+elseif bin_names ~= n_bin
     % if not every bin has a bin description, leave then off
-    for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i)];
+    for i=1:bin_names
+        if i <= n_bin
+        n_bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+        elseif i > n_bin
+            n_bin_names{i} = ['BIN ' num2str(i) ' - NO DQ INFO EXISTS' ];
+        end
     end
 end
 
-
-handles.popupmenu_bin.String = bin_names;
+handles.popupmenu_bin.String = n_bin_names;
 
 % handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
 selected_DQ_type = handles.popupmenu_DQ_type.Value;
 selected_bin = handles.popupmenu_bin.Value;
 
-table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+if selected_bin > length(handles.ERP.bindescr) % this fixes issue when switching to ERP with fewer bins
+    selected_bin = 1;
+    handles.popupmenu_bin.Value = selected_bin;
+else
+end
+
+
+% if pointwise SEM, do the following (DRG 05/2024):
+if isempty(handles.ERP.dataquality(selected_DQ_type).data)
+    
+    % if pointwise SEM, use ERP.binerror
+    if selected_DQ_type == 2 && isempty(handles.ERP.binerror) == 0
+        table_data = real(handles.ERP.binerror(:,:,selected_bin));
+    else
+        
+        % Data empty here.
+        table_data = nan(1);
+        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
+    end
+
+    elseif selected_bin > length(handles.ERP.dataquality(1).data)
+    table_data = nan(1);
+    disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
+    
+else
+    % data is present and correct
+    table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+end
+
 handles.dq_table.Data = table_data;
 handles.orig_data = table_data;
 
-% electrode labels from ERPset, iff present and number matches
+% electrode labels from ERPset, if present and number matches
+
 if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
     for i=1:n_elec
         elec_labels{i} = ERP.chanlocs(i).labels;
     end
-else 
+else
 
     for i=1:ERP.nchan
-        elec_labels{i} = i;
+        elec_labels{i} = ERP.chanlocs(i).labels;
+       
     end
 end
+   
 handles.dq_table.RowName = elec_labels;
 
 % Time-window labels
@@ -1125,15 +1182,32 @@ else
         tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
     end
 end
-if n_tw == 0
-    tw_labels = 'No data here. Perhaps it was cleared?';
-end
-handles.dq_table.ColumnName = tw_labels;
 
+% Time-window labels for SEM (DRG 05/2024):
+if n_tw == 0 && selected_DQ_type ~= 2
+    tw_labels = 'No data here. Perhaps it was cleared?';
+elseif n_tw == 0 && selected_DQ_type == 2
+    tw_labels = [];
+end
+
+handles.dq_table.ColumnName = tw_labels;
+   
 % Set font size of DQ Table
 desired_fontsize = erpworkingmemory('fontsizeGUI');
 handles.dq_table.FontSize = desired_fontsize;
-handles.heatmap_on = 0;
+
+
+% DRG 05/2024
+% We want heatmap to remain on when users switch erpset
+if handles.heatmap_on == 1
+  redraw_heatmap(hObject, eventdata, handles);
+end
+
+% We want outliers to remain on when users switch erpset
+if handles.outliers_on == 1
+    redraw_outliers(hObject, eventdata, handles);
+end
+
 
 %
 % Prepare List of current Channels
@@ -1167,9 +1241,9 @@ handles.ALLERP = ERPs;
 
 
 %clear all perviously set options
-set(handles.checkbox_outliers,'Value',0);
-set(handles.checkbox_heatmap,'Value',0);
-set(handles.checkbox_text_labels,'Value',0); 
+% set(handles.checkbox_outliers,'Value',0);
+% set(handles.checkbox_heatmap,'Value',0);
+% set(handles.checkbox_text_labels,'Value',0);
 set(handles.stdwindow,'Enable','Off');
 set(handles.chwindow,'Enable','Off');
 set(handles.chbutton,'Enable','Off');
@@ -1195,7 +1269,7 @@ set(handles.chbutton,'Enable','Off');
 %     
 %     
 % end
-
+%handles.popupmenu_bin.String = bin_names;
 guidata(hObject, handles);
 
 % Hints: contents = cellstr(get(hObject,'String')) returns active_erpset contents as cell array

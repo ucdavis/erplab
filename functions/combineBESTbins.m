@@ -1,6 +1,7 @@
 function BEST = combineBESTbins(BEST,new_bins,new_labels)
 
-n_bins = size(new_bins,2);
+
+n_bins = size(new_bins,1);
 
 BEST.nbin = n_bins; 
 BEST.bindesc = new_labels'; 
@@ -40,10 +41,9 @@ for b = 1:n_bins
         new_binwise_data(b).data = C;
             
     end
-    clear data_splices; 
+    clear data_splice; 
     
 end
-
 
 BEST.binwise_data = new_binwise_data; 
 BEST.n_trials_per_bin = n_trials_per_bin; 
