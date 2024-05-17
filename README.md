@@ -2,7 +2,7 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v10.1
+## ERPLAB v10.11
 
 <p align="center" >
   <a href="https://github.com/ucdavis/erplab/releases/download/10.0/erplab10.1.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
@@ -13,7 +13,7 @@ To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab
 </p>
 
 
-To install ERPLAB v10.1, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v10.11, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Tutorial](https://github.com/lucklab/erplab/wiki/Tutorial) before using ERPLAB with your own data.
 
