@@ -77,7 +77,7 @@ EStudio_gui_erp_totl.panelSizes(19) = 820;
 EStudio_gui_erp_totl.panel{20} =  f_ERP_history_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(20) = 280;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
-    'Convert Voltage to CSD, Spectral Analysi, Create Artificial ERP Waveform, and History panels']);
+    'Convert Voltage to CSD, Spectral Analysis, Create Artificial ERP Waveform, and History panels']);
 set(EStudio_gui_erp_totl.settingLayout, 'Heights', EStudio_gui_erp_totl.panelSizes);
 EStudio_gui_erp_totl.panelscroll.Heights = sum(EStudio_gui_erp_totl.panelSizes);
 

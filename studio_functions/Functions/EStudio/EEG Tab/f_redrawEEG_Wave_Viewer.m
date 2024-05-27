@@ -811,7 +811,7 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
     observe_EEGDAT.CURRENTSET = EEGset_selected(Pagecurrent);
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     estudioworkingmemory('Startimes',0);
-    f_redrawEEG_Wave_Viewer();
+    f_redrawEEG_Wave_Viewer(1);
     observe_EEGDAT.count_current_eeg=2;
 else
     return;
@@ -860,7 +860,7 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
     observe_EEGDAT.CURRENTSET = EEGset_selected(Pagecurrent);
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     estudioworkingmemory('Startimes',0);
-    f_redrawEEG_Wave_Viewer();
+    f_redrawEEG_Wave_Viewer(1);
     observe_EEGDAT.count_current_eeg=2;
 else
     return;

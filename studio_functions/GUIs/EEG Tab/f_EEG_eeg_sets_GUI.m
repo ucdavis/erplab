@@ -1193,7 +1193,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         assignin('base','CURRENTSET',CURRENTSET);
         observe_EEGDAT.count_current_eeg =2;
         if EStudio_gui_erp_totl.EEG_autoplot==1
-            f_redrawEEG_Wave_Viewer();
+            f_redrawEEG_Wave_Viewer(1);
         end
     end
 
@@ -1315,7 +1315,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.refresh_eegset.Enable= 'on';
         observe_EEGDAT.count_current_eeg =2;
-        f_redrawEEG_Wave_Viewer();
+        f_redrawEEG_Wave_Viewer(1);
     end
 
 %----------------------Get the information of the updated EEGsets----------

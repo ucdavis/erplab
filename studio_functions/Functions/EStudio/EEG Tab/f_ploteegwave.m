@@ -894,11 +894,6 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         'FontWeight','normal',...
         'TickDir', 'in',...
         'LineWidth',0.5,'FontSize',FonsizeDefault);%%,'HorizontalAlignment','center'
-    % try
-    %     set(hbig, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
-    % catch
-    % end
-    
     count=0;
     for ii = length(hbig.YTickLabel):-1:2
         count = count+1;
