@@ -8,7 +8,7 @@
 
 
 
-function f_redrawEEG_Wave_Viewer()
+function f_redrawEEG_Wave_Viewer(Axesreset)
 
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
@@ -16,9 +16,12 @@ addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message)
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
 
-if nargin>1
+if nargin>2
     help f_redrawEEG_Wave_Viewer;
     return;
+end
+if nargin<1
+    Axesreset=0;
 end
 
 if isempty(observe_EEGDAT.EEG)
@@ -184,7 +187,7 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG) && EEG_autopl
             OutputViewereegpar{3},OutputViewereegpar{4},OutputViewereegpar{5},...
             OutputViewereegpar{6},OutputViewereegpar{7},OutputViewereegpar{8},...
             OutputViewereegpar{9},OutputViewereegpar{10},OutputViewereegpar{11},...
-            OutputViewereegpar{12},OutputViewereegpar{13},OutputViewereegpar{14},EStudio_gui_erp_totl);
+            OutputViewereegpar{12},OutputViewereegpar{13},OutputViewereegpar{14},EStudio_gui_erp_totl,Axesreset);
     else
         return;
     end
@@ -301,7 +304,6 @@ end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
 EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
-%         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
 end
 
 
@@ -330,8 +332,7 @@ else
 end
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 estudioworkingmemory('Startimes',Startimes);
-f_redrawEEG_Wave_Viewer();
-% observe_EEGDAT.eeg_panel_message=2;
+f_redrawEEG_Wave_Viewer(1);
 end
 
 
@@ -352,10 +353,7 @@ if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(Co
     ColorB_def = [0.7020 0.77 0.85];
 end
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
-
-% MessageViewer= char(strcat('Decreasing start time for the displayed EEG (<<)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
-% observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -381,9 +379,7 @@ else
     EStudio_gui_erp_totl.eeg_zoom_edit.String = '0';
 end
 
-% if Startimesdef>0
 Startimes = Startimesdef-fastif(Winlength>=5, round(5*Winlength), 5*Winlength);
-% end
 if Startimes<0
     if observe_EEGDAT.EEG.trials>1
         Startimes=1;
@@ -393,11 +389,8 @@ if Startimes<0
 end
 
 estudioworkingmemory('Startimes',Startimes);
-% estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
-f_redrawEEG_Wave_Viewer();
-% observe_EEGDAT.eeg_panel_message=2;
-
+f_redrawEEG_Wave_Viewer(1);
 end
 
 
@@ -420,9 +413,7 @@ if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(Co
 end
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
 
-% MessageViewer= char(strcat('Decreasing start time for the displayed EEG (<)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
-% observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -448,9 +439,7 @@ else
     EStudio_gui_erp_totl.eeg_zoom_edit.String = '0';
 end
 
-% if Startimesdef>0
 Startimes = Startimesdef-fastif(Winlength>=5, round(Winlength), Winlength);
-% end
 if Startimes<0
     if observe_EEGDAT.EEG.trials>1
         Startimes=1;
@@ -460,11 +449,8 @@ if Startimes<0
 end
 
 estudioworkingmemory('Startimes',Startimes);
-% estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
-% observe_EEGDAT.eeg_panel_message=1;
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
-f_redrawEEG_Wave_Viewer();
-% observe_EEGDAT.eeg_panel_message=2;
+f_redrawEEG_Wave_Viewer(1);
 end
 
 
@@ -487,8 +473,6 @@ if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(Co
 end
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
 
-% MessageViewer= char(strcat('Editing start time for the displayed EEG'));
-% estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
 Startimes = str2num(EStudio_gui_erp_totl.eeg_zoom_edit.String);
 if isempty(Startimes)
     Startimes = 0;
@@ -535,10 +519,7 @@ Source.String = num2str(Startimes);
 
 
 estudioworkingmemory('Startimes',Startimes);
-% MessageViewer= char(strcat('Editing start time for the displayed EEG'));
-% estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
-f_redrawEEG_Wave_Viewer();
-% observe_EEGDAT.eeg_panel_message=2;
+f_redrawEEG_Wave_Viewer(1);
 end
 
 
@@ -548,10 +529,7 @@ end
 function zoomout_small(~,~)
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
-% tic;%
-% MessageViewer= char(strcat('Increasing start time for the displayed EEG (>)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
-% observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -621,11 +599,7 @@ end
 EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
 estudioworkingmemory('Startimes',Startimes);
-% estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
-f_redrawEEG_Wave_Viewer();
-% observe_EEGDAT.eeg_panel_message=2;
-% timeElapsed = toc;
-% fprintf([32,'It took',32,num2str(timeElapsed),'s plot eeg waves.\n\n']);
+f_redrawEEG_Wave_Viewer(1);
 
 end
 
@@ -633,9 +607,7 @@ end
 function zoomout_fivelarge(~,~)
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
-% MessageViewer= char(strcat('Increasing start time for the displayed EEG (>>)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
-% observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -705,9 +677,7 @@ end
 EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
 estudioworkingmemory('Startimes',Startimes);
-% estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
-f_redrawEEG_Wave_Viewer();
-% observe_EEGDAT.eeg_panel_message=2;
+f_redrawEEG_Wave_Viewer(1);
 end
 
 
@@ -729,10 +699,7 @@ if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(Co
     ColorB_def = [0.7020 0.77 0.85];
 end
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
-
-% MessageViewer= char(strcat('Changing the start time to be maximal (>|)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
-% observe_EEGDAT.eeg_panel_message=1;%%this will slow down the plotting speed
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -762,18 +729,15 @@ Startimes = StartimesMax;
 
 
 estudioworkingmemory('Startimes',Startimes);
-% estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
 
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
-f_redrawEEG_Wave_Viewer();
-% observe_EEGDAT.eeg_panel_message=2;
+f_redrawEEG_Wave_Viewer(1);
 end
 
 
 %%-------------------------------Page Editor-------------------------------
 function page_edit(Source,~)
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'page_xyaxis',@count_page_xyaxis_change);
 if isempty(observe_EEGDAT.EEG)
     return;
 end
@@ -803,7 +767,6 @@ if ~isempty(Pagecurrent) && Pagecurrent>0 && Pagecurrent<= pageNum%%
     estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer();
     observe_EEGDAT.count_current_eeg=2;
-    %      observe_EEGDAT.eeg_panel_message=2;
 end
 end
 
@@ -847,13 +810,9 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
     EStudio_gui_erp_totl.eegpageinfo_edit.String = num2str(Pagecurrent);
     observe_EEGDAT.CURRENTSET = EEGset_selected(Pagecurrent);
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-    %     MessageViewer= char(strcat('Plot wave for the previous EEGset'));
-    %     estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
-    %     observe_EEGDAT.eeg_panel_message=1;
     estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer();
     observe_EEGDAT.count_current_eeg=2;
-    %     observe_EEGDAT.eeg_panel_message=2;
 else
     return;
 end
@@ -1171,14 +1130,28 @@ end
 %%-------------------------------Plot eeg waves--------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [EStudio_gui_erp_totl,errmeg] = f_plotviewereegwave(EEG,ChanArray,ICArray,EEGdispFlag,ICdispFlag,Winlength,...
-    AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,AmpIC,bufftobo,EStudio_gui_erp_totl)
+    AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,AmpIC,bufftobo,EStudio_gui_erp_totl,Axesreset)
 
+if nargin<17
+  Axesreset=0;  
+end
 
+if isempty(Axesreset) ||  numel(Axesreset)~=1 || (Axesreset~=0 && Axesreset~=1)
+    Axesreset=0;
+end
+
+if Axesreset ==1%%Speed up the execute time
+    cla(EStudio_gui_erp_totl.myeegviewer,'reset');
+    set(EStudio_gui_erp_totl.myeegviewer,'Box','on');
+else
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
-hold(EStudio_gui_erp_totl.myeegviewer,'on');
 Pos = EStudio_gui_erp_totl.myeegviewer.Position;
 EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.5,Pos(3)*1.15,Pos(4)*1.05];%%x,y,width,height
 estudioworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
+end
+
+hold(EStudio_gui_erp_totl.myeegviewer,'on');
+
 myeegviewer = EStudio_gui_erp_totl.myeegviewer;
 
 

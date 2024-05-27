@@ -343,7 +343,6 @@ varargout{1} = EStudio_box_bin_chan;
                 end
             end
             BinArraydef= ERPTab_bin_chan.BinRange.Value;
-            
             if numel(BinArraydef)==1 && BinArraydef==1
                 BinArray = [1:BinNum];
             end
