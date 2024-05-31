@@ -932,6 +932,16 @@ ERP1.bindata = ERP.bindata(ChanArray,:,:);
 [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
 minydef = floor(minydef);
 maxydef = ceil(maxydef);
+if ~isempty(minydef) && ~isempty(maxydef)
+    if minydef==maxydef
+        minydef=-1;
+        maxydef=1;
+    end
+elseif isempty(minydef) || isempty(maxydef)
+    minydef=-1;
+    maxydef=1;
+end
+
 y_scale_def = [minydef,maxydef];
 if isempty(qYScales) || numel(qYScales)~=2
     qYScales = y_scale_def;

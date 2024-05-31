@@ -106,7 +106,15 @@ ERP1.bindata = ERP.bindata(ChanArray,:,:);
 [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
 minydef = floor(minydef);
 maxydef = ceil(maxydef);
-
+if ~isempty(minydef) && ~isempty(maxydef)
+    if minydef==maxydef
+        minydef=-1;
+        maxydef=1;
+    end
+elseif isempty(minydef) || isempty(maxydef)
+    minydef=-1;
+    maxydef=1;
+end
 
 try yscale = ERPTab_plotset_pars{3};catch yscale= [minydef,maxydef]; end
 if isempty(yscale) || numel(yscale)~=2
@@ -117,7 +125,11 @@ YtickSpace=1.5;
 Fillscreen=1;
 
 defyticks = default_amp_ticks_viewer(yscale);
+if ~isempty(defyticks)
 defyticks = str2num(defyticks);
+else
+ defyticks = [];   
+end
 if ~isempty(defyticks) && numel(defyticks)>=2
     ytickstepdef = min(diff(defyticks));
 else

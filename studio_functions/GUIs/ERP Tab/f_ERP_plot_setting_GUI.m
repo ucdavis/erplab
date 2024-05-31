@@ -448,6 +448,16 @@ varargout{1} = ERP_plotset_box;
             [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
             minydef = floor(minydef);
             maxydef = ceil(maxydef);
+            if ~isempty(minydef) && ~isempty(maxydef)
+                if minydef==maxydef
+                    minydef=-1;
+                    maxydef=1;
+                end
+            elseif isempty(minydef) || isempty(maxydef)
+                minydef=-1;
+                maxydef=1;
+            end
+            
             ERPTab_plotset.yscale_low.Enable = 'off';
             ERPTab_plotset.yscale_high.Enable = 'off';
             ERPTab_plotset.yscale_low.String = num2str(minydef);
@@ -493,6 +503,15 @@ varargout{1} = ERP_plotset_box;
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
         minydef = floor(minydef);
         maxydef = ceil(maxydef);
+        if ~isempty(minydef) && ~isempty(maxydef)
+            if minydef==maxydef
+                minydef=-1;
+                maxydef=1;
+            end
+        elseif isempty(minydef) || isempty(maxydef)
+            minydef=-1;
+            maxydef=1;
+        end
         Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
         Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
         
@@ -545,6 +564,15 @@ varargout{1} = ERP_plotset_box;
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
         minydef = floor(minydef);
         maxydef = ceil(maxydef);
+        if ~isempty(minydef) && ~isempty(maxydef)
+            if minydef==maxydef
+                minydef=-1;
+                maxydef=1;
+            end
+        elseif isempty(minydef) || isempty(maxydef)
+            minydef=-1;
+            maxydef=1;
+        end
         Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
         Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
         
@@ -595,6 +623,15 @@ varargout{1} = ERP_plotset_box;
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
         minydef = floor(minydef);
         maxydef = ceil(maxydef);
+        if ~isempty(minydef) && ~isempty(maxydef)
+            if minydef==maxydef
+                minydef=-1;
+                maxydef=1;
+            end
+        elseif isempty(minydef) || isempty(maxydef)
+            minydef=-1;
+            maxydef=1;
+        end
         
         Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
         Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
@@ -745,8 +782,6 @@ varargout{1} = ERP_plotset_box;
             plotarray = BinArray;
             labelsdef =observe_ERPDAT.ERP.bindescr;
         end
-        
-        
         
         gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
         count = 0;
@@ -1325,7 +1360,15 @@ varargout{1} = ERP_plotset_box;
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
         minydef = floor(minydef);
         maxydef = ceil(maxydef);
-        
+        if ~isempty(minydef) && ~isempty(maxydef)
+            if minydef==maxydef
+                minydef=-1;
+                maxydef=1;
+            end
+        elseif isempty(minydef) || isempty(maxydef)
+            minydef=-1;
+            maxydef=1;
+        end
         try Yscale = ERPTab_plotset_pars{3}; catch Yscale=[]; end
         try Yscales_low = Yscale(1);catch Yscales_low=[];end
         try Yscales_high = Yscale(2);catch Yscales_high=[];end
@@ -1594,24 +1637,32 @@ varargout{1} = ERP_plotset_box;
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
         minydef = floor(minydef);
         maxydef = ceil(maxydef);
-        
+        if ~isempty(minydef) && ~isempty(maxydef)
+            if minydef==maxydef
+                minydef=-1;
+                maxydef=1;
+            end
+        elseif isempty(minydef) || isempty(maxydef)
+            minydef=-1;
+            maxydef=1;
+        end
         Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
         Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
         if isempty(Yscales_low) || numel(Yscales_low)~=1
-            ERPTab_plotset.yscale_low.String = str2num(minydef);
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
             Yscales_low= minydef;
             estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if isempty(Yscales_high) || numel(Yscales_high)~=1
-            ERPTab_plotset.yscale_high.String = str2num(maxydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
             estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if any(Yscales_high<=Yscales_low)
-            ERPTab_plotset.yscale_low.String = str2num(minydef);
-            ERPTab_plotset.yscale_high.String = str2num(maxydef);
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
             Yscales_low= minydef;
             estudioworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
@@ -1857,6 +1908,15 @@ varargout{1} = ERP_plotset_box;
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
         minydef = floor(minydef);
         maxydef = ceil(maxydef);
+        if ~isempty(minydef) && ~isempty(maxydef)
+            if minydef==maxydef
+                minydef=-1;
+                maxydef=1;
+            end
+        elseif isempty(minydef) || isempty(maxydef)
+            minydef=-1;
+            maxydef=1;
+        end
         if ERPTab_plotset.yscale_auto.Value ==1
             ERPTab_plotset.yscale_low.Enable = 'off';
             ERPTab_plotset.yscale_high.Enable = 'off';
@@ -2131,6 +2191,15 @@ varargout{1} = ERP_plotset_box;
             [def, minydef, maxydef] = default_amp_ticks(observe_ERPDAT.ERP, [1:observe_ERPDAT.ERP.nbin]);
             minydef = floor(minydef);
             maxydef = ceil(maxydef);
+            if ~isempty(minydef) && ~isempty(maxydef)
+                if minydef==maxydef
+                    minydef=-1;
+                    maxydef=1;
+                end
+            elseif isempty(minydef) || isempty(maxydef)
+                minydef=-1;
+                maxydef=1;
+            end
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
             defyticks = default_amp_ticks_viewer([minydef,maxydef]);
