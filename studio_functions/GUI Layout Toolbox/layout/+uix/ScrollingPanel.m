@@ -45,7 +45,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
     
     properties( Constant, Access = protected )
         SliderSize = 20 % slider size, in pixels
-        SliderStep = 1 % slider step, in pixels
+        SliderStep = 10 % slider step, in pixels
     end
     
     events( NotifyAccess = private )
@@ -466,7 +466,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
                 set( hSlider, 'Style', 'slider', 'Enable', 'on', ...
                     'Position', hSliderPosition, ...
                     'Min', hSliderMin, 'Max', hSliderMax, ...
-                    'Value', hSliderValue, 'SliderStep', hSliderStep)
+                    'Value', hSliderValue, 'SliderStep', hSliderStep )
             end
             
             % Set contents and blanking plate positions
@@ -484,15 +484,16 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
             verticalSlider = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'Style', 'slider', ...
-                'BackgroundColor', [0.85,0.85,0.85] );
+                'BackgroundColor', [0.9 0.9 0.9] );
             horizontalSlider = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'Style', 'slider', ...
-                'BackgroundColor',  [0.85,0.85,0.85] );
+                'BackgroundColor', [0.9 0.9 0.9] );
             blankingPlate = matlab.ui.control.UIControl( ...
                 'Internal', true, 'Parent', obj, ...
                 'Units', 'pixels', 'Style', 'text', 'Enable', 'inactive', ...
-                'BackgroundColor', [0.85,0.85,0.85] );
+                'BackgroundColor', [0.9 0.9 0.9] );
+            
             % Add to sizes
             obj.Widths_(end+1,:) = -1;
             obj.MinimumWidths_(end+1,:) = 1;
@@ -667,9 +668,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         function onBackgroundColorChanged( obj, ~, ~ )
             %onBackgroundColorChanged  Handler for BackgroundColor changes
             
-            set( obj.HorizontalSliders, 'BackgroundColor', [0.85,0.85,0.85] )
-            set( obj.VerticalSliders, 'BackgroundColor', [0.85,0.85,0.85] )
-            set( obj.BlankingPlates, 'BackgroundColor', obj.BackgroundColor)
+            set( obj.HorizontalSliders, 'BackgroundColor', [0.9 0.9 0.9] )
+            set( obj.VerticalSliders, 'BackgroundColor', [0.9 0.9 0.9] )
+            set( obj.BlankingPlates, 'BackgroundColor', obj.BackgroundColor )
             
         end % onBackgroundColorChanged
         

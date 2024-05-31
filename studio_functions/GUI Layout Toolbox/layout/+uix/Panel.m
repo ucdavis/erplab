@@ -8,19 +8,19 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
     %  contents and hides the others.
     %
     %  See also: uix.CardPanel, uix.BoxPanel, uipanel
-    
-    %  Copyright 2009-2020 The MathWorks, Inc.
-    
+
+    %  Copyright 2009-2024 The MathWorks, Inc.
+
     methods
-        
+
         function obj = Panel( varargin )
             %uix.Panel  Standard panel constructor
             %
             %  p = uix.Panel() constructs a standard panel.
             %
             %  p = uix.Panel(p1,v1,p2,v2,...) sets parameter p1 to value
-            %  v1, etc.           
-            
+            %  v1, etc.
+
             % Set properties
             try
                 uix.set( obj, varargin{:} )
@@ -28,15 +28,20 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
                 delete( obj )
                 e.throwAsCaller()
             end
-            
+
+            % Disable auto resize
+            if isprop( obj, 'AutoResizeChildren' )
+                obj.AutoResizeChildren = 'off';
+            end
+
         end % constructor
-        
+
     end % structors
-    
+
     methods( Access = protected )
-        
+
         function redraw( obj )
-            
+
             % Compute positions
             bounds = hgconvertunits( ancestor( obj, 'figure' ), ...
                 [0 0 1 1], 'normalized', 'pixels', obj );
@@ -44,15 +49,15 @@ classdef Panel < matlab.ui.container.Panel & uix.mixin.Panel
             xSizes = uix.calcPixelSizes( bounds(3), -1, 1, padding, 0 );
             ySizes = uix.calcPixelSizes( bounds(4), -1, 1, padding, 0 );
             position = [padding+1 padding+1 xSizes ySizes];
-            
+
             % Redraw contents
             selection = obj.Selection_;
             if selection ~= 0
                 uix.setPosition( obj.Contents_(selection), position, 'pixels' )
             end
-            
+
         end % redraw
-        
+
     end % template methods
-    
+
 end % classdef
