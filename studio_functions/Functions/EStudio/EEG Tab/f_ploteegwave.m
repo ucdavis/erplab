@@ -871,10 +871,10 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
     end
     if EEGdispFlag~=0
-        line(hbig,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
-        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-AmpScale ylims(end)-AmpScale],'color','k','LineWidth',1, 'clipping','off');
+        line(hbig,[leftintv,rightintv],[ylims(end)-OldAmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
+        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-OldAmpScale ylims(end)-OldAmpScale],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end) ylims(end)],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(OldAmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
         text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
     end
     

@@ -1925,7 +1925,7 @@ end
 FigureName= figure( 'Name',[ERP.erpname] , ...
     'NumberTitle', 'off','Color',[1 1 1]);
 FigureName.Position(3:4) = Position(3:4);
-
+FigureName.Position(1:2) = [0 0];
 erptabwaveiwer_legend = subplot(ceil(rowNums*5)+1, 1, 1,'align');
 
 hbig = subplot(ceil(rowNums*5)+1,1,[2:ceil(rowNums*5)+1]);

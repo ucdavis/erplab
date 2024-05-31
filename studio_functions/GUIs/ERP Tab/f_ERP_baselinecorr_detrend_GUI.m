@@ -552,7 +552,6 @@ varargout{1} = ERP_basecorr_detrend_box;
         estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 

@@ -287,7 +287,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
-            ColorBviewer_def = [0.7765,0.7294,0.8627];
+            ColorBviewer_def = [0.8 0.8 0.9];
         end
         
         gui_erp_waviewer.Window = figure( 'Name', currvers, ...

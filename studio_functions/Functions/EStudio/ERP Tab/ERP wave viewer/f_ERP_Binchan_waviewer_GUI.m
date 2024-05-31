@@ -26,7 +26,7 @@ ERPwaveview_binchan = struct();
 try
     [version reldate,ColorBviewer_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
 catch
-    ColorBviewer_def = [0.7765    0.7294    0.8627];
+    ColorBviewer_def = [0.8 0.8 0.9];
 end
 % global Chanbin_waveviewer_box;
 if nargin == 0
@@ -63,7 +63,7 @@ varargout{1} = Chanbin_waveviewer_box;
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
-            ColorBviewer_def =  [0.7765    0.7294    0.8627];
+            ColorBviewer_def =  [0.8 0.8 0.9];
         end
         
         ERPwaveview_binchan.vBox = uiextras.VBox('Parent', Chanbin_waveviewer_box, 'Spacing', 5,'BackgroundColor',ColorBviewer_def); % VBox for everything

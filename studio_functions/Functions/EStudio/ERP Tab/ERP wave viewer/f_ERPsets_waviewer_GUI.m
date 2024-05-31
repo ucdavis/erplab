@@ -28,7 +28,7 @@ ERPwaveview_erpsetops = struct();
 try
     [version reldate,ColorBviewer_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
 catch
-    ColorBviewer_def = [0.7765    0.7294    0.8627];
+    ColorBviewer_def = [0.8 0.8 0.9];
 end
 
 % global ERPsets_waveviewer_box;
@@ -70,7 +70,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
-            ColorBviewer_def =  [0.7765    0.7294    0.8627];
+            ColorBviewer_def =  [0.8 0.8 0.9];
         end
         ALLERP = gui_erp_waviewer.ERPwaviewer.ALLERP;
         ERPdatasets = getERPDatasets(ALLERP); % Get datasets from ALLERP

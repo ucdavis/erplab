@@ -45,7 +45,7 @@ EStudio_gui_erp_totl.eegpanelSizes(5) = 290;
 EStudio_gui_erp_totl.eegpanel{6} = f_EEG_chanoperation_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(6) = 330;
 EStudio_gui_erp_totl.eegpanel{7} = f_EEG_informtion_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(7) = 400;
+EStudio_gui_erp_totl.eegpanelSizes(7) = 410;
 EStudio_gui_erp_totl.eegpanel{8} = f_EEG_resample_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(8) = 215;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...

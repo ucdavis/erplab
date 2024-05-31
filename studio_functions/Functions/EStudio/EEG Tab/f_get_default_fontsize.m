@@ -14,7 +14,7 @@ if ismac
     FonsizeDefault = 12;
 elseif isunix
     % Code to run on Linux platform
-    FonsizeDefault = 9;
+    FonsizeDefault = 8.5;
 elseif ispc
     % Code to run on Windows platform
     FonsizeDefault = 9;
