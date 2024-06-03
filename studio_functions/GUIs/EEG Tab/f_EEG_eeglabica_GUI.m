@@ -19,7 +19,6 @@ addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 EStduio_eegtab_eeglab_ica = struct();
 
 %-----------------------------Name the title----------------------------------------------
-% global EStudio_box_eeglab_ica;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
@@ -50,7 +49,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EStduio_eegtab_eeglab_ica.DataSelBox = uiextras.VBox('Parent', EStudio_box_eeglab_ica,'BackgroundColor',ColorB_def);
-        
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
         else
@@ -288,7 +286,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > Classify IC by ICLabel:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > Classify IC by ICLabel: Only works for one selected dataset'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -301,7 +299,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
             EEG = f_estudio_iclabel(EEG,EEGArray(Numofeeg));
             LASTCOM = sprintf('EEG = f_estudio_iclabel(EEG, %d);', EEGArray);
-            fprintf(LASTCOM,'\n');
+            
             EEG = eegh(LASTCOM, EEG);
             fprintf(LASTCOM,'\n');
             if Numofeeg==1

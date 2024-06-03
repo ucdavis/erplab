@@ -150,7 +150,7 @@ suffix_edit = handles.edit_suffix_name.String;
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
     
-    DataString{Numoferpset,1} = strcat(ALLEEG(EEGArray(Numoferpset)).setname,suffix_edit);
+    DataString{Numoferpset,1} = strcat(DataString_before{Numoferpset,1},suffix_edit);
     if handles.checkbox3_filename_setname.Value==1
         DataString{Numoferpset,2} =  [DataString{Numoferpset,1},'.set'];
     else

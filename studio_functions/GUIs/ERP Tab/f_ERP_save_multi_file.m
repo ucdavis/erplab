@@ -156,7 +156,7 @@ suffix_edit = handles.edit_suffix_name.String;
 
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
-    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix_edit);
+    DataString{Numoferpset,1} = strcat(DataString_before{Numoferpset,1},suffix_edit);
     if handles.checkbox3_filename_erpname.Value==0
         DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
     else
