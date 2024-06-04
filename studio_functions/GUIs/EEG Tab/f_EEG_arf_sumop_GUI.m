@@ -138,7 +138,7 @@ varargout{1} = Eegtab_box_art_sumop;
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Clear artifact detection marks on EEG*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
             if EEG.trials==1
                 erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Clear artifact detection marks on EEG: cannot work on a continuous EEG';
                 titlNamerro = 'Warning for EEG Tab';
@@ -252,7 +252,7 @@ varargout{1} = Eegtab_box_art_sumop;
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Sync artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
             if EEG.trials==1
                 erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Sync artifact info in EEG and EVENTLIST: cannot work on a continuous EEG';
                 titlNamerro = 'Warning for EEG Tab';
@@ -367,7 +367,7 @@ varargout{1} = Eegtab_box_art_sumop;
             elseif New_pos1(3)==1
                 fprintf(['*Classic Artifact Summary>Summarize EEG artifact in a graphic*',32,32,32,32,datestr(datetime('now')),'\n']);
             end
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
             if EEG.trials==1
                 erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary: cannot work on a continuous EEG';
                 titlNamerro = 'Warning for EEG Tab';
@@ -462,6 +462,10 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+        fprintf(['*Artifact Info & Tools (Epoched EEG)>Artifact Summary*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf(LASTCOM);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         for NumofEEG = 1:numel(EEGArray)
             observe_EEGDAT.ALLEEG(EEGArray(NumofEEG)) = eegh(LASTCOM,observe_EEGDAT.ALLEEG(EEGArray(NumofEEG)));
             if NumofEEG==1

@@ -533,6 +533,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         end
         
         ALLEEG = observe_EEGDAT.ALLEEG;
+        ALLERP = [];
         for Numofeeg = 1:numel(EEGArray)
             setindex =EEGArray(Numofeeg);
             EEG = ALLEEG(setindex);
@@ -544,11 +545,14 @@ varargout{1} = Eegtab_box_dq_epoch;
             [ERPpreavg, erpcom] = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
                 'SEM', stdsstr, 'Saveas', 'off', 'Warning', 'off', 'ExcludeBoundary', excboundstr,...
                 'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt,'DQ_custom_wins', DQcustom_wins, 'History', '');
-            ALLERP = [];
-            CURRENTPREAVG = 1;
+            
             ERPpreavg.erpname = ALLEEG(setindex).setname; %setname instead of erpname in DQ Table
-            DQ_Table_GUI(ERPpreavg,ALLERP,CURRENTPREAVG,1);
             LASTCOM =  'pop_DQ_preavg(ALLEEG);';
+            if Numofeeg==1
+                ALLERP=ERPpreavg;
+            else
+                ALLERP(Numofeeg)  = ERPpreavg;
+            end
             disp(LASTCOM);
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             if Numofeeg==1
@@ -556,6 +560,9 @@ varargout{1} = Eegtab_box_dq_epoch;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end for loop of subjects
+        CURRENTPREAVG = 1;
+        DQ_Table_GUI(ALLERP(1),ALLERP,CURRENTPREAVG,1);
+        
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         assignin('base','EEG',observe_EEGDAT.EEG);
         observe_EEGDAT.count_current_eeg=1;

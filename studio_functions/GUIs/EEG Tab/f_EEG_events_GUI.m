@@ -492,7 +492,10 @@ varargout{1} = EStudio_eeg_events_box;
         ALLEEG = observe_EEGDAT.ALLEEG;
         [ALLEEG, LASTCOM] = pop_eeg_eventlist_view( ALLEEG, 'EEGArray',EEGArray,...
             'Saveas', 'off', 'History', 'script');
-        
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+        fprintf(['*EEG Tab>Eventlist>View*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf( [LASTCOM]);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         observe_EEGDAT.ALLEEG = ALLEEG;
         eegh(LASTCOM);
         observe_EEGDAT.EEG=observe_EEGDAT.ALLEEG(EEGArray);

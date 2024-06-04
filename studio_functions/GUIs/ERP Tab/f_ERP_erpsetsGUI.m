@@ -896,9 +896,9 @@ varargout{1} = box_erpset_gui;
         end
         ERPsetops.butttons_datasets.String = ERPlistName;
         if observe_ERPDAT.CURRENTERP>0
-        ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
+            ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
         else
-          ERPsetops.butttons_datasets.Value=1;  
+            ERPsetops.butttons_datasets.Value=1;
         end
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
@@ -969,6 +969,12 @@ varargout{1} = box_erpset_gui;
             if checkfileindex==1
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
                 ERPCOM = f_erp_save_history(ERP.erpname,filename,pathName);
+                if Numoferp==1
+                    fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                    fprintf(['*ERPsets>Save*',32,32,32,32,datestr(datetime('now')),'\n']);
+                    fprintf( [ERPCOM]);
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
+                end
                 if Numoferp == numel(ERPArray)
                     [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 else
@@ -1035,6 +1041,13 @@ varargout{1} = box_erpset_gui;
             [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', erpFilename,...
                 'filepath',ERP.filepath);
             ERPCOM = f_erp_save_history(ERP.erpname,erpFilename,ERP.filepath);
+            if Numoferp==1
+                fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                fprintf(['*ERPsets>Save a Copy*',32,32,32,32,datestr(datetime('now')),'\n']);
+                fprintf( [ERPCOM]);
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+            end
+            
             if Numoferp == numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             else
@@ -1096,6 +1109,10 @@ varargout{1} = box_erpset_gui;
         cd(sel_path1);
         erpcom  = sprintf('cd(%s',sel_path1);
         erpcom = [erpcom,');'];
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['*ERPsets>Current Folder*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf( [erpcom]);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
         ERP = observe_ERPDAT.ERP;
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom,2);

@@ -1354,7 +1354,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.det_algo.Enable= 'off';
             Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'off';
             Eegtab_EEG_art_det_epoch.chan_browse.Enable= 'off';
-            Eegtab_EEG_art_det_epoch.mflag1.Enable= 'on';
             Eegtab_EEG_art_det_epoch.mflag2.Enable= 'on';
             Eegtab_EEG_art_det_epoch.mflag3.Enable= 'on';
             Eegtab_EEG_art_det_epoch.mflag4.Enable= 'on';
@@ -1373,7 +1372,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
             Eegtab_EEG_art_det_epoch.prefilter_edit.Enable= 'off';
         end
-        
+        Eegtab_EEG_art_det_epoch.mflag1.Enable= 'off';
         Eegtab_EEG_art_det_epoch.Paras{1} = Eegtab_EEG_art_det_epoch.det_algo.Value;
         Eegtab_EEG_art_det_epoch.Paras{2} = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
         %         Eegtab_EEG_art_det_epoch.Paras{3} = Eegtab_EEG_art_det_epoch.mflag;

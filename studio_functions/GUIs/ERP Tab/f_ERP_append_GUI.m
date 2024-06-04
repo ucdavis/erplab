@@ -601,7 +601,7 @@ varargout{1} = box_erp_append;
         observe_ERPDAT.Process_messg =2;
         estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
         observe_ERPDAT.Count_currentERP = 1;
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+       
     end
 
 

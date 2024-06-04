@@ -715,6 +715,7 @@ varargout{1} = Eegtab_box_art_sumop;
             
             [~,EEG, LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,EEGArray(Numofeeg),stim_codes,resp_codes);
             if isempty(LASTCOM)
+                fprintf( [repmat('-',1,100) '\n']);
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end

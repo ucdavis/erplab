@@ -235,6 +235,7 @@ varargout{1} = EEG_CSD_gui;
             
             [EEG, LASTCOM] = pop_currentsourcedensity(EEG,'EStudio');
             EEG = eegh(LASTCOM, EEG);
+            fprintf([LASTCOM,'\n']);
             if Numofeeg==1
                 eegh(LASTCOM);
             end

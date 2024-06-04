@@ -210,7 +210,10 @@ varargout{1} = eegtab_events_box;
         ALLERP = observe_ERPDAT.ALLERP;
         [ALLERP, ERPCOM] = pop_erp_eventlist_view( ALLERP, 'ERPArray',ERPArray,...
             'Saveas', 'off', 'History', 'script');
-        
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['*ERP Tab>Eventlist>View*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf([ERPCOM]);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         for Numoferp = 1:numel(ERPArray)
             if Numoferp ==length(ERPArray)
                 [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM, ERPCOM,2);
@@ -267,13 +270,13 @@ varargout{1} = eegtab_events_box;
             else
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
             end
-            [ERP, ERPCOM] = pop_importerpeventlist( ERP, ELfullname , 'ReplaceEventList', 1 , 'Saveas', 'off', 'History', 'gui');
+            [ERP, ERPCOM] = pop_importerpeventlist( ERP, ELfullname , 'ReplaceEventList', 'replace' , 'Saveas', 'off', 'History', 'gui');
             if Numoferp ==numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            
+            fprintf([ERPCOM]);
             if Numoferp==1
                 ALLERP_out = ERP;
             else
@@ -402,12 +405,10 @@ varargout{1} = eegtab_events_box;
                 filenameeg = fullfile(pathname, filenameeg);
                 
                 disp(['For EVENTLIST output user selected ', filenameeg])
-                [ERP, ERPCOM] = pop_exporterpeventlist( ERP , 'ELIndex', indexel, 'Filename', filenameeg,'History','gui');
-                %                 if Numoferp==1
+                [ERP, ERPCOM] = pop_exporterpeventlist( ERP , 'ELIndex', 1, 'Filename', filenameeg,'History','gui');
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 assignin('base','ALLERPCOM',ALLERPCOM);
                 assignin('base','ERPCOM',ERPCOM);
-                %                 end
                 observe_ERPDAT.ALLERP(ERPArray(Numoferp)) =ERP;
             else
                 titlNamerro = 'Warning for ERP Tab';
@@ -472,7 +473,6 @@ varargout{1} = eegtab_events_box;
             else
                 ALLERP_out(length(ALLERP_out)+1) = ERP;
             end
-            fprintf( ['\n',repmat('-',1,100) '\n\n']);
         end
         
         
@@ -593,11 +593,10 @@ varargout{1} = eegtab_events_box;
                 
                 disp(['For EVENTLIST output user selected ', filenameeg])
                 [ERP, ERPCOM] = pop_exporterpeventlist( ERP , 'ELIndex', 1, 'Filename', filenameeg,'History','gui');
-                %                 if Numoferp==1
+                
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 assignin('base','ALLERPCOM',ALLERPCOM);
                 assignin('base','ERPCOM',ERPCOM);
-                %                 end
                 observe_ERPDAT.ALLERP(ERPArray(Numoferp)) =ERP;
             else
                 titlNamerro = 'Warning for ERP Tab';

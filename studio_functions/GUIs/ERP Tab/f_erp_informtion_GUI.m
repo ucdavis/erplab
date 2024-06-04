@@ -104,7 +104,7 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_information.total_rejected = uiextras.HBox('Parent',gui_erp_information.DataSelBox);
         gui_erp_information.total_rejected_percentage  = uicontrol('Style','text','Parent', gui_erp_information.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_information.total_rejected_percentage,'HorizontalAlignment','left');
-
+        
         
         %%----------------------totla rejected-----------------------------
         gui_erp_information.total_rejected_show = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
@@ -266,7 +266,10 @@ drawui_erp_information(FonsizeDefault);
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         ERPCOM = pop_erp_ar_summary(observe_ERPDAT.ALLERP,ERPArray);
-        
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['*ERP & Bin Information>Bin Info table*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf( [ERPCOM]);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ERP, ALLERPCOM, ERPCOM,2);
         assignin('base','ALLERPCOM',ALLERPCOM);

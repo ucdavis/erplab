@@ -248,7 +248,7 @@ varargout{1} = EStudio_box_eeglab_ica;
                 return;
             end
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-            fprintf(LASTCOM,'\n');
+            fprintf([LASTCOM,'\n']);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
@@ -301,7 +301,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             LASTCOM = sprintf('EEG = f_estudio_iclabel(EEG, %d);', EEGArray);
             
             EEG = eegh(LASTCOM, EEG);
-            fprintf(LASTCOM,'\n');
+            fprintf([LASTCOM,'\n']);
             if Numofeeg==1
                 eegh(LASTCOM);
             end

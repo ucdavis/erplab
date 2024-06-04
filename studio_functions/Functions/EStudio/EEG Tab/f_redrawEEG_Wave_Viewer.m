@@ -1645,10 +1645,12 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
         evntxt = strrep(num2str(Events(event2plot(index)).type),'_','-');
         if length(evntxt)>MAXEVENTSTRING, evntxt = [ evntxt(1:MAXEVENTSTRING-1) '...' ]; end % truncate
         try,
+            if tmplat>=0
             tmph2 = text(myeegviewer, [tmplat], ylims(2)-0.005, [EVENTFONT evntxt], ...
                 'color', Eventcolors{ event2plot(index) }, ...
                 'horizontalalignment', 'left',...
                 'rotation',90,'FontSize',FonsizeDefault);
+            end
         catch, end
         
         % draw duration is not 0

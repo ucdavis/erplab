@@ -209,9 +209,12 @@ drawui_erp_information(FonsizeDefault);
         estudioworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show in a table');
         observe_ERPDAT.Process_messg =1;
         try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM=[];  end
-        DQ_Table_GUI(observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP),observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,1);
+        DQ_Table_GUI(observe_ERPDAT.ALLERP(SelectedERP(1)),observe_ERPDAT.ALLERP(SelectedERP),1,1);
         for Numoferp = 1:numel(SelectedERP)
             ERPCOM = [' DQ_Table_GUI(ERP,ALLERP,',num2str(Numoferp),',1);'];
+            if Numoferp==1
+                fprintf(['\n',ERPCOM,'\n']);
+            end
             [ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)), ALLERPCOM, ERPCOM,2);
             observe_ERPDAT.ALLERP(SelectedERP(Numoferp)) = ERP;
         end
@@ -254,6 +257,9 @@ drawui_erp_information(FonsizeDefault);
                     [ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)), ALLERPCOM, ERPCOM,2);
                     observe_ERPDAT.ALLERP(SelectedERP(Numoferp)) = ERP;
                     countr=1;
+                    if Numoferp==1
+                        fprintf(['\n',ERPCOM,'\n']);
+                    end
                 end
             catch
                 msgboxText =  ['No information for data quality is found!'];

@@ -1139,6 +1139,11 @@ estudioworkingmemory('Startimes',0);%%set default value
         cd(select_path);
         erpcom  = sprintf('cd(%s',select_path);
         erpcom = [erpcom,');'];
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['*EEGsets>Current Folder*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf( [erpcom]);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+        
         eegh(erpcom);
         estudioworkingmemory('EEG_save_folder',select_path);
         observe_EEGDAT.count_current_eeg=26;

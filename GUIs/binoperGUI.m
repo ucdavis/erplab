@@ -176,16 +176,15 @@ else
     Toolabel = 1;
 end
 handles.Toolabel=Toolabel;
+version = geterplabversion;
 if Toolabel
-    erplab_studio_default_values;
-    version = erplabstudiover;
     set(handles.gui_chassis,'Name', ['EStudio',version,'  -   Bin Operation > Advanced GUI for '])
     handles = painterplabstudio(handles);
     handles = setfonterplabestudio(handles);
     handles.RUN.String = 'OK';
 else
     
-    version = geterplabversion;
+    
     set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Bin Operation GUI '])
     %
     handles = painterplab(handles);
