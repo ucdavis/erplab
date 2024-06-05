@@ -322,12 +322,12 @@ varargout{1} = box_erpwave_viewer_property;
         if isempty(ViewerName)
             ViewerName = 'My Viewer';
         end
-        try
-            erplab_default_values;
-            erplabstudiover = erplabver;
-        catch
-            erplabstudiover = '??';
+        
+        erplabstudiover = geterplabeversion;
+        if isempty(erplabstudiover)
+           erplabstudiover = '??'; 
         end
+        
         currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
         estudioworkingmemory('viewername',ViewerName);
         
@@ -504,4 +504,10 @@ varargout{1} = box_erpwave_viewer_property;
         gui_erp_waviewer.Window.Name = currvers;
     end
 
+end
+
+%%---------------------ERPLAB VERSION--------------------------------------
+function erplabver1 = geterplabeversion
+erplab_default_values;
+erplabver1 = erplabver;
 end
