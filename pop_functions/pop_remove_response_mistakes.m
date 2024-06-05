@@ -12,8 +12,10 @@ if exist('stim_codes','var') == 0 || isempty(stim_codes)
 end
 
 EEG = remove_response_mistakes(EEG,stim_codes,resp_codes,1);
-
-% % % % [ALLEEG,EEG] = pop_newset(ALLEEG,EEG,CURRENTSET);%%GH Oct 2023
-
-hist_com = ['[ALLEEG EEG] = pop_remove_response_mistakes(ALLEEG, EEG, CURRENTSET, ' num2str(stim_codes) ',' num2str(resp_codes),');' ];
+ERPtooltype = erpgettoolversion('tooltype');
+if ~strcmpi(ERPtooltype,'estudio')
+    [ALLEEG,EEG] = pop_newset(ALLEEG,EEG,CURRENTSET);
+end
+stim_codesstr = vect2colon(stim_codes);resp_codesstr = vect2colon(resp_codes);
+hist_com = ['[ALLEEG EEG] = pop_remove_response_mistakes(ALLEEG, EEG, CURRENTSET,', stim_codesstr, ',',resp_codesstr,');' ];
 

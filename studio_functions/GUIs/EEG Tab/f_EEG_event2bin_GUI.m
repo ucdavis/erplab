@@ -611,7 +611,11 @@ varargout{1} = EStudio_box_EEG_event2bin;
         else
             dsnames = dsnamesdef;
         end
-        EStduio_eegtab_EEG_event2bin.table_event.Data = dsnames;
+       try 
+           EStduio_eegtab_EEG_event2bin.table_event.Data = dsnames; 
+       catch
+          EStduio_eegtab_EEG_event2bin.table_event.Data = dsnamesdef;
+       end
         EStduio_eegtab_EEG_event2bin.BDF_edit.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.BDF_browse.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'on';
