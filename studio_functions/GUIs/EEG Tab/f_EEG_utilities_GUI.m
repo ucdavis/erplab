@@ -558,8 +558,8 @@ varargout{1} = Eegtab_box_art_sumop;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         [stim_codes, resp_codes] = gui_remove_response_mistakes(observe_EEGDAT.EEG);
-        if isempty(stim_codes) || isempty(resp_codes)
-            msgboxText = ['EEG Utilities > Delete Spurious Additional Responses: Please enter valid "Stimulus" and "Response" events'];
+        if isempty(stim_codes) || isempty(resp_codes) || ~isnumeric(stim_codes) || ~isnumeric(resp_codes)
+            msgboxText = ['EEG Utilities > Delete Spurious Additional Responses: Please enter valid "Stimulus" and "Response" events (i.e., numeric array)'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
