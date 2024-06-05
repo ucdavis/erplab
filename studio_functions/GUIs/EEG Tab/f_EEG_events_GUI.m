@@ -143,8 +143,6 @@ varargout{1} = EStudio_eeg_events_box;
             'ColumnName'    , {''}, ...
             'RowName'       , {'Set name','File name'},...
             'ColumnEditable',[false]);
-        
-        
         set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 30 20 30 30 20 100 20 70]);
     end
 
@@ -256,11 +254,13 @@ varargout{1} = EStudio_eeg_events_box;
         inputstrMat = creabasiceventlistGUI(def, multieeg);  % GUI
         
         if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
+            observe_EEGDAT.eeg_panel_message =2;
             return
         elseif strcmp(inputstrMat,'advanced')
             EEG = ALLEEG(EEGArray);
             [EEG, LASTCOM ] = pop_editeventlist(EEG);
             if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             EEG = eegh(LASTCOM, EEG);
@@ -547,7 +547,7 @@ varargout{1} = EStudio_eeg_events_box;
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
             end
             
-            [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
+            [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on','History','gui');
             if isempty(LASTCOM)
                 observe_EEGDAT.eeg_panel_message =2;
                 fprintf( ['\n',repmat('-',1,100) '\n\n']);
@@ -636,6 +636,7 @@ varargout{1} = EStudio_eeg_events_box;
         [fname, pathname] = uiputfile({'*.txt*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         
         if isequal(fname,0)
+            observe_EEGDAT.eeg_panel_message =2;
             return
         end
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -747,7 +748,7 @@ varargout{1} = EStudio_eeg_events_box;
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
             end
             
-            [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
+            [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on','History','gui' );
             if isempty(LASTCOM)
                 observe_EEGDAT.eeg_panel_message =2;
                 fprintf( ['\n',repmat('-',1,100) '\n\n']);
