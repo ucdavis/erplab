@@ -140,7 +140,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%join artifactual segments separated by less than
         Eegtab_EEG_art_det_conus.joinarseg_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.joinarseg_checkbox = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_conus.joinarseg_title,'Value',0,'Enable','off',...
-            'callback',@joinarseg_checkbox,'String','Join artifactual segments separated by less than','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'callback',@joinarseg_checkbox,'String','Join artifactual segments separated by less than','FontSize',FontSize_defualt-1,'BackgroundColor',ColorB_def); % 2F
         
         Eegtab_EEG_art_det_conus.joinarseg_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.joinarseg_title1 );

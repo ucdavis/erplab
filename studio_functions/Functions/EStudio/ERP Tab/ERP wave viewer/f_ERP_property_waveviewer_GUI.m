@@ -321,11 +321,12 @@ varargout{1} = box_erpwave_viewer_property;
         ViewerName = source_locationname.String;
         if isempty(ViewerName)
             ViewerName = 'My Viewer';
+            source_locationname.String = ViewerName;
         end
         
         erplabstudiover = geterplabeversion;
         if isempty(erplabstudiover)
-           erplabstudiover = '??'; 
+            erplabstudiover = '??';
         end
         
         currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
