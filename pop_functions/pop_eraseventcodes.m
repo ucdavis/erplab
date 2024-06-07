@@ -95,7 +95,7 @@ if nargin==1
                 errorfound(sprintf(msgboxText), title);
                 return
         end
-        prompt    = {'expression (>, < ==, ~=):'};
+        prompt    = {'expression (>, <, ==, ~=):'};
         dlg_title = 'Input event-code condition to delete';
         num_lines = 1;       
         def  = erpworkingmemory('pop_eraseventcodes');

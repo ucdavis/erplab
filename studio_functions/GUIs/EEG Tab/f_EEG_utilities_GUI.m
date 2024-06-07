@@ -251,7 +251,7 @@ varargout{1} = Eegtab_box_art_sumop;
             EEGArray = observe_EEGDAT.CURRENTSET; estudioworkingmemory('EEGArray',EEGArray);
         end
         
-        prompt    = {'expression (>, < ==, ~=):'};
+        prompt    = {'expression (>, <, ==, ~=):'};
         dlg_title = 'Input event-code condition to delete';
         num_lines = 1;
         def  = estudioworkingmemory('pop_eraseventcodes');
