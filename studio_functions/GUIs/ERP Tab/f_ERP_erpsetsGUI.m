@@ -975,6 +975,7 @@ varargout{1} = box_erpset_gui;
                     fprintf( [ERPCOM]);
                     fprintf( ['\n',repmat('-',1,100) '\n']);
                 end
+                
                 if Numoferp == numel(ERPArray)
                     [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 else
@@ -1040,6 +1041,7 @@ varargout{1} = box_erpset_gui;
             erpFilename = char(strcat(erpfilename,ext));
             [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', erpFilename,...
                 'filepath',ERP.filepath);
+            
             ERPCOM = f_erp_save_history(ERP.erpname,erpFilename,ERP.filepath);
             if Numoferp==1
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -1047,7 +1049,6 @@ varargout{1} = box_erpset_gui;
                 fprintf( [ERPCOM]);
                 fprintf( ['\n',repmat('-',1,100) '\n']);
             end
-            
             if Numoferp == numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             else
@@ -1086,10 +1087,7 @@ varargout{1} = box_erpset_gui;
 
 %---------------- Enable/Disable dot structure-----------------------------
     function curr_folder(~,~)
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
-            return;
-        end
+        
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
@@ -1107,15 +1105,23 @@ varargout{1} = box_erpset_gui;
         end
         
         cd(sel_path1);
-        erpcom  = sprintf('cd(%s',sel_path1);
-        erpcom = [erpcom,');'];
-        fprintf( ['\n\n',repmat('-',1,100) '\n']);
-        fprintf(['*ERPsets>Current Folder*',32,32,32,32,datestr(datetime('now')),'\n']);
-        fprintf( [erpcom]);
-        fprintf( ['\n',repmat('-',1,100) '\n']);
+        erpcom  = sprintf('cd("%s',sel_path1);
+        erpcom = [erpcom,'");'];
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
-        ERP = observe_ERPDAT.ERP;
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom,2);
+        if ~isempty(observe_ERPDAT.ERP)
+            ERP = observe_ERPDAT.ERP;
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*ERPsets>Current Folder*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf( [erpcom]);
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom,2);
+        else
+            if isempty(ALLERPCOM)
+                ALLERPCOM{1} = erpcom;
+            else
+                ALLERPCOM{length(ALLERPCOM)+1} = erpcom;
+            end
+        end
         assignin('base','ALLERPCOM',ALLERPCOM);
         estudioworkingmemory('EEG_save_folder',sel_path1);
         observe_ERPDAT.Count_currentERP = 20;

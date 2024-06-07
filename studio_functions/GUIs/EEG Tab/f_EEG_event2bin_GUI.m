@@ -573,7 +573,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'off';
             
-            if ~isempty(observe_EEGDAT.EEG)  && observe_EEGDAT.EEG.trials~=1 &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+            if ~isempty(observe_EEGDAT.EEG)  && observe_EEGDAT.EEG.trials~=1 &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST) && ~isempty(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
                 EEG = observe_EEGDAT.EEG;
                 for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
                     try
@@ -595,7 +595,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             return;
         end
         
-        if ~isempty(observe_EEGDAT.EEG) &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+        if ~isempty(observe_EEGDAT.EEG) &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST) && ~isempty(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
             EEG = observe_EEGDAT.EEG;
             for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
                 try
