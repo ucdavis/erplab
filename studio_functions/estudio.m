@@ -281,10 +281,10 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'About ERPLAB Studio','separator','off','CallBack',@about_estudio);
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB Studio Tutorial','separator','on','CallBack','web(''https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Tutorial'', ''-browser'');');
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB Studio Manual','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual'', ''-browser'');');
-        uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB Studio Scripting','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/Scripting-Guide'', ''-browser'');');
-        uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB Studio FAQ','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/Troubleshooting-and-Frequently-Asked-Questions'', ''-browser'');');
+        uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB Scripting','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/Scripting-Guide'', ''-browser'');');
+        uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'Frequent asked questions','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/Troubleshooting-and-Frequently-Asked-Questions'', ''-browser'');');
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'Send question/feedback to the ERPLAB Studio email list','separator','on','CallBack','web(''mailto:erplab@ucdavis.edu?subject=feedback'');');
-        uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB mailing list archive (may need to register)','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/ERPLAB-email-list'', ''-browser'');');
+        uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB email list (may need to register)','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/ERPLAB-email-list'', ''-browser'');');
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'Download latest version','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/releases'', ''-browser'');');
         
         

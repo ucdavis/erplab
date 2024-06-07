@@ -243,7 +243,7 @@ varargout{1} = EEG_filtering_box;
         
         
         gui_eegtab_filtering.REMOVE_DC = uiextras.HBox('Parent', gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
-        gui_eegtab_filtering.DC_remove = uicontrol('Style','checkbox','Parent', gui_eegtab_filtering.REMOVE_DC,...
+        gui_eegtab_filtering.DC_remove = uicontrol('Style','checkbox','Parent', gui_eegtab_filtering.REMOVE_DC,'Enable',Enable_label,...
             'String','Remove DC Offset (Strongly recommended)','Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);%,'callback',@remove_dc
         gui_eegtab_filtering.DC_remove.KeyPressFcn =@eeg_filter_presskey;
         gui_eegtab_filtering.filt_buttons = uiextras.HBox('Parent', gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
