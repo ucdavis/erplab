@@ -111,10 +111,15 @@ squeezevents(EEG.event);
 %%for bins if exist---Jan 09 2024 GH
 if isfield(EEG,'EVENTLIST') && ~isempty(EEG.EVENTLIST)
     if ~isempty(EEG.EVENTLIST.trialsperbin)
-    fprintf('\n\n**Below is the number and description of each bin:\n\n')
-    for ii = 1:numel(EEG.EVENTLIST.trialsperbin)
-        fprintf(['bin',32,num2str(ii),', #',32,num2str(EEG.EVENTLIST.trialsperbin(ii)),',',32,EEG.EVENTLIST.bdf(ii).description,'\n'])
-    end
+        for jjj = 1:length(EEG.EVENTLIST.eventinfo)
+            eventbini(jjj,1) = EEG.EVENTLIST.eventinfo(jjj).bini;
+        end
+        if any(eventbini(:)>0)
+            fprintf('\n\n**Below is the number and description of each bin:\n\n')
+            for ii = 1:numel(EEG.EVENTLIST.trialsperbin)
+                fprintf(['bin',32,num2str(ii),', #',32,num2str(EEG.EVENTLIST.trialsperbin(ii)),',',32,EEG.EVENTLIST.bdf(ii).description,'\n'])
+            end
+        end
     end
 end%%change end
 

@@ -262,18 +262,25 @@ drawui_EEG_info(FonsizeDefault);
             dsnamesdef{ii,2} = '';
             dsnamesdef{ii,3} = '';
         end
-        if ~isempty(observe_EEGDAT.EEG)  &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+        if ~isempty(observe_EEGDAT.EEG)  &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST) && (~isempty(observe_EEGDAT.EEG.EVENTLIST.trialsperbin))
             EEG = observe_EEGDAT.EEG;
-            for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
-                try
-                    dsnames{ii,1} = num2str(ii);
-                    dsnames{ii,2} = EEG.EVENTLIST.bdf(ii).description;
-                    dsnames{ii,3} = num2str(EEG.EVENTLIST.trialsperbin(ii));
-                catch
-                    dsnames{ii,1} = '';
-                    dsnames{ii,2} = '';
-                    dsnames{ii,3} ='';
+            for jjj = 1:length(EEG.EVENTLIST.eventinfo)
+                eventbini(jjj,1) = EEG.EVENTLIST.eventinfo(jjj).bini;
+            end
+            if any(eventbini(:)>0)
+                for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
+                    try
+                        dsnames{ii,1} = num2str(ii);
+                        dsnames{ii,2} = EEG.EVENTLIST.bdf(ii).description;
+                        dsnames{ii,3} = num2str(EEG.EVENTLIST.trialsperbin(ii));
+                    catch
+                        dsnames{ii,1} = '';
+                        dsnames{ii,2} = '';
+                        dsnames{ii,3} ='';
+                    end
                 end
+            else
+                dsnames = dsnamesdef;
             end
         else
             dsnames = dsnamesdef;

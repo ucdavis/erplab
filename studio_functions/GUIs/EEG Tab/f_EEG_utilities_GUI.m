@@ -450,25 +450,7 @@ varargout{1} = Eegtab_box_art_sumop;
         end
         newvalue2 = 0;
         todo =  answer{1};
-        if strcmpi(todo, 'all')
-            bitindex = 1:16;
-            newvalue = 0;
-        elseif strcmpi(todo, 'lower')
-            bitindex = 1:8;
-            newvalue = 0;
-        elseif strcmpi(todo, 'upper')
-            bitindex = 9:16;
-            newvalue = 0;
-        else
-            if ~isempty(answer{2})
-                bitindex = answer{2};
-                newvalue = 0;
-            end
-            if ~isempty(answer{3})
-                bitindex1 = answer{3};
-                newvalue2 = 1;
-            end
-        end
+        
         
         ALLEEG_out = [];
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -494,14 +476,40 @@ varargout{1} = Eegtab_box_art_sumop;
                 fprintf( [repmat('-',1,100) '\n']);
                 return
             end
-            
-            [EEG, LASTCOM ] = pop_setcodebit(EEG, bitindex, newvalue, 'History', 'off');
-            if newvalue2==1
-                [EEG, LASTCOM ] = pop_setcodebit(EEG, bitindex1, newvalue1, 'History', 'off');
+            if strcmpi(todo, 'all')
+                bitindex = 1:16;
+                newvalue = 0;
+                [EEG, LASTCOM ] = pop_setcodebit(EEG, bitindex, newvalue, 'History', 'gui');
+            elseif strcmpi(todo, 'lower')
+                bitindex = 1:8;
+                newvalue = 0;
+                [EEG, LASTCOM ] = pop_setcodebit(EEG, bitindex, newvalue, 'History', 'gui');
+            elseif strcmpi(todo, 'upper')
+                bitindex = 9:16;
+                newvalue = 0;
+                [EEG, LASTCOM ] = pop_setcodebit(EEG, bitindex, newvalue, 'History', 'gui');
+            else
+                if ~isempty(answer{2})
+                    bitindex = answer{2};
+                    newvalue = 0;
+                    [EEG, LASTCOM ] = pop_setcodebit(EEG, bitindex, newvalue, 'History', 'gui');
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
+                end
+                if ~isempty(answer{3})
+                    bitindex = answer{3};
+                    newvalue = 1;
+                    [EEG, LASTCOM ] = pop_setcodebit(EEG, bitindex, newvalue, 'History', 'gui');
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
+                end
             end
-            fprintf([LASTCOM]);
-            if Numofeeg==1
-                eegh(LASTCOM);
+            if strcmpi(todo, 'all') ||  strcmpi(todo, 'lower') || strcmpi(todo, 'upper')
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
