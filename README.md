@@ -15,11 +15,11 @@ To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab
 </p>
 
 
-This download contains both [ERPLAB Studio](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual) (our standalone Matlab program) and [ERPLAB Classic](./Manual) (an EEGLAB plugin). If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Studio Tutorial](./ERPLAB-Studio-Tutorial) or ERPLAB Classic Tutorial before trying to analyze your own data.
+This download contains both [ERPLAB Studio](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual) (our standalone Matlab program) and [ERPLAB Classic](https://github.com/ucdavis/erplab/wiki/Manual) (an EEGLAB plugin). If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Studio Tutorial](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Tutorial) or ERPLAB Classic Tutorial before trying to analyze your own data.
 
-[Click here](./Installation) for installation instructions.
+[Click here](https://github.com/ucdavis/erplab/wiki/installation) for installation instructions.
 
-[Click here](./Compatability-and-Required-Toolboxes) for information about required Matlab toolboxes and compatibility with different versions of Matlab, EEGLAB, Windows, MacOS, and Linux.
+[Click here](https://github.com/ucdavis/erplab/wiki/Compatability-and-Required-Toolboxes) for information about required Matlab toolboxes and compatibility with different versions of Matlab, EEGLAB, Windows, MacOS, and Linux.
 
 We encourage most users to use this latest major version.
 
@@ -28,8 +28,8 @@ We encourage most users to use this latest major version.
 ### ERPLAB v11.0 Release Notes
 
 ERPLAB can now be accessed from two different user interfaces: 
-- [ERPLAB Classic](./Manual) (our original software, which operates as an EEGLAB plugin)
-- [ERPLAB Studio](./ERPLAB-Studio-Manual) (a standalone application that provides a more user-friendly GUI)
+- [ERPLAB Classic](https://github.com/ucdavis/erplab/wiki/Manual) (our original software, which operates as an EEGLAB plugin)
+- [ERPLAB Studio](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual) (a standalone application that provides a more user-friendly GUI)
 
 ERPLAB Studio makes use of the same underlying code as EEGLAB and ERPLAB Classic. It is essentially a different user interface for the same functions. You will therefore get identical results with ERPLAB Studio and ERPLAB Classic, and scripting is the same for both packages. But ERPLAB Studio is much easier to use.
 
@@ -37,7 +37,7 @@ ERPLAB Studio makes use of the same underlying code as EEGLAB and ERPLAB Classic
 
 The most commonly used EEGLAB functions are available from within ERPLAB Studio. For example, you can import EEG data into ERPLAB Studio, filter the EEG, apply ICA for artifact correction, etc. If you need an EEGLAB function that is not implemented within ERPLAB Studio, you can apply that function using the EEGLAB GUI or a script.
 
-If you are already familiar with ERPLAB, you can rapidly learn how to use ERPLAB Studio with our [Transition Guide](). If you are new to ERPLAB, please go through the [ERPLAB Studio Tutorial](./ERPLAB-Studio-Tutorial) before attempting to process your own data. Once you understand the basics of ERPLAB Studio, you can get detailed information about the individual processing steps in the [ERPLAB Studio Manual](./ERPLAB-Studio-Manual).
+If you are already familiar with ERPLAB, you can rapidly learn how to use ERPLAB Studio with our [Transition Guide](). If you are new to ERPLAB, please go through the [ERPLAB Studio Tutorial](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Tutorial) before attempting to process your own data. Once you understand the basics of ERPLAB Studio, you can get detailed information about the individual processing steps in the [ERPLAB Studio Manual](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual).
 
 
 ### ERPLAB v10.1 Release Notes
