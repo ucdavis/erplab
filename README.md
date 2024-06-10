@@ -15,7 +15,7 @@ To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab
 </p>
 
 
-This download contains both [ERPLAB Studio](./ERPLAB-Studio-Manual) (our standalone Matlab program) and [ERPLAB Classic](./Manual) (an EEGLAB plugin). If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Studio Tutorial](./ERPLAB-Studio-Tutorial) or ERPLAB Classic Tutorial before trying to analyze your own data.
+This download contains both [ERPLAB Studio](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual) (our standalone Matlab program) and [ERPLAB Classic](./Manual) (an EEGLAB plugin). If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Studio Tutorial](./ERPLAB-Studio-Tutorial) or ERPLAB Classic Tutorial before trying to analyze your own data.
 
 [Click here](./Installation) for installation instructions.
 
