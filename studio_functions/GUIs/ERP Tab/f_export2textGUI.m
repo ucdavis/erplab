@@ -92,9 +92,9 @@ end
 %
 % Name & version
 %
-erplab_studio_default_values;
-version = erplabstudiover;
 
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ', version, '   -   Export ERP GUI'])
 
 [pathx, erpfilename, ext] = fileparts(filename); 

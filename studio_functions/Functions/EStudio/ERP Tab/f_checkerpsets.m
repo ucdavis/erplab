@@ -112,7 +112,7 @@ for k=1:nerp2
     catch
         msgboxText = ['ERPset',32,num2str(k),32,'has a invalid number of bins/channels/samples or different data type.'];
         %         chkerp  = 4; % invalid number of bins/channel
-        disp(msgboxText);
+        %         disp(msgboxText);
         break;
     end
 end
@@ -132,7 +132,7 @@ if bintest>1
     end
     msgboxText =  ['Number of bins across ERPsets is different!'...
         'See detail at command window'];
-    disp(msgboxText);
+    %     disp(msgboxText);
     chkerp(1)  = 1; % Number of bins across ERPsets is different!
     %     return
     % else
@@ -151,7 +151,7 @@ if chantest>1
     end
     msgboxText =  ['Number of channels across ERPsets is different!'...
         'See detail at command window.'];
-    disp(msgboxText);
+    %     disp(msgboxText);
     chkerp(2)  = 2; % Number of channels across ERPsets is different
     %     return
 else
@@ -172,7 +172,7 @@ if dtypetest>1
     beep;
     msgboxText =  ['Type of data across ERPsets is different!'...
         'See detail at command window.'];
-    disp(msgboxText);
+    %     disp(msgboxText);
     chkerp(3)  = 3; % data type across ERPsets is different
     %     return
 end
@@ -189,7 +189,7 @@ if dlengthtest>1
     end
     msgboxText =  ['Number of samples across ERPsets is different!'...
         'See detail at command window.'];
-    disp(msgboxText);
+    %     disp(msgboxText);
     chkerp(4)  = 4; % data type across ERPsets is different
     %     return
 end
@@ -206,7 +206,7 @@ if dlengthtest>1
     end
     msgboxText =  ['Start time of epoch across ERPsets is different!'...
         'See detail at command window.'];
-    disp(msgboxText);
+    %     disp(msgboxText);
     chkerp(5)  = 5; % data type across ERPsets is different
     %     return
 end
@@ -223,7 +223,7 @@ if dlengthtest>1
     end
     msgboxText =  ['End time of epoch across ERPsets is different!'...
         'See detail at command window.'];
-    disp(msgboxText);
+    %     disp(msgboxText);
     chkerp(6)  = 6; % data type across ERPsets is different
     %     return
 end
@@ -241,7 +241,7 @@ if dlengthtest>1
     end
     msgboxText =  ['Sampling rate across ERPsets is different!'...
         'See detail at command window.'];
-    disp(msgboxText);
+    %     disp(msgboxText);
     chkerp(7)  = 7; % data type across ERPsets is different
     %     return
 end

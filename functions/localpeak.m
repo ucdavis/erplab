@@ -226,11 +226,14 @@ if npoints>0
             poslocalpf   = posabspf;
             latlocalpeak = timex(posabspf);
             ltypeoutput  = 2; % abs peak
-        else % replace with NaN
+        elseif strcmpi(p.Results.Peakreplace,'NaN') % replace with NaN   %%GH May 2024
             vlocalpf     = NaN;
             poslocalpf   = NaN;
             latlocalpeak = NaN;
             ltypeoutput  = 3; % NaN instead of a peak
+        else%%GH May 2024
+            errorcode = 1; % no fractional value was specified
+            return
         end
     end
     

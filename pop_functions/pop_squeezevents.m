@@ -47,38 +47,38 @@
 function [EEG, com] = pop_squeezevents(EEG, varargin)
 com = '';
 if isobject(EEG) % eegobj
-        whenEEGisanObject % calls a script for showing an error window
-        return
+    whenEEGisanObject % calls a script for showing an error window
+    return
 end
 if isempty(EEG(1))
-        msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
-        title = 'ERPLAB: pop_squeezevents Permission denied';
-        errorfound(msgboxText, title);
-        return
+    msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
+    title = 'ERPLAB: pop_squeezevents Permission denied';
+    errorfound(msgboxText, title);
+    return
 end
 if ~isempty(EEG(1).epoch)
-        msgboxText =  'pop_squeezevents() has been tested for continuous data only.';
-        title = 'ERPLAB: pop_squeezevents Permission denied';
-        errorfound(msgboxText, title);
-        return
+    msgboxText =  'pop_squeezevents() has been tested for continuous data only.';
+    title = 'ERPLAB: pop_squeezevents Permission denied';
+    errorfound(msgboxText, title);
+    return
 end
 if isempty(EEG(1).data)
-        msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
-        title = 'ERPLAB: pop_squeezevents Permission denied';
-        errorfound(msgboxText, title);
-        return
+    msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
+    title = 'ERPLAB: pop_squeezevents Permission denied';
+    errorfound(msgboxText, title);
+    return
 end
 if isempty(EEG(1).event)
-        msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
-        title = 'ERPLAB: pop_squeezevents Permission denied';
-        errorfound(msgboxText, title);
-        return
+    msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
+    title = 'ERPLAB: pop_squeezevents Permission denied';
+    errorfound(msgboxText, title);
+    return
 end
 if isempty([EEG(1).event.type])
-        msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
-        title = 'ERPLAB: pop_squeezevents Permission denied';
-        errorfound(msgboxText, title);
-        return
+    msgboxText =  'pop_squeezevents() cannot work with an empty dataset.';
+    title = 'ERPLAB: pop_squeezevents Permission denied';
+    errorfound(msgboxText, title);
+    return
 end
 
 p = inputParser;
@@ -89,41 +89,58 @@ p.addParamValue('History', 'script', @ischar);             % history from script
 p.parse(EEG, varargin{:});
 
 if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
+    shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
+    shist = 2; % script
 elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
+    shist = 1; % gui
 else
-        shist = 0; % off
+    shist = 0; % off
 end
 
 %
 % process multiple datasets April 13, 2011 JLC
 %
 if length(EEG) > 1
-        [EEG, com ] = eeg_eval( 'pop_squeezevents', EEG, 'warning', 'on');
-        return;
+    [EEG, com ] = eeg_eval( 'pop_squeezevents', EEG, 'warning', 'on');
+    return;
 end
-
+%%for events
 squeezevents(EEG.event);
+
+%%for bins if exist---Jan 09 2024 GH
+if isfield(EEG,'EVENTLIST') && ~isempty(EEG.EVENTLIST)
+    if ~isempty(EEG.EVENTLIST.trialsperbin)
+        for jjj = 1:length(EEG.EVENTLIST.eventinfo)
+            eventbini(jjj,1) = EEG.EVENTLIST.eventinfo(jjj).bini;
+        end
+        if any(eventbini(:)>0)
+            fprintf('\n\n**Below is the number and description of each bin:\n\n')
+            for ii = 1:numel(EEG.EVENTLIST.trialsperbin)
+                fprintf(['bin',32,num2str(ii),', #',32,num2str(EEG.EVENTLIST.trialsperbin(ii)),',',32,EEG.EVENTLIST.bdf(ii).description,'\n'])
+            end
+        end
+    end
+end%%change end
+
+
 com = sprintf( 'pop_squeezevents(%s);', inputname(1));
 
 % get history from script. EEG
 switch shist
-        case 1 % from GUI
-                com = sprintf('%s %% GUI: %s', com, datestr(now));
-                %fprintf('%%Equivalent command:\n%s\n\n', com);
-                displayEquiComERP(com);
-        case 2 % from script
-                EEG = erphistory(EEG, [], com, 1);
-        case 3
-                % implicit
-                % EEG = erphistory(EEG, [], com, 1);
-                % fprintf('%%Equivalent command:\n%s\n\n', com);
-        otherwise %off or none
-                com = '';
-                return
+    case 1 % from GUI
+        com = sprintf('%s %% GUI: %s', com, datestr(now));
+        %fprintf('%%Equivalent command:\n%s\n\n', com);
+        displayEquiComERP(com);
+    case 2 % from script
+        EEG = erphistory(EEG, [], com, 1);
+    case 3
+        % implicit
+        % EEG = erphistory(EEG, [], com, 1);
+        % fprintf('%%Equivalent command:\n%s\n\n', com);
+    otherwise %off or none
+        com = '';
+        return
 end
 
 %

@@ -63,7 +63,7 @@ try
     def = varargin{1};
     handles.def = def;
 catch
-    def = {'fpeaklat', 3, 0, 1, 3, 0, 0.5, 0, 0, 1, 1, 1};
+    def = {'fpeaklat', 3, 1, 3, 0, 0.5, 0, 0, 1, 1, 1};
     handles.def = def;
 end
 
@@ -124,17 +124,7 @@ setall(hObject, eventdata, handles)
 % viewerbutton
 
 %
-% Set Measurement menu
-%
-% set(handles.listbox_erpnames, 'Value',1)
-% set(handles.popupmenu_measurement, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_pol_amp, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_samp_amp, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_locpeakreplacement, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_fracreplacement, 'Backgroundcolor',[1 1 0.8])
-% set(handles.popupmenu_precision, 'Backgroundcolor',[1 1 0.8])
-%set(handles.text_fraca,'String', {''});
-%set(handles.text_fa3,'String',{''});
+
 drawnow
 
 % UIWAIT makes geterpvaluesparasGUI2 wait for user response (see UIRESUME)
@@ -237,7 +227,7 @@ srate = handles.srate;
 
 % Send to workspace
 %
-send2ws = get(handles.checkbox_send2ws, 'Value'); % 0:no; 1:yes
+send2ws =0;% get(handles.checkbox_send2ws, 'Value'); % 0:no; 1:yes
 owfp    = handles.owfp;  % over write file permission
 appendfile = 0;
 
@@ -274,95 +264,25 @@ switch measure_option
         %             return
         %         end
         moption = 'instabl';
-        fprintf('\nInstantaneous amplitude measurement in progress...\n');
+        
     case 2  % meanbl
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+        
         moption = 'meanbl';
-        fprintf('\nMean amplitude measurement in progress...\n');
+        
     case 3  % peakampbl
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+        
         moption = 'peakampbl';
         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
-        
-        %         cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
-        %         ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
-        %         cc2    = time2sample(TimeOp, ccdiff, srate)>2;
-        %         cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
-        %         ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
-        %         cc4    = time2sample(TimeOp, ccdiff, srate)>2;
-        
-        %         if (cc1 && cc2) || (cc3 && cc4)
-        %             msgboxText =  msgboxText4peak;
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), title);
-        %             return
-        %         end
-        fprintf('\nLocal peak measurement in progress...\n');
     case 4  % peaklatbl
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+        
         moption = 'peaklatbl';
         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
-        
-        %         cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
-        %         ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
-        %         cc2    = time2sample(TimeOp, ccdiff, srate)>2;
-        %         cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
-        %         ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
-        %         cc4    = time2sample(TimeOp, ccdiff, srate)>2;
-        
-        %         if (cc1 && cc2) || (cc3 && cc4)
-        %             msgboxText =  msgboxText4peak;
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), kktime);
-        %             return
-        %         end
-        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-            fprintf('\nLocal peak frequency measurement in progress...\n');
-        else
-            fprintf('\nLocal peak latency measurement in progress...\n');
-        end
     case 5  % fpeaklat
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+        
         set(handles.text_fraca,'String', 'Fractional Peak')
         moption = 'fpeaklat';
         frac    = (get(handles.popupmenu_fraca,'Value') - 1)/100; % 0 to 1
@@ -370,49 +290,17 @@ switch measure_option
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
         fracmearep = 2-get(handles.popupmenu_fracreplacement,'Value');
-        
-        %         cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
-        %         ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
-        %         cc2    = time2sample(TimeOp, ccdiff, srate)>2;
-        %         cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
-        %         ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
-        %         cc4    = time2sample(TimeOp, ccdiff, srate)>2;
-        
-        %         if (cc1 && cc2) || (cc3 && cc4)
-        %             msgboxText =  msgboxText4peak;
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), title);
-        %             return
-        %         end
-        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-            fprintf('\nFractional Peak Frequency measurement in progress...\n');
-        else
-            fprintf('\nFractional Peak Latency measurement in progress...\n');
-        end
     case 6  % inte/area value (fixed latencies)
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+        
         switch areatype
             case 1
                 moption = 'areat';
-                fprintf('\nTotal area measurement in progress...\n');
             case 2
                 moption = 'ninteg';
-                fprintf('\nNumerical integration in progress...\n');
             case 3
                 moption = 'areap';
-                fprintf('\nPositive area measurement in progress...\n');
             case 4
                 moption = 'arean';
-                fprintf('\nNegative area measurement in progress...\n');
         end
         
     case 7   % inte/area value (auto latencies)
@@ -422,64 +310,31 @@ switch measure_option
             errorfound(sprintf(msgboxText), title);
             return
         end
-        %         if nlate~=1
-        %             %if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %             %        msgboxText =  'You must define only one frequency';
-        %             %else
-        %             msgboxText =  'You must define only one latency';
-        %             %end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+        
         switch areatype
             case 1
                 moption = 'areazt';
-                fprintf('\nTotal area measurement in progress...\n');
             case 2
                 moption = 'nintegz';
-                fprintf('\nNumerical integration (automatic limits) in progress...\n');
             case 3
                 moption = 'areazp';
-                fprintf('\nPositive area measurement (automatic limits) in progress...\n');
             case 4
                 moption = 'areazn';
-                fprintf('\nNegative area measurement (automatic limits) in progress...\n');
         end
         
     case 8   % fractional inte/area latency
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
         
         set(handles.text_fraca,'String', 'Fractional Area')
         frac = (get(handles.popupmenu_fraca,'Value') - 1)/100; % 0 to 1
-        if strcmpi(datatype, 'ERP')
-            meawordx = 'Latency';
-        else
-            meawordx = 'Frequency';
-        end
         switch areatype
             case 1
                 moption = 'fareatlat';
-                fprintf('\nFractional Total Area %s measurement in progress...\n', meawordx);
             case 2
                 moption = 'fninteglat';
-                fprintf('\nFractional Total Area %s measurement in progress...\n', meawordx);
             case 3
                 moption = 'fareaplat';
-                fprintf('\nFractional Positive Area %s measurement in progress...\n', meawordx);
-                
             case 4
                 moption = 'fareanlat';
-                fprintf('\nFractional Negative Area %s measurement in progress...\n', meawordx);
             otherwise
                 error('wrong area type.')
         end
@@ -490,8 +345,8 @@ end
 
 
 dig    = get(handles.popupmenu_precision, 'Value');
-binlabop  = get(handles.checkbox_binlabel,'Value'); % bin label option for table
-inclate   = get(handles.checkbox_include_used_latencies, 'Value');
+binlabop  =0; %get(handles.checkbox_binlabel,'Value'); % bin label option for table
+inclate   = 0;%get(handles.checkbox_include_used_latencies, 'Value');
 intfactor = get(handles.popupmenu_interpofactor, 'Value');
 
 peakonset = get(handles.popupmenu_rise, 'Value');  % axs - get onset from menu value
@@ -818,14 +673,14 @@ def = handles.def;
 if ~isempty(def)
     op         = def{1};  % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
     dig        = def{2};  %Resolution
-    binlabop   = def{3}; % 0: bin# as bin label for table, 1 bin label
+    %     binlabop   = def{3}; % 0: bin# as bin label for table, 1 bin label
     polpeak    = def{4}; % local peak polarity
     sampeak    = def{5}; % number of samples (one-side) for local peak detection criteria
     locpeakrep = def{6}; % 1 abs peak , 0 Nan
     frac       = def{7};
     fracmearep = def{8}; % def{19}; NaN
-    send2ws    = def{9}; % 1 send to ws, 0 dont do
-    inclate    = def{10};
+    send2ws    = 0;%def{9}; % 1 send to ws, 0 dont do
+    inclate    = 0;%def{10};
     intfactor  = def{11};
     if isempty(sampeak)
         sampeak = 3;
@@ -836,14 +691,14 @@ else
     %%def = {'fareaplat', 3, 0, 1, 3, 0, 0.5, NaN, 0, 0, 1, 1};
     op         = 'meanbl';  % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
     dig        = 3;  %Resolution
-    binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
+    %     binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
     polpeak    = 1; % local peak polarity
     sampeak    = 3; % number of samples (one-side) for local peak detection criteria
     locpeakrep = 0; % 1 abs peak , 0 Nan
     frac       = 0.5;
     fracmearep = 0; % def{19}; NaN
     send2ws    = 0; % 1 send to ws, 0 dont do
-    inclate    = 1;
+    inclate    = 0;
     intfactor  = 1;
 end
 if isempty(frac)
@@ -887,10 +742,10 @@ end
 %
 % 1 = one measurement per line; 0 = one erpset per line
 %
-set(handles.checkbox_include_used_latencies, 'Value', inclate);
+% set(handles.checkbox_include_used_latencies, 'Value', inclate);
 
-set(handles.checkbox_send2ws, 'Value', send2ws);
-set(handles.checkbox_binlabel, 'Value', binlabop); %0: use bin number as binlabel; 1:use bin descr as binlabel
+% set(handles.checkbox_send2ws, 'Value', send2ws);
+% set(handles.checkbox_binlabel, 'Value', binlabop); %0: use bin number as binlabel; 1:use bin descr as binlabel
 
 % interpolation
 set(handles.popupmenu_interpofactor, 'Value', intfactor);
@@ -962,13 +817,7 @@ switch indxmea
         set(handles.popupmenu_locpeakreplacement,'value',2-locpeakrep);
         set(handles.popupmenu_fracreplacement,'value',2-fracmearep);
         set(handles.popupmenu_areatype,'Enable','off');
-        %         set(handles.popupmenu_fracreplacement, 'String', {'"not a number" (NaN)','show error message'});
         
-        if strcmpi(fracmearep,'NaN')
-            set(handles.popupmenu_fracreplacement, 'Value', 1);
-        else
-            set(handles.popupmenu_fracreplacement, 'Value', 2);
-        end
     case 7     % area and integral with auto limits
         menupeakoff(hObject, eventdata, handles);
         menufareaoff(hObject, eventdata, handles);
@@ -993,12 +842,8 @@ switch indxmea
         set(handles.text_fraca,'String', 'Fractional Area')
         set(handles.popupmenu_areatype,'Enable','on')
         set(handles.popupmenu_areatype,'Value',areatype)
-        set(handles.popupmenu_fracreplacement, 'String', {'show error message','"not a number" (NaN)'});
-        if strcmpi(fracmearep,'NaN')
-            set(handles.popupmenu_fracreplacement, 'Value', 2);
-        else
-            set(handles.popupmenu_fracreplacement, 'Value', 1);
-        end
+        set(handles.popupmenu_fracreplacement, 'String', {'"not a number" (NaN)','show error message'});
+        
         
     otherwise
         menupeakoff(hObject, eventdata, handles)
@@ -1006,7 +851,7 @@ switch indxmea
 end
 
 set(handles.popupmenu_precision, 'Value', dig)
-set(handles.checkbox_send2ws, 'Value', send2ws);
+% set(handles.checkbox_send2ws, 'Value', send2ws);
 
 srate = handles.srate;
 try
@@ -1022,8 +867,8 @@ set(handles.text_samp,'String',msecstr)
 %
 meamenu  = get(handles.popupmenu_measurement, 'String');
 currentm = get(handles.popupmenu_measurement, 'Value');
-erplab_studio_default_values;
-version = erplabstudiover;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   ERP Measurement Tool > Type > Option'])
 handles.frac = frac;
 
@@ -1033,9 +878,6 @@ guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
 function gui_chassis_CreateFcn(hObject, eventdata, handles)
-
-%--------------------------------------------------------------------------
-function checkbox_send2ws_Callback(hObject, eventdata, handles)
 
 
 
@@ -1178,35 +1020,3 @@ function text_fraca_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to text_fa1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes during object creation, after setting all properties.
-function checkbox_include_used_latencies_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to checkbox_include_used_latencies (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes during object deletion, before destroying properties.
-function checkbox_include_used_latencies_DeleteFcn(hObject, eventdata, handles)
-% hObject    handle to checkbox_include_used_latencies (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in checkbox_include_used_latencies.
-function checkbox_include_used_latencies_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_include_used_latencies (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_include_used_latencies
-
-
-% --- Executes on button press in checkbox_binlabel.
-function checkbox_binlabel_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_binlabel (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_binlabel

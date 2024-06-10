@@ -73,9 +73,9 @@ end
 %
 % Name & version
 %
-erplab_studio_default_values;
-version = erplabstudiover;
-set(handles.gui_chassis,'Name', strcat('EStudio',version,'  -   Save "',ERP.erpname, '" as ERPSS'))
+erplab_default_values;
+version = erplabver;
+set(handles.gui_chassis,'Name', strcat('Estudio ',version,'  -   Save "',ERP.erpname, '" as ERPSS'))
 [pathx, erpfilename, ext] = fileparts(ERP.filename); 
 ERPFileName = char(strcat(erpfilename,'.txt'));
 

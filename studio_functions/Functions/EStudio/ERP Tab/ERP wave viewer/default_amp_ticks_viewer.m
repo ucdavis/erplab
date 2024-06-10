@@ -42,7 +42,7 @@ end
 
 if yrange(1)>= yrange(2)
     beep;
-    disp('Please the left edge of y scale should be smaller than the righ edge.');
+    disp('The left edge of y scale should be smaller than the righ edge.');
     return;
     
 end

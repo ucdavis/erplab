@@ -112,7 +112,7 @@ if max(qERPArray)>length(ALLERP)
     qERPArray=length(ALLERP);
 end
 
-[chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,[1:length(ALLERP)]);
+[chanStrdef,binStrdef,diff_mark] = f_geterpschanbin(ALLERP,qERPArray);
 
 if nargin<5
     qchanArray = 1:length(chanStrdef);
@@ -187,16 +187,22 @@ plotBoxdef = f_getrow_columnautowaveplot(plotArray);
 if isempty(qPLOTORG) || numel(qPLOTORG)~=3 ||  numel(unique(qPLOTORG)) ~=3 || min(qPLOTORG)<0 || max(qPLOTORG)>3
     qPLOTORG = [1 2 3];
 end
-
+LegenddispFlag = 1;
 if qPLOTORG(2) ==1 %% if  the selected Channel is "Grid"
     OverlayArraydef = qchanArray;
     for Numofchan = 1:numel(qchanArray)
         LegendNamedef{Numofchan,1} =char(chanStrdef(qchanArray(Numofchan)));
     end
+    if diff_mark(1)==1
+        LegenddispFlag =0;
+    end
 elseif qPLOTORG(2) == 2 %% if the selected Bin is "Grid"
     OverlayArraydef = qbinArray;
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStrdef(qbinArray(Numofbin)));
+    end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
     end
 elseif qPLOTORG(2) == 3%% if the selected ERPset is "Grid"
     OverlayArraydef = qERPArray;
@@ -211,6 +217,9 @@ else
     OverlayArraydef = qbinArray;
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStr(qbinArray(Numofbin)));
+    end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
     end
 end
 
@@ -343,7 +352,7 @@ end
 
 %%ylable font
 if nargin <34
-    qYlabelfont = 'Geneva';
+    qYlabelfont = 'Helvetica';
 end
 
 %%display ylabels?
@@ -401,7 +410,7 @@ end
 
 %%xlabel font
 if nargin <26
-    qXlabelfont= 'Geneva';
+    qXlabelfont= 'Helvetica';
 end
 
 %%disply xtick labels ?
@@ -492,7 +501,7 @@ end
 
 %%font of channel/bin/erpset label
 if nargin <17
-    qLabelfont= 'Geneva';
+    qLabelfont= 'Helvetica';
 end
 
 %%location of channel/bin/erpset label
@@ -507,7 +516,7 @@ end
 
 %%font of legend name
 if nargin <14
-    qLegendFont  = 'Geneva';
+    qLegendFont  = 'Helvetica';
 end
 
 %%legend name
@@ -621,7 +630,7 @@ for Numofrows = 1:size(qGridposArray,1)
                 qGridposArray(Numofrows,Numofcolumns) =0;
             else
                 [xpos,ypos]=  find(plotArray==SingleGridpos);
-                qGridposArray(Numofrows,Numofcolumns) =ypos;
+                qGridposArray(Numofrows,Numofcolumns) =plotArray(ypos);
             end
         end
     end
@@ -650,11 +659,17 @@ if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
         if ~strcmpi(qBlc,'no') && ~strcmpi(qBlc,'none')%% when the baseline correction is "pre","post","whole"
             
             if strcmpi(qBlc,'pre')
-                indxtimelock = find(ERP.times==0) ;   % zero-time locked
+                [xxx, indxtimelock, latdiffms] = closest(ERP.times,0);   % zero-time locked
+                if isempty(indxtimelock)
+                    indxtimelock=1;
+                end
                 aa = 1;
             elseif strcmpi(qBlc,'post')
                 indxtimelock = length(ERP.times);
-                aa = find(ERP.times==0);
+                [xxx, aa, latdiffms] = closest(ERP.times,0);% zero-time locked
+                if isempty(aa)
+                    aa=length(ERP.times);%%ned to further confirm
+                end
             elseif strcmpi(qBlc,'all') || strcmpi(qBlc,'whole')
                 indxtimelock = length(ERP.times);
                 aa = 1;
@@ -700,8 +715,8 @@ if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
     if qCURRENTPLOT> numel(qERPArray)
         qCURRENTPLOT= length(qERPArray);
     end
-    bindata = ERPdatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
-    bindataerror = ERPerrordatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
+    bindata = ERPdatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
+    bindataerror = ERPerrordatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
     %     if isempty(timeRangedef)
     timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
     %     end
@@ -716,9 +731,9 @@ elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     if qCURRENTPLOT> length(qERPArray)
         qCURRENTPLOT= length(qERPArray);
     end
-    bindata = ERPdatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
+    bindata = ERPdatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
     bindata = permute(bindata,[3 2 1 4]);
-    bindataerror = ERPerrordatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
+    bindataerror = ERPerrordatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
     bindataerror = permute(bindataerror,[3 2 1 4]);
     if isempty(timeRangedef)
         timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
@@ -749,9 +764,9 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     if qCURRENTPLOT> numel(qbinArray)
         qCURRENTPLOT = numel(qbinArray);
     end
-    bindata = ERPdatadef(qchanArray,:,qbinArray(qCURRENTPLOT),:);
+    bindata = ERPdatadef(sort(qchanArray),:,qbinArray(qCURRENTPLOT),:);
     bindata = permute(bindata,[4 2 1 3]);
-    bindataerror = ERPerrordatadef(qchanArray,:,qbinArray(qCURRENTPLOT),:);
+    bindataerror = ERPerrordatadef(sort(qchanArray),:,qbinArray(qCURRENTPLOT),:);
     bindataerror = permute(bindataerror,[4 2 1 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
@@ -828,7 +843,13 @@ NumOverlay = size(bindata,3);
 
 
 %%get y axis
-y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
+ERP1 = ERP;
+ERP1.bindata = ERP.bindata(qERPArray,:,:);
+[def, minydef, maxydef] = default_amp_ticks(ERP1, qbinArray);
+minydef = floor(minydef);
+maxydef = ceil(maxydef);
+y_scale_def = [minydef,maxydef];
+
 yMaxdef = ceil(max(bindata(:)))-floor(min(bindata(:)));
 try
     isyaxislabel = qGridspace(1,1);
@@ -838,8 +859,8 @@ catch
     Ypert = 10;
 end
 
-if isempty( qYScales)
-    qYScales = [floor(min(bindata(:))),ceil(max(bindata(:)))];
+if isempty( qYScales) || numel(qYScales)~=2
+    qYScales = y_scale_def;
 end
 
 if isyaxislabel==1 %% y axis GAP
@@ -853,9 +874,9 @@ if isyaxislabel==1 %% y axis GAP
             yscaleall = 2*max(abs(qYScales));
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
-        if yscaleall < y_scale_def(2)-y_scale_def(2)
-            yscaleall = y_scale_def(2)-y_scale_def(2);
-        end
+        %         if yscaleall < y_scale_def(2)-y_scale_def(1)
+        %             yscaleall = y_scale_def(2)-y_scale_def(1);
+        %         end
         
         for Numofrows = 1:Numrows
             OffSetY(Numofrows) = yscaleall*(Numrows-Numofrows)*(Ypert/100+1);
@@ -877,9 +898,9 @@ else%% y axis Overlay
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
         
-        if yscaleall < y_scale_def(2)-y_scale_def(2)
-            yscaleall = y_scale_def(2)-y_scale_def(2);
-        end
+        %         if yscaleall < y_scale_def(2)-y_scale_def(1)
+        %             yscaleall = y_scale_def(2)-y_scale_def(1);
+        %         end
         
         if Numrows ==1
             OffSetY = 0;
@@ -890,7 +911,7 @@ else%% y axis Overlay
             OffSetY(Numrows)=0;
         end
     else
-        qYScales = [ceil(max(bindata(:))), floor(min(bindata(:)))];
+        qYScales = y_scale_def;
         if Numrows ==1
             OffSetY = 0;
         else
@@ -953,7 +974,7 @@ end
 
 
 %%Get the figure name which is to be plotted
-if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==1 && qPLOTORG(2)==2) %% Page is ERPset
+if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1) %% Page is ERPset
     ERP = ALLERPBls(qCURRENTPLOT);
     if isempty(ERP.filename) || strcmp(ERP.filename,'')
         ERP.filename = 'still_not_saved!';
@@ -981,8 +1002,6 @@ else
 end
 extfig ='';
 [pathstrfig, qFigureName, extfig] = fileparts(qFigureName) ;
-
-
 if isempty(qFigureName)
     fig_gui= figure('Name',['<< ' fname ' >> '],...
         'NumberTitle','on','color',qFigbgColor);
@@ -1000,7 +1019,7 @@ if ~isempty(qFigureName)
 end
 try
     outerpos = fig_gui.OuterPosition;
-    set(fig_gui,'outerposition',[outerpos(1),(2),qFigOutpos(1) 1.05*qFigOutpos(2)])
+    set(fig_gui,'outerposition',[1,1,qFigOutpos(1) 1.05*qFigOutpos(2)])
 catch
     set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
 end
@@ -1025,7 +1044,6 @@ ax_height = outerpos(4) - ti(2) - ti(4);
 ax.Position = [left bottom ax_width ax_height];
 
 
-
 %%--------------Plot ERPwave-----------------
 stdalpha = qTransparency;
 countPlot = 0;
@@ -1036,11 +1054,14 @@ for Numofrows = 1:Numrows
         catch
             plotdatalabel = 0;
         end
-        
-        try
-            labelcbe = qplotArrayStr{plotdatalabel};
-        catch
-            labelcbe = 'no';
+        if (qPLOTORG(1)==1 && qPLOTORG(2)==2) ||(qPLOTORG(1)==2 && qPLOTORG(2)==1)
+            plotArray1 = sort(plotArray);
+        else
+            plotArray1  = plotArray;
+        end
+        [~,plotdatalabel] = find(plotArray1 == plotdatalabel);
+        if isempty(plotdatalabel)
+           plotdatalabel = 0; 
         end
         try
             plotbindata =  bindata(plotdatalabel,:,:,:);
@@ -1050,6 +1071,14 @@ for Numofrows = 1:Numrows
         
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
+            try
+                labelcbe = qplotArrayStr{countPlot};
+                if isempty(labelcbe)
+                    labelcbe  = 'Label varies across ERPsets';
+                end
+            catch
+                labelcbe = 'no';
+            end
             if qPolarityWave
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1));
             else
@@ -1088,8 +1117,7 @@ for Numofrows = 1:Numrows
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
-                %                 qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
-                %                 set(hplot(Numofoverlay),'DisplayName', qLegendName{Numofoverlay});
+                
             end
             
             if numel(OffSetY)==1 && OffSetY==0
@@ -1107,7 +1135,7 @@ for Numofrows = 1:Numrows
                     ylimleftedge = -abs(ceil(y_scale_def(end)));
                     ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
                 end
-                set(hbig,'ylim',[ylimleftedge,ylimrightedge]);
+                set(hbig,'ylim',[ylimleftedge,1.05*ylimrightedge]);
             end
             
             
@@ -1121,7 +1149,6 @@ for Numofrows = 1:Numrows
                 props.YTick =  fliplr (-1*qYticks)+OffSetY(Numofrows);
             end
             props.YTickLabel = cell(numel(props.YTick),1);
-            
             
             for Numofytick = 1:numel(props.YTick)
                 props.YTickLabel(Numofytick) = {num2str(props.YTick(Numofytick))};
@@ -1248,7 +1275,6 @@ for Numofrows = 1:Numrows
                 end
             end
             
-            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust x axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1345,7 +1371,6 @@ for Numofrows = 1:Numrows
                 end
             end
             
-            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%------------------channel/bin/erpset label-----------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1410,45 +1435,57 @@ set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','
 %%------------------------------legend name------------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 try
-    for Numofoverlay = 1:numel(hplot)
-        qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
-        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',32,qLegendName{Numofoverlay}));
-    end
-    sh = subplot(ceil(Numrows*5)+1, 1, 1,'align');
-    p  = get(sh,'position');
-    if qlegcolor ~=1
-        try
-            h_legend = legend(sh,hplot,LegendName);%%,'Interpreter','none'
-        catch
+    if LegenddispFlag==1
+        for Numofoverlay = 1:numel(hplot)
+            qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
+            LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',32,qLegendName{Numofoverlay}));
+        end
+        sh = subplot(ceil(Numrows*5)+1, 1, 1,'align');
+        p  = get(sh,'position');
+        if qlegcolor ~=1
+            try
+                h_legend = legend(sh,hplot,LegendName);%%,'Interpreter','none'
+            catch
+                h_legend = legend(sh,hplot,qLegendName);
+            end
+        else
             h_legend = legend(sh,hplot,qLegendName);
         end
+        set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
+        set(h_legend,'FontName',qLegendFont);%%legend name font
+        set(h_legend, 'position', p);
+        set(h_legend,'NumColumns',qlegcolumns);
+        
+        %%increase height of the legend
+        HeightScaleFactor = 1;
+        NewHeight = h_legend.Position(4) * HeightScaleFactor;
+        h_legend.Position(2) = h_legend.Position(2) - (NewHeight - h_legend.Position(4));
+        h_legend.Position(4) = NewHeight;
+        legend(sh,'boxoff');
+        axis(sh,'off');
     else
-        h_legend = legend(sh,hplot,qLegendName);
+        h_legend = subplot(ceil(Numrows*5)+1, 1, 1,'align');
+        set(h_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
+        if qPLOTORG(2) ==1
+            legendstr = char('The channel labels are not the same across the selected ERPsets, so no channel labels are shown.; If you want to see the channel labels, please select only one ERPset (or multiple ERPsets with matching channel labels).');
+        else
+            legendstr = char('The bin labels are not the same across the selected ERPsets, so no bin labels are shown.; If you want to see the bin labels, please select only one ERPset (or multiple ERPsets with matching bin labels).');
+        end
+        legendstr = regexp(legendstr, '\;', 'split');
+        text(h_legend,0.5,0.8,legendstr ,...
+            'FontSize',qLabelfontsize+2,'HorizontalAlignment', 'center',  'Color', [1 0 0]);%'FontWeight', 'bold',
     end
-    set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
-    set(h_legend,'FontName',qLegendFont);%%legend name font
-    set(h_legend, 'position', p);
-    set(h_legend,'NumColumns',qlegcolumns);
     
-    %%increase height of the legend
-    HeightScaleFactor = 1;
-    NewHeight = h_legend.Position(4) * HeightScaleFactor;
-    h_legend.Position(2) = h_legend.Position(2) - (NewHeight - h_legend.Position(4));
-    h_legend.Position(4) = NewHeight;
-    
-    
-    legend(sh,'boxoff');
-    axis(sh,'off');
 catch
     beep;
     disp('Cannot display the legend names, please check "qGridposArray" or other parameters!');
 end
 set(gcf,'color',qFigbgColor);
-prePaperType = get(fig_gui,'PaperType');
-prePaperUnits = get(fig_gui,'PaperUnits');
-preUnits = get(fig_gui,'Units');
-prePaperPosition = get(fig_gui,'PaperPosition');
-prePaperSize = get(fig_gui,'PaperSize');
+% prePaperType = get(fig_gui,'PaperType');
+% prePaperUnits = get(fig_gui,'PaperUnits');
+% preUnits = get(fig_gui,'Units');
+% prePaperPosition = get(fig_gui,'PaperPosition');
+% prePaperSize = get(fig_gui,'PaperSize');
 % Make changing paper type possible
 set(fig_gui,'PaperType','<custom>');
 

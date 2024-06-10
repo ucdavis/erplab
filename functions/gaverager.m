@@ -122,8 +122,8 @@ for j=1:nfile
         % basic test for number of points (for now...)
         if pre_pnts  ~= ERPT.pnts
             msgboxText =  sprintf('Erpsets #%g and #%g have different number of points!', j-1, j);
-            msgboxText = sprintf([msgboxText,'\n','ERPset',32, num2str(j-1),32,'has',32,num2str(ALLERP(j-1).pnts),32,'points.\n',...
-                'ERPset',32, num2str(j),32,'has',32,num2str(ALLERP(j).pnts),32,'points.\n']);
+            msgboxText = sprintf([msgboxText,'\n','ERPset',32, num2str(j-1),32,'has',32,num2str(ALLERP(j-1).pnts),32,'points (from',32,num2str(ALLERP(j-1).times(1)),32,'to',32,num2str(ALLERP(j-1).times(end)),'ms; fs=',num2str(ALLERP(j-1).srate),'Hz).\n',...
+                'ERPset',32, num2str(j),32,'has',32,num2str(ALLERP(j).pnts),32,'points (from',32,num2str(ALLERP(j).times(1)),32,'to',32,num2str(ALLERP(j).times(end)),'ms; fs=',num2str(ALLERP(j).srate),'Hz).\n']);
             %title = 'ERPLAB: pop_gaverager() Error';
             %errorfound(msgboxText, title);
             %return

@@ -1,9 +1,9 @@
 %
-% Author: Javier Lopez-Calderon & Steven Luck & Guanghui ZHANG
+% Author: Javier Lopez-Calderon & Steven Luck & Guanghui Zhang
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009 & 2022
+% 2009 & 2022  & 2023
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -83,8 +83,9 @@ transpa   = def{3};
 prec      = def{4};
 filename  = def{5};
 
-% version = geterplabversion;
-set(handles.gui_chassis,'Name', ['EStudio ' '2022.1' '   -   Export spectrum for selected ERPset as ".csv"'])
+erplab_default_values;
+version = erplabver;
+set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Export spectrum for selected ERPset as ".csv"'])
 
 [pathx, erpfilename, ext] = fileparts(filename); 
 ERPFileName = char(strcat(erpfilename,'.csv'));
@@ -271,7 +272,6 @@ prename = get(handles.edit_saveas,'String');
 [fname, pathname, filterindex] = uiputfile({'*.csv';'*.*'},'Save Output file as', prename);
 
 if isequal(fname,0)
-    disp('User selected Cancel')
     return
 else
     
@@ -312,41 +312,3 @@ function uipanel1_SizeChangedFcn(hObject, eventdata, handles)
 % hObject    handle to uipanel1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-
-% function edit_custom_bin_Callback(hObject, eventdata, handles)
-% 
-% 
-% 
-% % --- Executes during object creation, after setting all properties.
-% function edit_custom_bin_CreateFcn(hObject, eventdata, handles)
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%     set(hObject,'BackgroundColor','white');
-% end
-
-
-% % --- Executes on button press in pushbutton_browse_bin.
-% function pushbutton_browse_bin_Callback(hObject, eventdata, handles)
-% % hObject    handle to pushbutton_browse_bin (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% 
-% 
-% 
-% function edit_custom_chan_Callback(hObject, eventdata, handles)
-% 
-% 
-% 
-% % --- Executes during object creation, after setting all properties.
-% function edit_custom_chan_CreateFcn(hObject, eventdata, handles)
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%     set(hObject,'BackgroundColor','white');
-% end
-% 
-% 
-% % --- Executes on button press in pushbutton_browse_chan.
-% function pushbutton_browse_chan_Callback(hObject, eventdata, handles)
-% % hObject    handle to pushbutton_browse_chan (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)

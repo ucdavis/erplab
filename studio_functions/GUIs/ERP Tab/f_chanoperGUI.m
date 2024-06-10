@@ -76,7 +76,8 @@ handles.formtype = formtype;
 %
 % Name & version
 %
-version = geterplabstudioversion;
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Channel Operation GUI for ' typedata])
 
 % formulas = erpworkingmemory(formtype);

@@ -1,0 +1,71 @@
+#
+#
+ERPLAB Studio designed by Steve Luck, Guanghui Zhang, and Andrew X Stewart#
+#
+Main developers of ERPLAB Studio: #
+Guanghui Zhang #
+ghzhang@ucdavis.edu #
+Andrew X Stewart #
+axstewart@ucdavis.edu #
+Center for Mind and Brain, University of California, Davis #
+#
+#
+Find latest on Github:
+https://github.com/lucklab/erplab
+#
+#
+Makes extensive use of: #
+ERPLAB Classic designed by Javier Lopez-Calderon and Steve Luck #
+at UC Davis #
+and EEGLAB Toolbox designed by Scott Makeig and Arnauld Delorme #
+at UCSD. #
+#
+ERPLAB Studio Development Assistants: #
+Carter Luck #
+#
+UC-Davis Testing Team: #
+[To be added]. #
+#
+#
+#
+This is not commercial software,  and bugs can happen #
+In some cases,  errors will occur leading to a message that #
+instructs you to report the error to the EEGLAB developers. #
+If this happens, please report the error to erplabtoolbox@gmail.com #
+and not to the EEGLAB developers. ERPLAB has primarily been #
+tested using EEG collected with a Biosemi ActiveTwo System, #
+along with a smaller amount of testing using EEG collected #
+with Neuroscan and EGI systems. Consequently, you should be #
+particularly careful when using this version of ERPLAB with #
+data collected with systems other than the Biosemi ActiveTwo. #
+#
+#
+This program is free software: you can redistribute it and/or #
+modify it under the terms of the GNU General Public License #
+as published by the Free Software Foundation, either version #
+3 of the License, or at your option) any later version. #
+#
+This program is distributed in the hope that it will be useful, #
+but WITHOUT ANY WARRANTY; without even the implied warranty of #
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. #
+See the GNU General Public License for more details. #
+#
+This software is intended for research purposes only and is #
+not approved for use in medical diagnosis or treatment. #
+#
+You should have received a copy of the GNU General Public #
+License long with this program.  If not, see #
+<http://www.gnu.org/licenses/>. #
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+Davis, California #
+a great place to live, work, and study #
+#

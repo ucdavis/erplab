@@ -1,14 +1,10 @@
 %PURPOSE  : Plot EPR waves within one axes
 
-
-
 % Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis
 % Davis, CA
 % 2022 & 2023
-
-
 
 function f_redrawERP_viewer_test()
 
@@ -22,14 +18,6 @@ if nargin>1
     return;
 end
 
-try
-    ALLERPwaviewer = evalin('base','ALLERPwaviewer');
-    ERPwaviewer = ALLERPwaviewer;
-catch
-    beep;
-    disp('Please re-run ERP wave viewer.');
-    return;
-end
 
 %%save figure size:width and height
 try
@@ -40,8 +28,8 @@ end
 FigOutposition = gui_erp_waviewer.ViewBox.OuterPosition(3:4);
 FigOutposition(1) = 100*FigOutposition(1)/ScreenPos(3);
 FigOutposition(2) = 100*FigOutposition(2)/ScreenPos(4);
-ERPwaviewer.FigOutpos=FigOutposition;
-assignin('base','ALLERPwaviewer',ERPwaviewer);
+gui_erp_waviewer.ERPwaviewer.FigOutpos=FigOutposition;
+
 try
     gui_erp_waviewer.ScrollVerticalOffsets = gui_erp_waviewer.ViewAxes.VerticalOffsets/gui_erp_waviewer.ViewAxes.Heights;
     gui_erp_waviewer.ScrollHorizontalOffsets = gui_erp_waviewer.ViewAxes.HorizontalOffsets/gui_erp_waviewer.ViewAxes.Widths;
@@ -67,19 +55,19 @@ Inch_SS = get(0,'screensize');
 Res = Pix_SS./Inch_SS;
 
 %%background color of figure
-figbgdColor = ERPwaviewer.figbackgdcolor;
+figbgdColor = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
 if ~isnumeric(figbgdColor) || isempty(figbgdColor) || numel(figbgdColor)~=3 || max(figbgdColor)>1 ||  min(figbgdColor)<0
     figbgdColor =[1 1 1];
 end
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    zoomSpace = 0;
+    zoomSpace = 100;
 else
-    if zoomSpace<0
-        zoomSpace =0;
+    if zoomSpace<100
+        zoomSpace =100;
     end
 end
-if zoomSpace ==0
+if zoomSpace ==100
     gui_erp_waviewer.ScrollVerticalOffsets=0;
     gui_erp_waviewer.ScrollHorizontalOffsets=0;
 end
@@ -95,12 +83,12 @@ end
 
 
 %%determine the page number
-pagecurrentNum = ERPwaviewer.PageIndex;
-pagesValue =  ERPwaviewer.plot_org.Pages;
-ERPArray = ERPwaviewer.SelectERPIdx;
-chanArray =ERPwaviewer.chan;
-binArray = ERPwaviewer.bin;
-ALLERPIN = ERPwaviewer.ALLERP;
+pagecurrentNum = gui_erp_waviewer.ERPwaviewer.PageIndex;
+pagesValue =  gui_erp_waviewer.ERPwaviewer.plot_org.Pages;
+ERPArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+chanArray =gui_erp_waviewer.ERPwaviewer.chan;
+binArray = gui_erp_waviewer.ERPwaviewer.bin;
+ALLERPIN = gui_erp_waviewer.ERPwaviewer.ALLERP;
 [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPArray);
 if pagesValue==1
     pageNum = numel(chanArray);
@@ -118,8 +106,7 @@ end
 
 if pagecurrentNum>pageNum
     pagecurrentNum =1;
-    ERPwaviewer.PageIndex =1;
-    assignin('base','ALLERPwaviewer',ERPwaviewer);
+    gui_erp_waviewer.ERPwaviewer.PageIndex =1;
 end
 
 gui_erp_waviewer.plotgrid = uix.VBox('Parent',gui_erp_waviewer.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorBviewer_def);
@@ -130,25 +117,18 @@ gui_erp_waviewer.erpwaviewer_legend_title = uiextras.HBox( 'Parent', gui_erp_wav
 uicontrol('Parent',gui_erp_waviewer.erpwaviewer_legend_title,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.erpwaviewer_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.erpwaviewer_legend_title,'BackgroundColor',figbgdColor);
-
-
 gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
-% gui_erp_waviewer.ViewAxes_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',ColorBviewer_def);
-
 uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-% gui_erp_waviewer.Resize = 0;
-
-
-% gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
 gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
 
+gui_erp_waviewer.blank_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
+uicontrol('Parent',gui_erp_waviewer.blank_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
-%%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
+
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 gui_erp_waviewer.zoom_in = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Zoom In',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomin);
-
 gui_erp_waviewer.zoom_edit = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','edit','String',num2str(zoomSpace),...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomedit);
 
@@ -156,46 +136,26 @@ gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
-gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
-
-
-gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Save Figure as',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
-
-gui_erp_waviewer.figureout = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_out);
+gui_erp_waviewer.show_popup = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','popupmenu','String',{'Plot options','Show Command','Save Figure as','Create Static /Exportable Plot'},...
+    'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Callback',@show_popup);
 
 gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Reset',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
 
-
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 100 100 170 70 5]);
+set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 150 70 5]);
 
-
-%%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
 gui_erp_waviewer.xaxis_panel = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
 gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 %%Setting title
 gui_erp_waviewer.pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr{pagecurrentNum}];
-
-gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-
-
-gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '<','Callback',@page_minus,'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'FontWeight','bold');
-% if S_ws_getbinchan.Select_index ==1
+gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',@page_minus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 gui_erp_waviewer.pageinfo_minus.Enable = 'off';
-% end
 gui_erp_waviewer.pageinfo_edit = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
-
-
-gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '>','Callback',@page_plus,'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'FontWeight','bold');
-% if S_ws_getbinchan.Select_index == numel(S_ws_geterpset)
+gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',@page_plus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 gui_erp_waviewer.pageinfo_plus.Enable = 'off';
-% end
-
 
 if pageNum ==1
     Enable_minus = 'off';
@@ -226,7 +186,7 @@ gui_erp_waviewer.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 gui_erp_waviewer.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 set(gui_erp_waviewer.plot_wav_legend, 'Sizes', [10 -1]);
 set(gui_erp_waviewer.erpwaviewer_legend_title, 'Sizes', [10 -1]);
-set(gui_erp_waviewer.pageinfo_box, 'Sizes', [-1 50 50 50] );
+set(gui_erp_waviewer.pageinfo_box, 'Sizes', [-1 70 50 70] );
 
 gui_erp_waviewer.myerpviewer = axes('Parent', gui_erp_waviewer.ViewAxes,'Color','none','Box','on','FontWeight','bold');
 hold(gui_erp_waviewer.myerpviewer,'on');
@@ -240,8 +200,9 @@ OutputViewerpar = f_preparms_erpwaviewer('');
 
 gui_erp_waviewer.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
 gui_erp_waviewer.plotgrid.Heights(2) = 50; % set the first element (pageinfo) to 30px high
-gui_erp_waviewer.plotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
+gui_erp_waviewer.plotgrid.Heights(4) = 5;
 gui_erp_waviewer.plotgrid.Heights(5) = 30; % set the second element (x axis) to 30px high
+gui_erp_waviewer.plotgrid.Heights(6) = 30; % set the second element (x axis) to 30px high
 gui_erp_waviewer.plotgrid.Units = 'pixels';
 if isempty(OutputViewerpar)
     disp('Please restart EStudio Wave Viewer');
@@ -267,22 +228,20 @@ if splot_n*pb_height<(gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plo
 else
     pb_height = 0.9*pb_height;
 end
-if zoomSpace <0
-    gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height;
+zoomSpace = zoomSpace-100;
+if zoomSpace <=0
+    gui_erp_waviewer.ViewAxes.Heights = 0.95*gui_erp_waviewer.ViewAxes.Position(4);
 else
     gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height*(1+zoomSpace/100);
 end
 
 widthViewer = gui_erp_waviewer.ViewAxes.Position(3)-gui_erp_waviewer.ViewAxes.Position(2);
-if zoomSpace <0
+if zoomSpace <=0
     gui_erp_waviewer.ViewAxes.Widths = widthViewer;
 else
     gui_erp_waviewer.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
-    
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
-
-
 
 %%Keep the same positions for Vertical and Horizontal scrolling bars asbefore
 if zoomSpace~=0 && zoomSpace>0
@@ -299,37 +258,57 @@ if zoomSpace~=0 && zoomSpace>0
         end
     end
 end
-% gui_erp_waviewer.ViewAxes.BackgroundColor = 'b';
+
+
+%%display the names of channels and bins if they diff across the selected
+%%ERPsets
+LabelsdiffFlag = OutputViewerpar{48};
+ALLERPIN = OutputViewerpar{1};
+PLOTORG =   OutputViewerpar{3};
+ERPsetArray=   OutputViewerpar{43};
+[chanStr,binStr,diff_mark,chanStremp,binStremp] = f_geterpschanbin(ALLERPIN,ERPsetArray);
+if (diff_mark(1) ==1 || diff_mark(2)==1) && LabelsdiffFlag==1 && PLOTORG(1)~=3
+    if diff_mark(1) ==1 && diff_mark(2) ==0
+        MessageViewer= char(strcat('Some grid Location Labels will be empty because CHANNELS differ across the selected ERPsets'));
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =4;
+    elseif diff_mark(1) ==0 && diff_mark(2) ==1
+        MessageViewer= char(strcat('Some grid Location Labels will be empty because BINS differ across the selected ERPsets'));
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =4;
+        
+    elseif  diff_mark(1) ==1 && diff_mark(2) ==1
+        MessageViewer= char(strcat('Some grid Location Labels will be empty because CHANNELS and BINS differ across the selected ERPsets'));
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =4;
+    end
+    f_display_binstr_chanstr(ALLERPIN, ERPsetArray,diff_mark)
+end
+
+
 end % redrawDemo
 
 
-
-
-
-
-%%Resize the GUI automatically as the user changes the size of the window at run-time.
-% function WAviewerResize(~,~)
-% global gui_erp_waviewer;
-% if gui_erp_waviewer.Resize ~= 0
-%     set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
-%     f_redrawERP_viewer_test();
-% end
-% end
-
+function show_popup(Source,~)
+global viewer_ERPDAT;
+value = Source.Value;
+if value==2
+    Show_command();
+elseif value==3
+    figure_saveas();
+elseif value==4
+    figure_out();
+end
+Source.Value=1;
+end
 
 %%-------------------------------Page Editor-------------------------------
 function page_edit(Source,~)
 global viewer_ERPDAT
+global gui_erp_waviewer;
 % addlistener(viewer_ERPDAT,'page_xyaxis',@count_page_xyaxis_change);
 
-try
-    ERPwaviewer = evalin('base','ALLERPwaviewer');
-catch
-    beep;
-    disp('Error > f_redrawERP_viewer_test() > page_edit().');
-    return;
-end
-pagesValue =  ERPwaviewer.plot_org.Pages;
+pagesValue =  gui_erp_waviewer.ERPwaviewer.plot_org.Pages;
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
@@ -339,10 +318,9 @@ end
 Pagecurrent = str2num(Source.String);
 
 if ~isempty(Pagecurrent) && Pagecurrent>0
-    
-    ERPArray = ERPwaviewer.SelectERPIdx;
-    chanArray =ERPwaviewer.chan;
-    binArray = ERPwaviewer.bin;
+    ERPArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+    chanArray =gui_erp_waviewer.ERPwaviewer.chan;
+    binArray = gui_erp_waviewer.ERPwaviewer.bin;
     if pagesValue==1
         pageNum = numel(chanArray);
     elseif pagesValue==2
@@ -352,14 +330,12 @@ if ~isempty(Pagecurrent) && Pagecurrent>0
     end
     
     if  Pagecurrent<=pageNum
-        ERPwaviewer.PageIndex = Pagecurrent;
+        gui_erp_waviewer.ERPwaviewer.PageIndex = Pagecurrent;
         if pagesValue==3
-            ERPwaviewer.ERP   = ERPwaviewer.ALLERP(ERPArray(Pagecurrent));
-            ERPwaviewer.CURRENTERP  =ERPArray(Pagecurrent);
+            gui_erp_waviewer.ERPwaviewer.ERP   = gui_erp_waviewer.ERPwaviewer.ALLERP(ERPArray(Pagecurrent));
+            gui_erp_waviewer.ERPwaviewer.CURRENTERP  =ERPArray(Pagecurrent);
         end
-        assignin('base','ALLERPwaviewer',ERPwaviewer);
-        viewer_ERPDAT.page_xyaxis = viewer_ERPDAT.page_xyaxis+1;
-        f_redrawERP_viewer_test();%%replot the waves
+        viewer_ERPDAT.Count_currentERP=1;
     end
 end
 
@@ -368,24 +344,17 @@ end
 %------------------Display the waveform for proir ERPset--------------------
 function page_minus(~,~)
 global viewer_ERPDAT
-
+global gui_erp_waviewer;
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-try
-    ERPwaviewer_CHANGE = evalin('base','ALLERPwaviewer');
-catch
-    beep;
-    disp('Please re-run ERP wave viewer.');
-    return;
-end
-ERPwaviewer_CHANGE.PageIndex = ERPwaviewer_CHANGE.PageIndex-1;
-pagesValue =  ERPwaviewer_CHANGE.plot_org.Pages;
-ERPArray = ERPwaviewer_CHANGE.SelectERPIdx;
-chanArray =ERPwaviewer_CHANGE.chan;
-binArray = ERPwaviewer_CHANGE.bin;
+gui_erp_waviewer.ERPwaviewer.PageIndex = gui_erp_waviewer.ERPwaviewer.PageIndex-1;
+pagesValue =  gui_erp_waviewer.ERPwaviewer.plot_org.Pages;
+ERPArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+chanArray =gui_erp_waviewer.ERPwaviewer.chan;
+binArray = gui_erp_waviewer.ERPwaviewer.bin;
 if pagesValue==1
     pageNum = numel(chanArray);
 elseif pagesValue==2
@@ -393,19 +362,18 @@ elseif pagesValue==2
 else
     pageNum = numel(ERPArray);
 end
-Pagecurrent = ERPwaviewer_CHANGE.PageIndex;
-if  ERPwaviewer_CHANGE.PageIndex<= pageNum &&  ERPwaviewer_CHANGE.PageIndex>0
+Pagecurrent = gui_erp_waviewer.ERPwaviewer.PageIndex;
+if  gui_erp_waviewer.ERPwaviewer.PageIndex<= pageNum &&  gui_erp_waviewer.ERPwaviewer.PageIndex>0
     if pagesValue==3
-        ERPwaviewer_CHANGE.ERP   = ERPwaviewer_CHANGE.ALLERP(ERPArray(Pagecurrent));
-        ERPwaviewer_CHANGE.CURRENTERP  =ERPArray(Pagecurrent);
+        gui_erp_waviewer.ERPwaviewer.ERP   = gui_erp_waviewer.ERPwaviewer.ALLERP(ERPArray(Pagecurrent));
+        gui_erp_waviewer.ERPwaviewer.CURRENTERP  =ERPArray(Pagecurrent);
     end
     
-    assignin('base','ALLERPwaviewer',ERPwaviewer_CHANGE);
-    MessageViewer= char(strcat('Plot prior page (<)'));
-    erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-    viewer_ERPDAT.page_xyaxis = viewer_ERPDAT.page_xyaxis+1;%%change X/Y axis based on the changed pages
+    MessageViewer= char(strcat('Plot previous page'));
+    estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+    
     viewer_ERPDAT.Process_messg =1;
-    f_redrawERP_viewer_test();
+    viewer_ERPDAT.Count_currentERP=1;
     viewer_ERPDAT.Process_messg =2;
 else
     return;
@@ -416,23 +384,17 @@ end
 %------------------Display the waveform for next ERPset--------------------
 function  page_plus(~,~)
 global viewer_ERPDAT
+global gui_erp_waviewer;
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-try
-    ERPwaviewer_CHANGE = evalin('base','ALLERPwaviewer');
-catch
-    beep;
-    disp('Please re-run ERP wave viewer.');
-    return;
-end
-ERPwaviewer_CHANGE.PageIndex = ERPwaviewer_CHANGE.PageIndex+1;
-pagesValue =  ERPwaviewer_CHANGE.plot_org.Pages;
-ERPArray = ERPwaviewer_CHANGE.SelectERPIdx;
-chanArray =ERPwaviewer_CHANGE.chan;
-binArray = ERPwaviewer_CHANGE.bin;
+gui_erp_waviewer.ERPwaviewer.PageIndex = gui_erp_waviewer.ERPwaviewer.PageIndex+1;
+pagesValue =  gui_erp_waviewer.ERPwaviewer.plot_org.Pages;
+ERPArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+chanArray =gui_erp_waviewer.ERPwaviewer.chan;
+binArray = gui_erp_waviewer.ERPwaviewer.bin;
 if pagesValue==1
     pageNum = numel(chanArray);
 elseif pagesValue==2
@@ -440,18 +402,16 @@ elseif pagesValue==2
 else
     pageNum = numel(ERPArray);
 end
-Pagecurrent = ERPwaviewer_CHANGE.PageIndex;
-if  ERPwaviewer_CHANGE.PageIndex<= pageNum &&  ERPwaviewer_CHANGE.PageIndex>0%% within the page range
+Pagecurrent = gui_erp_waviewer.ERPwaviewer.PageIndex;
+if  gui_erp_waviewer.ERPwaviewer.PageIndex<= pageNum &&  gui_erp_waviewer.ERPwaviewer.PageIndex>0%% within the page range
     if pagesValue==3
-        ERPwaviewer_CHANGE.ERP   = ERPwaviewer_CHANGE.ALLERP(ERPArray(Pagecurrent));
-        ERPwaviewer_CHANGE.CURRENTERP  =ERPArray(Pagecurrent);
+        gui_erp_waviewer.ERPwaviewer.ERP   = gui_erp_waviewer.ERPwaviewer.ALLERP(ERPArray(Pagecurrent));
+        gui_erp_waviewer.ERPwaviewer.CURRENTERP  =ERPArray(Pagecurrent);
     end
-    assignin('base','ALLERPwaviewer',ERPwaviewer_CHANGE);
-    viewer_ERPDAT.page_xyaxis = viewer_ERPDAT.page_xyaxis+1;%%change X/Y axis based on the changed pages
-    MessageViewer= char(strcat('Plot next page (>)'));
-    erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+    MessageViewer= char(strcat('Plot next page'));
+    estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
     viewer_ERPDAT.Process_messg =1;
-    f_redrawERP_viewer_test();
+    viewer_ERPDAT.Count_currentERP=1;
     viewer_ERPDAT.Process_messg =2;
 else
     return;
@@ -471,7 +431,7 @@ if isempty(ViewerName)
     ViewerName = char('My Viewer');
 end
 MessageViewer= char(strcat('Show Command'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'command');
@@ -493,15 +453,13 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-
 MessageViewer= char(strcat('Save Figure As'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 
 pathstr = pwd;
 namedef ='Myviewer.pdf';
 [erpfilename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
     'Save as',[fullfile(pathstr,namedef)]);
-
 
 if isequal(erpfilename,0)
     beep;
@@ -543,7 +501,7 @@ if isempty(ViewerName)
     ViewerName = char('My Viewer');
 end
 MessageViewer= char(strcat('Create Static/Exportable Plot'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'script');
@@ -565,19 +523,19 @@ if ~isempty(messgStr)
 end
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('zoomSpace',0)
+    estudioworkingmemory('zoomSpace',100)
 else
-    if zoomSpace<0
-        zoomSpace = 0;
+    if zoomSpace<100
+        zoomSpace = 100;
     end
-    zoomSpace =zoomSpace+10;
+    zoomSpace =zoomSpace+50;
     estudioworkingmemory('zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom In'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
-    f_redrawERP_viewer_test();
+    viewer_ERPDAT.Count_currentERP=1;
     viewer_ERPDAT.Process_messg =2;
 catch
     viewer_ERPDAT.Process_messg =3;
@@ -594,7 +552,7 @@ estudioworkingmemory('MERPWaveViewer_label',[]);
 estudioworkingmemory('MERPWaveViewer_others',[]);
 
 MessageViewer= char(strcat('Reset'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 
 try
     viewer_ERPDAT.Process_messg =1;
@@ -608,7 +566,7 @@ end
 
 %%Reset the window size and position
 new_pos = [0.01,0.01,75,75];
-erpworkingmemory('ERPWaveScreenPos',new_pos);
+estudioworkingmemory('ERPWaveScreenPos',new_pos);
 try
     ScreenPos =  get( groot, 'Screensize' );
 catch
@@ -621,8 +579,6 @@ set(gui_erp_waviewer.Window, 'Position', new_pos);
 end
 
 
-
-
 function zoomedit(Source,~)
 global viewer_ERPDAT;
 
@@ -633,8 +589,8 @@ end
 
 zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
     estudioworkingmemory('zoomSpace',zoomspaceEdit);
     try
         viewer_ERPDAT.Process_messg =1;
@@ -656,13 +612,12 @@ else
         viewer_ERPDAT.Process_messg =3;
         return;
     end
-    if zoomspaceEdit<0
-        fprintf(2,['\n Zoom Editor:The input must be a positive number','.\n']);
+    if zoomspaceEdit<100
+        fprintf(2,['\n Zoom Editor:The input must not be smaller than 100','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
 end
-
 end
 
 %%----------------Zoom out-------------------------------------------------
@@ -676,16 +631,16 @@ end
 
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('zoomSpace',0)
+    estudioworkingmemory('zoomSpace',100)
 else
-    zoomSpace =zoomSpace-10;
-    if zoomSpace <0
-        zoomSpace =0;
+    zoomSpace =zoomSpace-50;
+    if zoomSpace <100
+        zoomSpace =100;
     end
     estudioworkingmemory('zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom Out'));
-erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
     f_redrawERP_viewer_test();
@@ -710,7 +665,7 @@ if isempty(ColorBviewer_def)
 end
 gui_erp_waviewer.Process_messg.BackgroundColor = [0.95 0.95 0.95];
 gui_erp_waviewer.Process_messg.FontSize = FonsizeDefault;
-Processed_Method=erpworkingmemory('ERPViewer_proces_messg');
+Processed_Method=estudioworkingmemory('ERPViewer_proces_messg');
 if viewer_ERPDAT.Process_messg ==1
     gui_erp_waviewer.Process_messg.String =  strcat('1- ',Processed_Method,': Running....');
     gui_erp_waviewer.Process_messg.ForegroundColor = [0 0 0];
@@ -720,7 +675,7 @@ elseif viewer_ERPDAT.Process_messg ==2
     
 elseif viewer_ERPDAT.Process_messg ==3
     if ~strcmp(gui_erp_waviewer.Process_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
-    fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
     end
     gui_erp_waviewer.Process_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0 0];
@@ -733,7 +688,7 @@ else
     pause(0.5);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0.65 0];
 end
-if viewer_ERPDAT.Process_messg ==1 || viewer_ERPDAT.Process_messg==2 || viewer_ERPDAT.Process_messg==3
+if viewer_ERPDAT.Process_messg ==1 || viewer_ERPDAT.Process_messg==2 %|| viewer_ERPDAT.Process_messg==3
     pause(0.01);
     gui_erp_waviewer.Process_messg.String = '';
     gui_erp_waviewer.Process_messg.BackgroundColor = ColorBviewer_def;%[0.95 0.95 0.95];
@@ -746,7 +701,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f_plotviewerwave(ALLERP,qCURRENTPLOT, qPLOTORG,qbinArray,qchanArray,qGridposArray,plotBox,qBlc,qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,...
     qLegendName,qLegendFont,qLegendFontsize,qCBELabels,qLabelfont,qLabelfontsize,qPolarityWave,qSEM,qTransparency,qGridspace,qtimeRange,qXticks,qXticklabel,...
-    qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorTicksX,qXunits,qYScales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,qplotArrayStr,...
+    qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorTicksX,qXunits,qYScales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,qlabelsName,...
     ERPsetArray,qlegcolor,qlegcolumns,qlabelcolor,qytickprecision,qxtickprecision,qxdisFlag,myerpviewer,myerpviewerlegend)
 
 hbig = myerpviewer;
@@ -765,10 +720,9 @@ end
 if max(ERPsetArray)>length(ALLERP)
     ERPsetArray=length(ALLERP);
 end
-
-[chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,[1:length(ALLERP)]);
 qERPArray = ERPsetArray;
 
+[chanStrdef,binStrdef,diff_mark,chanStremp,binStremp] = f_geterpschanbin(ALLERP,ERPsetArray);
 
 if nargin<5
     qchanArray = 1:length(chanStrdef);
@@ -845,16 +799,22 @@ plotBoxdef = f_getrow_columnautowaveplot(plotArray);
 if isempty(qPLOTORG) || numel(qPLOTORG)~=3 ||  numel(unique(qPLOTORG)) ~=3 || min(qPLOTORG)<0 || max(qPLOTORG)>3
     qPLOTORG = [1 2 3];
 end
-
+LegenddispFlag = 1;
 if qPLOTORG(2) ==1 %% if  the selected Channel is "Grid"
     OverlayArraydef = qchanArray;
     for Numofchan = 1:numel(qchanArray)
         LegendNamedef{Numofchan,1} =char(chanStrdef(qchanArray(Numofchan)));
     end
+    if diff_mark(1)==1
+        LegenddispFlag =0;
+    end
 elseif qPLOTORG(2) == 2 %% if the selected Bin is "Grid"
     OverlayArraydef = qbinArray;
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStrdef(qbinArray(Numofbin)));
+    end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
     end
 elseif qPLOTORG(2) == 3%% if the selected ERPset is "Grid"
     OverlayArraydef = qERPArray;
@@ -870,6 +830,9 @@ else
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStr(qbinArray(Numofbin)));
     end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
+    end
 end
 
 LineColordef = [0 0 0;1 0 0;0 0 1;0 1 0;1,0.65 0;0 1 1;1 0 1;0.5 0.5 0.5;0.94 0.50 0.50;0 0.75 1;0.57 0.93 0.57;1 0.55 0;1 0.75 0.80;1 0.84 0];%% get from:https://htmlcolorcodes.com/color-names/
@@ -883,18 +846,18 @@ if qPLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = qchanArray;
     for Numofchan = 1:numel(plotArray)
         try
-            plotArrayStrdef{Numofchan} = chanStrdef{plotArray(Numofchan)};
+            plotArrayStrdef{Numofchan} = chanStremp{plotArray(Numofchan)};
         catch
-            plotArrayStrdef{Numofchan} = 'no';
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 elseif qPLOTORG(1) == 2 %% if the selected Bin is "Grid"
     plotArray = qbinArray;
     for Numofbin = 1:numel(plotArray)
         try
-            plotArrayStrdef{Numofbin} = binStrdef{plotArray(Numofbin)};
+            plotArrayStrdef{Numofbin} = binStremp{plotArray(Numofbin)};
         catch
-            plotArrayStrdef{Numofbin} = 'no';
+            plotArrayStrdef{Numofbin} = '';
         end
     end
 elseif qPLOTORG(1) == 3%% if the selected ERPset is "Grid"
@@ -903,16 +866,16 @@ elseif qPLOTORG(1) == 3%% if the selected ERPset is "Grid"
         try
             plotArrayStrdef{Numoferp} = ALLERP(plotArray(Numoferp)).erpname;
         catch
-            plotArrayStrdef{Numoferp} = 'no';
+            plotArrayStrdef{Numoferp} = '';
         end
     end
 else
     plotArray = qchanArray;
     for Numofchan = 1:numel(chanArray)
         try
-            plotArrayStrdef{Numofchan} = chanStrdef{plotArray(Numofchan)};
+            plotArrayStrdef{Numofchan} = chanStremp{plotArray(Numofchan)};
         catch
-            plotArrayStrdef{Numofchan} = 'no';
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 end
@@ -957,8 +920,8 @@ if isempty(qlegcolor) || (qlegcolor~=1 && qlegcolor~=0)
     qlegcolor=1;
 end
 
-if nargin <39 || isempty(qplotArrayStr)
-    qplotArrayStr  = plotArrayStrdef;
+if nargin <39 || isempty(qlabelsName)
+    qlabelsName  = plotArrayStrdef;
 end
 
 
@@ -1304,11 +1267,17 @@ if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
         if ~strcmpi(qBlc,'no') && ~strcmpi(qBlc,'none')%% when the baseline correction is "pre","post","whole"
             
             if strcmpi(qBlc,'pre')
-                indxtimelock = find(ERP.times==0) ;   % zero-time locked
+                [xxx, indxtimelock, latdiffms] = closest(ERP.times,0);% zero-time locked
+                if isempty(indxtimelock)
+                    indxtimelock=1;
+                end
                 aa = 1;
             elseif strcmpi(qBlc,'post')
                 indxtimelock = length(ERP.times);
-                aa = find(ERP.times==0);
+                [xxx, aa, latdiffms] = closest(ERP.times,0);% zero-time locked
+                if isempty(aa)
+                    aa=length(ERP.times);%%ned to further confirm
+                end
             elseif strcmpi(qBlc,'all') || strcmpi(qBlc,'whole')
                 indxtimelock = length(ERP.times);
                 aa = 1;
@@ -1602,7 +1571,7 @@ if isempty(qYticks)
 end
 
 %%Get the figure name which is to be plotted
-if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==1 && qPLOTORG(2)==2) %% Page is ERPset
+if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1) %% Page is ERPset
     ERP = ALLERPBls(qCURRENTPLOT);
     if isempty(ERP.filename) || strcmp(ERP.filename,'')
         ERP.filename = 'still_not_saved!';
@@ -1657,9 +1626,12 @@ for Numofrows = 1:Numrows
         plotdatalabel = qGridposArray(Numofrows,Numofcolumns);
         
         try
-            labelcbe = qplotArrayStr{plotdatalabel};
+            labelcbe = qlabelsName{plotdatalabel};
+            if isempty(labelcbe)
+                labelcbe  = 'Label varies across ERPsets';
+            end
         catch
-            labelcbe = 'no';
+            labelcbe = '';
         end
         try
             plotbindata =  bindata(plotdatalabel,:,:,:);
@@ -2018,28 +1990,39 @@ set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','
 %%------------------------------legend name------------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 try
-    for Numofoverlay = 1:numel(hplot)
-        qLegendName1 = strrep(qLegendName{Numofoverlay},'_','\_');
-        %         qLegendName1 = qLegendName{Numofoverlay};
-        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',qLegendName1));
-    end
-    p  = get(myerpviewerlegend,'position');
-    if qlegcolor ~=1
-        try
-            h_legend = legend(myerpviewerlegend, hplot,LegendName);%,'interpreter','none'
-        catch
+    if LegenddispFlag==1
+        for Numofoverlay = 1:numel(hplot)
+            qLegendName1 = strrep(qLegendName{Numofoverlay},'_','\_');
+            %         qLegendName1 = qLegendName{Numofoverlay};
+            LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',qLegendName1));
+        end
+        p  = get(myerpviewerlegend,'position');
+        if qlegcolor ~=1
+            try
+                h_legend = legend(myerpviewerlegend, hplot,LegendName);%,'interpreter','none'
+            catch
+                h_legend = legend(myerpviewerlegend, hplot,qLegendName,'interpreter','none');
+            end
+        else
             h_legend = legend(myerpviewerlegend, hplot,qLegendName,'interpreter','none');
         end
+        set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
+        set(h_legend, 'position', p);
+        set(h_legend,'FontName',qLegendFont);%%legend name font
+        set(h_legend,'NumColumns',qlegcolumns);
+        
+        legend(myerpviewerlegend,'boxoff');
+        set(myerpviewerlegend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
     else
-        h_legend = legend(myerpviewerlegend, hplot,qLegendName,'interpreter','none');
+        if qPLOTORG(2) ==1
+            legendstr = char('The channel labels are not the same across the selected ERPsets, so no channel labels are shown.; If you want to see the channel labels, please select only one ERPset (or multiple ERPsets with matching channel labels).');
+        else
+            legendstr = char('The bin labels are not the same across the selected ERPsets, so no bin labels are shown.; If you want to see the bin labels, please select only one ERPset (or multiple ERPsets with matching bin labels).');
+        end
+        legendstr = regexp(legendstr, '\;', 'split');
+        text(myerpviewerlegend,0.5,0.8,legendstr ,...
+            'FontSize',qLabelfontsize+2,'HorizontalAlignment', 'center',  'Color', [1 0 0]);%'FontWeight', 'bold',
     end
-    set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
-    set(h_legend, 'position', p);
-    set(h_legend,'FontName',qLegendFont);%%legend name font
-    set(h_legend,'NumColumns',qlegcolumns);
-    
-    legend(myerpviewerlegend,'boxoff');
-    set(myerpviewerlegend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 catch
 end
 

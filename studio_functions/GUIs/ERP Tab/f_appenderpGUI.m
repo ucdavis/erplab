@@ -82,8 +82,9 @@ handles.erpsetPanel = erpsetPanel;
 % set GUI
 handles = setbuttonsgui(hObject, eventdata, handles);
 
-erplab_studio_default_values;
-version = erplabstudiover;
+
+erplab_default_values;
+version = erplabver;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   APPEND ERPs GUI'])
 
 handles = painterplabstudio(handles);
@@ -1155,3 +1156,10 @@ else
     set(hObject,'Value',1);
     set(handles.radiobutton_erpset,'Value',0);
 end
+
+
+% --- Executes during object deletion, before destroying properties.
+% function pushbutton_help_DeleteFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton_help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

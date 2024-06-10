@@ -5,16 +5,13 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022
+% 2022  && Nov 2023
 
 
 function varargout = f_ERP_property_waveviewer_GUI(varargin)
 global gui_erp_waviewer;
 global viewer_ERPDAT;
-% addlistener(viewer_ERPDAT,'v_currentERP_change',@Count_currentERPChanged);
-% addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
-
-
+addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 gui_property_waveviewer = struct();
 
 %-----------------------------Name the title----------------------------------------------
@@ -31,7 +28,7 @@ else
     box_erpwave_viewer_property = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Viewer Properties', 'Padding', 5,...
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
-gui_erp_waviewer.Window.WindowButtonMotionFcn = {@ViewerPos};
+% gui_erp_waviewer.Window.WindowButtonMotionFcn = {@Viewerpos_width};
 %-----------------------------Draw the panel-------------------------------------
 try
     FonsizeDefault = varargin{2};
@@ -75,29 +72,34 @@ varargout{1} = box_erpwave_viewer_property;
             'callback',@viewer_TN,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         set(gui_property_waveviewer.viewer_TN_title, 'Sizes',[70 165]);
         
-        
-        gui_property_waveviewer.viewer_pos_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title,'String','Position:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         New_pos = gui_erp_waviewer.screen_pos;
-        if isempty(New_pos)
-            New_pos = [0.01,0.01,75,75];
-            erpworkingmemory('ERPWaveScreenPos',New_pos);
+        if isempty(New_pos) || numel(New_pos)~=2
+            New_pos = [75,75];
+            estudioworkingmemory('ERPWaveScreenPos',New_pos);
         end
         
-        New_pos1 = roundn(New_pos,-3);
-        New_poStr = char([num2str(New_pos1(1)),32,num2str(New_pos1(2)),32,num2str(New_pos1(3)),32,num2str(New_pos1(4))]);
-        
-        gui_property_waveviewer.parameters_pos = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_pos_title,'String',New_poStr,...
-            'callback',@Viewerpos,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
-        set(gui_property_waveviewer.viewer_pos_title, 'Sizes',[70 165]);
+        New_pos = roundn(New_pos,-3);
         
         gui_property_waveviewer.viewer_pos_title1 = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title1,'String','',...
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title1,'String','Window size:',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %1A
+        
+        gui_property_waveviewer.viewer_wz_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','Width:',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
-        uicontrol('Style','text','Parent',gui_property_waveviewer.viewer_pos_title1,'String','(left bottom width height) in %',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
-        set(gui_property_waveviewer.viewer_pos_title1, 'Sizes',[68 165]);
+        gui_property_waveviewer.parameters_pos_width = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_wz_title,'String',num2str(New_pos(1)),...
+            'callback',@Viewerpos_width,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','%,',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','Height:',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+        gui_property_waveviewer.parameters_pos_height = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_wz_title,'String',num2str(New_pos(2)),...
+            'callback',@Viewerpos_height,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','%',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+        
+        set(gui_property_waveviewer.viewer_wz_title, 'Sizes',[40 55 20 45 55 20]);
+        
         
         set(gui_property_waveviewer.DataSelBox ,'Sizes',[30 25 25 25])
     end
@@ -110,46 +112,58 @@ varargout{1} = box_erpwave_viewer_property;
 
 %%-------------------------Setting for load--------------------------------
     function parameters_load(~,~)
-        
         MessageViewer= char(strcat('Viewer Properties > Load'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
+        try
+            ALLERP = evalin('base','ALLERP');
+        catch
+            MessageViewer= char(strcat('Viewer Properties > Load: ALLERP is not available on workspace, you therfore cannot further handle'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
+        if isempty(ALLERP)
+            MessageViewer= char(strcat('Viewer Properties > Load: ALLERP is empty on workspace, you therfore cannot further handle'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
         
         [filename, filepath,indxs] = uigetfile({'*.mat'}, ...
             'Load parametrs for "My viewer"', ...
             'MultiSelect', 'off');
         if isequal(filename,0)
-            disp('User selected Cancel');
             return;
         end
         
         [pathstr, erpfilename, ext] = fileparts(filename) ;
-        if indxs==1
-            ext = '.mat';
-        elseif indxs==2
-            ext = '.mat';
-        else
-            ext = '.mat';
-        end
+        ext = '.mat';
+        
         erpFilename = char(strcat(erpfilename,ext));
         
         try
-            ERPwaviewer = importdata([filepath,erpFilename]);
-            ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
-            ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
-            ERPwaviewer.ERP = ERPwaviewerdef.ERP;
-            ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
-            ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
-            ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
-            assignin('base','ALLERPwaviewer',ERPwaviewer);
+            gui_erp_waviewer.ERPwaviewer = importdata([filepath,erpFilename]);
+            gui_erp_waviewer.ERPwaviewer.ALLERP= ALLERP;
         catch
-            beep;
-            MessageViewer=['\n\n My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =3;
+            MessageViewer=['My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         
+        try
+            CURRENTERP = evalin('base','CURRENTERP');
+        catch
+            CURRENTERP = [];
+        end
+        if isempty(CURRENTERP) || numel(CURRENTERP)~=1 || any(CURRENTERP>length(ALLERP))
+            CURRENTERP = length(ALLERP);
+        end
+        gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(CURRENTERP);
+        gui_erp_waviewer.ERPwaviewer.CURRENTERP = CURRENTERP;
+        gui_erp_waviewer.ERPwaviewer.SelectERPIdx = CURRENTERP;
+        gui_erp_waviewer.ERPwaviewer.PageIndex = 1;
         %%check current version
         ERPtooltype = erpgettoolversion('tooltype');
         if strcmpi(ERPtooltype,'EStudio')
@@ -179,7 +193,7 @@ varargout{1} = box_erpwave_viewer_property;
             elseif strcmpi(ERPtooltype,'ERPLAB')
                 MessageViewer= char(strcat('Viewer Properties > Load - This settings file was created using an older version of ERPLAB'));
             end
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
         end
         
@@ -187,25 +201,19 @@ varargout{1} = box_erpwave_viewer_property;
         f_redrawERP_viewer_test();
         
         MessageViewer= char(strcat('Viewer Properties > Load'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
 %%-------------------------Setting for Save--------------------------------
     function parameters_save(~,~)
         MessageViewer= char(strcat('Viewer Properties > Save'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        try
-            ERPwaviewer  = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save: \n There is no "ALLERPwaviewer" on Workspace, Please run My Viewer again.\n\n');
-            return;
-        end
+        ERPwaviewer  = gui_erp_waviewer.ERPwaviewer;
+        
         pathstr = pwd;
-        namedef ='Viewer';
+        namedef ='Advanced_ERPWave_Viewer';
         erpFilename = char(strcat(namedef,'.mat'));
         
         ERPtooltype = erpgettoolversion('tooltype');
@@ -226,7 +234,6 @@ varargout{1} = box_erpwave_viewer_property;
         end
         ERPwaviewer.version = erplabstudiover;
         
-        
         ERPwaviewer.ALLERP = [];
         ERPwaviewer.ERP = [];
         ERPwaviewer.CURRENTERP = [];
@@ -235,24 +242,23 @@ varargout{1} = box_erpwave_viewer_property;
         try
             save([pathstr,filesep,erpFilename],'ERPwaviewer','-v7.3');
         catch
-            beep;
-            MessageViewer= char(strcat('Viewer Propoerties > Save: \n Cannot save the parameters of My viewer'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =3;
+            MessageViewer= char(strcat('Viewer Propoerties > Save: Cannot save the parameters of My viewer'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         MessageViewer= char(strcat('Viewer Properties > Save'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 %%-------------------------Setting for Save as--------------------------------
     function parameters_saveas(~,~)
         MessageViewer= char(strcat('Viewer Properties > Save as'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
         pathstr = pwd;
-        namedef ='Viewer';
+        namedef ='Advanced_ERPWave_Viewer';
         [erpfilename, erppathname, indxs] = uiputfile({'*.mat'}, ...
             ['Save "','Information of My Viewer', '" as'],...
             fullfile(pathstr,namedef));
@@ -264,24 +270,11 @@ varargout{1} = box_erpwave_viewer_property;
             return
         end
         
-        try
-            ERPwaviewer  = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n There is no "ALLERPwaviewer" on Workspace, Please run My Viewer again.\n\n');
-            return;
-        end
+        ERPwaviewer  = gui_erp_waviewer.ERPwaviewer;
         
-        %         [pathx, filename, ext] = fileparts(erpfilename);
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        if indxs==1
-            ext = '.mat';
-        elseif indxs==2
-            ext = '.mat';
-        else
-            ext = '.mat';
-        end
+        ext = '.mat';
+        
         erpFilename = char(strcat(erpfilename,ext));
         
         ERPtooltype = erpgettoolversion('tooltype');
@@ -309,13 +302,13 @@ varargout{1} = box_erpwave_viewer_property;
         try
             save([erppathname,erpFilename],'ERPwaviewer','-v7.3');
         catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
+            MessageViewer= char(strcat('Viewer Propoerties > Save: Cannot save the parameters of My viewer'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         MessageViewer= char(strcat('Viewer Properties > Save as'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
         
     end
@@ -323,159 +316,199 @@ varargout{1} = box_erpwave_viewer_property;
 %%------------------Title name for Wave Viewer-----------------------------
     function viewer_TN(source_locationname,~)
         MessageViewer= char(strcat('Viewer Properties > Title'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         ViewerName = source_locationname.String;
         if isempty(ViewerName)
             ViewerName = 'My Viewer';
+            source_locationname.String = ViewerName;
         end
+        
+        erplabstudiover = geterplabeversion;
+        if isempty(erplabstudiover)
+            erplabstudiover = '??';
+        end
+        
+        currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
+        estudioworkingmemory('viewername',ViewerName);
+        
+        gui_erp_waviewer.ERPwaviewer.figname = ViewerName;
+        gui_erp_waviewer.Window.Name = currvers;
+        viewer_ERPDAT.Process_messg =2;
+    end
+
+%%-----------------------width for window size-----------------------------
+    function Viewerpos_width(Str,~)
+        New_pos1_width = str2num(Str.String);
         try
-            [version1 reldate] = geterplabstudioversion;
-            erplabstudiover = version1;
+            New_posin = estudioworkingmemory('ERPWaviewerScreenPos');
+        catch
+            New_posin = [75,75];
+        end
+        if isempty(New_posin) ||numel(New_posin)~=2
+            New_posin = [75,75];
+        end
+        
+        if isempty(New_pos1_width) || numel(New_pos1_width)~=1 || any(New_pos1_width<=0)
+            Str.String = num2str(New_posin(1));
+            MessageViewer= char(strcat('Viewer Properties > Window size > width: The width value is invalid and it must be a positive value'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
+        New_pos1(1) = New_pos1_width;
+        New_pos1_h = str2num(gui_property_waveviewer.parameters_pos_height.String);
+        
+        if isempty(New_pos1_h) || numel(New_pos1_h)~=1 || any(New_pos1_h<=0)
+            gui_property_waveviewer.parameters_pos_height.String = num2str(New_posin(2));
+            MessageViewer= char(strcat('Viewer Properties > Window size > width: The height value is invalid and it must be a positive value'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
+        New_pos1(2) = New_pos1_h;
+        
+        MessageViewer= char(strcat('Viewer Properties > Window size > width'));
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
+        try
+            ScreenPos =  get( groot, 'Screensize' );
+        catch
+            ScreenPos =  get( 0, 'Screensize' );
+        end
+        
+        New_posin(2) = abs(New_posin(2));
+        
+        New_pos = gui_erp_waviewer.Window.Position;
+        
+        estudioworkingmemory('ERPWaviewerScreenPos',New_pos1);
+        
+        try
+            POS4 = (New_pos1(2)-New_posin(2))/100;
+            new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
+            if new_pos(2)+new_pos(4)<ScreenPos(4)
+                set(gui_erp_waviewer.Window, 'Position', new_pos);
+            else%%exceed
+                new_pos(2) = ScreenPos(4) - (new_pos(2)+new_pos(4));
+                set(gui_erp_waviewer.Window, 'Position', new_pos);
+            end
+            
+        catch
+            estudioworkingmemory('f_EEG_proces_messg',['The defined Window Size for Viewer is invalid and it must be two numbers']);
+            viewer_ERPDAT.Process_messg =4;
+            set(gui_erp_waviewer.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+            estudioworkingmemory('ERPWaviewerScreenPos',[75 75]);
+        end
+        gui_erp_waviewer.ERPwaviewer.FigOutpos = New_pos1;
+        
+        viewer_ERPDAT.Count_currentERP=1;
+        viewer_ERPDAT.Process_messg =2;
+    end
+
+%%---------------------height for window size------------------------------
+    function Viewerpos_height(Str,~)
+        
+        try
+            New_posin = estudioworkingmemory('ERPWaviewerScreenPos');
+        catch
+            New_posin = [75,75];
+        end
+        if isempty(New_posin) ||numel(New_posin)~=2
+            New_posin = [75,75];
+        end
+        New_pos1_h = str2num(gui_property_waveviewer.parameters_pos_height.String);
+        if isempty(New_pos1_h) || numel(New_pos1_h)~=1 || any(New_pos1_h<=0)
+            gui_property_waveviewer.parameters_pos_height.String = num2str(New_posin(2));
+            MessageViewer= char(strcat('Viewer Properties > Window size > height: The height value is invalid and it must be a positive value'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
+        New_pos1(2) = New_pos1_h;
+        New_pos1_width = str2num(gui_property_waveviewer.parameters_pos_width.String);
+        if isempty(New_pos1_width) || numel(New_pos1_width)~=1 || any(New_pos1_width<=0)
+            gui_property_waveviewer.parameters_pos_width.String = num2str(New_posin(1));
+            MessageViewer= char(strcat('Viewer Properties > Window size > height: The width value is invalid and it must be a positive value'));
+            estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
+        New_pos1(1) = New_pos1_width;
+        
+        
+        MessageViewer= char(strcat('Viewer Properties > Window size > height'));
+        estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
+        try
+            ScreenPos =   gui_erp_waviewer.monitor_size;
+        catch
+            ScreenPos =  get( 0, 'Screensize' );
+        end
+        
+        New_posin(2) = abs(New_posin(2));
+        
+        New_pos = gui_erp_waviewer.Window.Position;
+        
+        estudioworkingmemory('ERPWaviewerScreenPos',New_pos1);
+        
+        try
+            POS4 = (New_pos1(2)-New_posin(2))/100;
+            new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
+            if new_pos(2)+new_pos(4)<ScreenPos(4)
+                set(gui_erp_waviewer.Window, 'Position', new_pos);
+            else%%exceed
+                new_pos(2) = ScreenPos(4) - (new_pos(2)+new_pos(4));
+                set(gui_erp_waviewer.Window, 'Position', new_pos);
+            end
+            
+        catch
+            estudioworkingmemory('f_EEG_proces_messg',['The defined Window Size for Viewer is invalid and it must be two numbers']);
+            viewer_ERPDAT.Process_messg =4;
+            set(gui_erp_waviewer.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+            estudioworkingmemory('ERPWaviewerScreenPos',[75 75]);
+        end
+        gui_erp_waviewer.ERPwaviewer.FigOutpos = New_pos1;
+        
+        viewer_ERPDAT.Count_currentERP=1;
+        viewer_ERPDAT.Process_messg =2;
+    end
+
+
+%%------------------------------reset--------------------------------------
+    function Reset_Waviewer_panel_change(~,~)
+        if viewer_ERPDAT.Reset_Waviewer_panel~=8
+            return;
+        end
+        estudioworkingmemory('ERPWaviewerScreenPos',[75 75]);
+        gui_erp_waviewer.ERPwaviewer.FigOutpos = [75 75];
+        try
+            ScreenPos =   gui_erp_waviewer.monitor_size;
+        catch
+            ScreenPos =  get( 0, 'Screensize' );
+        end
+        
+        set(gui_erp_waviewer.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+        estudioworkingmemory('ERPWaviewerScreenPos',[75 75]);
+        gui_property_waveviewer.parameters_pos.String = num2str([75 75]);
+        
+        %%name
+        ViewerName = 'My Viewer';
+        try
+            erplab_default_values;
+            erplabstudiover = erplabver;
         catch
             erplabstudiover = '??';
         end
         currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
         estudioworkingmemory('viewername',ViewerName);
-        try
-            ERPwaviewer  = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My Viewer > Viewer Propoerties > Title: \n There is no "ALLERPwaviewer" on Workspace, Please run My Viewer again.\n\n');
-            return;
-        end
-        ERPwaviewer.figname = ViewerName;
-        assignin('base','ALLERPwaviewer',ERPwaviewer);
+        gui_erp_waviewer.ERPwaviewer.figname = ViewerName;
         gui_erp_waviewer.Window.Name = currvers;
-        viewer_ERPDAT.Process_messg =2;
     end
 
+end
 
-    function Viewerpos(Str,~)
-        New_pos = str2num(Str.String);
-        MessageViewer= char(strcat('Viewer Properties > Position'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-        viewer_ERPDAT.Process_messg =1;
-        try
-            ScreenPos =  get( groot, 'Screensize' );
-        catch
-            ScreenPos =  get( 0, 'Screensize' );
-        end
-        if isempty(New_pos) || numel(New_pos)~=4
-            MessageViewer= char(strcat('Viewer Properties > Position- 4 numbers are needed for Viewer position (e.g., [1 1 1200 700])'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            %             fprintf(2,['\n Warning: ',MessageViewer,'.\n']);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
-        
-        xyValue = New_pos(1:2);
-        WHpos = New_pos(3:4);
-        if min(xyValue(:))<-100 || max(xyValue(:)) >100
-            MessageViewer= char(strcat('Viewer Properties > X and Y values should be between [-100 100]'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
-        if  min(WHpos(:))<0 || max(WHpos(:))>100
-            MessageViewer= char(strcat('Viewer Properties > width and height values should be between [0 100]'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
-        
-        if New_pos(1)>90 || New_pos(1)< -90
-            MessageViewer= char(strcat('Viewer Properties > Position: Left is better within [-90 90], otherwise, the main GUI will disappear.'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
-        
-        if  New_pos(2)< -90
-            MessageViewer= char(strcat('Viewer Properties > Position: Bottom should be larger than -90, otherwise, the main GUI will disappear.'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
-        
-        erpworkingmemory('ERPWaveScreenPos',New_pos);
-        gui_erp_waviewer.screen_pos = New_pos;
-        New_pos1 = roundn(New_pos,-3);
-        New_poStr = char([num2str(New_pos1(1)),32,num2str(New_pos1(2)),32,num2str(New_pos1(3)),32,num2str(New_pos1(4))]);
-        gui_property_waveviewer.parameters_pos.String = New_poStr;
-        
-        
-        New_pos =[ScreenPos(3)*New_pos(1)/100,ScreenPos(4)*New_pos(2)/100,ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
-        gui_erp_waviewer.Window.Position= New_pos;
-        viewer_ERPDAT.Process_messg =2;
-        f_redrawERP_viewer_test();
-    end
-
-%%Update the Viewer position automatically
-    function ViewerPos(~,~)
-        
-        ERPLAB_ERPWaviewer=  erpworkingmemory('ERPLAB_ERPWaviewer');
-        if ERPLAB_ERPWaviewer==1
-            viewer_ERPDAT.ERPset_Chan_bin_label=2;
-        end
-        
-        try
-            ScreenPos =  get( groot, 'Screensize' );
-        catch
-            ScreenPos =  get( 0, 'Screensize' );
-        end
-        try
-            New_pos = gui_erp_waviewer.Window.Position;
-        catch
-            return;
-        end
-        New_pos1 = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
-        try
-            Old_pos = gui_erp_waviewer.screen_pos;
-            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),Old_pos(3),Old_pos(4)];
-        catch
-            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
-        end
-        
-        if New_pos1(1)>90 || New_pos1(1)< -90 || New_pos(2)< -90 || min(New_pos1(3:4))<-100 || max(New_pos1(3:4)) >100 %% from different size of monitor
-            New_pos = [0.01,0.01,75,75];
-            new_pos =[ScreenPos(3)*New_pos(1)/100,ScreenPos(4)*New_pos(2)/100,ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
-            set(gui_erp_waviewer.Window, 'Position', new_pos);
-            
-            zoomSpace = 100*((gui_erp_waviewer.ViewAxes.Widths+240)-gui_erp_waviewer.Window.Position(3))/gui_erp_waviewer.Window.Position(3);
-            if isempty(zoomSpace) || zoomSpace<0
-                zoomSpace = 0;
-            end
-            if zoomSpace ==0
-                gui_erp_waviewer.ScrollVerticalOffsets=0;
-                gui_erp_waviewer.ScrollHorizontalOffsets=0;
-            end
-            estudioworkingmemory('zoomSpace',zoomSpace);
-            gui_erp_waviewer.zoom_edit.String = num2str(roundn(zoomSpace,-1));
-            
-        end
-        
-        New_pos = roundn(New_pos,-3);
-        New_poStr = char([num2str(New_pos(1)),32,num2str(New_pos(2)),32,num2str(New_pos(3)),32,num2str(New_pos(4))]);
-        
-        gui_property_waveviewer.parameters_pos.String = New_poStr;
-        %         erpworkingmemory('ERPWaveScreenPos',New_pos);
-        gui_erp_waviewer.screen_pos = New_pos;
-    end
+%%---------------------ERPLAB VERSION--------------------------------------
+function erplabver1 = geterplabeversion
+erplab_default_values;
+erplabver1 = erplabver;
 end

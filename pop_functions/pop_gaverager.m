@@ -318,7 +318,7 @@ if optioni==1  && DQ_flag % if from text file
             
         end
     catch
-        warning('Dataquality measures not found in all these ERPsets. Setting DQ_flag = 0');
+        warning('Data quality measures not found in all these ERPsets. Setting DQ_flag = 0');
         DQ_flag = 0;
     end
 end

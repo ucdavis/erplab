@@ -1,7 +1,6 @@
-
-% New ERP viewer GUI Layout - Simple ERP viewer 0.014
+% New ERP viewer GUI Layout 
 %
-% Author: Guanghui Zhang & Steve J. Luck & Andrew Stewart
+% Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -36,14 +35,20 @@
 
 function  ERPLAB_ERP_Viewer(ALLERP,selectedERP_index,binArray,chanArray,Parameterfile)
 tic;%
-disp(' ERP Waveform Viewer is launching...');
+disp('ERP Waveform Viewer is launching. Please be patient...');
 
+EStudioversion = geterplabeversion;
 
 global viewer_ERPDAT;
 global gui_erp_waviewer;
 ERPtooltype = erpgettoolversion('tooltype');
-% global observe_ERPDAT;
-% if ~strcmpi(ERPtooltype,'EStudio')
+
+%%try to close existing Viewer
+try
+    close(gui_erp_waviewer.Window);%%close previous GUI if exists
+catch
+end
+
 viewer_ERPDAT = v_ERPDAT;
 % end
 % addlistener(observe_ERPDAT,'erpschange',@allErpChanged);
@@ -58,21 +63,6 @@ if ~strcmpi(ERPtooltype,'EStudio') &&  ~strcmpi(ERPtooltype,'ERPLAB')
     observe_ERPDAT.Count_currentERP = 0;
     observe_ERPDAT.Process_messg = 0;
 end
-try
-    close(EStudio_gui_erp_totl.Window);
-catch
-end
-
-if exist('memoryerpstudiopanels.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
-if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudiopanels.erpm'),'ERPtooltype')
-end
 
 
 
@@ -81,10 +71,15 @@ if exist('memoryerpstudio.erpm','file')==2
 else
     iserpmem = 0; % does not exist file for memory
 end
+
+
 if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudio.erpm'),'ERPtooltype')
+    mshock = 0;
+    if iserpmem==0
+        p1 = which('o_ERPDAT');
+        p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+        save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
+    end
 end
 
 
@@ -167,23 +162,13 @@ if nargin>6
     return;
 end
 
-erpworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB 
-% if ~strcmpi(ERPtooltype,'EStudio')
-%     addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
-%     addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
-%     addlistener(viewer_ERPDAT,'v_messg_change',@V_messg_change);
-%     addlistener(viewer_ERPDAT,'count_legend_change',@count_legend_change);
-%     addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
-% % end
-
+estudioworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB
 
 viewer_ERPDAT.Count_currentERP = 0;
 % viewer_ERPDAT.Process_messg = 0;%0 is the default means there is no message for processing procedure;
 %1 means the processign procedure is running
 %2 means the processign procedure is done
 %3 means there are some errors for processing procedure
-viewer_ERPDAT.count_legend=0;%% this is to capture the changes of legend name
-viewer_ERPDAT.page_xyaxis=0;%%get the changes of x/y axis based on the changed pages or selected ERPsets
 viewer_ERPDAT.loadproper_count = 0;
 viewer_ERPDAT.Process_messg = 0;
 viewer_ERPDAT.count_twopanels = 0;%% Automaticlly saving the changes on the other panel if the current panel is changed
@@ -199,8 +184,7 @@ viewer_ERPDAT.ERP_chan =  chanArray;
 try
     test = uix.HBoxFlex();
 catch
-    beep;
-    disp('The GUI Layout Toolbox might not be installed. Quitting')
+    disp('The GUI Layout Toolbox might not be included. Please download it from:https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox')
     return
 end
 
@@ -214,38 +198,43 @@ estudioworkingmemory('MyViewer_labels',0);
 estudioworkingmemory('MyViewer_linelegend',0);
 estudioworkingmemory('MyViewer_other',0);
 
-ERPwaviewer.ALLERP =ALLERP;
-ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
-ERPwaviewer.CURRENTERP =selectedERP_index(end);
-ERPwaviewer.SelectERPIdx =selectedERP_index;
-ERPwaviewer.bin = binArray;
-ERPwaviewer.chan = chanArray;
-ERPwaviewer.binchan_op = 1;%% 1. Auto; 2.Custom
-
-ERPwaviewer.plot_org.Grid = 1; %1.Channels; 2.Bins; 3. ERPsets; 4. None
-ERPwaviewer.plot_org.Overlay = 2; %1.Channels; 2.Bins; 3. ERPsets; 4. None
-ERPwaviewer.plot_org.Pages = 3; %1.Channels; 2.Bins; 3. ERPsets; 4. None
-ERPwaviewer.plot_org.gridlayout.op = 1; %1.Auto; 2. Custom
-ERPwaviewer.plot_org.gridlayout.data = [];
-ERPwaviewer.Lines = [];
-ERPwaviewer.Legend = [];
-ERPwaviewer.xaxis = [];
-ERPwaviewer.yaxis = [];
-ERPwaviewer.polarity = [];
-ERPwaviewer.SEM = [];
-ERPwaviewer.PageIndex = 1;
-ERPwaviewer.baselinecorr = 'none';
-ERPwaviewer.chanbinsetlabel = [];
-ERPwaviewer.figbackgdcolor = [1 1 1];
-ERPwaviewer.figname = 'My Viewer';
-ERPwaviewer.FigOutpos=[];
-assignin('base','ALLERPwaviewer',ERPwaviewer);
-
-% estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
+gui_erp_waviewer.ERPwaviewer.ALLERP =ALLERP;
+gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
 try
-    close(gui_erp_waviewer.Window);%%close previous GUI if exists
+    CURRENTERP = evalin('base','CURRENTERP');
 catch
+    CURRENTERP = numel(selectedERP_index);
 end
+gui_erp_waviewer.ERPwaviewer.CURRENTERP =CURRENTERP;
+[xpos,ypos] = find(selectedERP_index==CURRENTERP);
+if ~isempty(ypos)
+    gui_erp_waviewer.ERPwaviewer.PageIndex =ypos;
+else
+    gui_erp_waviewer.ERPwaviewer.PageIndex=numel(selectedERP_index);
+end
+gui_erp_waviewer.ERPwaviewer.SelectERPIdx =selectedERP_index;
+gui_erp_waviewer.ERPwaviewer.bin = binArray;
+gui_erp_waviewer.ERPwaviewer.chan = chanArray;
+gui_erp_waviewer.ERPwaviewer.binchan_op = 1;%% 1. Auto; 2.Custom
+
+gui_erp_waviewer.ERPwaviewer.plot_org.Grid = 1; %1.Channels; 2.Bins; 3. ERPsets; 4. None
+gui_erp_waviewer.ERPwaviewer.plot_org.Overlay = 2; %1.Channels; 2.Bins; 3. ERPsets; 4. None
+gui_erp_waviewer.ERPwaviewer.plot_org.Pages = 3; %1.Channels; 2.Bins; 3. ERPsets; 4. None
+gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.op = 1; %1.Auto; 2. Custom
+gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data = [];
+gui_erp_waviewer.ERPwaviewer.Lines = [];
+gui_erp_waviewer.ERPwaviewer.Legend = [];
+gui_erp_waviewer.ERPwaviewer.xaxis = [];
+gui_erp_waviewer.ERPwaviewer.yaxis = [];
+gui_erp_waviewer.ERPwaviewer.polarity = [];
+gui_erp_waviewer.ERPwaviewer.SEM = [];
+gui_erp_waviewer.ERPwaviewer.baselinecorr = 'none';
+gui_erp_waviewer.ERPwaviewer.chanbinsetlabel = [];
+gui_erp_waviewer.ERPwaviewer.figbackgdcolor = [1 1 1];
+gui_erp_waviewer.ERPwaviewer.figname = 'My Viewer';
+gui_erp_waviewer.ERPwaviewer.FigOutpos=[];
+%
+% estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
 
 
 createInterface_ERPWave_viewer(ERPtooltype);
@@ -263,23 +252,19 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
         set(0,'DefaultUicontrolBackgroundColor',oldcolor);
         
         if strcmpi(button,'Yes')
-            ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
-            Parameterfile.ALLERP= ERPwaviewerdef.ALLERP;
-            Parameterfile.ERP = ERPwaviewerdef.ERP;
+            Parameterfile.ALLERP= gui_erp_waviewer.ERPwaviewer.ALLERP;
+            Parameterfile.ERP = gui_erp_waviewer.ERPwaviewer.ERP;
         else
             if strcmpi(button,'No')
-                beep;
                 viewer_ERPDAT.Process_messg =3;
                 fprintf(2,'\n\n My viewer > ERPLAB_ERP_Viewer: \n Cannot use the file because no ALLERP can be used.\n\n');
             else
-                beep
                 viewer_ERPDAT.Process_messg =3;
                 fprintf(2,'\n\n My viewer > ERPLAB_ERP_Viewer: \n User selected cancel.\n\n');
             end
             return;
         end
     end
-    assignin('base','ALLERPwaviewer',Parameterfile);
     viewer_ERPDAT.loadproper_count = 1;
     f_redrawERP_viewer_test();
 end
@@ -287,58 +272,56 @@ timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\n\n']);
 
     function  createInterface_ERPWave_viewer(ERPtooltype);
+        try
+            erplabstudiover = num2str(geterplabeversion);
+        catch
+            erplabstudiover = '??';
+        end
+        
         if strcmpi(ERPtooltype,'EStudio')
-            try
-                [version reldate] = geterplabstudioversion;
-                erplabstudiover = version;
-            catch
-                erplabstudiover = '??';
-            end
-            
             currvers  = ['ERPLAB Studio ' erplabstudiover,'- My Viewer'];
         else
-            try
-                [version reldate] = geterplabversion;
-                erplabstudiover = version;
-            catch
-                erplabstudiover = '??';
-            end
-            
             currvers  = ['ERPLAB ' erplabstudiover,'- My Viewer'];
         end
         estudioworkingmemory('viewername','My Viewer');
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
-            ColorBviewer_def = [0.7765,0.7294,0.8627];
+            ColorBviewer_def = [0.8 0.8 0.9];
         end
-        %         gui_erp_waviewer = struct();
-        % First, let's start the window
+        
         gui_erp_waviewer.Window = figure( 'Name', currvers, ...
             'NumberTitle', 'off', ...
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
-            'HandleVisibility', 'off', 'tag', 'rollover');
+            'HandleVisibility', 'on',...
+            'tag', 'rollover',...
+            'DockControls','off');%%donot allow to dock
         ScreenPos = [];
-        
-        new_pos= erpworkingmemory('ERPWaveScreenPos');
-        if isempty(new_pos)
-            new_pos = [0.01,0.01,75,75];
-            erpworkingmemory('ERPWaveScreenPos',new_pos);
+        new_pos= estudioworkingmemory('ERPWaviewerScreenPos');
+        if isempty(new_pos) || numel(new_pos)~=2
+            new_pos = [75,75];
+            estudioworkingmemory('ERPWaviewerScreenPos',new_pos);
         end
         try
             ScreenPos =  get( groot, 'Screensize' );
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
-        gui_erp_waviewer.screen_pos = new_pos;
-        new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+        gui_erp_waviewer.monitor_size = ScreenPos;%%save monitor size
+        gui_erp_waviewer.screen_pos = new_pos;%%GUI size
+        if  ~isempty(new_pos(2)) && new_pos(2) >100
+            POS4 = (100-new_pos(2))/100;
+            new_pos =[0,ScreenPos(4)*POS4,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
+        else
+            new_pos =[0,0,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
+        end
         set(gui_erp_waviewer.Window, 'Position', new_pos);
         
         % + View menu
         gui_erp_waviewer.exit = uimenu( gui_erp_waviewer.Window, 'Label','Exit', 'Callback', @onExit);
         
-        gui_erp_waviewer.help = uimenu( gui_erp_waviewer.Window, 'Label', 'Help', 'Callback', @onhelp);
+%         gui_erp_waviewer.help = uimenu( gui_erp_waviewer.Window, 'Label', 'Help', 'Callback', @onhelp);
         
         %%-----------Setting------------------------------------------------
         %% Create tabs
@@ -357,37 +340,26 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         set(gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
         % + Adjust the main layout
         set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]); % Viewpanel and settings panel
-        
-        
         gui_erp_waviewer.panel_fonts  = f_get_default_fontsize(); %% get the default fontsize based on the different plat form, e.g., Mac
-        
         gui_erp_waviewer.settingLayout = uiextras.VBox('Parent', gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
         
         % + Create the settings window panels for ERP panel
         gui_erp_waviewer.panel{1} = f_ERPsets_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(1) = 255;
-        
+        gui_erp_waviewer.panelSizes(1) = 360;
         gui_erp_waviewer.panel{2} = f_ERP_Binchan_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(2) = 280;
-        
         gui_erp_waviewer.panel{3} = f_ERP_timeampscal_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(3) = 490;
-        
         gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(4) = 385;
-        
         gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(5) = 200;
-        
         gui_erp_waviewer.panel{6} = f_ERP_lineset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(6) = 375;
-        
         gui_erp_waviewer.panel{7} = f_ERP_otherset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(7) = 225;
-        
         gui_erp_waviewer.panel{8} = f_ERP_property_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(8) = 130;
-        
+        gui_erp_waviewer.panelSizes(8) = 140;
         set(gui_erp_waviewer.settingLayout, 'Heights', gui_erp_waviewer.panelSizes);
         gui_erp_waviewer.panelscroll.Heights = sum(gui_erp_waviewer.panelSizes);
         
@@ -417,16 +389,11 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         %% + Create the view
         p = gui_erp_waviewer.ViewContainer;
         gui_erp_waviewer.ViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorBviewer_def);
-        gui_erp_waviewer.Resize=1;
+        gui_erp_waviewer.Resize=0;
     end % createInterface_ERPWave_viewer
 
 
     function nMinimize( eventSource, eventData, whichpanel) %#ok<INUSL>
-        try
-            [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
-        catch
-            ColorBviewer_def = [0.7020 0.77 0.85];
-        end
         minned = gui_erp_waviewer.panel{whichpanel}.IsMinimized;
         szs = get( gui_erp_waviewer.settingLayout, 'Sizes' );
         if minned
@@ -436,9 +403,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             set( gui_erp_waviewer.panel{whichpanel}, 'IsMinimized', true);
             szs(whichpanel) = 25;
         end
-        set( gui_erp_waviewer.settingLayout, 'Sizes', szs ,'BackgroundColor',ColorBviewer_def);
+        set( gui_erp_waviewer.settingLayout, 'Sizes', szs);
         gui_erp_waviewer.panelscroll.Heights = sum(szs);
-        set(gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
     end % nMinimize
 
 
@@ -454,7 +420,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         if strcmpi(button1,'Yes')
             try
                 close(gui_erp_waviewer.Window);
-                clear ALLERPwaviewer;
             catch
                 return;
             end
@@ -468,17 +433,13 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         
     end
 
-%%Resize the GUI automatically as the user changes the size of the window at run-time.
-%     function WAviewerResize(~,~)
-%         if gui_erp_waviewer.Resize ~= 0
-%             new_pos = gui_erp_waviewer.Window.Position;
-%             erpworkingmemory('ERPWaveScreenPos',new_pos);
-%             gui_erp_waviewer.screen_pos = new_pos;
-% %             set(gui_erp_waviewer.Window, 'Position', new_pos);
-%             f_redrawERP_viewer_test();
-%         end
-%     end
-
-
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function
+
+
+%%---------------------ERPLAB VERSION--------------------------------------
+function erplabver1 = geterplabeversion
+erplab_default_values;
+erplabver1 = str2num(erplabver);
+estudioworkingmemory('erplabver', erplabver);
+end

@@ -1,10 +1,10 @@
-% Author: Aaron Matthew Simmons, Guanghui Zhang, David R Garrett, 
-% Andrew X Stewart, Javier Lopez-Calderon & Steven Luck
+% Author: Aaron Matthew Simmons, Guanghui Zhang, Andrew X Stewart,
+% Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2007-2024
-% Version 10.1
+% 2007-2023
+% Version 10.0
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -64,8 +64,13 @@ try
 catch
 end
 
+%%running erplab%%GH 2024
+p_location = which('o_ERPDAT');
+p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
+tooltype =  'ERPLAB';
+save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype');
 
-%erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
+
 global observe_EEGDAT;
 observe_EEGDAT = o_EEGDATA;
 
@@ -87,6 +92,7 @@ observe_ERPDAT.ERP = [];
 observe_ERPDAT.Count_ERP = 0;
 observe_ERPDAT.Count_currentERP = 0;
 observe_ERPDAT.Process_messg = 0;%%change end
+observe_ERPDAT.erp_between_panels = 0;
 
 %
 % CHECK VERSION NUMBER & FOLDER NAME
@@ -105,11 +111,6 @@ catch
     fprintf('\nERPLAB''s folder does not show the current version number.\n')
 end
 
-%%running estudio
-p_location = which('o_ERPDAT');
-p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
-tooltype = 'erplab';
-save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype');
 
 %
 % CHECK EEGLAB Version
@@ -200,7 +201,7 @@ end
 ERP              = [];  % Start ERP Structure on workspace
 ALLERPCOM        = [];
 CURRENTERP       = 0;
-BEST             = [];  %Start BEST structure on workspace
+BEST             = []; %Start BEST structure on workspace
 CURRENTBEST      = 0;
 plotset.ptime    = [];
 plotset.pscalp   = [];
@@ -293,8 +294,8 @@ comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEv
 comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
 comRemoveResponseMistakes = [trystrs.no_check '[ALLEEG,EEG,LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,CURRENTSET);' catchstrs.new_and_hist];
 comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpolateElectrodes(EEG);'  catchstrs.new_and_hist];
-%comDFT     = [trystrs.no_check '[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);' catchstrs.add_to_hist];
 comDFT     = ['[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);'];
+
 
 
 %

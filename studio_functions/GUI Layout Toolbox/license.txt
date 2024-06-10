@@ -1,4 +1,4 @@
-Copyright (c) 2023, The MathWorks, Inc.
+Copyright (c) 2024, The MathWorks, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

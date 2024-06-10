@@ -35,9 +35,23 @@ end
 %
 % Name & version
 %
-version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Data Trimmer GUI'])
+ERPtooltype = erpgettoolversion('tooltype');
+if ~isempty(ERPtooltype)
+    if strcmpi(ERPtooltype,'EStudio')
+        Toolabel = 1;%%Get  label from work space to confirm whether EStudio was executed.
+    else
+        Toolabel = 0;
+    end
+else
+    Toolabel = 0;
+end
 
+version = geterplabversion;
+if Toolabel==1
+ set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Data Trimmer GUI'])   
+else
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Data Trimmer GUI'])
+end
 % memory
 set(handles.edit_pretime, 'String', sprintf('%g', pretime));
 set(handles.edit_posttime, 'String', sprintf('%g', posttime));

@@ -2,16 +2,16 @@
 %
 % FORMAT  :
 %
-% ERP = pop_blcerp(ERP, blc)
+% ERP = pop_blcerp(ERP, 'Baseline',blc)
 %
 % ERP     -  ERPLAB structure
 % blc     - window for baseline correction in msec  or either a string like 'pre', 'post', or 'all'
 %           (strings with the baseline interval also works. e.g. '-300 100')
 %
 % Example :
-% >> ERP = pop_blcerp( ERP , [-200 800],  [-100 0]);
-% >> ERP = pop_blcerp( ERP , [-200 800],  '-100 0');
-% >> ERP = pop_blcerp( ERP , [-400 2000],  'post');
+% >> ERP = pop_blcerp( ERP , [-200 800], 'Baseline', [-100 0]);
+% >> ERP = pop_blcerp( ERP , [-200 800], 'Baseline', '-100 0');
+% >> ERP = pop_blcerp( ERP , [-400 2000], 'Baseline', 'post');
 %
 % INPUTS  :
 %
@@ -91,10 +91,13 @@ if nargin==1
     end
     blcorr = answer{1};
     
+    ChanArray = answer{2};
+    BinArray = answer{3};
     %
     % Somersault
     %
-    [ERP, erpcom] = pop_blcerp(ERP, 'Baseline', blcorr, 'Saveas', 'on', 'History', 'gui');
+    [ERP, erpcom] = pop_blcerp(ERP, 'Baseline', blcorr,'ChanArray',ChanArray,...
+        'BinArray',BinArray,'Saveas', 'on', 'History', 'gui');
     return
 end
 
@@ -108,8 +111,21 @@ p.addRequired('ERP');
 % option(s)
 p.addParamValue('Baseline', 'pre'); % erpset index or input file
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
+p.addParamValue('ChanArray', [], @isnumeric);
+p.addParamValue('BinArray', [], @isnumeric);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(ERP, varargin{:});
+
+ChanArray = p.Results.ChanArray;
+if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
+    ChanArray = [1:ERP.nchan];
+end
+
+
+BinArray = p.Results.BinArray;
+if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
+    BinArray = [1:ERP.nbin];
+end
 
 
 
@@ -192,6 +208,8 @@ end
 ERPaux = ERP; % original ERP
 nbin = ERP.nbin;
 
+
+
 %
 % baseline correction  01-14-2009
 %
@@ -212,6 +230,18 @@ end
 
 ERP.saved  = 'no';
 % erpcom = sprintf('%s = pop_blcerp( %s, %s);', inputname(1), inputname(1), blcorrcomm);
+
+ChanArrayleft = setdiff([1:ERP.nchan],ChanArray);%% channles are not for baseline correction
+if ~isempty(ChanArrayleft)
+    ERP.bindata(ChanArrayleft,:,:)  = ERPaux.bindata(ChanArrayleft,:,:);
+end
+
+
+BinArrayleft = setdiff([1:ERP.nbin],BinArray);%% bins are not for baseline correction
+if ~isempty(BinArrayleft)
+    ERP.bindata(:,:,BinArrayleft)  = ERPaux.bindata(:,:,BinArrayleft);
+end
+
 
 %
 % History

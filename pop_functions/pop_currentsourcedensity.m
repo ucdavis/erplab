@@ -49,6 +49,11 @@ if isfield(EEG,'bindata')
 else
     isERP = 0;
 end
+try
+    ERPtooltype = varargin{1};%%GH 2024
+catch
+    ERPtooltype = 'erplab';
+end
 
 % check input dataset
 try
@@ -124,15 +129,19 @@ M = ExtractMontage('loc_csd.csd',chan_label);
 MapMontage(M)
 
 %%%changed by Guanghui August 10 2022
-csd_param = erpworkingmemory('csd_param');
 
-ERPtooltype = erpgettoolversion('tooltype');
 if strcmpi(ERPtooltype,'EStudio')
+    csd_param = estudioworkingmemory('csd_param');
+    if isempty(csd_param)
+       csd_param = [4,0.00001,10,1];
+       estudioworkingmemory('csd_param',csd_param);
+    end
     csd_param(4) = 0;
     erpworkingmemory('csd_param',csd_param);
     csd_param = csd_param(1:3);
     savepref=0;
 else
+    csd_param = erpworkingmemory('csd_param');
     [csd_param] = csd_generate;
     csd_param(4) = 1;
     erpworkingmemory('csd_param',csd_param);
@@ -218,9 +227,15 @@ if savepref == 1
         
         erpcom = 'pop_currentsourcedensity(EEG)';
     end
+    
+else%%GH Mar. 2024
+    if isERP
+        EEG.bindata = csd_data;
+        erpcom = sprintf('%s=pop_currentsourcedensity(%s, %s);', 'ERP','ERP', ['"',varargin{1},'"']);
+    else
+        EEG.data = csd_data;
+        erpcom = sprintf('%s=pop_currentsourcedensity(%s, %s);', 'EEG','EEG', ['"',varargin{1},'"']);
+    end
 end
 
-
-
 %eeglab redraw
-

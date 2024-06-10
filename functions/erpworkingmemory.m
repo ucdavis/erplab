@@ -65,17 +65,6 @@ catch
     vmemoryerp = [];
 end
 
-ERPtooltype = erpgettoolversion('tooltype');
-if ~isempty(ERPtooltype)
-    if strcmpi(ERPtooltype,'EStudio')
-        Toolabel = 1;%%Get  label from work space to confirm whether EStudio was executed.
-    else
-        Toolabel = 0;
-    end
-else
-    Toolabel = 1;
-end
-
 
 if nargin==1 % read
     if ~isempty(vmemoryerp)  %  variable at the workspace for storing/reading memory
@@ -98,25 +87,12 @@ if nargin==1 % read
         end
     else % file for storing/reading memory
         try
-            if Toolabel==1%%When using EStudio
-                p = which('o_ERPDAT');
-                p = p(1:findstr(p,'o_ERPDAT.m')-1);
-                v = load(fullfile(p,'memoryerpstudio.erpm'), '-mat');
-            else%%When using ERPLAB
-                p = which('eegplugin_erplab');
-                p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-                v = load(fullfile(p,'memoryerp.erpm'), '-mat');
-            end
+            p = which('eegplugin_erplab');
+            p = p(1:findstr(p,'eegplugin_erplab.m')-1);
+            v = load(fullfile(p,'memoryerp.erpm'), '-mat');
         catch
-            if Toolabel==1%%When using EStudio
-                msgboxText = ['ERPLAB Studio (erpworkingmemory.m) could not find "memoryerpstudio.erpm" or does not have permission for reading it.\n'...
-                    'Please, run EEGLAB once again or go to ERPLAB''s Setting menu and specify/create a new memory file.\n'];
-            else
-                msgboxText = ['ERPLAB Studio (erpworkingmemory.m) could not find "memoryerpstudio.erpm" or does not have permission for reading it.\n'...
-                    'Please, run EEGLAB Studio once again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
-                
-            end
-            
+            msgboxText = ['ERPLAB Studio (erpworkingmemory.m) could not find "memoryerpstudio.erpm" or does not have permission for reading it.\n'...
+                'Please, run EEGLAB Studio once again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
             try
                 cprintf([0.45 0.45 0.45], msgboxText');
             catch
@@ -148,26 +124,16 @@ elseif nargin==2 % write
         end
     else % file for storing/reading memory
         try
-            if  Toolabel==1%%When using EStudio
-                eval([field '=input2store;'])
-                p = which('o_ERPDAT');
-                p = p(1:findstr(p,'o_ERPDAT.m')-1);
-                save(fullfile(p,'memoryerpstudio.erpm'), field,'-append');
-                
-            else%%When using ERPLAB
-                eval([field '=input2store;'])
-                p = which('eegplugin_erplab');
-                p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-                save(fullfile(p,'memoryerp.erpm'), field,'-append');
-            end
+            
+            eval([field '=input2store;'])
+            p = which('eegplugin_erplab');
+            p = p(1:findstr(p,'eegplugin_erplab.m')-1);
+            save(fullfile(p,'memoryerp.erpm'), field,'-append');
+            
         catch
-            if  Toolabel==1%%When using EStudio
-                msgboxText = ['ERPLAB Studio could not find "memoryerpstudio.erpm" or does not have permission for writting on it.\n'...
-                    'Please, run EEGLAB Studio once again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
-            else
-                msgboxText = ['ERPLAB could not find "memoryerp.erpm" or does not have permission for writting on it.\n'...
-                    'Please, run EEGLAB once again or go to ERPLAB''s Setting menu and specify/create a new memory file.\n'];
-            end
+            
+            msgboxText = ['ERPLAB could not find "memoryerp.erpm" or does not have permission for writting on it.\n'...
+                'Please, run EEGLAB once again or go to ERPLAB''s Setting menu and specify/create a new memory file.\n'];
             try
                 cprintf([0.45 0.45 0.45], msgboxText');
             catch

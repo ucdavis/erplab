@@ -70,7 +70,7 @@ if nargin<3
 end
 
 if nargin<4|| (ERPselectIndex>length(ERPsetArray))
-  ERPselectIndex =length(ERPsetArray);  
+    ERPselectIndex =length(ERPsetArray);
 end
 
 %
@@ -132,9 +132,9 @@ for Numofselectederp = 1:numel(ERPsetArray)
 end
 
 if numel(unique(SrateNum_mp))>1 %%Check if the sampling rate is the same across the selected ERPsets, otherwise, the "ERPsets" will be fixed as "Pages".
-%     msgboxText = ['EStudio says: Sampling rate varies across the selected ERPsets, we therefore set "ERPsets" to be "Pages".'];
-%     title = 'EStudio: f_geterpdata().';
-%     errorfound(msgboxText, title);
+    %     msgboxText = ['EStudio says: Sampling rate varies across the selected ERPsets, we therefore set "ERPsets" to be "Pages".'];
+    %     title = 'EStudio: f_geterpdata().';
+    %     errorfound(msgboxText, title);
     if orgpar(1)==1 && (orgpar(2) ==2 || orgpar(2) ==3)
         orgpar = [1 2 3];
     elseif orgpar(1)==2 && (orgpar(2) ==1 || orgpar(2) ==3)
@@ -151,7 +151,11 @@ if numel(unique(chanNum_mp))==1 && numel(unique(SampNum_mp))==1 && numel(unique(
     %%Get the data acorss ERPsets
     for Numofselectederp = 1:numel(ERPsetArray)
         ERPdata(:,:,:,Numofselectederp) = ALLERP(ERPsetArray(Numofselectederp)).bindata;
-        errordata =  ALLERP(ERPsetArray(Numofselectederp)).binerror;
+        if isequal(ALLERP(ERPsetArray(Numofselectederp)).bindata,ALLERP(ERPsetArray(Numofselectederp)).binerror)
+            errordata =  ALLERP(ERPsetArray(Numofselectederp)).binerror;
+        else
+            errordata=[];
+        end
         if ~isempty(errordata)
             ERPerrordata(:,:,:,Numofselectederp)  =errordata;
         end
@@ -180,7 +184,13 @@ else%%If any of bins, channels, samples varies across the selected ERPsets.
             EpochEnd = ERP_sg.times(end);
             [xxx, latsamp, latdiffms] = closest(Times, [EpochStart,EpochEnd]);
             ERPdata(1:ERP_sg.nchan,latsamp(1):latsamp(2),1:ERP_sg.nbin,Numofselectederp) = ERP_sg.bindata;
-            errordata =  ERP_sg.binerror;
+            
+            if isequal(ERP_sg.bindataa,ERP_sg.binerror)
+                errordata =  ERP_sg.binerror;
+            else
+                errordata=[];
+            end
+            
             if ~isempty(errordata)
                 ERPerrordata(1:ERP_sg.nchan,latsamp(1):latsamp(2),1:ERP_sg.nbin,Numofselectederp)  =errordata;
             end
@@ -192,12 +202,16 @@ else%%If any of bins, channels, samples varies across the selected ERPsets.
         ERPdata = nan(max(chanNum_mp),SampNum_mp(ERPselectIndex),max(BinNum_mp),numel(ERPsetArray));
         ERPerrordata = nan(max(chanNum_mp),SampNum_mp(ERPselectIndex),max(BinNum_mp),numel(ERPsetArray));
         
-            ERP_sg =  ALLERP(ERPsetArray(ERPselectIndex));%%The information for individual subject
-            ERPdata(1:chanNum_mp(ERPselectIndex),:,1:BinNum_mp(ERPselectIndex),ERPselectIndex) = ERP_sg.bindata;
+        ERP_sg =  ALLERP(ERPsetArray(ERPselectIndex));%%The information for individual subject
+        ERPdata(1:chanNum_mp(ERPselectIndex),:,1:BinNum_mp(ERPselectIndex),ERPselectIndex) = ERP_sg.bindata;
+        if isequal(ERP_sg.bindataa,ERP_sg.binerror)
             errordata =  ERP_sg.binerror;
-            if ~isempty(errordata)%%Get the error data
-                ERPerrordata(1:chanNum_mp(ERPselectIndex),:,1:BinNum_mp(ERPselectIndex),ERPselectIndex)  =errordata;
-            end
+        else
+            errordata=[];
+        end
+        if ~isempty(errordata)%%Get the error data
+            ERPerrordata(1:chanNum_mp(ERPselectIndex),:,1:BinNum_mp(ERPselectIndex),ERPselectIndex)  =errordata;
+        end
     end
 end
 

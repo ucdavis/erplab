@@ -25,10 +25,12 @@
 
 
 
-function [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP,SelectedERPIndex)
+function [chanStr,binStr,diff_mark,chanStremp,binStremp] = f_geterpschanbin(ALLERP,SelectedERPIndex)
 diff_mark = [0 0];
 chanStr = [];
 binStr = [];
+chanStremp = [];
+binStremp = [];
 if nargin==0
     beep;
     help f_geterpschanbin;
@@ -92,6 +94,8 @@ if numel(SelectedERPIndex) ==1
             chanStr(Numofchan) = {['Chan',num2str(Numofchan)]};
         end
     end
+    chanStremp = chanStr;
+    binStremp = binStr;
     return;
 end
 
@@ -122,7 +126,7 @@ if numel(unique(chanNum_mp))==1%%if the number of channels is the same
     for Numofchan = 1:length(Chanlist)
         chanStr(Numofchan) = {char(Chanlist(Numofchan).labels)};
     end
-    
+    chanStremp = chanStr;
 elseif numel(unique(chanNum_mp))>1%%varies across the selected ERPsets
     [x_chan,y_chan] = find(chanNum_mp==max(chanNum_mp(:)));%% find the position of max. value
     
@@ -162,10 +166,16 @@ elseif numel(unique(chanNum_mp))>1%%varies across the selected ERPsets
         clear ERP;
     end
     diff_mark(1) = 1;
-    
     chanStr = cell(length(chanStr_max),1);
+    chanStremp = cell(length(chanStr_max),1);
     for Numofchan = 1:length(chanStr_max)
         chanStr(Numofchan) = {char(chanStr_max(Numofchan))};
+        chansig = char(chanStr_max(Numofchan));
+        if strcmp(chansig(1:2),'**')
+            chanStremp(Numofchan) = {''};
+        else
+            chanStremp(Numofchan) = {char(chanStr_max(Numofchan))};
+        end
     end
     
 end
@@ -184,7 +194,7 @@ if numel(unique(BinNum_mp))==1%%if the number of bins is the same
             binStr(Numofbin) = {['Bin',num2str(Numofbin)]};
         end
     end
-    
+    binStremp = binStr;
 elseif numel(unique(BinNum_mp))>1%%varies across the selected ERPsets
     [x_bin,y_bin] = find(BinNum_mp==max(BinNum_mp));%% find the position of max. value
     
@@ -227,8 +237,15 @@ elseif numel(unique(BinNum_mp))>1%%varies across the selected ERPsets
     end
     diff_mark(2) = 1;
     binStr = cell(length(binStr_max),1);
+    binStremp = cell(length(binStr_max),1);
     for Numofbin = 1:length(binStr_max)
         binStr(Numofbin) = {char(binStr_max(Numofbin))};
+        binsg = char(binStr_max(Numofbin));
+        if strcmp(binsg(1:2),'**')
+            binStremp(Numofbin) = {''};
+        else
+            binStremp(Numofbin) = {char(binStr_max(Numofbin))};
+        end
     end
 end
 

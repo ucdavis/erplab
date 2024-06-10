@@ -84,7 +84,7 @@ if nargin==1
     oldcolor = get(0,'DefaultUicontrolBackgroundColor');
     set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
     button = questdlg(question, title,'Save in a file','Show at Command Window', 'Cancel','Show at Command Window');
-    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    set(0,'DefaultUicontrolBackgroundColor',oldcolor);
     
     if strcmpi(button,'Show at Command Window')
         fullname = '';
@@ -184,6 +184,9 @@ histoflags = fliplr(ERP.ntrials.arflags);
 % Table
 %
 if fidsumm~=-99
+    fprintf(fidsumm, ['\n',repmat('_',1,100) '\n']);
+    fprintf(fidsumm, ['ERP Name:',32,ERP.erpname '\n']);
+    fprintf(fidsumm, [repmat('_',1,100) '\n']);
     hdr = {'Bin' '#(%) accepted' '#(%) rejected' '# F2' '# F3' '# F4' '# F5' '# F6' '# F7' '# F8' };
     fprintf(fidsumm, '%s %15s %15s %7s %7s %7s %7s %7s %7s %7s\n', hdr{:});
 end

@@ -155,8 +155,8 @@ handles.dq_table.ColumnName = fft_labels;
 handles.orig_ColName = fft_labels; 
 
 % Set font size of DQ Table
-desired_fontsize = erpworkingmemory('fontsizeGUI');
-handles.dq_table.FontSize = desired_fontsize;
+FonsizeDefault = f_get_default_fontsize(); if isempty(FonsizeDefault)   FonsizeDefault=12; end
+handles.dq_table.FontSize = FonsizeDefault;
 handles.heatmap_on = 0;
 
 % Set outliers text window off

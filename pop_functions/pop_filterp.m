@@ -94,13 +94,15 @@ if nargin==1
         return
     end
     nchan = ERP.nchan;
-    defx = {0 30 2 1:nchan 1 'butter' 0 []};
+    nbin = ERP.nbin;
+    defx = {0 30 2 1:nchan 1 'butter' 0 [],1:nbin};
     def  = erpworkingmemory('pop_filterp');
     
     if isempty(def)
         def = defx;
     else
         def{4} = def{4}(ismember_bc2(def{4},1:nchan));
+        try def{9} = def{9}(ismember_bc2(def{9},1:nbin)); catch def{9} = 1:nbin; end
     end
     
     %
@@ -117,13 +119,11 @@ if nargin==1
     hicutoff    = answer{2}; % for low pass filter
     filterorder = answer{3};
     chanArray   = answer{4};
-    filterallch = answer{5};
+%     filterallch = answer{5};
     fdesign     = answer{6};
     remove_dc   = answer{7};
-    
-    if filterallch
-        chanArray = 1:nchan;
-    end
+    binArray = answer{9};
+  
     
     erpworkingmemory('pop_filterp', answer(:)');
     
@@ -155,11 +155,11 @@ if nargin==1
     else
         error('ERPLAB says: Invalid type of filter ')
     end
-    
+%     binArray = [1:ERP.nbin];%%GH Apr 2024
     %
     % Somersault
     %
-    [ERP, erpcom] = pop_filterp( ERP, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
+    [ERP, erpcom] = pop_filterp( ERP, chanArray, 'binArray',binArray,'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
         'Saveas', 'on', 'History', 'gui');
     return
 end
@@ -176,6 +176,7 @@ p.addRequired('chanArray', @isnumeric);
 p.addParamValue('Filter', 'lowpass',@ischar);
 p.addParamValue('Design', 'butter', @ischar);
 p.addParamValue('Cutoff', 30, @isnumeric);
+p.addParamValue('binArray', [], @isnumeric);
 p.addParamValue('Order', 2, @isnumeric);
 p.addParamValue('RemoveDC', 'off', @ischar);
 p.addParamValue('Saveas', 'off', @ischar);
@@ -183,13 +184,20 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(ERP, chanArray, varargin{:});
 
+
+binArray = p.Results.binArray;%%GH Apr 2024
+nbin = ERP(1).nbin;
+if isempty(binArray) || any(binArray(:)>nbin) || any(binArray(:)<1)
+    binArray = [1:nbin];
+end
+
 filtp   = p.Results.Filter;
 fdesign = p.Results.Design;
 filco   = p.Results.Cutoff;
 
 if ~strcmpi(datatype, 'ERP')
-        msgboxText =  'Cannot filter Power Spectrum waveforms!';
-        error(msgboxText);
+    msgboxText =  'Cannot filter Power Spectrum waveforms!';
+    error(msgboxText);
 end
 if strcmpi(filtp, 'lowpass')
     if length(filco)~=1
@@ -286,7 +294,7 @@ end
 %
 % subroutine
 %
-options = { chanArray, locutoff, hicutoff, filterorder, fdesignnum, remove_dc};
+options = { chanArray, locutoff, hicutoff, filterorder, fdesignnum, remove_dc,binArray};
 ERPaux  = ERP; % store original ERP
 ERP     = filterp(ERP, options{:});
 ERP.saved  = 'no';

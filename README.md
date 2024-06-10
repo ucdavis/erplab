@@ -4,10 +4,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v10.11
+## ERPLAB v11
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/10.0/erplab10.11.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/ucdavis/erplab/releases/download/11/erplab11.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
@@ -15,55 +15,33 @@ To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab
 </p>
 
 
-To install ERPLAB v10.11, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+This download contains both [ERPLAB Studio](./ERPLAB-Studio-Manual) (our standalone Matlab program) and [ERPLAB Classic](./Manual) (an EEGLAB plugin). If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Studio Tutorial](./ERPLAB-Studio-Tutorial) or ERPLAB Classic Tutorial before trying to analyze your own data.
 
-To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Tutorial](https://github.com/lucklab/erplab/wiki/Tutorial) before using ERPLAB with your own data.
+[Click here](./Installation) for installation instructions.
+
+[Click here](./Compatability-and-Required-Toolboxes) for information about required Matlab toolboxes and compatibility with different versions of Matlab, EEGLAB, Windows, MacOS, and Linux.
 
 We encourage most users to use this latest major version.
-
-
----
-## Compatibility and Required Toolboxes
-
-We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
-
-- The [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html) is required.
-- [EEGLAB v2021 or later](https://sccn.ucsd.edu/eeglab/download.php) is almost always necessary.
-
-However, in order to use the latest MVPC routines (see [here](https://github.com/ucdavis/erplab/wiki/Decoding-Tutorial)), Matlab versions and EEGLAB versions must be recent. In addition, some MATLAB toolboxes are required. 
-- Matlab 2020b + is REQUIRED for MVPC routines.
-- EEGLAB 2023.1 + is REQUIRED for MVPC routines.
-- The [Matlab Statistics and Machine Learning Toolbox](https://www.mathworks.com/products/statistics.html)
-- The [Matlab Parallel Processing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (recommended)
-
-Find [more ERPLAB installation help here](http://erpinfo.org/erplab).
-
-
-### ERPLAB compatibility table
-
-Here is a list of some confirmed-working environments for ERPLAB.
-
-**ERPLAB v10.0+ works with...**
-| **OS** | **Matlab** | **EEGLAB** | Working? |
-| --- | --- | --- | --- |
-| Mac OS 14.2.1 'Sonoma'  | Matlab R 2023a | EEGLAB v2023.1 | ✓|
-| Mac OS 11.7.6 'Big Sur'  | Matlab R 2020a | EEGLAB v2023.0 | ✓|
-| Mac OS 10.15.7 'Catalina' | Matlab R2020b | EEGLAB v2023.0 | ✓ |
-| Mac OS 10.15 'Catalina' | Matlab R2016a | EEGLAB v2019_1  | ✓ | 
-(https://www.mathworks.com/downloads/web_downloads/download_update?release=R2018a&s_tid=ebrg_R2018a_2_1757132&s_tid=mwa_osa_a) |
-| Mac OS 10.13.5 'High Sierra' | Matlab R2015a | EEGLAB v14.1.2 | ✓ |
-| Windows 10 | Matlab R2021a | EEGLAB v2023.0 | ✓ |
-| Windows 10 | Matlab R2020b | EEGLAB v2021.1 | ✓ |
-| Ubuntu 18.04 LTS | Matlab R2019a | EEGLAB v2020 | ✓ |
-| Ubuntu 18.04 LTS | Matlab R2019a | EEGLAB v2019_1 | ✓ |
-
-ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. Let us know if you see any incompatibility.
-**Starting in ERPLAB v10.0, MATLAB'S "App Designer" was the default GUI system used for the MVPC routines and require at least MATLAB 2020a+ & EEGLAB 2023.1+ in order to work as expected.** 
 
 <br/>
 <br/>
 
 ## Release Notes
+
+### ERPLAB v11.0 Release Notes
+
+ERPLAB can now be accessed from two different user interfaces: 
+- [ERPLAB Classic](./Manual) (our original software, which operates as an EEGLAB plugin)
+- [ERPLAB Studio](./ERPLAB-Studio-Manual) (a standalone application that provides a more user-friendly GUI)
+
+ERPLAB Studio makes use of the same underlying code as EEGLAB and ERPLAB Classic. It is essentially a different user interface for the same functions. You will therefore get identical results with ERPLAB Studio and ERPLAB Classic, and scripting is the same for both packages. But ERPLAB Studio is much easier to use.
+
+[Click here](https://www.youtube.com/watch?v=lIaKVQ9DD6E) for a 2-minute video overview of ERPLAB Studio. 
+
+The most commonly used EEGLAB functions are available from within ERPLAB Studio. For example, you can import EEG data into ERPLAB Studio, filter the EEG, apply ICA for artifact correction, etc. If you need an EEGLAB function that is not implemented within ERPLAB Studio, you can apply that function using the EEGLAB GUI or a script.
+
+If you are already familiar with ERPLAB, you can rapidly learn how to use ERPLAB Studio with our [Transition Guide](). If you are new to ERPLAB, please go through the [ERPLAB Studio Tutorial](./ERPLAB-Studio-Tutorial) before attempting to process your own data. Once you understand the basics of ERPLAB Studio, you can get detailed information about the individual processing steps in the [ERPLAB Studio Manual](./ERPLAB-Studio-Manual).
+
 
 ### ERPLAB v10.1 Release Notes
 Now Includes:

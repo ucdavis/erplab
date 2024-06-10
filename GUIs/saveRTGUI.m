@@ -69,7 +69,7 @@ handles.owfp   = 0;  % over write file permission
 % Name & version
 %
 version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save Reaction Time GUI'])
+% set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save Reaction Time GUI'])
 
 set(handles.edit_saveas,'String', filename)
 set(handles.checkbox_header,'Value', header)
@@ -78,6 +78,15 @@ set(handles.radiobutton_itemized,'Value', ~format)
 set(handles.checkbox_arfilter,'Value', arfilt)
 set(handles.popupmenu_elindex,'String', cellstr(num2str([1:numEL]')))
 set(handles.popupmenu_elindex,'Value', indexel)
+
+ERPtooltype = erpgettoolversion('tooltype');%%GH Jan 2024
+if strcmpi(ERPtooltype,'EStudio')
+   handles.uipanel1.Title = 'File name suffix (will be added to dataset name)';
+   set(handles.gui_chassis,'Name', ['Estudio ' version '   -   Save Reaction Time GUI'])
+else
+ handles.uipanel1.Title = 'File name';   
+ set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save Reaction Time GUI'])
+end%%end
 
 %
 % Color GUI

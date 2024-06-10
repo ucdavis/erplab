@@ -1,4 +1,4 @@
-erplabstudiover = '1.00';                  % current erplab studio version
+erplabstudiover = '10.00';                  % current erplab studio version
 erplabstudiorel = '26-April-2022';             % DOB
 erplabstudiodeveloper = 'Simmons&Zhang'; 
 % erplabstudiolabel = 1;%0: using ERPLAB; 1:using ERPLAB Studio

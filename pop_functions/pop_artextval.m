@@ -108,7 +108,7 @@ if nargin==1
         ampth      = answer{2};
         chanArray  = unique_bc2(answer{3}); % avoids repeated channels
         lpfilt      = answer{4};
-        lpopt      = answer{5}
+        lpopt      = answer{5};
         flag       = answer{6};
         viewer    =  answer{end};
         

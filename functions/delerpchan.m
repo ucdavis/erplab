@@ -42,39 +42,39 @@ function  [ERP cherror] = delerpchan(ERP, chin)
 cherror = 0;
 
 if nargin<1
-        help avgchan
-        return
+    help avgchan
+    return
 end
 if ~iserpstruct(ERP)
-        error('ERPLAB says: delerpchan() only works with ERP structure.')
+    error('ERPLAB says: delerpchan() only works with ERP structure.')
 end
 if ischar(chin)
-        chin = str2num(char(regexp(chin,'\d+','match')'))';
+    chin = str2num(char(regexp(chin,'\d+','match')'))';
 end
 if size(chin,1)>1
-        error('ERPLAB says: error, delerpchan works with row-array inputs')
+    error('ERPLAB says: error, delerpchan works with row-array inputs')
 end
 chanarray = unique_bc2(chin);
 
 if length(chanarray)~=length(chin)
-        fprintf('\n*** WARNING: Repeated channels were ignored.\n\n')
+    fprintf('\n*** WARNING: Repeated channels were ignored.\n\n')
 end
 nchan = ERP.nchan;
 if max(chanarray)>nchan
-        error('ERPLAB says: error at delerpchan. Some specified channels do not exist!')
+    error('ERPLAB says: error at delerpchan. Some specified channels do not exist!')
 end
 ERP.bindata(chanarray,:,:)=[];
-if ~isempty(ERP.binerror) %% GH March 2024
+if ~isempty(ERP.binerror)%%GH Mar 2024
     ERP.binerror(chanarray,:,:)=[];
 end
 ERP.nchan = size(ERP.bindata, 1);
 if isfield(ERP.chanlocs, 'labels')
-        if ~isempty([ERP.chanlocs.labels])
-                labaux = {ERP.chanlocs.labels};
-                [labaux{chanarray}] = deal([]);
-                indxl    = ~cellfun(@isempty, labaux);
-                labelout = labaux(indxl);
-                ERP.chanlocs = [];
-                [ERP.chanlocs(1:ERP.nchan).labels] = labelout{:};
-        end
+    if ~isempty([ERP.chanlocs.labels])
+        labaux = {ERP.chanlocs.labels};
+        [labaux{chanarray}] = deal([]);
+        indxl    = ~cellfun(@isempty, labaux);
+        labelout = labaux(indxl);
+        ERP.chanlocs = [];
+        [ERP.chanlocs(1:ERP.nchan).labels] = labelout{:};
+    end
 end
