@@ -23,9 +23,6 @@ This download contains both [ERPLAB Studio](./ERPLAB-Studio-Manual) (our standal
 
 We encourage most users to use this latest major version.
 
-<br/>
-<br/>
-
 ## Release Notes
 
 ### ERPLAB v11.0 Release Notes
