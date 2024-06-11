@@ -98,7 +98,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EEG_plotset{3} = str2num(EStduio_gui_EEG_plotset.timerange.String);
         
         uiextras.Empty('Parent',  EStduio_gui_EEG_plotset.time_scales_title,'BackgroundColor',ColorB_def);
-        set(EStduio_gui_EEG_plotset.time_scales_title,'Sizes',[70 80 -1]);
+        set(EStduio_gui_EEG_plotset.time_scales_title,'Sizes',[80 80 -1]);
         
         EStduio_gui_EEG_plotset.v_scale_edit.KeyPressFcn = @eeg_plotset_presskey;
         EEG_plotset{4} = str2num(EStduio_gui_EEG_plotset.v_scale_edit.String);

@@ -1,4 +1,4 @@
-erplabver = '11';                  % current erplab version
+erplabver = '11.00';                  % current erplab version
 erplabrel = '10-June-2024';             % DOB
 erplabdeveloper = 'Simmons,Zhang,Garrett'; 
 %ColorB = [170 180 195]/255;          % old background color (until version 3)

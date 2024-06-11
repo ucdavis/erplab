@@ -323,7 +323,7 @@ end
 %
 % Create figure
 %
-hbig = figure('Name',['<< ' fname ' >>  Interactive (Click on figure for larger image)'],...
+hbig = figure('Name',['<<',fname, '>>  Interactive (Click on figure for larger image)'],...
     'NumberTitle','on', 'Tag', ftag);erplab_figtoolbar(hbig);
 set(hbig, 'Renderer', 'painters');
 drawnow
