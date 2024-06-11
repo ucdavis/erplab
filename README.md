@@ -4,10 +4,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v11
+## ERPLAB v11.00
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/11.0/erplab11.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
+  <a href="https://github.com/ucdavis/erplab/releases/download/11.0/erplabv11.00.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
