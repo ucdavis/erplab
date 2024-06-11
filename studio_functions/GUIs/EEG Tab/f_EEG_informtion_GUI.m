@@ -218,7 +218,7 @@ drawui_EEG_info(FonsizeDefault);
             dsnamesdef{ii,4} = [];
             dsnamesdef{ii,5} = [];
         end
-        if ~isempty(EEG) && EEG.trials>1
+        if ~isempty(EEG) && EEG.trials>1 && isfield(EEG,'EVENTLIST') && ~isempty(EEG.EVENTLIST)
             gui_EEG_info.numofepoch.String = ['Number of epochs:',32,num2str(EEG.trials)];
             gui_EEG_info.numofepoch.Enable = 'on';
             [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],0);

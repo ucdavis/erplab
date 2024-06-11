@@ -1283,15 +1283,19 @@ varargout{1} = box_interpolate_chan_epoch;
                 if Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value==0
                     Enable_flag = 'off';
                 else
-                    histoflags = summary_rejectflags(observe_EEGDAT.EEG);
-                    %check currently activated flags
-                    flagcheck = sum(histoflags);
-                    flagcheck(1) = 0;
-                    [~, active_flags] = find(flagcheck>=1);
-                    if isempty(active_flags)
+                    try
+                        histoflags = summary_rejectflags(observe_EEGDAT.EEG);
+                        %check currently activated flags
+                        flagcheck = sum(histoflags);
+                        flagcheck(1) = 0;
+                        [~, active_flags] = find(flagcheck>=1);
+                        if isempty(active_flags)
+                            Enable_flag = 'off';
+                        else
+                            Enable_flag = 'on';
+                        end
+                    catch
                         Enable_flag = 'off';
-                    else
-                        Enable_flag = 'on';
                     end
                 end
             end
@@ -1303,7 +1307,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.mflag6.Enable = Enable_flag;
             Eegtab_EEG_interpolate_chan_epoch.mflag7.Enable = Enable_flag;
             Eegtab_EEG_interpolate_chan_epoch.mflag8.Enable = Enable_flag;
-            if observe_EEGDAT.EEG.trials>1
+            if observe_EEGDAT.EEG.trials>1  && isfield(observe_EEGDAT.EEG,'EVENTLIST') 
                 histoflags = summary_rejectflags(observe_EEGDAT.EEG);
                 %check currently activated flags
                 flagcheck = sum(histoflags);

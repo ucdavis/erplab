@@ -498,6 +498,15 @@ varargout{1} = Eegtab_box_avg_erp;
         if ~isempty(messgStr) && eegpanelIndex~=17
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
+        
+        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
+            msgboxText=['Compute Averaged ERPs (Epoched EEG) > Run: We cannot work for the EEGset without "EVENTLIST". Please check "EVENTLIST" for current EEG data and you may create it before further analysis.'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
+        end
+        
         estudioworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG) > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
