@@ -334,6 +334,13 @@ varargout{1} = Eegtab_box_art_sumop;
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
+        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
+            msgboxText=['Artifact Info & Tools (Epoched EEG)>Classic Artifact Summary: Please check "EVENTLIST" for current EEG data and you may create it before further analysis.'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
+        end
         
         estudioworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
@@ -359,6 +366,13 @@ varargout{1} = Eegtab_box_art_sumop;
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            if ~isfield(EEG,'EVENTLIST') || isempty(EEG.EVENTLIST)
+                msgboxText=['Artifact Info & Tools (Epoched EEG)>Classic Artifact Summary: Please check "EVENTLIST" for',32,EEG.setname, 32,'and you may create it before further analysis.'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            end
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             if New_pos1(1)==1
                 fprintf(['*Classic Artifact Summary>Summarize EEG artifact in a graphic*',32,32,32,32,datestr(datetime('now')),'\n']);
@@ -456,6 +470,15 @@ varargout{1} = Eegtab_box_art_sumop;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
+        
+        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
+            msgboxText=['Artifact Info & Tools (Epoched EEG)>Artifact Summary: Please check "EVENTLIST" for current EEG data and you may create it before further analysis.'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
+        end
+        
         ALLEEG =  observe_EEGDAT.ALLEEG;
         LASTCOM = pop_eeg_ar_summary(ALLEEG,EEGArray);
         if isempty(LASTCOM)
