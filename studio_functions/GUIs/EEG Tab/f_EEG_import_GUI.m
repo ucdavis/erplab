@@ -85,7 +85,7 @@ handles.listbox_plugins.Enable = 'on';
 Plugin_fuName = {'';'ASCII/float file or Matlab array';'Biosemi BDF file (BIOSIG toolbox)';...
     'EDF/EDF+/GDF files (BIOSIG toolbox)';'Biosemi BDF and EDF files (BDF plugin)';...
     'Brain Vis. Rec. .vhdr or .ahdr file';'Brain Vis. Anal. Matlab file';'Magstim/EGI .mff file';...
-    'Neuroscan .CNT file';'Neuroscan .EEG file'};
+    'Neuroscan .CNT file';'Neuroscan .EEG file';'Neuroscan Curry files'};
 handles.listbox_plugins.String = Plugin_fuName;
 handles.listbox_plugins.Value=1;
 
@@ -784,6 +784,41 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
 end
 
 
+% --- Executes on button press in pushbutton_bdf_plugin.
+function handles = pushbutton_curryeeg(hObject, eventdata, handles)
+% handles.text_message.String = '';
+fileName = which('pop_loadcurry');
+if isempty(fileName)
+    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > loadcurry Vxx" to download it';
+    handles.listbox_plugins.Value=1;
+    return;
+end
+ALLEEG = handles.ALLEEG;
+% [EEG,LASTCOM] = pop_readbdf();
+[EEG, LASTCOM] = pop_loadcurry;
+
+if isempty(EEG) || isempty(LASTCOM)
+    handles.text_message.String = 'User selected Cancel';
+    handles.listbox_plugins.Value=1;
+    return;
+end
+
+EEG = eegh(LASTCOM, EEG);
+eegh(LASTCOM);
+if isempty(ALLEEG)
+    OLDSET=1;
+else
+    OLDSET = length(ALLEEG);
+end
+
+[ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+eegh(LASTCOM);
+handles.ALLEEG = ALLEEG;
+
+
+
+
+
 % --- Executes on selection change in listbox_plugins.
 function listbox_plugins_Callback(hObject, eventdata, handles)
 Value = handles.listbox_plugins.Value;
@@ -810,6 +845,9 @@ switch Value
         handles = pushbutton_cnt(hObject, eventdata, handles);
     case 10
         handles = pushbutton_eeg(hObject, eventdata, handles);
+    case 11
+        handles = pushbutton_curryeeg(hObject, eventdata, handles);
+        
 end
 handles.listbox_plugins.Value =1;
 handles.text_message.String = 'Loading was done!';
