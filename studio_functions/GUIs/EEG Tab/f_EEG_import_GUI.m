@@ -169,7 +169,9 @@ handles.text_message.String = '';
 %%check if the function exist?
 fileName = which('pop_fileio');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Filio Vxxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Filio Vxxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -225,7 +227,9 @@ function pushbutton_biosiginter_Callback(hObject, eventdata, handles)
 fileName = which('pop_biosig');
 % fileName = which('biosig_installer');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -299,7 +303,10 @@ function handles = pushbutton_asii(hObject, eventdata, handles)
 
 fileName = which('pop_importdata');
 if isempty(fileName)
-    handles.text_message.String = 'There is no function "ASCII/float file or Matlab array".';
+    msgboxText = ['There is no function "ASCII/float file or Matlab array"'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
+    handles.listbox_plugins.Value=1;
     return;
 end
 
@@ -329,7 +336,9 @@ function handles = pushbutton_biosemibdf(hObject, eventdata, handles)
 
 fileName = which('pop_biosig');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -397,7 +406,9 @@ function handles = pushbutton_bio_edf(hObject, eventdata, handles)
 
 fileName = which('pop_biosig');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -462,7 +473,9 @@ function handles = pushbutton_visrec(hObject, eventdata, handles)
 % handles.text_message.String = '';
 fileName = which('pop_loadbva');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > bva-io Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > bva-io Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -517,7 +530,9 @@ function handles = pushbutton_visanal(hObject, eventdata, handles)
 
 fileName = which('pop_loadbva');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > bva-io Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > bva-io Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -573,7 +588,9 @@ function handles = pushbutton_mff(hObject, eventdata, handles)
 % handles.text_message.String = '';
 fileName = which('pop_mffimport');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > MFFMaltabIO Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > MFFMaltabIO Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -628,7 +645,9 @@ function handles = pushbutton_cnt(hObject, eventdata, handles)
 % handles.text_message.String = '';
 fileName = which('pop_loadcnt');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > neuroscanio Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > neuroscanio Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -683,7 +702,9 @@ function handles = pushbutton_eeg(hObject, eventdata, handles)
 % handles.text_message.String = '';
 fileName = which('pop_loadeeg');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > neuroscanio Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > neuroscanio Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -739,7 +760,10 @@ function handles = pushbutton_bdf_plugin(hObject, eventdata, handles)
 % handles.text_message.String = '';
 fileName = which('pop_readbdf');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > BDFimport Vxx" to download it';
+    
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > BDFimport Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
@@ -789,7 +813,9 @@ function handles = pushbutton_curryeeg(hObject, eventdata, handles)
 % handles.text_message.String = '';
 fileName = which('pop_loadcurry');
 if isempty(fileName)
-    handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > loadcurry Vxx" to download it';
+    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > loadcurry Vxx" to download it'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
     return;
 end
