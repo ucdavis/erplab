@@ -102,12 +102,6 @@ uiwait(handles.gui_chassis);
 % --- Outputs from this function are returned to the command line.
 function varargout = f_EEG_import_GUI_OutputFcn(hObject, eventdata, handles)
 
-% Get default command line output from handles structure
-% try
-%     set(handles.menuerp.Children, 'Enable','on');
-% catch
-%     disp('EEGset menu was not found...')
-% end
 varargout{1} = handles.output;
 delete(handles.gui_chassis);
 pause(0.1)
@@ -596,45 +590,37 @@ if isempty(fileName)
 end
 
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile('*.MFF;*.mff', 'Select an EGI .mff file(s)--pop_mffimport',...
-    'MultiSelect', 'on');
-if filterindex==0
+[EEG1, LASTCOM] = pop_mffimport();
+eegh(LASTCOM);
+if isempty(EEG1) || isempty(LASTCOM)
     handles.text_message.String = 'User selected Cancel';
     handles.listbox_plugins.Value=1;
     return;
 end
-if iscell(filename)
-    filterindex  = length(filename);
-else
-    filterindex =1;
-end
-
-for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
-    handles.text_message.String = ['Loading data (',num2str(Numofile),'/',num2str(filterindex),')'];
-    if filterindex==1
-        [EEG,LASTCOM] = pop_mffimport([filepath,filename]);
-        [~, myFilename, ~] = fileparts(filename);
-    else
-        [EEG,LASTCOM] = pop_mffimport([filepath,filename{Numofile}]);
-        [~, myFilename, ~] = fileparts(filename{Numofile});
-    end
-    if isempty(EEG)
-        return;
-    end
-    EEG = eegh(LASTCOM, EEG);
-    eegh(LASTCOM);
+if iseegstruct(EEG1)
+    EEG = eegh(LASTCOM, EEG1);
     if isempty(ALLEEG)
         OLDSET=1;
     else
         OLDSET = length(ALLEEG);
     end
-    if ~isempty(myFilename)
-        EEG.setname = myFilename;
-    end
     [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
     eegh(LASTCOM);
-    handles.ALLEEG = ALLEEG;
+else
+    for ii = 1:length(EEG1)
+        EEG = EEG1(ii);
+        EEG = eegh(LASTCOM, EEG);
+        if isempty(ALLEEG)
+            OLDSET=1;
+        else
+            OLDSET = length(ALLEEG);
+        end
+        [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+        eegh(LASTCOM);
+    end
 end
+handles.ALLEEG = ALLEEG;
+
 
 
 

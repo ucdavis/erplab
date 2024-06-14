@@ -452,10 +452,6 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %%----------------------Refresh alleeg and eeg-----------------------------
     function refresh_eegset(Source,~)
-        %         if isempty(observe_EEGDAT.EEG)
-        %             Source.Enable= 'off';
-        %             return;
-        %         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
