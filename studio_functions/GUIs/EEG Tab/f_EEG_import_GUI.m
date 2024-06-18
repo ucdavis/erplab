@@ -161,9 +161,11 @@ end
 function pushbutton_fileio_Callback(hObject, eventdata, handles)
 handles.text_message.String = '';
 %%check if the function exist?
+try f_add_import_functions; catch end
 fileName = which('pop_fileio');
+
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Filio Vxxx" to download it'];
+    msgboxText = ['Please use: " Manage EEGLAB extensions > Filio Vxxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -218,10 +220,11 @@ guidata(hObject, handles);
 % --- Executes on button press in pushbutton_biosiginter.
 function pushbutton_biosiginter_Callback(hObject, eventdata, handles)
 % handles.text_message.String = '';
+try f_add_import_functions; catch end
 fileName = which('pop_biosig');
 % fileName = which('biosig_installer');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it'];
+    msgboxText = ['Please use: "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -248,7 +251,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         try
             [EEG,LASTCOM] = pop_biosig([filepath,filename]);
         catch
-            handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+            handles.text_message.String = 'Please use: "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI';
             handles.listbox_plugins.Value=1;
             return;
         end
@@ -257,7 +260,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         try
             [EEG,LASTCOM] = pop_biosig([filepath,filename{Numofile}]);
         catch
-            handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+            handles.text_message.String = 'Please use: "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI';
             handles.listbox_plugins.Value=1;
             return;
         end
@@ -294,7 +297,7 @@ guidata(hObject, handles);
 % --- Executes on importing ASCII/float file or Matlab array
 function handles = pushbutton_asii(hObject, eventdata, handles)
 % handles.text_message.String = '';
-
+try f_add_import_functions; catch end
 fileName = which('pop_importdata');
 if isempty(fileName)
     msgboxText = ['There is no function "ASCII/float file or Matlab array"'];
@@ -327,10 +330,10 @@ guidata(hObject, handles);
 % --- Executes on importing Biosemi BDF file (BIOSIG toolbox)
 function handles = pushbutton_biosemibdf(hObject, eventdata, handles)
 % handles.text_message.String = '';
-
+try f_add_import_functions; catch end
 fileName = which('pop_biosig');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it'];
+    msgboxText = ['Please use: "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -358,7 +361,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         try
             [EEG,LASTCOM] = pop_biosig([filepath,filename]);
         catch
-            handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+            handles.text_message.String = 'Please use "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI';
             handles.listbox_plugins.Value=1;
             return;
         end
@@ -367,7 +370,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         try
             [EEG,LASTCOM] = pop_biosig([filepath,filename{Numofile}]);
         catch
-            handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+            handles.text_message.String = 'Please use "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI';
             handles.listbox_plugins.Value=1;
             return;
         end
@@ -397,10 +400,10 @@ end
 % --- Executes on imporing EDF/EDF+/GDF files (BIOSIG toolbox)
 function handles = pushbutton_bio_edf(hObject, eventdata, handles)
 % handles.text_message.String = '';
-
+try f_add_import_functions; catch end
 fileName = which('pop_biosig');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -426,7 +429,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         try
             [EEG,LASTCOM] = pop_biosig([filepath,filename]);
         catch
-            handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+            handles.text_message.String = 'Please use "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI';
             handles.listbox_plugins.Value=1;
             return;
         end
@@ -435,7 +438,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         try
             [EEG,LASTCOM] = pop_biosig([filepath,filename{Numofile}]);
         catch
-            handles.text_message.String = 'Please use EEGLAB menu: "File > Manage EEGLAB extension > Biosig Vxx" to download it';
+            handles.text_message.String = 'Please use "Manage EEGLAB extensions > Biosig Vxx" to download it from Estudio import EEG data GUI';
             handles.listbox_plugins.Value=1;
             return;
         end
@@ -465,9 +468,10 @@ end
 % --- Executes on importing Brain Vis. Rec. .vhdr file
 function handles = pushbutton_visrec(hObject, eventdata, handles)
 % handles.text_message.String = '';
+try f_add_import_functions; catch end
 fileName = which('pop_loadbva');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > bva-io Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > bva-io Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -521,10 +525,10 @@ end
 % --- Executes on importing Brain Vis. Anal. Matlab file
 function handles = pushbutton_visanal(hObject, eventdata, handles)
 % handles.text_message.String = '';
-
+try f_add_import_functions; catch end
 fileName = which('pop_loadbva');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > bva-io Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > bva-io Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -580,9 +584,10 @@ end
 %%[EEG, LASTCOM] = pop_mffimport
 function handles = pushbutton_mff(hObject, eventdata, handles)
 % handles.text_message.String = '';
+try f_add_import_functions; catch end
 fileName = which('pop_mffimport');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > MFFMaltabIO Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > MFFMaltabIO Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -629,9 +634,10 @@ handles.ALLEEG = ALLEEG;
 % --- Executes on importing Neuroscan .CNT file
 function handles = pushbutton_cnt(hObject, eventdata, handles)
 % handles.text_message.String = '';
+try f_add_import_functions; catch end
 fileName = which('pop_loadcnt');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > neuroscanio Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > neuroscanio Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -686,9 +692,10 @@ end
 % --- Executes on importing Neuroscan .EEG file
 function handles = pushbutton_eeg(hObject, eventdata, handles)
 % handles.text_message.String = '';
+try f_add_import_functions; catch end
 fileName = which('pop_loadeeg');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > neuroscanio Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > neuroscanio Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -744,10 +751,11 @@ end
 % --- Executes on button press in pushbutton_bdf_plugin.
 function handles = pushbutton_bdf_plugin(hObject, eventdata, handles)
 % handles.text_message.String = '';
+try f_add_import_functions; catch end
 fileName = which('pop_readbdf');
 if isempty(fileName)
     
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > BDFimport Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > BDFimport Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
@@ -797,9 +805,10 @@ end
 % --- Executes on button press in pushbutton_bdf_plugin.
 function handles = pushbutton_curryeeg(hObject, eventdata, handles)
 % handles.text_message.String = '';
+try f_add_import_functions; catch end
 fileName = which('pop_loadcurry');
 if isempty(fileName)
-    msgboxText = ['Please use EEGLAB menu: "File > Manage EEGLAB extension > loadcurry Vxx" to download it'];
+    msgboxText = ['Please use "Manage EEGLAB extensions > loadcurry Vxx" to download it from Estudio import EEG data GUI'];
     title = 'Estudio:EEG Tab>EEHsets>Import';
     errorfound(sprintf(msgboxText), title);
     handles.listbox_plugins.Value=1;
