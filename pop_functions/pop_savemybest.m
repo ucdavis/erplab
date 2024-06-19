@@ -13,21 +13,21 @@
 %         'filename'       - Output filename string as .best extension
 %         'filepath'       - Output file path
 %         'gui'            - 'save', 'saveas', 'erplab', or 'none'
-%                            - 'save' allows to save file to hard disk 
+%                            - 'save' allows to save file to hard disk
 %                            - 'saveas' allows to save file disk, user
 %                            choose desination with GUI and/or with new
-%                            specified filename. 
+%                            specified filename.
 %                             - 'none': for used with scriping; specify
 %                             file name and path; no GUI popup
-%         'overwriteatmenu' - overwrite bestset at bestset menu 
+%         'overwriteatmenu' - overwrite bestset at bestset menu
 %                            'on'/'off'
-%         'warning'         - warning if overwriting file with same filename: 'on'(default)/off' 
+%         'warning'         - warning if overwriting file with same filename: 'on'(default)/off'
 %
 %
-% Optional INPUTS  : 
+% Optional INPUTS  :
 %          'modegui'       - If 0 (Default), directly saves the file at filepath (NO GUI)
-%                            If 1, save window GUI pops up to confirm save path. 
-%                            
+%                            If 1, save window GUI pops up to confirm save path.
+%
 %
 % EXAMPLE  :
 %
@@ -64,9 +64,9 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [BEST, issave] = pop_savemybest(BEST, varargin)
+function [BEST, issave,bestcom] = pop_savemybest(BEST, varargin)
 issave = 0 ;
-com = ''; 
+bestcom = ''; %%GH, June 2024
 
 
 if nargin<1
@@ -75,21 +75,22 @@ if nargin<1
 end
 
 % parse inputs
-p = inputParser; 
+p = inputParser;
 p.FunctionName = mfilename;
 p.CaseSensitive = false;
 p.addRequired('BEST');
 
 %optional
-p.addParamValue('bestname', '', @ischar); 
+p.addParamValue('bestname', '', @ischar);
 p.addParamValue('filename', '', @ischar); %EEG.filename
 p.addParamValue('filepath', '', @ischar);
 p.addParamValue('gui','no',@ischar); % or 'save', or 'saveas', or 'erplab'
-p.addParamValue('overwriteatmenu','no',@ischar); 
+p.addParamValue('overwriteatmenu','no',@ischar);
 p.addParamValue('Warning','off',@ischar); % on/off warning for existing file
-p.addParamValue('History','script',@ischar); 
+p.addParamValue('History','script',@ischar);
+p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 
-p.parse(BEST, varargin{:}); 
+p.parse(BEST, varargin{:});
 
 if isempty(BEST)
     msgboxText = 'No Bin-Epoched Single-Trial (BEST) Data was found!';
@@ -106,11 +107,15 @@ fullfilename = fullfile(filepathx, filenamex); % full path
 bestname = p.Results.bestname;
 overw = p.Results.overwriteatmenu;
 
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
 
 if isempty(bestname)
-    bestname = BEST.bestname; 
+    bestname = BEST.bestname;
 else
-    BEST.bestname = bestname; 
+    BEST.bestname = bestname;
 end
 
 if strcmpi(overw,'yes')||strcmpi(overw,'on')
@@ -129,9 +134,8 @@ if strcmpi(p.Results.History,'implicit')
     shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
     shist = 2; % script
-elseif strcmpi(p.Results.History,'gui') || strcmpi(p.Results.History,'erplab') 
+elseif strcmpi(p.Results.History,'gui') || strcmpi(p.Results.History,'erplab')
     shist = 1; % gui
-    
 else
     shist = 0; % off
 end
@@ -139,22 +143,22 @@ end
 
 %
 %Setting saving
-% 
+%
 
-if strcmpi(p.Results.gui,'erplab') % open GUI to save BESTset 
-    if overw == 0 
+if strcmpi(p.Results.gui,'erplab') % open GUI to save BESTset
+    if overw == 0
         
         %
         % Call GUI
         %
-%         
-
+        %
+        
         if ~isempty(bestname)
-            bestname = {bestname}; 
+            bestname = {bestname};
             
         end
-
-        answer = savemybestGUI(bestname, fullfilename,0); 
+        
+        answer = savemybestGUI(bestname, fullfilename,0);
         
         if isempty(answer)
             disp('User selected Cancel')
@@ -171,18 +175,18 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save BESTset
         
     else
         %do not open gui, and overwrite bestset at bestset menu
-        bestname = BEST.bestname; 
-        fullfilename = ''; 
+        bestname = BEST.bestname;
+        fullfilename = '';
     end
     
-    BEST.bestname = bestname; 
-    BEST.filename = ''; 
-    BEST.filepath = ''; 
-    BEST.saved = 'no'; 
+    BEST.bestname = bestname;
+    BEST.filename = '';
+    BEST.filepath = '';
+    BEST.saved = 'no';
     modegui = 0; % do not open GUI to save
     warnop = 1;
     shist = 1; %change history to implicit beacuse called from pop_extractbest()
-        
+    
 elseif strcmpi(p.Results.gui, 'save') %just save, no ask
     if isempty(BEST.bestname)
         modegui = 2; % open a "save as" window to save
@@ -196,28 +200,28 @@ elseif strcmpi(p.Results.gui, 'save') %just save, no ask
         warnop  = 0;
     end
     overw   = 1; % overwrite on menu
-
-%  "SAVE AS" .
+    
+    %  "SAVE AS" .
 elseif strcmpi(p.Results.gui,'saveas')
     if isempty(fullfilename)
         
         try
             filenamex = BEST.bestname;
             filepathx = pwd;
-            fullfilename = fullfile(filepathx, filenamex); % full path       
+            fullfilename = fullfile(filepathx, filenamex); % full path
         catch
-         %fullfilename = fullfile(ERP.filepath, ERP.filename);
+            %fullfilename = fullfile(ERP.filepath, ERP.filename);
             msgboxText = 'No file path was found?!';
             title_msg  = 'ERPLAB: pop_savemymvpc() error:';
             errorfound(msgboxText, title_msg);
             return
         end
     end
-    overw = 1; 
-    modegui = 2; 
+    overw = 1;
+    modegui = 2;
 else
-    overw = 0; 
-    modegui = 3; %savefrom script 
+    overw = 0;
+    modegui = 3; %savefrom script
     if isempty(fullfilename)
         fullfilename = fullfile(BEST.filepath, BEST.filename);
         if isempty(fullfilename)
@@ -225,26 +229,16 @@ else
         end
         fprintf('\nNOTE: Since ''filename'' and ''filepath'' were not specified, \nERPLAB used BEST.filename and BEST.filepath to save your ERPset.\n\n');
     end
-%     if isempty(erpname)
-%         erpname = ERP.erpname;
-%     else
-%         ERP.erpname = erpname;
-%     end
-%     if isempty(erpname)
-%         error('ERPLAB says: You must specify an erpname to save your ERPset.')
-%     end
-%     
-    
 end
 
 
 %
 % Saving
-% 
-if modegui == 0 
+%
+if modegui == 0
     % "save-as" filepath has already been gathered from erplab GUI
-    % so NO extra gui will show (modegui =0) 
-   
+    % so NO extra gui will show (modegui =0)
+    
     if ~isempty(fullfilename)
         %disp(['Saving BESTset at ' fullfilename '...'] )
         [BEST, serror] = saveBEST(BEST, fullfilename, 0, warnop); %modegui = 0
@@ -266,15 +260,15 @@ elseif modegui == 1 %"save" filepath has not been gathered yet, open new GUI
         end
         issave = 2; %saved on harddrive
     else
-        issave = 1; %saved only on workspace 
+        issave = 1; %saved only on workspace
     end
-
-elseif modegui==2  
+    
+elseif modegui==2
     % save as (open window)
     %disp(['Saving BEST at ' fullfilename '...'] )
     [BEST, serror,fullfilename] = saveBEST(BEST, fullfilename, 1, warnop);
     if serror==1
-
+        
         return
     end
     issave = 2;
@@ -292,14 +286,13 @@ elseif modegui==3 %save by script
         issave = 1;
     end
     %msg2end
-    return 
+    return
 else
-    error('ERPLAB says: Oops! error at pop_savemybest()'); 
-    
+    error('ERPLAB says: Oops! error at pop_savemybest()');
 end
 
 
-%overwriting in BESTset menu list 
+%overwriting in BESTset menu list
 if overw==1
     
     ALLBEST     = evalin('base', 'ALLBEST');
@@ -311,10 +304,9 @@ if overw==1
 elseif overw == 0
     assignin('base','BEST',BEST);
     pop_loadbest('filename', 'workspace', 'UpdateMainGui', 'on');
-    if issave ~= 2 
+    if issave ~= 2
         issave = 1;
     end
-       
     
 end
 
@@ -344,19 +336,20 @@ if ~isempty(pname)
     end
 end
 bestcom = sprintf('%s);', bestcom);
-eegh(bestcom);
-
+if strcmpi(Tooltype,'erplab')%%GH, June 2024
+    eegh(bestcom);
+end
 
 switch shist
-        case 1 % from GUI
-                displayEquiComERP(bestcom);
-        case 2 % from script
-                %ERP = erphistory(ERP, [], erpcom, 1);
-        case 3 % implicit
-                % just using erpcom
-        otherwise %off or none
-                bestcom = '';
-                return
+    case 1 % from GUI
+        displayEquiComERP(bestcom);
+    case 2 % from script
+        %ERP = erphistory(ERP, [], erpcom, 1);
+    case 3 % implicit
+        % just using erpcom
+    otherwise %off or none
+        bestcom = '';
+        return
 end
 
 end

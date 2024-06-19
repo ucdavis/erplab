@@ -177,5 +177,14 @@ if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     return;
 end
 
+MyViewer_detectartepoch = estudioworkingmemory('EEG_extr_best');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Extract Bin-epoched Single Trial EEG" have not been applied');
+    eegpanelIndex =20;
+    return;
+end
+
+
+
 
 return;

@@ -217,7 +217,6 @@ varargout{1} = box_eeg_history;
                 eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
             end
             set(gui_eeg_history.uitable,'Data', eeg_history_display');
-            set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
         else%% ALLeegCOM for current session
             try
                 eeg_history = evalin('base','ALLCOM');
@@ -238,7 +237,7 @@ varargout{1} = box_eeg_history;
                 set(gui_eeg_history.uitable,'Data',eeg_history);
             end
         end
-        
+        observe_EEGDAT.count_current_eeg = 27;
     end
 
 %%-------------show history to command window------------------------------
@@ -322,5 +321,6 @@ varargout{1} = box_eeg_history;
         else
             gui_eeg_history.eeg_h_all.String = 'Current EEGset';
         end
+        observe_EEGDAT.Reset_eeg_paras_panel = 23;
     end
 end

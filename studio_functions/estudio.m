@@ -91,6 +91,7 @@ global observe_ERPDAT;
 global viewer_ERPDAT;
 global EStudio_gui_erp_totl;
 global gui_erp_waviewer;
+global observe_DECODE;
 viewer_ERPDAT = v_ERPDAT;
 
 %%Try to close existing GUI
@@ -204,6 +205,38 @@ EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
 estudioworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%---------------------For decoding--------------------------------------%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+observe_DECODE = o_DECODEDAT;
+BEST              = [];  % Start ERP Structure on workspace
+ALLBEST           = [];    %Start ALLERP Structure on workspace
+CURRENTBEST       = 0;
+assignin('base','BEST',BEST);
+assignin('base','ALLBEST', ALLBEST);
+assignin('base','CURRENTBEST', CURRENTBEST);
+
+
+observe_DECODE.ALLBEST = ALLBEST;
+observe_DECODE.CURRENTBEST = CURRENTBEST;
+observe_DECODE.BEST = BEST;
+observe_DECODE.Count_currentbest = 1;
+observe_DECODE.Process_messg = 0;%0 is the default means there is no message for processing procedure;
+observe_DECODE.Best_between_panels = 0;
+observe_DECODE.Reset_Best_paras_panel = 0;
+
+addlistener(observe_DECODE,'allbest_changed',@allbest_changed);
+addlistener(observe_DECODE,'best_changed',@best_changed);
+addlistener(observe_DECODE,'currentbest_changed',@currentbest_changed);
+addlistener(observe_DECODE,'Count_currentbest_change',@Count_currentbest_change);
+addlistener(observe_DECODE,'Messg_change',@Messg_change);
+addlistener(observe_DECODE,'Best_between_panels_change',@Best_between_panels_change);
+addlistener(observe_DECODE,'Reset_best_panel_change',@Reset_best_panel_change);
+
+
+
+
+
 f_redrawERP();
 f_redrawEEG_Wave_Viewer();
 timeElapsed = toc;
@@ -289,140 +322,36 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         
         
         %% Create tabs
-        FonsizeDefault = f_get_default_fontsize();figbgdColor = [1 1 1];
+        FonsizeDefault = f_get_default_fontsize();
         EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',FonsizeDefault+1);
         EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );%%EEG Tab
         EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%ERP Tab
-        %         EStudio_gui_erp_totl.tabmvpa = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPA Tab
-        EStudio_gui_erp_totl.context_tabs.TabNames = {'EEG','ERP'};%, 'MVPA'
+        EStudio_gui_erp_totl.tabdecode = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPA Tab
+        EStudio_gui_erp_totl.context_tabs.TabNames = {'EEG','ERP','Pattern Classification'};%, 'MVPA'
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 1;
         EStudio_gui_erp_totl.context_tabs.SelectionChangedFcn = @SelectedTab;
         EStudio_gui_erp_totl.context_tabs.HighlightColor = [0 0 0];
         EStudio_gui_erp_totl.context_tabs.FontWeight = 'bold';
-        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
+        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
         EStudio_gui_erp_totl.context_tabs.BackgroundColor = ColorB_def;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%------------EEG tab for continous EEG and epoched EEG------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         EStudio_gui_erp_totl = EStudio_EEG_Tab(EStudio_gui_erp_totl,ColorB_def);
-        EStudio_gui_erp_totl.eegplotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.eegViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.eegpageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.eegpageinfo_text = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.eegpageinfo_minus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        EStudio_gui_erp_totl.eegpageinfo_edit = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'edit', 'String', '','FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eegpageinfo_plus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Next','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        EStudio_gui_erp_totl.eeg_plot_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.eegViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.eeg_plot_title,'BackgroundColor',figbgdColor);
-        EStudio_gui_erp_totl.eegxaxis_panel1 = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  EStudio_gui_erp_totl.eegxaxis_panel1,'BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.eeg_plot_button_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
-        uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
-        EStudio_gui_erp_totl.eeg_zoom_in_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','|<',...
-            'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eeg_zoom_in_fivesmall = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','-5X',...
-            'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eeg_zoom_in_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','-X',...
-            'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eeg_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','edit','String','',...
-            'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eeg_zoom_out_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','+X',...
-            'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eeg_zoom_out_fivelarge = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','+5X',...
-            'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eeg_zoom_out_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>|',...
-            'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
-        EStudio_gui_erp_totl.popmemu_eeg = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','popupmenu','String','Window Size',...
-            'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.eeg_reset = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Reset',...
-            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
-        set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 150 50 5]);
-        
-        EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
-        EStudio_gui_erp_totl.eegProcess_messg = uicontrol('Parent',EStudio_gui_erp_totl.eegxaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        Startimes = 0;
-        pageNum=1;
-        pagecurrentNum=1;
-        PageStr = 'No EEG was loaded';
-        EStudio_gui_erp_totl.eegpageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
-        EStudio_gui_erp_totl.eegpageinfo_text.String=EStudio_gui_erp_totl.eegpageinfo_str;
-        EStudio_gui_erp_totl.eegpageinfo_edit.String=num2str(pagecurrentNum);
-        Enable_minus = 'off';
-        Enable_plus = 'off';
-        Enable_plus_BackgroundColor = [1 1 1];
-        Enable_minus_BackgroundColor = [0 0 0];
-        EStudio_gui_erp_totl.eegpageinfo_minus.Enable = Enable_minus;
-        EStudio_gui_erp_totl.eegpageinfo_plus.Enable = Enable_plus;
-        EStudio_gui_erp_totl.eegpageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
-        EStudio_gui_erp_totl.eegpageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-        set(EStudio_gui_erp_totl.eegpageinfo_box, 'Sizes', [-1 70 50 70] );
-        EStudio_gui_erp_totl.eeg_zoom_edit.String=num2str(Startimes);
-        
-        EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','off',...
-            'FontWeight','normal', 'XTick', [], 'YTick', [], 'Color','none','xcolor','none','ycolor','none');
-        EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
-        EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 5;
-        EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
-        EStudio_gui_erp_totl.eegplotgrid.Heights(5) = 30; % set the second element (x axis) to 30px high
         Pos = EStudio_gui_erp_totl.myeegviewer.Position;
         EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.5,Pos(3)*1.15,Pos(4)*1.05];%%x,y,width,height
         estudioworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
-        
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%---------------set the layouts for ERP Tab-----------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         EStudio_gui_erp_totl = EStudio_ERP_Tab(EStudio_gui_erp_totl,ColorB_def);
-        pageNum=1;
-        pagecurrentNum=1;
-        PageStr = 'No ERPset was loaded';
-        estudioworkingmemory('selectederpstudio',1);
-        EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
-        pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
-        %%legends
-        ViewAxes_legend_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
-        EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_legend_title,'BackgroundColor',[1 1 1]);
-        %%waves
-        EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
-        EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
         
-        EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
-        uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def); % 1A
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%---------------set the layouts for decoding Tab------------------
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        %%Setting title
-        pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
-        EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
-        EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        Enable_plus_BackgroundColor = [1 1 1];
-        Enable_minus_BackgroundColor = [0 0 0];
-        EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
-        EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-        set(pageinfo_box, 'Sizes', [-1 70 50 70] );
-        set(pageinfo_box,'BackgroundColor',ColorB_def);
-        set(EStudio_gui_erp_totl.pageinfo_text,'BackgroundColor',ColorB_def);
-        
-        commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
-        uiextras.Empty('Parent', commandfig_panel); % 1A
-        EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
-            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.erp_popmenu = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
-        uiextras.Empty('Parent', commandfig_panel); % 1A
-        set(commandfig_panel, 'Sizes', [-1 150 50 5]);
-        %%message
-        xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
-        EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
-        EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
-        EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
-        
-        EStudio_gui_erp_totl.plotgrid.Heights(4) = 5;
-        EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
-        EStudio_gui_erp_totl.plotgrid.Heights(6) = 30;
     end % createInterface
 
 
@@ -574,18 +503,12 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_ERPDAT.Count_currentERP = 1;
             end
         end
-        
     end
 
 
     function about_estudio(~,~)
         abouterplabGUI;
     end
-
-
-
-
-
 
 
 %%---------------------------------allEEG-------------------------------------
@@ -631,6 +554,19 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
     function Count_currentERPChanged(~,~)
         return;
+    end
+
+%%-----------------------------decoding------------------------------------
+    function allbest_changed(~,~)
+       assignin('base','ALLBEST',observe_DECODE.ALLBEST); 
+    end
+
+    function currentbest_changed(~,~)
+        assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST); 
+    end
+
+    function best_changed(~,~)
+         assignin('base','BEST',observe_DECODE.BEST); 
     end
 
 

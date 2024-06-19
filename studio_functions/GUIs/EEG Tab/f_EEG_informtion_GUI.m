@@ -265,7 +265,8 @@ drawui_EEG_info(FonsizeDefault);
         if ~isempty(observe_EEGDAT.EEG)  &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST) && (~isempty(observe_EEGDAT.EEG.EVENTLIST.trialsperbin))
             EEG = observe_EEGDAT.EEG;
             for jjj = 1:length(EEG.EVENTLIST.eventinfo)
-                eventbini(jjj,1) = EEG.EVENTLIST.eventinfo(jjj).bini;
+                bini = EEG.EVENTLIST.eventinfo(jjj).bini;
+                eventbini(jjj,1) = bini(1);
             end
             if any(eventbini(:)>0)
                 for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)

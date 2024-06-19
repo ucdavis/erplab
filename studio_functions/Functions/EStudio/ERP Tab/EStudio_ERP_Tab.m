@@ -82,28 +82,12 @@ set(EStudio_gui_erp_totl.settingLayout, 'Heights', EStudio_gui_erp_totl.panelSiz
 EStudio_gui_erp_totl.panelscroll.Heights = sum(EStudio_gui_erp_totl.panelSizes);
 
 %% Hook up the minimize callback and IsMinimized
-set( EStudio_gui_erp_totl.panel{1}, 'MinimizeFcn', {@nMinimize, 1} );
-set( EStudio_gui_erp_totl.panel{2}, 'MinimizeFcn', {@nMinimize, 2} );
-set( EStudio_gui_erp_totl.panel{3}, 'MinimizeFcn', {@nMinimize, 3} );
-set( EStudio_gui_erp_totl.panel{4}, 'MinimizeFcn', {@nMinimize, 4} );
-set( EStudio_gui_erp_totl.panel{5}, 'MinimizeFcn', {@nMinimize, 5} );
-set( EStudio_gui_erp_totl.panel{6}, 'MinimizeFcn', {@nMinimize, 6} );
-set( EStudio_gui_erp_totl.panel{7}, 'MinimizeFcn', {@nMinimize, 7} );
-set( EStudio_gui_erp_totl.panel{8}, 'MinimizeFcn', {@nMinimize, 8} );
-set( EStudio_gui_erp_totl.panel{9}, 'MinimizeFcn', {@nMinimize, 9} );
-set( EStudio_gui_erp_totl.panel{10}, 'MinimizeFcn', {@nMinimize, 10} );
-set( EStudio_gui_erp_totl.panel{11}, 'MinimizeFcn', {@nMinimize, 11} );
-set( EStudio_gui_erp_totl.panel{12}, 'MinimizeFcn', {@nMinimize, 12} );
-set( EStudio_gui_erp_totl.panel{13}, 'MinimizeFcn', {@nMinimize, 13} );
-set( EStudio_gui_erp_totl.panel{14}, 'MinimizeFcn', {@nMinimize, 14} );
-set( EStudio_gui_erp_totl.panel{15}, 'MinimizeFcn', {@nMinimize, 15} );
-set( EStudio_gui_erp_totl.panel{16}, 'MinimizeFcn', {@nMinimize, 16} );
-set( EStudio_gui_erp_totl.panel{17}, 'MinimizeFcn', {@nMinimize, 17} );
-set( EStudio_gui_erp_totl.panel{18}, 'MinimizeFcn', {@nMinimize, 18} );
-set( EStudio_gui_erp_totl.panel{19}, 'MinimizeFcn', {@nMinimize, 19} );
-set( EStudio_gui_erp_totl.panel{20}, 'MinimizeFcn', {@nMinimize, 20} );
+for Numofpanel = 1:length(EStudio_gui_erp_totl.panel)
+    set( EStudio_gui_erp_totl.panel{Numofpanel}, 'MinimizeFcn', {@nMinimize, Numofpanel} );
+end
+
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [3:20];
+whichpanel = [3:length(EStudio_gui_erp_totl.panel)];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.panel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.settingLayout, 'Sizes' );
@@ -119,8 +103,57 @@ for Numofpanel = 1:length(whichpanel)
 end %% End for shrinking panels 4-10
 
 %% + Create the view
+FonsizeDefault = f_get_default_fontsize();
 p = EStudio_gui_erp_totl.ViewContainer;
 EStudio_gui_erp_totl.ViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorB_def);
+pageNum=1;
+pagecurrentNum=1;
+PageStr = 'No ERPset was loaded';
+estudioworkingmemory('selectederpstudio',1);
+EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
+pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
+%%legends
+ViewAxes_legend_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_legend_title,'BackgroundColor',[1 1 1]);
+%%waves
+EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
+
+EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def); % 1A
+
+%%Setting title
+pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
+EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
+EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+Enable_plus_BackgroundColor = [1 1 1];
+Enable_minus_BackgroundColor = [0 0 0];
+EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
+EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
+set(pageinfo_box, 'Sizes', [-1 70 50 70] );
+set(pageinfo_box,'BackgroundColor',ColorB_def);
+set(EStudio_gui_erp_totl.pageinfo_text,'BackgroundColor',ColorB_def);
+
+commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+uiextras.Empty('Parent', commandfig_panel); % 1A
+EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.erp_popmenu = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
+    'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+uiextras.Empty('Parent', commandfig_panel); % 1A
+set(commandfig_panel, 'Sizes', [-1 150 50 5]);
+%%message
+xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
+EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
+
+EStudio_gui_erp_totl.plotgrid.Heights(4) = 5;
+EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(6) = 30;
 end
 
 
