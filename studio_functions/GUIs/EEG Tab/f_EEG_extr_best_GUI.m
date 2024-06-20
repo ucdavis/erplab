@@ -516,6 +516,7 @@ varargout{1} = Eegtab_box_best;
                 BEST.filename = '';
             end
             BEST.filepath=EEG.filepath;
+            BEST.saved = 'no';
             if Save_file_label
                 [pathstr, file_name, ext] = fileparts(BEST.filename);
                 ext = '.best';
@@ -526,11 +527,12 @@ varargout{1} = Eegtab_box_best;
                 BEST.filename = [file_name,ext];
                 BEST.filepath = pathstr;
                 %%----------save the current sdata as--------------------
-                [ERP, issave, BESTCOM] = pop_savemybest(ERP, 'bestname', BEST.bestname, 'filename', ...
+                [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname, 'filename', ...
                     BEST.filename, 'filepath',BEST.filepath);
                 if Numofeeg==1
                     eegh(BESTCOM);
                 end
+                BEST.saved = 'yes';
             end
             
             if isempty(observe_DECODE.ALLBEST)

@@ -197,12 +197,6 @@ estudioworkingmemory('ViewerFlag',0);
 estudioworkingmemory('Change2epocheeg',0);%%Indicate whether we need to force "Epoched EEG" to be selected in EEGsets panel after epoched EEG.
 estudioworkingmemory('eegicinspectFlag',0);%%Update the current EEG after Inspect/label ICs.
 estudioworkingmemory('ERPTab_zoomSpace',0);%%zoom in/out for erp tab
-EStudio_gui_erp_totl = struct();
-EStudio_gui_erp_totl = createInterface();
-EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
-EStudio_gui_erp_totl.EEG_autoplot = 1; %%Automatic plotting for eegsets
-EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
-estudioworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -220,7 +214,7 @@ assignin('base','CURRENTBEST', CURRENTBEST);
 observe_DECODE.ALLBEST = ALLBEST;
 observe_DECODE.CURRENTBEST = CURRENTBEST;
 observe_DECODE.BEST = BEST;
-observe_DECODE.Count_currentbest = 1;
+observe_DECODE.Count_currentbest = 0;
 observe_DECODE.Process_messg = 0;%0 is the default means there is no message for processing procedure;
 observe_DECODE.Best_between_panels = 0;
 observe_DECODE.Reset_Best_paras_panel = 0;
@@ -233,6 +227,13 @@ addlistener(observe_DECODE,'Messg_change',@Messg_change);
 addlistener(observe_DECODE,'Best_between_panels_change',@Best_between_panels_change);
 addlistener(observe_DECODE,'Reset_best_panel_change',@Reset_best_panel_change);
 
+
+EStudio_gui_erp_totl = struct();
+EStudio_gui_erp_totl = createInterface();
+EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
+EStudio_gui_erp_totl.EEG_autoplot = 1; %%Automatic plotting for eegsets
+EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
+estudioworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
 
 
 
@@ -351,6 +352,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%---------------set the layouts for decoding Tab------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        EStudio_gui_erp_totl = EStudio_decode_Tab(EStudio_gui_erp_totl,ColorB_def);
         
     end % createInterface
 

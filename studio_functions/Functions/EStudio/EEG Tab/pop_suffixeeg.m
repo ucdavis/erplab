@@ -9,7 +9,7 @@
 % Inputs:
 %
 %ALLEEG           -ALLEEG structure
-%suffixstr        -strings for erpsets
+%suffixstr        -strings for eegsets
 
 
 
@@ -19,7 +19,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% Dec. 2024
+% 2024
 
 
 
