@@ -312,11 +312,19 @@ varargout{1} = EStudio_box_bin_chan;
             ERPTab_bin_chan.ElecRange.Max = length(Chanlist_name)+1;
             ChanArraydef = ERPTab_bin_chan.ElecRange.Value;
             if numel(ChanArraydef)==1 && ChanArraydef==1
-                ChanArray = [1:length(Chanlist_name)-1];
+                ChanArraydef = [1:length(Chanlist_name)-1];
+                if ~isempty(ChanArray)
+                    if ~isequal(sort(ChanArray),sort(ChanArraydef))
+                        ChanArray =  ChanArraydef;
+                    end
+                end
             end
-            if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:) >length(Chanlist_name)-1) || numel(ChanArray) == length(Chanlist_name)-1
+            
+            if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:) >length(Chanlist_name)-1) || numel(ChanArray) >length(Chanlist_name)-1
                 ERPTab_bin_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)-1];
+            elseif numel(ChanArray(:)) == length(Chanlist_name)-1
+                ERPTab_bin_chan.ElecRange.Value = 1;
             else
                 ERPTab_bin_chan.ElecRange.Value =ChanArray+1;
             end
@@ -344,11 +352,18 @@ varargout{1} = EStudio_box_bin_chan;
             end
             BinArraydef= ERPTab_bin_chan.BinRange.Value;
             if numel(BinArraydef)==1 && BinArraydef==1
-                BinArray = [1:BinNum];
+                BinArraydef = [1:BinNum];
+                if ~isempty(BinArray)
+                    if ~isequal(sort(BinArray),sort(BinArraydef))
+                        BinArray =  BinArraydef;
+                    end
+                end
             end
             
-            if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum) || numel(BinArray) >= BinNum
+            if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum) || numel(BinArray) > BinNum
                 BinArray = [1:BinNum];
+                ERPTab_bin_chan.BinRange.Value=1;
+            elseif numel(BinArray) == BinNum
                 ERPTab_bin_chan.BinRange.Value=1;
             else
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
