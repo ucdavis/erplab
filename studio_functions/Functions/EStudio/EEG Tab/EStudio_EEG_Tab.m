@@ -89,7 +89,7 @@ EStudio_gui_erp_totl.eegpanelSizes(23) = 300;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Baseline Correction & Linear Detrend (Epoched EEG), Compute Data Quality Metrics (Epoched EEG), Compute Averaged ERPs (Epoched EEG),...']);
 EStudio_gui_erp_totl.eegpanel{24} = f_EEG_extr_best_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(24) = 300;
+EStudio_gui_erp_totl.eegpanelSizes(24) = 360;
 EStudio_gui_erp_totl.eegpanel{25} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(25) = 190;
 EStudio_gui_erp_totl.eegpanel{26} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);

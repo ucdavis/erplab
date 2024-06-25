@@ -28,6 +28,10 @@ EStudio_gui_erp_totl.decode_settingLayout = uiextras.VBox('Parent', EStudio_gui_
 % + Create the settings window panels for ERP panel
 EStudio_gui_erp_totl.decode_panel{1} = f_decode_bestsetsGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(1) = 290;
+
+EStudio_gui_erp_totl.decode_panel{2} = f_decode_MVPA_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(2) = 530;
+
 EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(EStudio_gui_erp_totl.decode_panelSizes);
 
 %% Hook up the minimize callback and IsMinimized

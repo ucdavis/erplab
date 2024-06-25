@@ -117,17 +117,38 @@ varargout{1} = Eegtab_box_best;
             'ColumnEditable',[true,false],...
             'CellEditCallback', @updatePlot);
         EEG_extr_best.table_bins.Enable = 'off';
+        
+        %Transform into phase-independent power
+        EEG_extr_best.tranf_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
+        EEG_extr_best.tranf_checkbox = uicontrol('Style', 'checkbox','Parent',EEG_extr_best.tranf_title,...
+            'String','Transform into phase-independent power','callback',@tranf_checkbox,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+        EEG_extr_best.tranf_title2 = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  EEG_extr_best.tranf_title2,'BackgroundColor',ColorB_def);
+        
+        EEG_extr_best.tranf_left = uicontrol('Style', 'edit','Parent',EEG_extr_best.tranf_title2,...
+            'String',' ','callback',@tranf_left,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uicontrol('Style', 'text','Parent',EEG_extr_best.tranf_title2,...
+            'String','to','FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+        EEG_extr_best.tranf_right = uicontrol('Style','edit','Parent',EEG_extr_best.tranf_title2,...
+            'String',' ','callback',@tranf_right,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uicontrol('Style', 'text','Parent',EEG_extr_best.tranf_title2,...
+            'String','Hz','FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+        set(EEG_extr_best.tranf_title2,'Sizes',[15 105  30 100 20]);
+        
+        
         %%-----------------------Cancel and Run----------------------------
         EEG_extr_best.detar_run_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  EEG_extr_best.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.avg_cancel = uicontrol('Style', 'pushbutton','Parent',EEG_extr_best.detar_run_title,...
             'String','Cancel','callback',@avg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        
-        EEG_extr_best.avg_ops = uicontrol('Style', 'pushbutton','Parent',EEG_extr_best.detar_run_title,...
-            'String','Option','callback',@avg_ops,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        
+        uiextras.Empty('Parent',  EEG_extr_best.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.avg_run = uicontrol('Style','pushbutton','Parent',EEG_extr_best.detar_run_title,...
             'String','Run','callback',@avg_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        set(EEG_extr_best.DataSelBox,'Sizes',[20 25 30 30 30 100 30]);
+        uiextras.Empty('Parent',  EEG_extr_best.detar_run_title,'BackgroundColor',ColorB_def);
+        set(EEG_extr_best.detar_run_title,'Sizes',[15 105  30 105 15]);
+        
+        
+        set(EEG_extr_best.DataSelBox,'Sizes',[20 25 30 30 30 100 30 25 30]);
         EEG_extr_best.binsel = [];
         EEG_extr_best.freqband = {'',''};
     end
@@ -151,8 +172,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
         EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
-        EEG_extr_best.avg_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EEG_extr_best.avg_ops.ForegroundColor = [1 1 1];
+        
         estudioworkingmemory('EEG_extr_best',1);
         EEG_extr_best.all_marks.Value = 1;
         EEG_extr_best.excld_marks.Value = 0;
@@ -175,8 +195,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
         EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
-        EEG_extr_best.avg_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EEG_extr_best.avg_ops.ForegroundColor = [1 1 1];
+        
         estudioworkingmemory('EEG_extr_best',1);
         
         EEG_extr_best.all_marks.Value = 0;
@@ -200,8 +219,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
         EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
-        EEG_extr_best.avg_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EEG_extr_best.avg_ops.ForegroundColor = [1 1 1];
+        
         estudioworkingmemory('EEG_extr_best',1);
         EEG_extr_best.all_marks.Value = 0;
         EEG_extr_best.excld_marks.Value = 0;
@@ -224,8 +242,6 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
         EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
-        EEG_extr_best.avg_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EEG_extr_best.avg_ops.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEG_extr_best',1);
     end
 
@@ -246,10 +262,79 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
         EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
-        EEG_extr_best.avg_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EEG_extr_best.avg_ops.ForegroundColor = [1 1 1];
+        
         estudioworkingmemory('EEG_extr_best',1);
     end
+
+%%----------------------------Transform into phase-independent power-------
+    function tranf_checkbox(Source,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
+        end
+        Eegtab_box_best.TitleColor= [0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
+        EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
+        
+        if EEG_extr_best.tranf_checkbox.Value==1
+            enableFlag = 'on';
+            EEG_extr_best.freqband{1} = EEG_extr_best.tranf_left.String;
+            EEG_extr_best.freqband{2} = EEG_extr_best.tranf_right.String;
+        else
+            enableFlag = 'off';
+            EEG_extr_best.freqband = {'',''};
+        end
+        EEG_extr_best.tranf_left.Enable = enableFlag;
+        EEG_extr_best.tranf_right.Enable = enableFlag;
+    end
+
+%%-------------------left edge of frequency band---------------------------
+    function tranf_left(Source,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
+        end
+        Eegtab_box_best.TitleColor= [0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
+        EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
+        tranf_left = str2num(EEG_extr_best.tranf_left.String);
+        if isempty(tranf_left) || numel(tranf_left)~=1 || any(tranf_left(:)<=0) || any(tranf_left(:)>observe_EEGDAT.EEG.srate)
+            msgboxText=['Extract Bin-epoched Single Trial EEG > Transform into phase-independent power: Left edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            EEG_extr_best.tranf_left.String = '';
+            return;
+        end
+        EEG_extr_best.freqband{1} = EEG_extr_best.tranf_left.String;
+    end
+
+%%-------------------left edge of frequency band---------------------------
+    function tranf_right(Source,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
+        end
+        Eegtab_box_best.TitleColor= [0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
+        EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
+        tranf_right = str2num(EEG_extr_best.tranf_right.String);
+        if isempty(tranf_right) || numel(tranf_right)~=1 || any(tranf_right(:)<=0) || any(tranf_right(:)>observe_EEGDAT.EEG.srate)
+            msgboxText=['Extract Bin-epoched Single Trial EEG > Transform into phase-independent power: Right edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            EEG_extr_best.tranf_right.String = '';
+            return;
+        end
+        EEG_extr_best.freqband{2} = EEG_extr_best.tranf_right.String;
+    end
+
+
 
 %%%----------------------Preview-------------------------------------------
     function avg_cancel(Source,~)
@@ -268,8 +353,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [0 0 0];
         EEG_extr_best.avg_run.BackgroundColor =  [ 1 1 1];
         EEG_extr_best.avg_run.ForegroundColor = [0 0 0];
-        EEG_extr_best.avg_ops.BackgroundColor =  [1 1 1];
-        EEG_extr_best.avg_ops.ForegroundColor = [0 0 0];
+        
         estudioworkingmemory('EEG_extr_best',0);
         
         def  = estudioworkingmemory('pop_extractBEST');
@@ -324,17 +408,47 @@ varargout{1} = Eegtab_box_best;
             end
             EEG_extr_best.table_bins.Data = bindata;
         end
-       try 
-           EEG_extr_best.freqband = def{3}; 
-       catch
-           EEG_extr_best.freqband={'',''};
-           def{3} = {'',''}; 
-       end
+        try
+            EEG_extr_best.freqband = def{3};
+        catch
+            EEG_extr_best.freqband={'',''};
+            def{3} = {'',''};
+        end
+        freqband = EEG_extr_best.freqband;
+        if isempty(cell2mat(freqband)) || numel(cell2mat(freqband))~=2
+            freqband = {'',''};
+        end
+        freqband = cell2mat(freqband);
+        if isempty(freqband)
+            EEG_extr_best.tranf_checkbox.Value =0;
+            EEG_extr_best.tranf_left.Enable ='off';
+            EEG_extr_best.tranf_right.Enable = 'off';
+        else
+            EEG_extr_best.tranf_checkbox.Value =1;
+            EEG_extr_best.tranf_left.Enable ='on';
+            EEG_extr_best.tranf_right.Enable = 'on';
+            try
+                left_freq =  freqband(1);
+            catch
+                left_freq = [];
+            end
+            EEG_extr_best.tranf_left.String = num2str(left_freq);
+            try
+                right_freq =  freqband(2);
+            catch
+                right_freq = [];
+            end
+            EEG_extr_best.tranf_right.String = num2str(right_freq);
+        end
+        
+        EEG_extr_best.freqband{1} = EEG_extr_best.tranf_left.String;
+        EEG_extr_best.freqband{2} = EEG_extr_best.tranf_right.String;
+        def{3} = EEG_extr_best.freqband;
+        
         def{1} = binselec;
         def{4} = artcrite; def{5} = excbound;
         estudioworkingmemory('pop_extractBEST',def);
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 %%----------------------------frequency band-------------------------------
@@ -350,7 +464,7 @@ varargout{1} = Eegtab_box_best;
         %outputs & delete gui
         try
             freqband = app.output;
-            app.delete; 
+            app.delete;
         catch
             return
         end
@@ -359,8 +473,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [1 1 1];
         EEG_extr_best.avg_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
-        EEG_extr_best.avg_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EEG_extr_best.avg_ops.ForegroundColor = [1 1 1];
+        
         estudioworkingmemory('EEG_extr_best',1);
         if isempty(cell2mat(freqband)) || numel(cell2mat(freqband))~=2
             freqband = {'',''};
@@ -395,8 +508,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_cancel.ForegroundColor = [0 0 0];
         EEG_extr_best.avg_run.BackgroundColor =  [ 1 1 1];
         EEG_extr_best.avg_run.ForegroundColor = [0 0 0];
-        EEG_extr_best.avg_ops.BackgroundColor =  [ 1 1 1];
-        EEG_extr_best.avg_ops.ForegroundColor = [0 0 0];
+        
         estudioworkingmemory('EEG_extr_best',0);
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
@@ -420,7 +532,13 @@ varargout{1} = Eegtab_box_best;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-        
+        if numel(binselec)<2
+            msgboxText=['Extract Bin-epoched Single Trial EEG > Run:  Must have at least two classes for decoding! '];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
+        end
         EEG_extr_best.binsel = binselec;
         
         def =  estudioworkingmemory('pop_extractBEST');
@@ -459,13 +577,50 @@ varargout{1} = Eegtab_box_best;
             excbound = 'off';
         end
         def{5} = exclude_be;
-        freqband = EEG_extr_best.freqband ;
+        
+        if EEG_extr_best.tranf_checkbox.Value ==0
+            freqband = {'',''};
+            EEG_extr_best.freqband = freqband;
+        else
+            tranf_left = str2num(EEG_extr_best.tranf_left.String);
+            tranf_right = str2num(EEG_extr_best.tranf_right.String);
+            if isempty(tranf_left) || numel(tranf_left)~=1 || any(tranf_left(:)<=0) || any(tranf_left(:)>observe_EEGDAT.EEG.srate)
+                msgboxText=['Extract Bin-epoched Single Trial EEG > Run: Left edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                EEG_extr_best.tranf_left.String = '';
+                return;
+            end
+            
+            if isempty(tranf_right) || numel(tranf_right)~=1 || any(tranf_right(:)<=0) || any(tranf_right(:)>observe_EEGDAT.EEG.srate)
+                msgboxText=['Extract Bin-epoched Single Trial EEG > Run: Right edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                EEG_extr_best.tranf_left.String = '';
+                return;
+            end
+            
+            if tranf_left>=tranf_right
+                msgboxText=['Extract Bin-epoched Single Trial EEG > Run: Left edge of frequency band should be smaller than right one'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                EEG_extr_best.tranf_left.String = '';
+                return;
+            end
+            EEG_extr_best.freqband{1} = tranf_left;
+            EEG_extr_best.freqband{2} = tranf_right;
+        end
+        
+        
+        freqband = EEG_extr_best.freqband;
         if ~isempty(cell2mat(freqband)) && numel(cell2mat(freqband))==2
             def{2}=1; def{3} = freqband;
         else
             def{2}=0; def{3} =  {'',''};
             EEG_extr_best.freqband =  {'',''};
         end
+        
+        
         try
             cmk_bp=  def{2};
         catch
@@ -487,7 +642,7 @@ varargout{1} = Eegtab_box_best;
             ALLEEG = Answer{1};
             Save_file_label = Answer{2};
         end
-        ALLBEST = [];
+        
         for Numofeeg = 1:numel(EEGArray)
             setindex =EEGArray(Numofeeg);
             EEG = ALLEEG(setindex);
@@ -542,7 +697,6 @@ varargout{1} = Eegtab_box_best;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end for loop of subjects
-        
         observe_EEGDAT.eeg_panel_message =2;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 3;
         observe_DECODE.BEST = observe_DECODE.ALLBEST(end);
@@ -567,8 +721,9 @@ varargout{1} = Eegtab_box_best;
             EEG_extr_best.invalidepoch.Enable= 'off';
             EEG_extr_best.avg_run.Enable= 'off';
             EEG_extr_best.avg_cancel.Enable= 'off';
-            EEG_extr_best.avg_ops.Enable= 'off';
-            EEG_extr_best.table_bins.Enable = 'off';
+            EEG_extr_best.tranf_checkbox.Enable= 'off';
+            EEG_extr_best.tranf_left.Enable ='off';
+            EEG_extr_best.tranf_right.Enable = 'off';
             EEG_extr_best.table_bins.Data = [];
             if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ==1
                 Eegtab_box_best.TitleColor= [0.7500    0.7500    0.75000];
@@ -617,7 +772,14 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.invalidepoch.Enable= 'on';
         EEG_extr_best.avg_run.Enable= 'on';
         EEG_extr_best.avg_cancel.Enable= 'on';
-        EEG_extr_best.avg_ops.Enable= 'on';
+        EEG_extr_best.tranf_checkbox.Enable= 'on';
+        if EEG_extr_best.tranf_checkbox.Value ==1
+            EnableFlag = 'on';
+        else
+            EnableFlag = 'off';
+        end
+        EEG_extr_best.tranf_left.Enable =EnableFlag;
+        EEG_extr_best.tranf_right.Enable = EnableFlag;
     end
 
 
@@ -684,5 +846,8 @@ varargout{1} = Eegtab_box_best;
         end
         EEG_extr_best.freqband = {'',''};
         estudioworkingmemory('pop_extractBEST',{[],0,{'',''},1,1});
+        EEG_extr_best.tranf_checkbox.Value =0;
+        EEG_extr_best.tranf_left.Enable ='off';
+        EEG_extr_best.tranf_right.Enable = 'off';
     end
 end

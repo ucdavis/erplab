@@ -76,18 +76,18 @@ varargout{1} = box_bestset_gui;
             'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.suffix = uicontrol('Parent', Bestsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        Bestsetops.refresh_erpset = uicontrol('Parent', Bestsetops.buttons2, 'Style', 'pushbutton', 'String', 'Refresh',...
-            'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Bestsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        Bestsetops.append = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Append',...
-            'Callback', @append_best,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
             'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        Bestsetops.refresh_erpset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
+            'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        
         Bestsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
             'Callback', @save_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save a Copy', ...
@@ -122,28 +122,14 @@ varargout{1} = box_bestset_gui;
             estudioworkingmemory('BESTArray',BESTArray);
         end
         
-        ChanArray= estudioworkingmemory('ERP_ChanArray');
-        BinArray= estudioworkingmemory('ERP_BinArray');
-        
-        def = f_ERP_duplicate(observe_DECODE.BEST,BinArray,ChanArray);
-        if isempty(def)
-            return;
-        end
-        BinArray = def{1};
-        ChanArray =def{2};
-        try ALLBESTCOM = evalin('base','ALLBESTCOM');catch ALLBESTCOM = []; end
-        
+   
         ALLBEST_out = [];
         ALLBEST = observe_DECODE.ALLBEST;
         for Numoferp = 1:numel(BESTArray)
             ERP = observe_DECODE.ALLBEST(BESTArray(Numoferp));
             [ERP, ERPCOM] = pop_duplicaterp( ERP, 'ChanArray',ChanArray, 'BinArray',BinArray,...
                 'Saveas', 'off', 'History', 'gui');
-            if Numoferp ==numel(BESTArray)
-                [ERP, ALLBESTCOM] = erphistory(ERP, ALLBESTCOM, ERPCOM,2);
-            else
-                [ERP, ALLBESTCOM] = erphistory(ERP, ALLBESTCOM, ERPCOM,1);
-            end
+          
             if isempty(ALLBEST_out)
                 ALLBEST_out = ERP;
             else
@@ -392,53 +378,6 @@ varargout{1} = box_bestset_gui;
         Bestsetops.butttons_datasets.Value = CURRENTBEST;
         observe_DECODE.Count_currentbest=2;
         observe_DECODE.Process_messg =2;
-    end
-
-
-%-----------------------Export-----------------------------------
-    function append_best( ~, ~ )
-        if isempty(observe_DECODE.BEST)
-            observe_DECODE.Count_currentbest=1;
-            return;
-        end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
-        if ~isempty(messgStr)
-            observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
-        end
-        
-        estudioworkingmemory('f_Decode_proces_messg','BESTsets>Export');
-        observe_DECODE.Process_messg =1;
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  cd;
-        end
-        BESTArray= Bestsetops.butttons_datasets.Value;
-        if isempty(BESTArray)
-            BESTArray = length(observe_DECODE.ALLBEST);
-            estudioworkingmemory('BESTArray',BESTArray);
-        end
-        
-        
-        ChanArray= estudioworkingmemory('ERP_ChanArray');
-        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_DECODE.BEST.nchan)
-            ChanArray = [1:observe_DECODE.BEST.nchan];
-            estudioworkingmemory('ERP_ChanArray',ChanArray);
-        end
-        
-        BinArray = estudioworkingmemory('ERP_BinArray');
-        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_DECODE.BEST.nbin)
-            BinArray = [1:observe_DECODE.BEST.nbin];
-            estudioworkingmemory('ERP_BinArray',BinArray);
-        end
-        
-        try
-            [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
-        catch
-            ColorB_def = [0.7020 0.77 0.85];
-        end
-        
-        
     end
 
 %%---------------------Load ERP--------------------------------------------
@@ -881,7 +820,7 @@ end
 
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%% 2024
-checkfileindex=1;
+checkfileindex=0;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr,filesep, file_name,'.best'];
 if exist(filenamex, 'file')~=0
