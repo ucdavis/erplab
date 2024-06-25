@@ -122,52 +122,16 @@ varargout{1} = box_bestset_gui;
             estudioworkingmemory('BESTArray',BESTArray);
         end
         
-   
-        ALLBEST_out = [];
         ALLBEST = observe_DECODE.ALLBEST;
-        for Numoferp = 1:numel(BESTArray)
-            ERP = observe_DECODE.ALLBEST(BESTArray(Numoferp));
-            [ERP, ERPCOM] = pop_duplicaterp( ERP, 'ChanArray',ChanArray, 'BinArray',BinArray,...
-                'Saveas', 'off', 'History', 'gui');
-          
-            if isempty(ALLBEST_out)
-                ALLBEST_out = ERP;
-            else
-                ALLBEST_out(length(ALLBEST_out)+1)=ERP;
-            end
-        end
+        [ALLBEST, bestcom] = pop_duplicatbest(ALLBEST,'BESTArray', BESTArray,'History','gui');
         
-        Answer = f_ERP_save_multi_file(ALLBEST_out,1:numel(BESTArray),'_duplicate');
-        if isempty(Answer)
+        if isempty(ALLBEST) || isempty(bestcom)
+            estudioworkingmemory('f_Decode_proces_messg','BESTsets>Duplicate:user selected cancel');
+            observe_DECODE.Process_messg =2;
             return;
         end
-        if ~isempty(Answer{1})
-            ALLBEST_out = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        for Numoferp =  1:length(ALLBEST_out)
-            ERP = ALLBEST_out(Numoferp);
-            if Save_file_label==1
-                [pathstr, file_name, ext] = fileparts(ERP.filename);
-                ERP.filename = [file_name,'.erp'];
-                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
-                if Numoferp ==length(ALLBEST_out)
-                    [ERP, ALLBESTCOM] = erphistory(ERP, ALLBESTCOM, ERPCOM,2);
-                else
-                    [ERP, ALLBESTCOM] = erphistory(ERP, ALLBESTCOM, ERPCOM,1);
-                end
-            else
-                ERP.filename = '';
-                ERP.saved = 'no';
-                ERP.filepath = '';
-            end
-            ALLBEST(length(ALLBEST)+1) = ERP;
-        end
+        eegh(bestcom);
         observe_DECODE.ALLBEST = ALLBEST;
-        assignin('base','ALLBESTCOM',ALLBESTCOM);
-        assignin('base','ERPCOM',ERPCOM);
-        estudioworkingmemory('ERPfilter',1);
         
         BESTlistName =  getBESTsets();
         %%Reset the display in ERPset panel
@@ -185,7 +149,7 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.CURRENTBEST = length(observe_DECODE.ALLBEST);
         end
         observe_DECODE.BEST = observe_DECODE.ALLBEST(observe_DECODE.CURRENTBEST);
-        assignin('base','ERP',observe_DECODE.BEST);
+        assignin('base','BEST',observe_DECODE.BEST);
         assignin('base','ALLBEST',ALLBEST);
         assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST);
         estudioworkingmemory('BESTArray',BESTArray);
@@ -225,7 +189,6 @@ varargout{1} = box_bestset_gui;
         if isempty(bestnames)
             return;
         end
-        
         
         ALLBEST_out = [];
         ALLBEST = observe_DECODE.ALLBEST(BESTArray);
@@ -290,9 +253,9 @@ varargout{1} = box_bestset_gui;
         
         ALLBEST_out = [];
         ALLBEST = observe_DECODE.ALLBEST(BESTArray);
-        [ALLBEST, ERPCOM] = pop_suffixbest( ALLBEST, 'suffixstr',suffixstr,...
+        [ALLBEST, BESTCOM] = pop_suffixbest( ALLBEST, 'suffixstr',suffixstr,...
             'Saveas', 'off', 'History', 'gui');
-        if isempty(ERPCOM)
+        if isempty(BESTCOM)
             return;
         end
         for Numofbest = 1:numel(BESTArray)

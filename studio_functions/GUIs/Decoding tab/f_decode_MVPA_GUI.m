@@ -314,11 +314,11 @@ varargout{1} = box_bestset_gui;
         end
         Cossfolds = str2num(Docode_do_mvpa.foldsnum.String);
         if isempty(Cossfolds) || numel(Cossfolds)~=1
-            
+            Docode_do_mvpa.foldsnum.String = '3';
+            Cossfolds=3;
         end
-        if isnumeric(observe_DECODE.BEST.n_trials_per_bin)  &&  (observe_DECODE.BEST.n_trials_per_bin(:)<Cossfolds)
-            
-            
+        if isnumeric(observe_DECODE.BEST.n_trials_per_bin)  &&  any(observe_DECODE.BEST.n_trials_per_bin(:)>=Cossfolds)
+              
         end
         
     end
@@ -478,6 +478,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.selclass_custom_browse.Enable = Edit_label;
         Docode_do_mvpa.selclass_custom_defined.Enable = Edit_label;
         Docode_do_mvpa.no_class.String = '';
+         Docode_do_mvpa.foldsnum.Enable = Edit_label;
         Docode_do_mvpa.channels_edit.Enable = Edit_label;
         Docode_do_mvpa.channels_browse.Enable = Edit_label;
         Docode_do_mvpa.iter_edit.Enable = Edit_label;
@@ -583,15 +584,25 @@ varargout{1} = box_bestset_gui;
                 Docode_do_mvpa.mvpa_cancel.Enable = 'off';
                 Docode_do_mvpa.mvpa_ops.Enable = 'off';
                 Docode_do_mvpa.mvpa_run.Enable = 'off';
+                Docode_do_mvpa.foldsnum.Enable = 'off';
             else
-                if Docode_do_mvpa.eq_trials_acrclas_radio.Value==1
-                    decodeTrials=1;
-                else
-                    
-                    
+                %%No of blocks
+                nBlock = str2num(Docode_do_mvpa.foldsnum.String);
+                if isempty(nBlock) || numel(nBlock)~=1 || any(nBlock(:)<=0)
+                    nBlock=3;
+                    Docode_do_mvpa.foldsnum.String = '3';
                 end
-                Data = updatetable(observe_DECODE.ALLBEST(BESTArray),decodeTrials,1);
+                
+                decodeTrials = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+                if isempty(decodeTrials) || any(decodeTrials(:)>observe_DECODE.BEST.nbin)
+                    decodeTrials=1:observe_DECODE.BEST.nbin;
+                    ClassArray = vect2colon(decodeTrials,'Sort', 'on');
+                    ClassArray = erase(ClassArray,{'[',']'});
+                    Docode_do_mvpa.selclass_custom_defined.String = ClassArray;
+                end
+                Data = updatetable(observe_DECODE.ALLBEST(BESTArray),decodeTrials,1,nBlock);
                 Docode_do_mvpa.table_bins.Data = Data;
+                Docode_do_mvpa.table_bins.ColumnWidth ={50,50,70,50,60};
             end
             
         end
@@ -600,54 +611,61 @@ end
 
 
 
-function tmpdata = updatetable(ALLBEST,decodeTrials,trialsbymethod)
 
+
+function tmpdata = updatetable(ALLBEST,decodeTrials,trialsbymethod,nBlock)
 tmpdata = [];
 %%trialsbymethod-1.SVM
 if trialsbymethod == 1 %svm
     rowInd = 0;
     for f = 1:numel(ALLBEST)
+        nbin= ALLBEST(f).nbin;
         for b = 1:nbin
             rowInd = rowInd +1;
             bestfils{rowInd} = ALLBEST(f).bestname;
-            classid{rowInd} = b;
-            try claslabel{rowInd} = BEST.bindesc{b};catch claslabel{rowInd} = 'undefined'; end
-            try trialnum{rowInd} = BEST.n_trials_per_bin(b);catch trialnum{rowInd} =[]; end
+            classid{rowInd} = num2str(b);
+            try claslabel{rowInd} = ALLBEST(f).bindesc{b};catch claslabel{rowInd} = 'undefined'; end
+            try trialnum{rowInd} = num2str(ALLBEST(f).n_trials_per_bin(b));catch trialnum{rowInd} =[]; end
             % N_trial_per_bin_per_bock analysis
             if ismember(b,decodeTrials)
                 nPerBinBlock = floor(ALLBEST(f).n_trials_per_bin/nBlock); %subject's n_trial_per_bin
-                nPerBin{rowInd} = (nPerBinBlock(b));
+                nPerBin{rowInd} = num2str(nPerBinBlock(b));
             else
                 nPerBin{rowInd} = 'NOT USED';
             end
-            
         end
-        
     end
-    tmpdata(:,1) = bestfils;
-    tmpdata(:,2) =classid;
-    tmpdata(:,3) =claslabel;
-    tmpdata(:,4) =trialnum;
-    tmpdata(:,5) = nPerBin;
+    tmpdata = cell(length(bestfils),5);
+    tmpdata(:,1) = bestfils';
+    tmpdata(:,2) =classid';
+    tmpdata(:,3) =claslabel';
+    tmpdata(:,4) =trialnum';
+    tmpdata(:,5) = nPerBin';
     
 elseif trialsbymethod == 2 %crossnobis
     %crossnobis only cares about N(trials)
     rowInd = 0;
     for f = 1:numel(ALLBEST)
+        nbin= ALLBEST(f).nbin;
         for b = 1:nbin
             rowInd = rowInd +1;
-             bestfils{rowInd} = ALLBEST(f).bestname;
+            bestfils{rowInd} = ALLBEST(f).bestname;
             classid{rowInd} = b;
+            try claslabel{rowInd} = ALLBEST(f).bindesc{b};catch claslabel{rowInd} = 'undefined'; end
             if ismember(b,decodeTrials)
                 nPerBinBlock = ALLBEST(f).n_trials_per_bin; %subject's n_trial_per_bin
-                nPerBin{rowInd} = nPerBinBlock(b);
+                nPerBin{rowInd} = num2str(nPerBinBlock(b));
             else
                 nPerBin{rowInd} = 'NOT USED';
             end
         end
         
     end
-    tmpdata(:,4) = nPerBin;
+    tmpdata = cell(length(bestfils),5);
+    tmpdata(:,1) = bestfils';
+    tmpdata(:,2) =classid';
+    tmpdata(:,3) =claslabel';
+    tmpdata(:,4) = nPerBin';
     tmpdata(:,5) = [];
 end
 
