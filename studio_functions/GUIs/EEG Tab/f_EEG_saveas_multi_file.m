@@ -150,11 +150,11 @@ suffix_edit = handles.edit_suffix_name.String;
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
     
-    DataString{Numoferpset,1} = strcat(DataString_before{Numoferpset,1},suffix_edit);
+    DataString{Numoferpset,1} = strcat(ALLEEG(EEGArray(Numoferpset)).setname,suffix_edit);
     if handles.checkbox3_filename_setname.Value==1
         DataString{Numoferpset,2} =  [DataString{Numoferpset,1},'.set'];
     else
-        DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
+        DataString{Numoferpset,2} = ALLEEG(EEGArray(Numoferpset)).filename;
     end
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
@@ -185,15 +185,19 @@ end
 function checkbox2_save_label_Callback(hObject, eventdata, handles)
 
 Values = handles.checkbox2_save_label.Value;
-
+ ALLEEG = handles.ALLEEG;
+EEGArray = handles.EEGArray;
 if Values
     set(handles.checkbox3_filename_setname,'Enable','on');
-    ALLEEG = handles.ALLEEG;
-    EEGArray = handles.EEGArray;
+   
     DataString_before = handles.uitable1_erpset_table.Data;
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
+        if handles.checkbox3_filename_setname.Value==1
         DataString{Numoferpset,2} = char(ALLEEG(EEGArray(Numoferpset)).filename);
+        else
+         DataString{Numoferpset,2} = '';   
+        end
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
     handles.uitable1_erpset_table.ColumnEditable(1) = true;
