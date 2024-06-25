@@ -1583,7 +1583,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
         Eegtab_EEG_art_det_conus.manuar_checkbox_Value = Eegtab_EEG_art_det_conus.manuar_checkbox.Value;
         
-        fdet = 'off';
+        fdet = 'on';
         forder =100;
         
         memoryCARTGUI   = estudioworkingmemory('continuousartifactGUI');
@@ -1624,7 +1624,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 , 'shortseg'    , shortseg     ...%%unmark
                 , 'winoffset'   , winoffset    ...%%add extra
                 , 'colorseg'    , colorseg     ...
-                ,'review','off','History','implicit');
+                ,'review','off','History','script');
             
             
             if isempty(LASTCOM)
