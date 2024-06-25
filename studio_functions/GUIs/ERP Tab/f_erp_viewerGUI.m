@@ -1032,7 +1032,7 @@ if isempty(BinArray_edit) || any(BinArray_edit>nbin) || any(BinArray_edit<=0)
 end
 BinArray = handles.BinArray;
 BinArray =reshape(BinArray,1,numel(BinArray));
-if handles.radiobutton_erppor.Value==1
+if handles.radiobutton_parbin.Value==1
     [~,binpos] = find(BinArray==BinArray_edit);
 else
     BinArray = [];
