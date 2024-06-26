@@ -8,7 +8,7 @@
 
 function [WinRej chanrej] = movesegments(WinRej, chanrej, winoffsetsam, pnts)
 fprintf('\nWARNING: Marked segments will be displaced in %g samples.\n\n', winoffsetsam);
-WinRej = WinRej + winoffsetsam;
+WinRej = WinRej + [-winoffsetsam,winoffsetsam];%%GH June 2024
 WinRej(WinRej<1) = 1;
 WinRej(WinRej>pnts) = pnts;
 [WinRej chanrej] = discardshortsegments(WinRej, chanrej, 0, 0);

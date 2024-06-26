@@ -457,7 +457,7 @@ function pushbutton_reset_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 set(handles.checkbox3_filename_setname,'Enable','on','Value',1);
-suffix = handles.suffix;
+suffix = handles.edit_suffix_name.String;
 ALLEEG = handles.ALLEEG;
 EEGArray = handles.EEGArray;
 for Numoferpset = 1:numel(EEGArray)
