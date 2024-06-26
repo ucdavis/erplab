@@ -169,7 +169,7 @@ for Numoferpset = 1:numel(EEGArray)
     if handles.checkbox3_filename_erpname.Value==1
         DataString{Numoferpset,2}   =  [DataString{Numoferpset,1},'.erp'];
     else
-        DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
+        DataString{Numoferpset,2} =ALLERP(EEGArray(Numoferpset)).filename;
     end
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
@@ -241,7 +241,8 @@ end
 % --- Executes on button press in checkbox3_filename_erpname.
 function checkbox3_filename_erpname_Callback(hObject, eventdata, handles)
 Value_filename_erpname = handles.checkbox3_filename_erpname.Value;
-
+ALLERP = handles.ALLERP;
+EEGArray = handles.EEGArray;
 % set(handles.uitable1_erpset_table,'Enable','off');
 DataString_before = handles.uitable1_erpset_table.Data;
 
@@ -257,7 +258,11 @@ for Numoferpset = 1:size(DataString_before,1)
     else
         file_name = [file_name,'.erp'];
     end
-    DataString{Numoferpset,2} = file_name;
+    if Value_filename_erpname==1
+        DataString{Numoferpset,2} = file_name;
+    else
+        DataString{Numoferpset,2} = ALLERP(EEGArray(Numoferpset)).filename;
+    end
 end
 
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
@@ -460,7 +465,7 @@ handles.edit_path.String = select_path;
 % --- Executes on button press in pushbutton_reset.
 function pushbutton_reset_Callback(hObject, eventdata, handles)
 
-suffix = handles.suffix;
+suffix = handles.edit_suffix_name.String;
 
 ALLERP = handles.ALLERP;
 EEGArray = handles.EEGArray;

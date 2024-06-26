@@ -1552,6 +1552,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: Invalid input for segements separation and it should be a positive value'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                return;
             end
         end
         %%unmark
@@ -1565,6 +1566,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: Invalid input for unmark artifactual segments and it should be a positive value'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                return;
             end
         end
         
@@ -1579,6 +1581,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: Invalid input for "add extra time" and it should be a positive value'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                return;
             end
         end
         Eegtab_EEG_art_det_conus.manuar_checkbox_Value = Eegtab_EEG_art_det_conus.manuar_checkbox.Value;
