@@ -85,7 +85,7 @@ handles.listbox_plugins.Enable = 'on';
 Plugin_fuName = {'';'ASCII/float file or Matlab array';'Biosemi BDF file (BIOSIG toolbox)';...
     'EDF/EDF+/GDF files (BIOSIG toolbox)';'Biosemi BDF and EDF files (BDF plugin)';...
     'Brain Vis. Rec. .vhdr or .ahdr file';'Brain Vis. Anal. Matlab file';'Magstim/EGI .mff file';...
-    'Neuroscan .CNT file';'Neuroscan .EEG file';'Neuroscan Curry files'};
+    'Neuroscan .CNT file';'Neuroscan .EEG file';'Neuroscan Curry files';'.XDF or .XDFZ file'};
 handles.listbox_plugins.String = Plugin_fuName;
 handles.listbox_plugins.Value=1;
 
@@ -837,7 +837,39 @@ eegh(LASTCOM);
 handles.ALLEEG = ALLEEG;
 
 
+% --- Executes on button press in pushbutton_bdf_plugin.
+function handles = pushbutton_xdf(hObject, eventdata, handles)
+% handles.text_message.String = '';
+try f_add_import_functions; catch end
+fileName = which('pop_loadxdf');
+if isempty(fileName)
+    msgboxText = ['Please use "Manage EEGLAB extensions > xdfimport Vxx" to download it from Estudio import EEG data GUI'];
+    title = 'Estudio:EEG Tab>EEHsets>Import';
+    errorfound(sprintf(msgboxText), title);
+    handles.listbox_plugins.Value=1;
+    return;
+end
+ALLEEG = handles.ALLEEG;
+% [EEG,LASTCOM] = pop_readbdf();
+[EEG, LASTCOM] = pop_loadxdf;
 
+if isempty(EEG) || isempty(LASTCOM)
+    handles.text_message.String = 'User selected Cancel';
+    handles.listbox_plugins.Value=1;
+    return;
+end
+
+EEG = eegh(LASTCOM, EEG);
+eegh(LASTCOM);
+if isempty(ALLEEG)
+    OLDSET=1;
+else
+    OLDSET = length(ALLEEG);
+end
+
+[ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+eegh(LASTCOM);
+handles.ALLEEG = ALLEEG;
 
 
 % --- Executes on selection change in listbox_plugins.
@@ -868,7 +900,8 @@ switch Value
         handles = pushbutton_eeg(hObject, eventdata, handles);
     case 11
         handles = pushbutton_curryeeg(hObject, eventdata, handles);
-        
+    case 12 
+        handles = pushbutton_xdf(hObject, eventdata, handles);
 end
 handles.listbox_plugins.Value =1;
 handles.text_message.String = 'Loading was done!';

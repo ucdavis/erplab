@@ -283,13 +283,11 @@ if nargin == 1 %GUI
     if equalizeTrials == 1
         seqtr = 'classes';
         floorValue = [];
-        
     elseif equalizeTrials == 2
         seqtr = 'best';
         floorValue = [];
     elseif equalizeTrials == 3
         seqtr = 'floor';
-        
     else
         seqtr ='none';
         floorValue = [];

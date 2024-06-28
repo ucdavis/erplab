@@ -70,6 +70,8 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.selclass_custom = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.select_classes ,'Value',0,...
             'String','Custom','callback',@selclass_custom,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.selclass_custom.KeyPressFcn=  @eeg_binepoch_presskey;
+        Docode_do_mvpa.Paras{1} = Docode_do_mvpa.selclass_all.Value;
+        
         %%defined class
         Docode_do_mvpa.select_classes_custom = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.select_classes_custom,...
@@ -81,7 +83,7 @@ varargout{1} = box_bestset_gui;
             'String','Browse','callback',@selclass_custom_browse,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.selclass_custom_browse.KeyPressFcn=  @eeg_binepoch_presskey;
         set(Docode_do_mvpa.select_classes_custom,'Sizes',[60 -1 60]);
-        
+        Docode_do_mvpa.Paras{2} = str2num(Docode_do_mvpa.selclass_custom_defined.String);
         
         %%--------------------decoding parameters--------------------------
         Docode_do_mvpa.decode_paras_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -103,10 +105,11 @@ varargout{1} = box_bestset_gui;
         %%Number of cross folds
         Docode_do_mvpa.folds_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  Docode_do_mvpa.folds_title  ,...
-            'String','Corss-validation Blocks','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Cross-validation Blocks','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.foldsnum = uicontrol('Style', 'edit','Parent',  Docode_do_mvpa.folds_title,...
             'String',' ','callback',@foldsnum,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(Docode_do_mvpa.folds_title ,'Sizes',[140 -1]);
+        Docode_do_mvpa.Paras{3} = str2num(Docode_do_mvpa.foldsnum.String);
         %%channels
         Docode_do_mvpa.channels_custom = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.channels_custom ,...
@@ -118,7 +121,7 @@ varargout{1} = box_bestset_gui;
             'String','Browse','callback',@channels_browse,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.channels_browse.KeyPressFcn=  @eeg_binepoch_presskey;
         set(Docode_do_mvpa.channels_custom,'Sizes',[60 -1 60]);
-        
+        Docode_do_mvpa.Paras{4} = str2num(Docode_do_mvpa.channels_edit.String);
         
         %%Iterations
         Docode_do_mvpa.iter_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -129,7 +132,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.iter_edit.KeyPressFcn=  @eeg_binepoch_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.iter_title );
         set(Docode_do_mvpa.iter_title,'Sizes',[60 -1 60]);
-        
+        Docode_do_mvpa.Paras{5} = str2num(Docode_do_mvpa.iter_edit.String);
         
         %%Equalize trials
         Docode_do_mvpa.eq_trials_checkbox_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -138,6 +141,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.eq_trials_checkbox.KeyPressFcn=  @eeg_binepoch_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_checkbox_title);
         set(Docode_do_mvpa.eq_trials_checkbox_title,'Sizes',[140 -1]);
+        Docode_do_mvpa.Paras{6} = Docode_do_mvpa.eq_trials_checkbox.Value;
         
         %%across Classes
         Docode_do_mvpa.eq_trials_acrclass_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -147,6 +151,8 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.eq_trials_acrclas_radio.KeyPressFcn=  @eeg_binepoch_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_acrclass_title);
         set(Docode_do_mvpa.eq_trials_acrclass_title,'Sizes',[20 140 -1]);
+        Docode_do_mvpa.Paras{7} = Docode_do_mvpa.eq_trials_acrclas_radio.Value;
+        
         
         %%across bests
         Docode_do_mvpa.eq_trials_acrbest_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -156,6 +162,8 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.eq_trials_acrclas_radio.KeyPressFcn=  @eeg_binepoch_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_acrbest_title);
         set(Docode_do_mvpa.eq_trials_acrbest_title,'Sizes',[40 140 -1]);
+        Docode_do_mvpa.Paras{8} = Docode_do_mvpa.eq_trials_acrbest_checkbox.Value;
+        
         
         %%Manual Floor
         Docode_do_mvpa.manfloor_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -166,10 +174,11 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.manfloor_edit = uicontrol('Style', 'edit','Parent', Docode_do_mvpa.manfloor_title,...
             'String','','callback',@manfloor_edit,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(Docode_do_mvpa.manfloor_title,'Sizes',[20 140 -1]);
+        Docode_do_mvpa.Paras{9} = str2num(Docode_do_mvpa.manfloor_edit.String);
+        
         
         %%Table is to display the bin descriptions
         Docode_do_mvpa.bindecps_title2 = uiextras.HBox('Parent',Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
-        
         Docode_do_mvpa.table_bins = uitable(  ...
             'Parent'        , Docode_do_mvpa.bindecps_title2,...
             'Data'          , [], ...
@@ -177,6 +186,7 @@ varargout{1} = box_bestset_gui;
             'RowName'    , [], ...
             'ColumnEditable',[false,false,false,false,false]);%%'CellEditCallback', @updatePlot
         Docode_do_mvpa.table_bins.Enable = 'off';
+        
         %%-----------------------Cancel and Run----------------------------
         Docode_do_mvpa.detar_run_title = uiextras.HBox('Parent', Docode_do_mvpa.vBox_decode,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.mvpa_cancel = uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
@@ -187,6 +197,14 @@ varargout{1} = box_bestset_gui;
             'String','Run','callback',@mvpa_run,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         
         set(Docode_do_mvpa.vBox_decode,'Sizes',[20 25 25 20 25 25 25 25 25 25 16 16 25 100 30]);
+        
+        Docode_do_mvpa.paras_ops = {1,1,1,[],1,0};
+        %%(1)Methods (1.SVM; 2.Crossnobis),
+        %%(2)SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
+        %%(3)epochTimes (1:all, 2: pre, 3: post, 4:custom)
+        %%(4)decodeTimes ([start,end]; def = []); % IN MS!
+        %%(5)decode_every_Npoint(1 = every point)
+        %%(6)parCompute (def = 0)
     end
 
 
@@ -200,6 +218,17 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
         Docode_do_mvpa.selclass_all.Value=1;
         Docode_do_mvpa.selclass_custom.Value=0;
         Docode_do_mvpa.selclass_custom_browse.Enable = 'off';
@@ -212,6 +241,12 @@ varargout{1} = box_bestset_gui;
         if ~isempty(ClassArraydef)
             Docode_do_mvpa.no_class.String = num2str(numel(ClassArraydef));
             Docode_do_mvpa.chance.String = num2str(roundn(1/numel(ClassArraydef),-2));
+            [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+            if ~isempty(errormess)
+                msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+                titlNamerro = 'Warning for Pattern Classification Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
         end
     end
 
@@ -221,6 +256,17 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
+        
         Docode_do_mvpa.selclass_all.Value=0;
         Docode_do_mvpa.selclass_custom.Value=1;
         Docode_do_mvpa.selclass_custom_browse.Enable = 'on';
@@ -238,6 +284,17 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
+        
         ClassArray = Docode_do_mvpa.selclass_custom_defined.String;
         if isempty(ClassArray) || numel(ClassArray)<2
             msgboxText =  ['Multivariate Pattern Classification>Class ID:Must have two classes at least to decode',];
@@ -258,6 +315,12 @@ varargout{1} = box_bestset_gui;
         if ~isempty(ClassArraydef)
             Docode_do_mvpa.no_class.String = num2str(numel(ClassArraydef));
             Docode_do_mvpa.chance.String = num2str(roundn(1/numel(ClassArraydef),-2));
+            [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+            if ~isempty(errormess)
+                msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+                titlNamerro = 'Warning for Pattern Classification Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
         end
     end
 %%-------------------------Browse classes----------------------------------
@@ -266,6 +329,15 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
         
         BEST = observe_DECODE.BEST;
         for Numofbin = 1:length(BEST.bindesc)
@@ -304,6 +376,12 @@ varargout{1} = box_bestset_gui;
         if ~isempty(ClassArraydef)
             Docode_do_mvpa.no_class.String = num2str(numel(ClassArraydef));
             Docode_do_mvpa.chance.String = num2str(roundn(1/numel(ClassArraydef),-2));
+            [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+            if ~isempty(errormess)
+                msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+                titlNamerro = 'Warning for Pattern Classification Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
         end
     end
 %%------------------------Numbr of class folds-----------------------------
@@ -312,15 +390,34 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
         Cossfolds = str2num(Docode_do_mvpa.foldsnum.String);
-        if isempty(Cossfolds) || numel(Cossfolds)~=1
+        if isempty(Cossfolds) || numel(Cossfolds)~=1 || any(Cossfolds(:)<1)
             Docode_do_mvpa.foldsnum.String = '3';
             Cossfolds=3;
-        end
-        if isnumeric(observe_DECODE.BEST.n_trials_per_bin)  &&  any(observe_DECODE.BEST.n_trials_per_bin(:)>=Cossfolds)
-              
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:It should be a single positive value',];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        else
+            Cossfolds = ceil(Cossfolds);
+            Docode_do_mvpa.foldsnum.String = num2str(Cossfolds);
         end
         
+        [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+        if ~isempty(errormess)
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
     end
 
 %%------------------------Edit:channels------------------------------------
@@ -329,6 +426,15 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
         
         ChanArray = str2num(Docode_do_mvpa.channels_edit.String);
         BEST = observe_DECODE.BEST;
@@ -349,6 +455,15 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
         
         BEST = observe_DECODE.BEST;
         for Numofbin = 1:BEST.nbchan
@@ -385,6 +500,17 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
+        
         iter_edit = str2num(Docode_do_mvpa.iter_edit.String);
         if isempty(iter_edit) || numel(iter_edit)~=1 || any(iter_edit(iter_edit(:)<=0))
             msgboxText =  ['Multivariate Pattern Classification>Iterations:Iteration should be a single positive number'];
@@ -401,6 +527,16 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
         if Docode_do_mvpa.eq_trials_checkbox.Value==1
             Enable_flag = 'on';
         else
@@ -420,6 +556,12 @@ varargout{1} = box_bestset_gui;
             end
             Docode_do_mvpa.manfloor_edit.Enable = Enable_flag;
         end
+        [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+        if ~isempty(errormess)
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
     end
 
 %%-------------------------------across classes----------------------------
@@ -428,10 +570,26 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
         Docode_do_mvpa.eq_trials_acrclas_radio.Value=1;
         Docode_do_mvpa.manfloor_radio.Value=0;
         Docode_do_mvpa.eq_trials_acrbest_checkbox.Enable = 'on';
         Docode_do_mvpa.manfloor_edit.Enable = 'off';
+        [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+        if ~isempty(errormess)
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
     end
 
 %%-------------------------across bestsets---------------------------------
@@ -440,7 +598,22 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
         
+        [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+        if ~isempty(errormess)
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
     end
 
 %%------------------------Manual Floor-------------------------------------
@@ -449,10 +622,286 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest = 1;
             return;
         end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
         Docode_do_mvpa.eq_trials_acrclas_radio.Value=0;
         Docode_do_mvpa.manfloor_radio.Value=1;
         Docode_do_mvpa.eq_trials_acrbest_checkbox.Enable = 'off';
         Docode_do_mvpa.manfloor_edit.Enable = 'on';
+        [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+        if ~isempty(errormess)
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
+    end
+
+
+%%---------------------------------cancel----------------------------------
+    function mvpa_cancel(~,~)
+        if isempty(observe_DECODE.BEST) || isempty(observe_DECODE.ALLBEST)
+            observe_DECODE.Count_currentbest = 1;
+            return;
+        end
+        Docode_do_mvpa.run.BackgroundColor =  [ 1 1 1];
+        Docode_do_mvpa.run.ForegroundColor = [0 0 0];
+        box_bestset_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [1 1 1];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [0 0 0];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [1 1 1];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [0 0 0];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [1 1 1];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [0 0 0];
+        
+        Docode_do_mvpa.selclass_all.Value=  Docode_do_mvpa.Paras{1};
+        Docode_do_mvpa.selclass_custom.Value = ~Docode_do_mvpa.Paras{1};
+        Docode_do_mvpa.selclass_custom_defined.String = num2str(Docode_do_mvpa.Paras{2});
+        ClassArraydef = [1:observe_DECODE.BEST.nbin];
+        ClassArraydef = vect2colon(ClassArraydef,'Sort', 'on');
+        ClassArraydef = erase(ClassArraydef,{'[',']'});
+        if Docode_do_mvpa.selclass_all.Value==1
+            Docode_do_mvpa.selclass_custom_browse.Enable = 'off';
+            Docode_do_mvpa.selclass_custom_defined.Enable = 'off';
+            Docode_do_mvpa.selclass_custom_defined.String = ClassArraydef;
+        else
+            ClassArray = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+            if isempty(ClassArray) || any(ClassArray(:)>observe_DECODE.BEST.nbin) || any(ClassArray(:)<1)
+                Docode_do_mvpa.selclass_custom_defined.String = ClassArraydef;
+            end
+        end
+        ClassArray = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+        if ~isempty(ClassArray)
+            Docode_do_mvpa.no_class.String = num2str(numel(ClassArray));
+            Docode_do_mvpa.chance.String = num2str(roundn(1/numel(ClassArray),-2));
+        end
+        
+        foldsnum=  Docode_do_mvpa.Paras{3};
+        if isempty(foldsnum) || numel(foldsnum)~=1 || any(foldsnum(:)<1)
+            foldsnum = 3;
+        end
+        Docode_do_mvpa.foldsnum.String = num2str(foldsnum);
+        
+        %%channel
+        channels_edit = Docode_do_mvpa.Paras{4};
+        nbchan = observe_DECODE.BEST.nbchan;
+        if isempty(channels_edit) || any(channels_edit(:)<0)  || any(channels_edit(:)>nbchan)
+            channels_edit = 1:nbchan;
+        end
+        channels_edit = vect2colon(channels_edit,'Sort', 'on');
+        channels_edit = erase(channels_edit,{'[',']'});
+        Docode_do_mvpa.channels_edit.String = channels_edit;
+        
+        %%interations
+        iter_edit =  Docode_do_mvpa.Paras{5};
+        if isempty(iter_edit) || numel(iter_edit)~=1 || any(iter_edit(:)<1)
+            iter_edit=100;
+        end
+        Docode_do_mvpa.iter_edit.String = num2str(iter_edit);
+        
+        eq_trials_checkbox = Docode_do_mvpa.Paras{6};
+        if isempty(eq_trials_checkbox) || numel(eq_trials_checkbox)~=1 || (eq_trials_checkbox~=0 && eq_trials_checkbox~=1)
+            eq_trials_checkbox=1;
+        end
+        
+        Docode_do_mvpa.eq_trials_checkbox.Value = eq_trials_checkbox;
+        eq_trials_acrclas_radio = Docode_do_mvpa.Paras{7};
+        if isempty(eq_trials_acrclas_radio) || numel(eq_trials_acrclas_radio)~=1 || (eq_trials_acrclas_radio~=0 && eq_trials_acrclas_radio~=1)
+            eq_trials_acrclas_radio=1;
+        end
+        Docode_do_mvpa.eq_trials_acrclas_radio.Value=eq_trials_acrclas_radio;
+        Docode_do_mvpa.manfloor_radio.Value= ~eq_trials_acrclas_radio;
+        
+        %%Equaliza trials
+        if Docode_do_mvpa.eq_trials_checkbox.Value==1
+            Enable_flag = 'on';
+        else
+            Enable_flag = 'off';
+        end
+        Docode_do_mvpa.eq_trials_acrclas_radio.Enable = Enable_flag;
+        Docode_do_mvpa.eq_trials_acrbest_checkbox.Enable = Enable_flag;
+        Docode_do_mvpa.manfloor_radio.Enable = Enable_flag;
+        Docode_do_mvpa.manfloor_edit.Enable = Enable_flag;
+        if Docode_do_mvpa.eq_trials_checkbox.Value==1
+            if  Docode_do_mvpa.eq_trials_acrclas_radio.Value==1
+                Enable_flag = 'off';
+                Docode_do_mvpa.eq_trials_acrbest_checkbox.Enable = 'on';
+            else
+                Enable_flag = 'on';
+                Docode_do_mvpa.eq_trials_acrbest_checkbox.Enable = 'off';
+            end
+            Docode_do_mvpa.manfloor_edit.Enable = Enable_flag;
+        end
+        eq_trials_acrbest_checkbox = Docode_do_mvpa.Paras{8};
+        if isempty(eq_trials_acrbest_checkbox) ||  numel(eq_trials_acrbest_checkbox)~=1 || (eq_trials_acrbest_checkbox~=0 && eq_trials_acrbest_checkbox~=1)
+            eq_trials_acrbest_checkbox=1;
+        end
+        Docode_do_mvpa.eq_trials_acrbest_checkbox.Value=eq_trials_acrbest_checkbox;
+        
+        manfloor_edit = Docode_do_mvpa.Paras{9};
+        if  isempty(manfloor_edit)  || numel(manfloor_edit)~=1 || any(manfloor_edit(:)<1)
+            manfloor_edit=1;
+        end
+        Docode_do_mvpa.manfloor_edit.String = num2str(manfloor_edit);
+        
+        Docode_do_mvpa.Paras{1} = Docode_do_mvpa.selclass_all.Value;
+        Docode_do_mvpa.Paras{2} = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+        Docode_do_mvpa.Paras{3} = str2num(Docode_do_mvpa.foldsnum.String);
+        Docode_do_mvpa.Paras{4} = str2num(Docode_do_mvpa.channels_edit.String);
+        Docode_do_mvpa.Paras{5} = str2num(Docode_do_mvpa.iter_edit.String);
+        Docode_do_mvpa.Paras{6} = Docode_do_mvpa.eq_trials_checkbox.Value;
+        Docode_do_mvpa.Paras{7} = Docode_do_mvpa.eq_trials_acrclas_radio.Value;
+        Docode_do_mvpa.Paras{8} = Docode_do_mvpa.eq_trials_acrbest_checkbox.Value;
+        Docode_do_mvpa.Paras{9} = str2num(Docode_do_mvpa.manfloor_edit.String);
+        
+        [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+        if ~isempty(errormess)
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
+        
+        %%if select crossvalidated mahalanobis
+        try Methodops = Docode_do_mvpa.paras_ops{1}; catch Methodops=1; end
+        if isempty(Methodops) || numel(Methodops)~=1 || (Methodops~=1 && Methodops~=2)
+            Methodops=1;
+        end
+        if Methodops~=1
+            Docode_do_mvpa.foldsnum.Enable = 'off';
+        else
+            Docode_do_mvpa.foldsnum.Enable = 'on';
+        end
+    end
+
+%%-----------------------Options for MVPA----------------------------------
+    function mvpa_ops(~,~)
+        if isempty(observe_DECODE.BEST) || isempty(observe_DECODE.ALLBEST)
+            observe_DECODE.Count_currentbest = 1;
+            return;
+        end
+        Docode_do_mvpa.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Docode_do_mvpa.run.ForegroundColor = [1 1 1];
+        box_bestset_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
+        
+        app = feval('estudio_decode_mvpa_ops', observe_DECODE.BEST,Docode_do_mvpa.paras_ops); %cludgy way
+        waitfor(app,'Finishbutton',1);
+        try
+            decoding_res = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.5); %wait for app to leave
+        catch
+            return
+        end
+        if isempty(decoding_res)
+            return;
+        end
+        
+        Docode_do_mvpa.paras_ops = decoding_res;
+        try Methodops = Docode_do_mvpa.paras_ops{1}; catch Methodops=1; end
+        if isempty(Methodops) || numel(Methodops)~=1 || (Methodops~=1 && Methodops~=2)
+            Methodops=1;
+        end
+        if Methodops~=1
+            Docode_do_mvpa.foldsnum.Enable = 'off';
+        else
+            Docode_do_mvpa.foldsnum.Enable = 'on';
+        end
+        
+        [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+        if ~isempty(errormess)
+            msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
+        
+    end
+
+%%-------------------------------Run---------------------------------------
+    function mvpa_run(~,~)
+        if observe_DECODE.Count_currentbest~=2
+            return;
+        end
+        Docode_do_mvpa.run.BackgroundColor =  [ 1 1 1];
+        Docode_do_mvpa.run.ForegroundColor = [0 0 0];
+        box_bestset_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        Docode_do_mvpa.mvpa_cancel.BackgroundColor =  [1 1 1];
+        Docode_do_mvpa.mvpa_cancel.ForegroundColor = [0 0 0];
+        Docode_do_mvpa.mvpa_ops.BackgroundColor =  [1 1 1];
+        Docode_do_mvpa.mvpa_ops.ForegroundColor = [0 0 0];
+        Docode_do_mvpa.mvpa_run.BackgroundColor =  [1 1 1];
+        Docode_do_mvpa.mvpa_run.ForegroundColor = [0 0 0];
+        
+        smethod = Docode_do_mvpa.paras_ops{1};
+        if isempty(smethod) || numel(smethod)~=1 || (smethod~=1 && smethod~=2)
+            smethod = 1; Docode_do_mvpa.paras_ops{1}=1;
+        end
+        if selected_method == 1 %svm
+            smethod = 'SVM';
+        elseif selected_method == 2
+            smethod = 'Crossnobis';
+        end
+        classcoding = Docode_do_mvpa.paras_ops{2};
+        if isempty(classcoding) || numel(classcoding)~=1
+           classcoding=1; Docode_do_mvpa.paras_ops{2}=1;
+        end
+        if classcoding == 1
+            strcoding = 'OneVsOne';
+        elseif classcoding == 2
+            strcoding = 'OneVsAll';
+        else
+            strcoding = 'none';
+        end
+        sbeta = 'off';
+        
+        %%epochtimes (1:all, 2: pre, 3: post, 4:custom)
+        if epochTimes==2
+           decodeTimes =  [observe_DECODE.BEST.times(1),0];
+           epoch_times=2;
+        elseif  epochTimes==3
+            decodeTimes =  [0,observe_DECODE.BEST.times(end)];epoch_times=3;
+        elseif epochTimes==4
+           decodeTimes =  Docode_do_mvpa.paras_ops{4}*1000; epoch_times=4;
+        else
+           decodeTimes =  [observe_DECODE.BEST.times(1),observe_DECODE.BEST.times(end)]; 
+           epoch_times=1;
+        end
+        if isempty(decodeTimes) || numel(decodeTimes)~=2 || any(decodeTimes(:)<observe_DECODE.BEST.times(1)) || any(decodeTimes(:)>observe_DECODE.BEST.times(end))
+           decodeTimes =  [observe_DECODE.BEST.times(1),observe_DECODE.BEST.times(end)]; 
+        end
+        Docode_do_mvpa.paras_ops{4} = decodeTimes/1000;
+        Docode_do_mvpa.paras_ops{3} = epoch_times;
+        
+        decode_every_Npoint = Docode_do_mvpa.paras_ops{5};
+        if isempty(decode_every_Npoint) || numel(decode_every_Npoint)~=1
+            decode_every_Npoint=1;Docode_do_mvpa.paras_ops{5}=1;
+        end
+        
+        ParCompute = Docode_do_mvpa.paras_ops{6};
+        if isempty(ParCompute) || numel(ParCompute)~=1 || (ParCompute~=0 && ParCompute~=1)
+            ParCompute=0;Docode_do_mvpa.paras_ops{6}=0;
+        end
+        
+        BEST = observe_DECODE.BEST;
+         relevantChans = str2num(Docode_do_mvpa.channels_edit.String);
+         if isempty(relevantChans) || numel(relevantChans)>BEST.nbchan || any(relevantChans(:))
+             
+             
+         end
+        
+        
     end
 
 
@@ -478,7 +927,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.selclass_custom_browse.Enable = Edit_label;
         Docode_do_mvpa.selclass_custom_defined.Enable = Edit_label;
         Docode_do_mvpa.no_class.String = '';
-         Docode_do_mvpa.foldsnum.Enable = Edit_label;
+        Docode_do_mvpa.foldsnum.Enable = Edit_label;
         Docode_do_mvpa.channels_edit.Enable = Edit_label;
         Docode_do_mvpa.channels_browse.Enable = Edit_label;
         Docode_do_mvpa.iter_edit.Enable = Edit_label;
@@ -546,6 +995,10 @@ varargout{1} = box_bestset_gui;
                 end
                 Docode_do_mvpa.manfloor_edit.Enable = Enable_flag;
             end
+            manfloor_edit = str2num(Docode_do_mvpa.manfloor_edit.String);
+            if  isempty(manfloor_edit)  || numel(manfloor_edit)~=1 || any(manfloor_edit(:)<1)
+                Docode_do_mvpa.manfloor_edit.String = '1';manfloor_edit=1;
+            end
             %%Tables
             BESTArray= estudioworkingmemory('BESTArray');
             if isempty(BESTArray) || any(BESTArray>length(observe_DECODE.ALLBEST))
@@ -562,11 +1015,12 @@ varargout{1} = box_bestset_gui;
                     'Estudio detected that the currently selected BESTsets as specified in the BESTset panel',
                     'do not contain the same number of bins and/or channels, or do not contain at least two classes/bins.',
                     ' ',
-                    ' ',
                     'Please select BESTsets that match in terms of bins and channels!',
                     'You can:',
-                    '1: Select the indicies of the BESTsets that match in terms of bins and channels in the "From BESTset Menu" option'};
+                    '1: Select the indicies of the BESTsets that match in terms of bins and channels in the "From BESTsets Panel" option'};
                 Docode_do_mvpa.table_bins.Data = msgboxText;
+                Docode_do_mvpa.table_bins.ColumnName= {' '};
+                Docode_do_mvpa.table_bins.ColumnWidth ={600};
                 Docode_do_mvpa.selclass_all.Enable = 'off';
                 Docode_do_mvpa.selclass_custom.Enable = 'off';
                 Docode_do_mvpa.selclass_custom_browse.Enable = 'off';
@@ -580,44 +1034,143 @@ varargout{1} = box_bestset_gui;
                 Docode_do_mvpa.eq_trials_acrbest_checkbox.Enable = 'off';
                 Docode_do_mvpa.manfloor_radio.Enable = 'off';
                 Docode_do_mvpa.manfloor_edit.Enable = 'off';
-                Docode_do_mvpa.table_bins.Enable = 'off';
+                %                 Docode_do_mvpa.table_bins.Enable = 'off';
                 Docode_do_mvpa.mvpa_cancel.Enable = 'off';
                 Docode_do_mvpa.mvpa_ops.Enable = 'off';
                 Docode_do_mvpa.mvpa_run.Enable = 'off';
                 Docode_do_mvpa.foldsnum.Enable = 'off';
             else
-                %%No of blocks
+                Docode_do_mvpa.table_bins.ColumnName= {'BEST File','Class ID','Class/Label','N(trials)','N(per ERP)'};
+                %%No. of blocks
                 nBlock = str2num(Docode_do_mvpa.foldsnum.String);
                 if isempty(nBlock) || numel(nBlock)~=1 || any(nBlock(:)<=0)
                     nBlock=3;
                     Docode_do_mvpa.foldsnum.String = '3';
                 end
                 
-                decodeTrials = str2num(Docode_do_mvpa.selclass_custom_defined.String);
-                if isempty(decodeTrials) || any(decodeTrials(:)>observe_DECODE.BEST.nbin)
-                    decodeTrials=1:observe_DECODE.BEST.nbin;
-                    ClassArray = vect2colon(decodeTrials,'Sort', 'on');
+                decodebins = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+                if isempty(decodebins) || any(decodebins(:)>observe_DECODE.BEST.nbin)
+                    decodebins=1:observe_DECODE.BEST.nbin;
+                    ClassArray = vect2colon(decodebins,'Sort', 'on');
                     ClassArray = erase(ClassArray,{'[',']'});
                     Docode_do_mvpa.selclass_custom_defined.String = ClassArray;
                 end
-                Data = updatetable(observe_DECODE.ALLBEST(BESTArray),decodeTrials,1,nBlock);
+                
+                if Docode_do_mvpa.eq_trials_checkbox.Value==0
+                    classtrialType=1;
+                elseif Docode_do_mvpa.eq_trials_checkbox.Value==1 && Docode_do_mvpa.eq_trials_acrclas_radio.Value==1 && Docode_do_mvpa.eq_trials_acrbest_checkbox.Value==0
+                    classtrialType=2;
+                elseif Docode_do_mvpa.eq_trials_checkbox.Value==1 && Docode_do_mvpa.eq_trials_acrclas_radio.Value==1 && Docode_do_mvpa.eq_trials_acrbest_checkbox.Value==1
+                    classtrialType=3;
+                    
+                elseif  Docode_do_mvpa.eq_trials_checkbox.Value==1 && Docode_do_mvpa.manfloor_radio.Value==1
+                    classtrialType=4;
+                end
+                FloorNum=manfloor_edit;
+                def = estudioworkingmemory('pop_decoding');
+                try trialsbymethod = def{11}; catch trialsbymethod=1; end
+                if isempty(trialsbymethod) || numel(trialsbymethod)~=1 || (trialsbymethod~=1 && trialsbymethod~=2)
+                    trialsbymethod=1;
+                end
+                Data = updatetabledata(observe_DECODE.ALLBEST(BESTArray),decodebins,trialsbymethod,nBlock,classtrialType,FloorNum);
                 Docode_do_mvpa.table_bins.Data = Data;
                 Docode_do_mvpa.table_bins.ColumnWidth ={50,50,70,50,60};
             end
-            
+            %%save parameters
+            Docode_do_mvpa.Paras{1} = Docode_do_mvpa.selclass_all.Value;
+            Docode_do_mvpa.Paras{2} = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+            Docode_do_mvpa.Paras{3} = str2num(Docode_do_mvpa.foldsnum.String);
+            Docode_do_mvpa.Paras{4} = str2num(Docode_do_mvpa.channels_edit.String);
+            Docode_do_mvpa.Paras{5} = str2num(Docode_do_mvpa.iter_edit.String);
+            Docode_do_mvpa.Paras{6} = Docode_do_mvpa.eq_trials_checkbox.Value;
+            Docode_do_mvpa.Paras{7} = Docode_do_mvpa.eq_trials_acrclas_radio.Value;
+            Docode_do_mvpa.Paras{8} = Docode_do_mvpa.eq_trials_acrbest_checkbox.Value;
+            Docode_do_mvpa.Paras{9} = str2num(Docode_do_mvpa.manfloor_edit.String);
+            %%if select crossvalidated mahalanobis
+            try Methodops = Docode_do_mvpa.paras_ops{1}; catch Methodops=1; end
+            if isempty(Methodops) || numel(Methodops)~=1 || (Methodops~=1 && Methodops~=2)
+                Methodops=1;
+            end
+            if Methodops~=1
+                Docode_do_mvpa.foldsnum.Enable = 'off';
+            else
+                Docode_do_mvpa.foldsnum.Enable = 'on';
+            end
         end
     end
 end
 
 
+function [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+global observe_DECODE;
+errormess = '';
+
+BESTArray= estudioworkingmemory('BESTArray');
+if isempty(BESTArray) || any(BESTArray>length(observe_DECODE.ALLBEST))
+    BESTArray = length(observe_DECODE.ALLBEST);
+    estudioworkingmemory('BESTArray',BESTArray);
+    observe_DECODE.BEST = observe_DECODE.ALLBEST(end);
+    observe_DECODE.CURRENTBEST =length(observe_DECODE.ALLBEST);
+    observe_DECODE.Count_currentbest=1;
+end
+
+decodebins = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+if isempty(decodebins) || any(decodebins(:)>observe_DECODE.BEST.nbin)
+    decodebins=1:observe_DECODE.BEST.nbin;
+    ClassArray = vect2colon(decodebins,'Sort', 'on');
+    ClassArray = erase(ClassArray,{'[',']'});
+    Docode_do_mvpa.selclass_custom_defined.String = ClassArray;
+end
+
+try trialsbymethod = Docode_do_mvpa.paras_ops{1}; catch trialsbymethod=1; end
+if isempty(trialsbymethod) || numel(trialsbymethod)~=1 || (trialsbymethod~=1 && trialsbymethod~=2)
+    trialsbymethod=1;
+end
+
+%%No. of blocks
+nBlock = str2num(Docode_do_mvpa.foldsnum.String);
+if isempty(nBlock) || numel(nBlock)~=1 || any(nBlock(:)<=0)
+    nBlock=3;
+    Docode_do_mvpa.foldsnum.String = '3';
+end
+
+if Docode_do_mvpa.eq_trials_checkbox.Value==0
+    classtrialType=1;
+elseif Docode_do_mvpa.eq_trials_checkbox.Value==1 && Docode_do_mvpa.eq_trials_acrclas_radio.Value==1 && Docode_do_mvpa.eq_trials_acrbest_checkbox.Value==0
+    classtrialType=2;
+elseif Docode_do_mvpa.eq_trials_checkbox.Value==1 && Docode_do_mvpa.eq_trials_acrclas_radio.Value==1 && Docode_do_mvpa.eq_trials_acrbest_checkbox.Value==1
+    classtrialType=3;
+elseif  Docode_do_mvpa.eq_trials_checkbox.Value==1 && Docode_do_mvpa.manfloor_radio.Value==1
+    classtrialType=4;
+end
+
+%%
+manfloor_edit = str2num(Docode_do_mvpa.manfloor_edit.String);
+if  isempty(manfloor_edit)  || numel(manfloor_edit)~=1 || any(manfloor_edit(:)<1)
+    Docode_do_mvpa.manfloor_edit.String = '1';manfloor_edit=1;
+end
+FloorNum=manfloor_edit;
+
+[Data,errormess] = updatetabledata(observe_DECODE.ALLBEST(BESTArray),decodebins,trialsbymethod,nBlock,classtrialType,FloorNum);
+if ~isempty(Data) && isempty(errormess)
+    Docode_do_mvpa.table_bins.Data = Data;
+    Docode_do_mvpa.table_bins.ColumnWidth ={50,50,70,50,60};
+end
+end
 
 
 
-function tmpdata = updatetable(ALLBEST,decodeTrials,trialsbymethod,nBlock)
+function [tmpdata,errormess]= updatetabledata(ALLBEST,decodebins,trialsbymethod,nBlock,classtrialType,FloorNum)
 tmpdata = [];
+[nPerBinCheckall,errormess] = f_BinCheck(ALLBEST,decodebins,trialsbymethod,nBlock,classtrialType,FloorNum);
+if ~isempty(errormess)
+    return;
+end
+
 %%trialsbymethod-1.SVM
 if trialsbymethod == 1 %svm
     rowInd = 0;
+    rowIndbin = 0;
     for f = 1:numel(ALLBEST)
         nbin= ALLBEST(f).nbin;
         for b = 1:nbin
@@ -627,9 +1180,10 @@ if trialsbymethod == 1 %svm
             try claslabel{rowInd} = ALLBEST(f).bindesc{b};catch claslabel{rowInd} = 'undefined'; end
             try trialnum{rowInd} = num2str(ALLBEST(f).n_trials_per_bin(b));catch trialnum{rowInd} =[]; end
             % N_trial_per_bin_per_bock analysis
-            if ismember(b,decodeTrials)
-                nPerBinBlock = floor(ALLBEST(f).n_trials_per_bin/nBlock); %subject's n_trial_per_bin
-                nPerBin{rowInd} = num2str(nPerBinBlock(b));
+            if ismember(b,decodebins)
+                rowIndbin = rowIndbin+1;
+                %                 nPerBinBlock = floor(ALLBEST(f).n_trials_per_bin/nBlock); %subject's n_trial_per_bin
+                nPerBin{rowInd} = num2str(nPerBinCheckall(rowIndbin));
             else
                 nPerBin{rowInd} = 'NOT USED';
             end
@@ -641,25 +1195,25 @@ if trialsbymethod == 1 %svm
     tmpdata(:,3) =claslabel';
     tmpdata(:,4) =trialnum';
     tmpdata(:,5) = nPerBin';
-    
 elseif trialsbymethod == 2 %crossnobis
     %crossnobis only cares about N(trials)
     rowInd = 0;
     for f = 1:numel(ALLBEST)
         nbin= ALLBEST(f).nbin;
+        rowIndbin = 0;
         for b = 1:nbin
             rowInd = rowInd +1;
             bestfils{rowInd} = ALLBEST(f).bestname;
             classid{rowInd} = b;
             try claslabel{rowInd} = ALLBEST(f).bindesc{b};catch claslabel{rowInd} = 'undefined'; end
-            if ismember(b,decodeTrials)
-                nPerBinBlock = ALLBEST(f).n_trials_per_bin; %subject's n_trial_per_bin
-                nPerBin{rowInd} = num2str(nPerBinBlock(b));
+            if ismember(b,decodebins)
+                rowIndbin = rowIndbin+1;
+                %                 nPerBinBlock = ALLBEST(f).n_trials_per_bin; %subject's n_trial_per_bin
+                nPerBin{rowInd} = num2str(nPerBinCheckall(rowIndbin));
             else
                 nPerBin{rowInd} = 'NOT USED';
             end
         end
-        
     end
     tmpdata = cell(length(bestfils),5);
     tmpdata(:,1) = bestfils';
@@ -669,4 +1223,158 @@ elseif trialsbymethod == 2 %crossnobis
     tmpdata(:,5) = [];
 end
 
+end
+
+
+function [nPerBinCheck,errormess] = f_BinCheck(ALLBEST,decodebins,trialsbymethod,nBlock,classtrialType,FloorNum)
+errormess = '';
+nPerBinCheck = [];
+if isempty(FloorNum) || numel(FloorNum)~=1 || any(FloorNum(:)<1)
+    errormess = 'The common floor should be a single positive value';
+    return;
+end
+if isempty(nBlock) || numel(nBlock)~=1 || any(nBlock(:)<1)
+    errormess = 'Cross-validation Blocks should be a single positive value';
+    return;
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%---------------------------------SVM method------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if trialsbymethod == 1
+    %%classtrialType--1 is inactive equalize trials
+    if classtrialType==1
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            for Numofbin = 1:numel(decodebins)
+                count = count+1;
+                if ALLBEST(Numofbest).n_trials_per_bin(decodebins(Numofbin))>=nBlock
+                    nPerBinCheck(count,1) = floor(ALLBEST(Numofbest).n_trials_per_bin(decodebins(Numofbin))/nBlock);
+                else
+                    nPerBinCheck = [];
+                    errormess = ['Cross-validation Blocks should be smaller than',32,num2str(ALLBEST(Numofbest).n_trials_per_bin(decodebins(count)))];
+                    return;
+                end
+            end
+        end
+    end
+    
+    if classtrialType==2
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            decodebinsbest =  ALLBEST(Numofbest).n_trials_per_bin(decodebins);
+            if any(decodebinsbest(:) < nBlock)
+                nPerBinCheck = [];
+                errormess = ['Cross-validation Blocks should be smaller than',32,num2str(min(decodebinsbest(:)))];
+                return;
+            else
+                decodebinsacrossbest = floor(decodebinsbest/nBlock);
+                for Numofbin = 1:numel(decodebins)
+                    count = count+1;
+                    nPerBinCheck(count,1) = min(decodebinsacrossbest(:));
+                end
+            end
+        end
+    end
+    
+    %%----------------3 is across calsses across BESTsets
+    if classtrialType==3
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            for Numofbin = 1:numel(decodebins)
+                count = count+1;
+                nPerBinCheckall(count,1) = ALLBEST(Numofbest).n_trials_per_bin(decodebins(Numofbin));
+            end
+        end
+        
+        if any(nPerBinCheckall(:)<nBlock)
+            nPerBinCheck = [];
+            errormess = ['Cross-validation Blocks should be smaller than',32,num2str(min(nPerBinCheckall(:)))];
+            return;
+        else
+            binsacrossbests = floor(nPerBinCheckall/nBlock);
+            nPerBinCheck = ones(length(ALLBEST)*numel(decodebins),1)*min(binsacrossbests(:));
+            return;
+        end
+    end
+    
+    %%----------------4 Common floor
+    if classtrialType==4
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            for Numofbin = 1:numel(decodebins)
+                count = count+1;
+                nPerBinCheckall(count,1) = ALLBEST(Numofbest).n_trials_per_bin(decodebins(Numofbin));
+                nPerBinCheck(count,1) = FloorNum;
+            end
+        end
+        if any(nPerBinCheckall(:)<FloorNum)
+            nPerBinCheck = [];
+            errormess = ['The common floor should be smaller than',32,num2str(min(nPerBinCheckall(:)))];
+            return;
+        end
+        return;
+    end
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%------------------------Corssvalidated Mahalanobis-----------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if trialsbymethod == 2
+    %%classtrialType--1 is inactive equalize trials
+    if classtrialType==1
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            for Numofbin = 1:numel(decodebins)
+                count = count+1;
+                nPerBinCheck(count,1) = ALLBEST(Numofbest).n_trials_per_bin(decodebins(Numofbin));
+            end
+        end
+        return;
+    end
+    
+    %%----------------2 is across calsses
+    if classtrialType==2
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            trialnums = ALLBEST(Numofbest).n_trials_per_bin(decodebins);
+            for Numofbin = 1:numel(decodebins)
+                count = count+1;
+                nPerBinCheck(count,1) = min(trialnums(:));
+            end
+        end
+    end
+    
+    %%----------------3 is across calsses across BESTsets
+    if classtrialType==3
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            for Numofbin = 1:numel(decodebins)
+                count = count+1;
+                nPerBinCheckall(count,1) = ALLBEST(Numofbest).n_trials_per_bin(decodebins(Numofbin));
+            end
+        end
+        nPerBinCheck = ones(length(ALLBEST)*numel(decodebins),1)*min(nPerBinCheckall(:));
+        return;
+    end
+    
+    %%----------------4 Common floor
+    if classtrialType==4
+        count = 0;
+        for Numofbest = 1:length(ALLBEST)
+            for Numofbin = 1:numel(decodebins)
+                count = count+1;
+                nPerBinCheckall(count,1) = ALLBEST(Numofbest).n_trials_per_bin(decodebins(Numofbin));
+                nPerBinCheck(count,1) = FloorNum;
+            end
+        end
+        if any(nPerBinCheckall(:)<FloorNum)
+            nPerBinCheck = [];
+            errormess = ['The common floor should be smaller than',32,num2str(min(nPerBinCheckall(:)))];
+            return;
+        end
+        return;
+    end
+end
 end
