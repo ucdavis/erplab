@@ -1664,6 +1664,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
             EEGArray = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
+        if isempty(observe_EEGDAT.CURRENTSET) || numel(observe_EEGDAT.CURRENTSET)~=1
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         %%----------------------display summary of artifacts---------------
         if Eegtab_EEG_art_det_epoch.show_sumy_ar.Value==1
@@ -1671,7 +1674,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if ~isempty(LASTCOM)
                 eegh(LASTCOM);
             end
-            
         end
         
         estudioworkingmemory('EEGArray',EEGArray);
