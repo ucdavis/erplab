@@ -89,9 +89,9 @@ varargout{1} = box_bestset_gui;
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         
         Bestsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
-            'Callback', @save_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @save_best,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save a Copy', ...
-            'Callback', @save_erpas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @save_bestas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 90 95])
@@ -424,7 +424,7 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.ALLBEST = [];
             observe_DECODE.BEST = [];
             observe_DECODE.CURRENTBEST  = 0;
-            assignin('base','ERP',observe_DECODE.BEST)
+            assignin('base','BEST',observe_DECODE.BEST)
         else
             observe_DECODE.ALLBEST = ALLBEST;
             observe_DECODE.BEST = observe_DECODE.ALLBEST(end);
@@ -465,7 +465,7 @@ varargout{1} = box_bestset_gui;
 
 
 %-------------------------- Save selected BESTsets-------------------------------------------
-    function save_erp(source,~)
+    function save_best(source,~)
         if isempty(observe_DECODE.BEST)
             observe_DECODE.Count_currentbest=1;
             return;
@@ -501,7 +501,7 @@ varargout{1} = box_bestset_gui;
                 FileName = BEST.bestname;
             end
             [pathx, filename, ext] = fileparts(FileName);
-            filename = [filename '.erp'];
+            filename = [filename '.best'];
             checkfileindex = checkfilexists([pathName,filesep,filename]);
             if checkfileindex==1
                 [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname, 'filename',...
@@ -532,7 +532,7 @@ varargout{1} = box_bestset_gui;
     end
 
 %------------------------- Save as-----------------------------------------
-    function save_erpas(~,~)
+    function save_bestas(~,~)
         if isempty(observe_DECODE.BEST)
             observe_DECODE.Count_currentbest=1;
             return;

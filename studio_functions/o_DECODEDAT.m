@@ -7,6 +7,10 @@ classdef o_DECODEDAT < handle
         Process_messg
         Best_between_panels
         Reset_Best_paras_panel
+        ALLMVPC
+        MVPC
+        CURRENTMVPC
+        Count_currentMVPC
     end
     
     events
@@ -17,6 +21,10 @@ classdef o_DECODEDAT < handle
         Messg_change
         Best_between_panels_change
         Reset_best_panel_change
+        ALLMVPC_changed
+        MVPC_changed
+        CURRENTMVPC_changed
+        Count_currentMVPC_changed
     end
     
     
@@ -52,7 +60,7 @@ classdef o_DECODEDAT < handle
             warning('on');
         end
         
-   
+        
         
         %Modified bins of the selected BEST
         function set.Count_currentbest(obj,value)
@@ -75,7 +83,7 @@ classdef o_DECODEDAT < handle
             end
             warning('on');
         end
-
+        
         %%two panels
         function set.Best_between_panels(obj_BEST,values_BEST)
             try
@@ -93,6 +101,51 @@ classdef o_DECODEDAT < handle
                 warning('off');
                 obj_BEST.Reset_Best_paras_panel = values_BEST;
                 notify(obj_BEST,'Reset_best_panel_change');
+            catch
+                warning('on');
+            end
+        end
+        %%
+        %%two panels
+        function set.ALLMVPC(obj_BEST,values_BEST)
+            try
+                warning('off');
+                obj_BEST.ALLMVPC = values_BEST;
+                notify(obj_BEST,'ALLMVPC_changed');
+            catch
+                warning('on');
+            end
+        end
+        
+        %%MVPC
+        function set.MVPC(obj_BEST,values_BEST)
+            try
+                warning('off');
+                obj_BEST.MVPC = values_BEST;
+                notify(obj_BEST,'MVPC_changed');
+            catch
+                warning('on');
+            end
+        end
+        
+        
+        %%MVPC
+        function set.CURRENTMVPC(obj_BEST,values_BEST)
+            try
+                warning('off');
+                obj_BEST.CURRENTMVPC = values_BEST;
+                notify(obj_BEST,'CURRENTMVPC_changed');
+            catch
+                warning('on');
+            end
+        end
+        
+        %%MVPC
+        function set.Count_currentMVPC(obj_BEST,values_BEST)
+            try
+                warning('off');
+                obj_BEST.Count_currentMVPC = values_BEST;
+                notify(obj_BEST,'Count_currentMVPC_changed');
             catch
                 warning('on');
             end

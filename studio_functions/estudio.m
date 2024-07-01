@@ -209,7 +209,9 @@ CURRENTBEST       = 0;
 assignin('base','BEST',BEST);
 assignin('base','ALLBEST', ALLBEST);
 assignin('base','CURRENTBEST', CURRENTBEST);
-
+assignin('base','CURRENTMVPC',0);
+assignin('base','ALLMVPC', []);
+assignin('base','MVPC', []);
 
 observe_DECODE.ALLBEST = ALLBEST;
 observe_DECODE.CURRENTBEST = CURRENTBEST;
@@ -218,6 +220,11 @@ observe_DECODE.Count_currentbest = 0;
 observe_DECODE.Process_messg = 0;%0 is the default means there is no message for processing procedure;
 observe_DECODE.Best_between_panels = 0;
 observe_DECODE.Reset_Best_paras_panel = 0;
+observe_DECODE.ALLMVPC = [];
+observe_DECODE.MVPC =[];
+observe_DECODE.CURRENTMVPC=0;
+observe_DECODE.Count_currentMVPC=0;
+
 
 addlistener(observe_DECODE,'allbest_changed',@allbest_changed);
 addlistener(observe_DECODE,'best_changed',@best_changed);
@@ -226,6 +233,13 @@ addlistener(observe_DECODE,'Count_currentbest_change',@Count_currentbest_change)
 addlistener(observe_DECODE,'Messg_change',@Messg_change);
 addlistener(observe_DECODE,'Best_between_panels_change',@Best_between_panels_change);
 addlistener(observe_DECODE,'Reset_best_panel_change',@Reset_best_panel_change);
+
+
+addlistener(observe_DECODE,'ALLMVPC_changed',@ALLMVPC_changed);
+addlistener(observe_DECODE,'MVPC_changed',@MVPC_changed);
+addlistener(observe_DECODE,'CURRENTMVPC_changed',@CURRENTMVPC_changed);
+addlistener(observe_DECODE,'Count_currentMVPC_changed',@Count_currentMVPC_changed);
+
 
 
 EStudio_gui_erp_totl = struct();
@@ -327,8 +341,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',FonsizeDefault+1);
         EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );%%EEG Tab
         EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%ERP Tab
-        EStudio_gui_erp_totl.tabdecode = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPA Tab
-        EStudio_gui_erp_totl.context_tabs.TabNames = {'EEG','ERP','Pattern Classification'};%, 'MVPA'
+        EStudio_gui_erp_totl.tabdecode = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPC Tab
+        EStudio_gui_erp_totl.context_tabs.TabNames = {'EEG','ERP','Pattern Classification'};%, 'MVPC'
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 1;
         EStudio_gui_erp_totl.context_tabs.SelectionChangedFcn = @SelectedTab;
         EStudio_gui_erp_totl.context_tabs.HighlightColor = [0 0 0];
@@ -560,17 +574,28 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
 %%-----------------------------decoding------------------------------------
     function allbest_changed(~,~)
-       assignin('base','ALLBEST',observe_DECODE.ALLBEST); 
+        assignin('base','ALLBEST',observe_DECODE.ALLBEST);
     end
 
     function currentbest_changed(~,~)
-        assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST); 
+        assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST);
     end
 
     function best_changed(~,~)
-         assignin('base','BEST',observe_DECODE.BEST); 
+        assignin('base','BEST',observe_DECODE.BEST);
     end
 
+    function ALLMVPC_changed(~,~)
+        assignin('base','ALLMVPC',observe_DECODE.ALLMVPC);
+    end
+
+    function MVPC_changed(~,~)
+        assignin('base','MVPC',observe_DECODE.MVPC);
+    end
+
+    function CURRENTMVPC_changed(~,~)
+        assignin('base','CURRENTMVPC',observe_DECODE.CURRENTMVPC);
+    end
 
 %%------------------------Message panel------------------------------------
     function eeg_panel_change_message(~,~)

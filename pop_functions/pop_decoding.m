@@ -116,8 +116,8 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [MVPC] = pop_decoding(ALLBEST, varargin)
-com = '';
+function [MVPC,bestcom] = pop_decoding(ALLBEST, varargin)
+bestcom = '';
 
 % check Signal Processing Toolbox (SPT)
 if exist('filtfilt','file')~= 2
@@ -366,7 +366,7 @@ p.addParamValue('Saveas','off',@ischar);
 p.addParamValue('ParCompute','off', @ischar); %attempt parallization across CPU cores (def: false)
 p.addParamValue('BetaWeights', 'off', @ischar); %betaweight switch
 p.addParamValue('History','script');
-
+p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 % Parsing
 p.parse(ALLBEST, varargin{:});
 idx_bestset = p.Results.BESTindex;
@@ -458,7 +458,7 @@ end
 
 if Decode_every_Npoint < 1
     msgText = 'Must specify a positive value > 1 for decoding every Nth point'
-    title = 'ERPLAB: Wrong Value for Decoding every Nth point'
+    title = 'ERPLAB: Wrong Value for Decoding every Nth point';
     errorfound(msgText,title);
     return
 end
@@ -813,7 +813,14 @@ for q=1:length(fn)
     end
 end
 bestcom = sprintf( '%s );', bestcom);
-eegh(bestcom);
+
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
+if strcmpi(Tooltype,'erplab')%%GH, June 2024
+    eegh(bestcom);
+end
 
 
 

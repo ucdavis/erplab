@@ -32,6 +32,10 @@ EStudio_gui_erp_totl.decode_panelSizes(1) = 290;
 EStudio_gui_erp_totl.decode_panel{2} = f_decode_MVPA_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(2) = 530;
 
+EStudio_gui_erp_totl.decode_panel{3} = f_decode_mvpcsetsGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(3) = 290;
+
+
 EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(EStudio_gui_erp_totl.decode_panelSizes);
 
 %% Hook up the minimize callback and IsMinimized
@@ -40,7 +44,7 @@ for Numofpanel = 1:length(EStudio_gui_erp_totl.decode_panel)
 end
 
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [1:length(EStudio_gui_erp_totl.decode_panel)];
+whichpanel = [3:length(EStudio_gui_erp_totl.decode_panel)];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.decode_panel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.decode_settingLayout, 'Sizes' );

@@ -55,8 +55,8 @@ try
 catch
     suffix  = '';
     ERPLAB = [];
-    ERPLAB.erpname = 'No erpset was selected';
-    ERPLAB.filename ='No erpset was selected';
+    ERPLAB.bestname = 'No mvpcset was selected';
+    ERPLAB.filename ='No mvpcset was selected';
     ERPLAB.event = [];
     ERPLAB.chanlocs = [];
     ERPLAB.nbchan = 0;
@@ -74,14 +74,14 @@ handles.Selected_ERP_label =Selected_ERP_label;
 %erplab_studio_default_values;
 erplab_default_values; 
 version = erplabver;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save multiple MVPAsets GUI'])
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save multiple MVPCsets GUI'])
 
 
 % set(handles.checkbox1_suffix,'Value',1);
 set(handles.edit_suffix_name,'String',suffix);
 set(handles.checkbox2_save_label,'Value',0);
 
-ColumnName_table = {'MVPA name','File name'};
+ColumnName_table = {'MVPC name','File name'};
 
 set(handles.uitable1_erpset_table,'ColumnName',cellstr(ColumnName_table));
 set(handles.uitable1_erpset_table,'RowName',cellstr(num2str(Selected_ERP_label')));
@@ -141,12 +141,7 @@ ALLERP = handles.ALLERP;
 Selected_ERP_label = handles.Selected_ERP_label;
 suffix_edit = handles.edit_suffix_name.String;
 
-if isempty(suffix_edit)
-    msgboxText =  'You must enter a suffix at least!';
-    title = 'EStudio: f_ERP_save_multi_file() error';
-    errorfound(msgboxText, title);
-    return
-end
+
 
 
 DataString_before = handles.uitable1_erpset_table.Data;
@@ -217,9 +212,9 @@ if Values
         fileName= char(ALLERP(Selected_ERP_label(Numofselectederp)).filename);
         [pathstr, file_name, ext] = fileparts(fileName);
         if isempty(file_name)
-            file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_ERP.mvpa'];
+            file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_ERP.mvpc'];
         else
-            file_name = [file_name,'.mvpa'];
+            file_name = [file_name,'.mvpc'];
         end
         DataString{Numofselectederp,2} = file_name;
 
@@ -255,13 +250,13 @@ for Numofselectederp = 1:size(DataString_before,1)
     DataString{Numofselectederp,1} = DataString_before{Numofselectederp,1};
     fileName = char(DataString_before{Numofselectederp,1});
     if isempty(fileName)
-        fileName = strcat(num2str(Numofselectederp),'mvpa');
+        fileName = strcat(num2str(Numofselectederp),'mvpc');
     end
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
-     file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_ERP.mvpa'];
+     file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_ERP.mvpc'];
     else
-     file_name = [file_name,'.mvpa'];  
+     file_name = [file_name,'.mvpc'];  
     end
     DataString{Numofselectederp,2} = file_name;
 end
@@ -279,16 +274,16 @@ function uitable1_erpset_table_CellEditCallback(hObject, eventdata, handles)
 DataString = handles.uitable1_erpset_table.Data;
 Selected_ERP_label = handles.Selected_ERP_label;
 if size(DataString,1) < numel(Selected_ERP_label)
-    msgboxText =  'Erpname and filename for one of erpsets are empty at least! Please give name to erpname and filename';
-    title = 'EStudio: f_ERP_save_multi_file empty erpname';
+    msgboxText =  'MVPC name and filename for one of erpsets are empty at least! Please give name to mvpcname and filename';
+    title = 'EStudio: mvpa_save_multi_file empty erpname';
     errorfound(msgboxText, title);
     return
 end
 
 for Numofselected = 1:numel(Selected_ERP_label)
     if  isempty(DataString{Numofselected,1})
-        msgboxText =  'Erpname for one of erpsets is empty at least! Please give name to that erpset';
-        title = 'EStudio: f_ERP_save_multi_file empty erpname';
+        msgboxText =  'MVPCname for one of mvpcsets is empty at least! Please give name to that mvpcset';
+        title = 'EStudio: mvpa_save_multi_file empty mvpcname';
         errorfound(msgboxText, title);
         return
     end
@@ -326,7 +321,7 @@ ALLERP = handles.ALLERP;
 Selected_ERP_label = handles.Selected_ERP_label;
 
 if size(Data_String,1)< numel(Selected_ERP_label)%
-    msgboxText =  'MVPAname for one of MVPAsets is empty at least! Please give a name';
+    msgboxText =  'MVPCname for one of MVPCsets is empty at least! Please give a name';
     title = 'ERPLAB: mvpa_save_multi_file empty MVPAname';
     errorfound(msgboxText, title);
     return
@@ -334,8 +329,8 @@ end
 
 
 if size(Data_String,1)> numel(Selected_ERP_label)%
-    msgboxText =  'More MVPAname is given. Please delete it!!!';
-    title = 'ERPLAB: mvpa_save_multi_file empty MVPAname';
+    msgboxText =  'More MVPCname is given. Please delete it!!!';
+    title = 'ERPLAB: mvpa_save_multi_file empty MVPCname';
     errorfound(msgboxText, title);
     return
 end
@@ -344,8 +339,8 @@ end
 
 for Numofselected = 1:numel(Selected_ERP_label)
     if  isempty(Data_String{Numofselected,1})
-        msgboxText =  'MVPAname for one of MVPAsets is empty at least! Please give a name';
-        title = 'ERPLAB: mvpa_save_multi_file empty MVPAname';
+        msgboxText =  'MVPCname for one of MVPCsets is empty at least! Please give a name';
+        title = 'ERPLAB: mvpa_save_multi_file empty MVPCname';
         errorfound(msgboxText, title);
         return
     end
@@ -363,9 +358,9 @@ for Numofselectederp = 1:numel(Selected_ERP_label)
     
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
-     file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_mvpa.mvpa'];
+     file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_mvpc.mvpc'];
     else
-     file_name = [file_name,'.mvpa'];  
+     file_name = [file_name,'.mvpc'];  
     end
     
     ALLERP(Selected_ERP_label(Numofselectederp)).filename = file_name;
