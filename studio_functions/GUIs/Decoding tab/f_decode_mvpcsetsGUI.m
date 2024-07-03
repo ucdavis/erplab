@@ -1,4 +1,4 @@
-% BESTset selector panel
+% MVPCset selector panel
 %
 % Author: Guanghui ZHANG && Steven Luck
 % Center for Mind and Brain
@@ -124,7 +124,7 @@ varargout{1} = box_mvpcset_gui;
         
         ALLMVPC = observe_DECODE.ALLMVPC;
         [ALLMVPC, mvpcom] = pop_duplicatmvpc( ALLMVPC, 'MVPCArray',MVPCArray,...
-        'History', 'gui');
+            'History', 'gui');
         if isempty(ALLMVPC) || isempty(mvpcom)
             estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Duplicate:user selected cancel');
             observe_DECODE.Process_messg =2;
@@ -231,7 +231,7 @@ varargout{1} = box_mvpcset_gui;
         if isempty(suffixstr)
             return;
         end
-
+        
         ALLMVPC = observe_DECODE.ALLMVPC(MVPCArray);
         [ALLMVPC, BESTCOM] = pop_suffixmvpc( ALLMVPC, 'suffixstr',suffixstr,...
             'Saveas', 'off', 'History', 'gui');
@@ -265,7 +265,7 @@ varargout{1} = box_mvpcset_gui;
             ALLMVPC = [];
         end
         try
-            BEST = evalin('base', 'MVPC');
+            MVPC = evalin('base', 'MVPC');
         catch
             MVPC = [];
         end
@@ -303,7 +303,11 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.butttons_datasets.String = MVPClistName;
         Mvpcsetops.butttons_datasets.Min = 1;
         Mvpcsetops.butttons_datasets.Max = length(MVPClistName)+1;
-        Mvpcsetops.butttons_datasets.Value = CURRENTMVPC;
+        if any(CURRENTMVPC(:)<1)
+            Mvpcsetops.butttons_datasets.Value =1;
+        else
+            Mvpcsetops.butttons_datasets.Value = CURRENTMVPC;
+        end
         observe_DECODE.Count_currentMVPC=2;
         observe_DECODE.Process_messg =2;
     end
@@ -695,13 +699,10 @@ varargout{1} = box_mvpcset_gui;
     end
 
 
-
-
     function Reset_best_panel_change(~,~)
         if observe_DECODE.Reset_erp_paras_panel~=1
             return;
         end
-        
         if ~isempty(observe_DECODE.ALLMVPC)
             observe_DECODE.MVPC =  observe_DECODE.ALLMVPC(end);
             observe_DECODE.CURRENTMVPC = length(observe_DECODE.ALLMVPC);

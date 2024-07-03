@@ -1285,6 +1285,113 @@ varargout{1} = box_bestset_gui;
         end
     end
 
+%%----------------------------------------Reset----------------------------
+    function Reset_best_panel_change(~,~)
+        if observe_DECODE.Reset_Best_paras_panel~=1
+            return;
+        end
+        Docode_do_mvpa.selclass_all.Value = 1;
+        Docode_do_mvpa.selclass_custom.Value = 0;
+        if isempty(observe_DECODE.BEST)
+            classArray = [];
+        else
+            classArray = [1:observe_DECODE.BEST.nbin];
+        end
+        classArraydef = vect2colon(classArray,'Sort', 'on');
+        classArraydef = erase(classArraydef,{'[',']'});
+        Docode_do_mvpa.selclass_custom_defined.String = classArraydef;
+        Docode_do_mvpa.selclass_custom_browse.Enable = 'off';
+        Docode_do_mvpa.selclass_custom_defined.Enable = 'off';
+        %%Number of classes/bins
+        if ~isempty(classArray)
+            Docode_do_mvpa.no_class.String = num2str(numel(classArray));
+        else
+            Docode_do_mvpa.no_class.String = '';
+        end
+        Docode_do_mvpa.foldsnum.String = '3';
+        %%channels
+        if isempty(observe_DECODE.BEST)
+            chanArray = [];
+        else
+            chanArray = [1:observe_DECODE.BEST.nbchan];
+        end
+        chanArray = vect2colon(chanArray,'Sort', 'on');
+        chanArray = erase(chanArray,{'[',']'});
+        Docode_do_mvpa.channels_edit.String = chanArray;
+        %%iterations
+        Docode_do_mvpa.iter_edit.String = '100';
+        
+        Docode_do_mvpa.eq_trials_checkbox.Value=1;
+        Docode_do_mvpa.eq_trials_acrclas_radio.Value=1;
+        Docode_do_mvpa.eq_trials_acrbest_checkbox.Value=0;
+        Docode_do_mvpa.manfloor_radio.Value=0;
+        Docode_do_mvpa.manfloor_edit.Enable = 'off';
+        Docode_do_mvpa.manfloor_edit.String = '';
+        
+        BESTArray= estudioworkingmemory('BESTArray');
+        if isempty(BESTArray) || any(BESTArray>length(observe_DECODE.ALLBEST))
+            BESTArray = length(observe_DECODE.ALLBEST);
+            estudioworkingmemory('BESTArray',BESTArray);
+            observe_DECODE.BEST = observe_DECODE.ALLBEST(end);
+            observe_DECODE.CURRENTBEST =length(observe_DECODE.ALLBEST);
+            observe_DECODE.Count_currentbest=1;
+        end
+        
+        checking =0;
+        if numel(BESTArray)>1 && ~isempty(observe_DECODE.ALLBEST)
+            checking = checkmultiBEST(observe_DECODE.ALLBEST(BESTArray));
+        end
+        if (~checking && numel(BESTArray)>1) || isempty(observe_DECODE.BEST)
+            msgboxText = {'Welcome to the Estudio decoding GUI',
+                'Estudio detected that the currently selected BESTsets as specified in the BESTset panel',
+                'do not contain the same number of bins and/or channels, or do not contain at least two classes/bins.',
+                ' ',
+                'Please select BESTsets that match in terms of bins and channels!',
+                'You can:',
+                '1: Select the indicies of the BESTsets that match in terms of bins and channels in the "From BESTsets Panel" option'};
+            Docode_do_mvpa.table_bins.Data = msgboxText;
+            Docode_do_mvpa.table_bins.ColumnName= {' '};
+            Docode_do_mvpa.table_bins.ColumnWidth ={600};
+            Docode_do_mvpa.selclass_all.Enable = 'off';
+            Docode_do_mvpa.selclass_custom.Enable = 'off';
+            Docode_do_mvpa.selclass_custom_browse.Enable = 'off';
+            Docode_do_mvpa.selclass_custom_defined.Enable = 'off';
+            %                 Docode_do_mvpa.no_class.String = '';
+            Docode_do_mvpa.channels_edit.Enable = 'off';
+            Docode_do_mvpa.channels_browse.Enable = 'off';
+            Docode_do_mvpa.iter_edit.Enable = 'off';
+            Docode_do_mvpa.eq_trials_checkbox.Enable = 'off';
+            Docode_do_mvpa.eq_trials_acrclas_radio.Enable = 'off';
+            Docode_do_mvpa.eq_trials_acrbest_checkbox.Enable = 'off';
+            Docode_do_mvpa.manfloor_radio.Enable = 'off';
+            Docode_do_mvpa.manfloor_edit.Enable = 'off';
+            Docode_do_mvpa.foldsnum.Enable = 'off';
+            Docode_do_mvpa.mvpa_cancel.Enable = 'off';
+            Docode_do_mvpa.mvpa_ops.Enable = 'off';
+            Docode_do_mvpa.mvpa_run.Enable = 'off';
+            Docode_do_mvpa.foldsnum.Enable = 'off';
+        end
+        %%Update the table
+        if checking && ~isempty(observe_DECODE.BEST) && ~isempty(observe_DECODE.ALLBEST)
+            [Docode_do_mvpa,errormess] = f_updatables(Docode_do_mvpa);
+            if ~isempty(errormess)
+                msgboxText =  ['Multivariate Pattern Classification>Cross-validation Blocks:',32,errormess];
+                titlNamerro = 'Warning for Pattern Classification Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        Docode_do_mvpa.Paras{1} = Docode_do_mvpa.selclass_all.Value;
+        Docode_do_mvpa.Paras{2} = str2num(Docode_do_mvpa.selclass_custom_defined.String);
+        Docode_do_mvpa.Paras{3} = str2num(Docode_do_mvpa.foldsnum.String);
+        Docode_do_mvpa.Paras{4} = str2num(Docode_do_mvpa.channels_edit.String);
+        Docode_do_mvpa.Paras{5} = str2num(Docode_do_mvpa.iter_edit.String);
+        Docode_do_mvpa.Paras{6} = Docode_do_mvpa.eq_trials_checkbox.Value;
+        Docode_do_mvpa.Paras{7} = Docode_do_mvpa.eq_trials_acrclas_radio.Value;
+        Docode_do_mvpa.Paras{8} = Docode_do_mvpa.eq_trials_acrbest_checkbox.Value;
+        Docode_do_mvpa.Paras{9} = str2num(Docode_do_mvpa.manfloor_edit.String);
+        Docode_do_mvpa.paras_ops = {1,1,1,[],1,0};
+    end
+
 end
 
 
@@ -1424,7 +1531,6 @@ if isempty(nBlock) || numel(nBlock)~=1 || any(nBlock(:)<1)
     errormess = 'Cross-validation Blocks should be a single positive value';
     return;
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%---------------------------------SVM method------------------------------

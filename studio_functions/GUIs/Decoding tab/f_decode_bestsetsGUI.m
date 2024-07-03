@@ -338,7 +338,11 @@ varargout{1} = box_bestset_gui;
         Bestsetops.butttons_datasets.String = BESTlistName;
         Bestsetops.butttons_datasets.Min = 1;
         Bestsetops.butttons_datasets.Max = length(BESTlistName)+1;
-        Bestsetops.butttons_datasets.Value = CURRENTBEST;
+        if any(CURRENTBEST(:)<1)
+            Bestsetops.butttons_datasets.Value=1;
+        else
+            Bestsetops.butttons_datasets.Value = CURRENTBEST;
+        end
         observe_DECODE.Count_currentbest=2;
         observe_DECODE.Process_messg =2;
     end

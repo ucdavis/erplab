@@ -350,7 +350,7 @@ switch shist
     case 3
         % implicit
     otherwise %off or none
-        erpcom = '';
+        mvpccom = '';
         return
 end
 
