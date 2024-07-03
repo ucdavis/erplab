@@ -22,10 +22,9 @@
 % 2012
 
 function [def stepx]= default_time_ticks_decode(MVPC,trange,kf)
-datatype = checkdatatype(MVPC);
+
 if nargin<3
     kf = 100;
-    
 end
 kktime = 1000;
 

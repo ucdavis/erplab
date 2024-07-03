@@ -26,7 +26,7 @@
 %
 %
 %
-% See also mvpcaveragerGUI.m mvpcaverager.m pop_mvpcaverager.m 
+% See also mvpcaveragerGUI.m mvpcaverager.m pop_mvpcaverager.m
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons, Javier Lopez-Calderon & Steven Luck
@@ -59,16 +59,16 @@
 
 
 function [MVPC] = pop_mvpcaverager(ALLMVPC,varargin)
-% mvpccom  ''; 
-MVPC = preloadMVPC; 
+% mvpccom  '';
+MVPC = preloadMVPC;
 
 if nargin==1  % GUI
     if ~iscell(ALLMVPC) && ~ischar(ALLMVPC)
         if isstruct(ALLMVPC)
-%             iserp = iserpstruct(ALLMVPC(1));
-%             if ~iserp
-%                 ALLMVPC = [];
-%             end
+            %             iserp = iserpstruct(ALLMVPC(1));
+            %             if ~iserp
+            %                 ALLMVPC = [];
+            %             end
             actualnset = length(ALLMVPC);
         else
             ALLMVPC = [];
@@ -90,8 +90,8 @@ if nargin==1  % GUI
             end
         end
         
-       % def{2} = 0; %aaron: until I fix lists, always load mvpcmenu
-
+        % def{2} = 0; %aaron: until I fix lists, always load mvpcmenu
+        
         %
         % Open Grand Average GUI
         %
@@ -105,8 +105,8 @@ if nargin==1  % GUI
         optioni    = answer{1}; %1 means from a filelist, 0 means from mvpcsets menu
         mvpcset     = answer{2};
         stderror   = answer{3}; % 0;1
-        warnon    = answer {4}; 
-      
+        warnon    = answer {4};
+        
         
         if optioni==1 % from files
             filelist    = mvpcset;
@@ -129,13 +129,13 @@ if nargin==1  % GUI
         else
             warnon_str = 'off';
         end
-            %
-            % Somersault
-            %
-            %[ERP erpcom]  = pop_gaverager(ALLMVPC, 'mvpcsets', mvpcset, 'Loadlist', filelist,'Criterion', artcrite,...
-            %        'SEM', stdsstr, 'Weighted', wavgstr, 'Saveas', 'on');
-            [MVPC]  = pop_mvpcaverager(ALLMVPC, 'Mvpcsets', mvpcset, 'SEM', stdsstr,...
-               'Warning', warnon_str, 'Saveas','on','History', 'gui');
+        %
+        % Somersault
+        %
+        %[ERP erpcom]  = pop_gaverager(ALLMVPC, 'mvpcsets', mvpcset, 'Loadlist', filelist,'Criterion', artcrite,...
+        %        'SEM', stdsstr, 'Weighted', wavgstr, 'Saveas', 'on');
+        [MVPC]  = pop_mvpcaverager(ALLMVPC, 'Mvpcsets', mvpcset, 'SEM', stdsstr,...
+            'Warning', warnon_str, 'Saveas','on','History', 'gui');
         pause(0.1)
         return
     else
@@ -173,14 +173,14 @@ if isempty(mvpcset)
     error('ERPLAB says: "MVPCsets" parameter was not specified.');
 end
 
-lista = ''; 
+lista = '';
 if isnumeric(mvpcset)
     nfile = length(mvpcset);
     optioni = 0 ;
 else
-    optioni = 1; %from file 
+    optioni = 1; %from file
     filelist = '';
-     if iscell(ALLMVPC)             % from the GUI, when ALLMVPC exist and user picks a list up as well
+    if iscell(ALLMVPC)             % from the GUI, when ALLMVPC exist and user picks a list up as well
         filelist = ALLMVPC{2};
         ALLMVPC   = ALLMVPC{1};
     elseif ischar(ALLMVPC)         % from script, when user picks a list.
@@ -325,11 +325,11 @@ eegh(mvpccom);
 
 if issaveas
     
-
+    
     [MVPC, issave] = pop_savemymvpc(MVPC,'gui','averager');
     if issave>0
         if issave==2
-           % erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+            % erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
             msgwrng = '*** Your ERPset was saved on your hard drive.***';
         else
             msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';

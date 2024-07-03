@@ -185,7 +185,7 @@ else%%If any of bins, channels, samples varies across the selected ERPsets.
             [xxx, latsamp, latdiffms] = closest(Times, [EpochStart,EpochEnd]);
             ERPdata(1:ERP_sg.nchan,latsamp(1):latsamp(2),1:ERP_sg.nbin,Numofselectederp) = ERP_sg.bindata;
             
-            if isequal(ERP_sg.bindataa,ERP_sg.binerror)
+            if isequal(ERP_sg.bindata,ERP_sg.binerror)
                 errordata =  ERP_sg.binerror;
             else
                 errordata=[];

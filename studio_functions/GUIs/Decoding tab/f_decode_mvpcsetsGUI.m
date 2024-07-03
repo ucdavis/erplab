@@ -361,12 +361,18 @@ varargout{1} = box_mvpcset_gui;
         assignin('base','MVPC',observe_DECODE.MVPC);
         assignin('base','ALLMVPC',observe_DECODE.ALLMVPC);
         assignin('base','CURRENTMVPC',observe_DECODE.CURRENTMVPC);
+        
+        [serror, msgwrng] = f_checkmvpc( observe_DECODE.ALLMVPC,MVPCArray);
+         if serror==1 && ~isempty(msgwrng)
+             msgboxText =  ['MVPCsets> Load:We only plot accuracy results for the first selected MVPCset becuase',32,msgwrng];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+         elseif serror==2 && ~isempty(msgwrng)
+         end
+         
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 2;
         
-        if EStudio_gui_erp_totl.ERP_autoplot==1
-            
-        end
     end
 
 %%----------------------Clear the selected MVPCsets-------------------------
@@ -614,9 +620,13 @@ varargout{1} = box_mvpcset_gui;
         observe_DECODE.CURRENTMVPC = Current_ERP_selected;
         observe_DECODE.MVPC = observe_DECODE.ALLMVPC(Current_ERP_selected);
         observe_DECODE.Count_currentMVPC = 2;
-        if EStudio_gui_erp_totl.ERP_autoplot==1
-            
-        end
+         [serror, msgwrng] = f_checkmvpc( observe_DECODE.ALLMVPC,MVPCArray);
+         if serror==1 && ~isempty(msgwrng)
+             msgboxText =  ['MVPCsets> We only plot accuracy results for the first selected MVPCset becuase',32,msgwrng];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+         elseif serror==2 && ~isempty(msgwrng)
+         end
     end
 
 %%%--------------Up this panel--------------------------------------

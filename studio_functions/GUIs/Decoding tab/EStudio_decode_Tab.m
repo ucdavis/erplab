@@ -35,10 +35,7 @@ EStudio_gui_erp_totl.decode_panelSizes(3) = 290;
 EStudio_gui_erp_totl.decode_panel{4} = f_mvpc_grandaverageGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(4) = 160;
 EStudio_gui_erp_totl.decode_panel{5} = f_MVPCset_plot_setting_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.decode_panelSizes(5) = 270;
-
-
-
+EStudio_gui_erp_totl.decode_panelSizes(5) = 390;
 
 EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(EStudio_gui_erp_totl.decode_panelSizes);
 

@@ -70,6 +70,49 @@ varargout{1} = MVPC_plotset_box;
         uicontrol('Style','text','Parent', MVPC_plotset.timeticks,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(MVPC_plotset.timeticks, 'Sizes', [50 100 80 20]);
         
+        %%--------x tick precision with decimals---------------------------
+        MVPC_plotset.xtickprecision_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  MVPC_plotset.xtickprecision_title);
+        uicontrol('Style','text','Parent',MVPC_plotset.xtickprecision_title ,...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'String','Precision','HorizontalAlignment','left'); %
+        xprecisoonName = {'0','1','2','3','4','5','6'};
+        MVPC_plotset.xticks_precision = uicontrol('Style','popupmenu','Parent',MVPC_plotset.xtickprecision_title,'String',xprecisoonName,...
+            'callback',@xticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',1,'Enable','off'); %
+        MVPC_plotset.xticks_precision.KeyPressFcn = @mvpc_plotsetting_presskey;
+        uicontrol('Style','text','Parent',  MVPC_plotset.xtickprecision_title,'String','# decimals',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
+        set(MVPC_plotset.xtickprecision_title,'Sizes',[30 65 60 80]);
+        
+        %%-----font, font size, and text color for time ticks--------------
+        fontsizes  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        MVPC_plotset.xtimefont_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',  MVPC_plotset.xtimefont_title,'String','Font',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); %
+        fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
+        MVPC_plotset.xtimefont_custom = uicontrol('Style','popupmenu','Parent', MVPC_plotset.xtimefont_title ,'String',fonttype,...
+            'callback',@xtimefont,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',1); %
+        MVPC_plotset.xtimefont_custom.KeyPressFcn = @mvpc_plotsetting_presskey;
+        uicontrol('Style','text','Parent', MVPC_plotset.xtimefont_title ,'String','Size',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); %
+        MVPC_plotset.xtimefontsize = uicontrol('Style','popupmenu','Parent', MVPC_plotset.xtimefont_title ,'String',fontsizes,...
+            'callback',@xtimefontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',5); %
+        MVPC_plotset.xtimefontsize.KeyPressFcn = @mvpc_plotsetting_presskey;
+        set(MVPC_plotset.xtimefont_title,'Sizes',[30 100 30 80]);
+        
+        %%%---------------------color for x label text--------------
+        MVPC_plotset.xtimelabelcolor_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',  MVPC_plotset.xtimelabelcolor_title,'String','Color',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); %
+        textColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
+        MVPC_plotset.xtimetextcolor = uicontrol('Style','popupmenu','Parent', MVPC_plotset.xtimelabelcolor_title ,'String',textColor,...
+            'callback',@xtimecolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',1); %
+        MVPC_plotset.xtimetextcolor.KeyPressFcn = @mvpc_plotsetting_presskey;
+        uiextras.Empty('Parent',  MVPC_plotset.xtimelabelcolor_title);
+        set(MVPC_plotset.xtimelabelcolor_title,'Sizes',[40 100 -1]);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%------------------------------Amplitude axis---------------------
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%amplitude scale
         uicontrol('Style','text','Parent', MVPC_plotset.plotop,'String','Amplitude Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -84,8 +127,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.yscale_high = uicontrol('Style', 'edit','Parent',MVPC_plotset.yscale,'String','',...
             'callback',@yscale_high,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         MVPC_plotset.yscale_high.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.yscale,'String','uv','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        set(MVPC_plotset.yscale, 'Sizes', [50 50 50 30 50 20]);
+        uicontrol('Style','text','Parent', MVPC_plotset.yscale,'String',' ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(MVPC_plotset.yscale, 'Sizes', [50 50 50 30 50 -1]);
         
         %%y ticks
         MVPC_plotset.yscaleticks = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -96,9 +139,49 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.yscale_step = uicontrol('Style', 'edit','Parent',MVPC_plotset.yscaleticks,'String','',...
             'callback',@yscale_step,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         MVPC_plotset.yscale_step.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','uv','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        set(MVPC_plotset.yscaleticks, 'Sizes', [50 100 80 20]);
+        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(MVPC_plotset.yscaleticks, 'Sizes', [50 100 80 -1]);
         
+        %%--------Y tick precision with decimals---------------------------
+        MVPC_plotset.ytickprecision_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  MVPC_plotset.ytickprecision_title);
+        uicontrol('Style','text','Parent',MVPC_plotset.ytickprecision_title ,...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'String','Precision','HorizontalAlignment','left'); %
+        yprecisoonName = {'1','2','3','4','5','6'};
+        MVPC_plotset.yticks_precision = uicontrol('Style','popupmenu','Parent',MVPC_plotset.ytickprecision_title,'String',yprecisoonName,...
+            'callback',@yticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',1,'Enable','off'); %
+        MVPC_plotset.yticks_precision.KeyPressFcn = @mvpc_plotsetting_presskey;
+        uicontrol('Style','text','Parent',  MVPC_plotset.ytickprecision_title,'String','# decimals',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
+        set(MVPC_plotset.ytickprecision_title,'Sizes',[30 65 60 80]);
+        
+        %%-----y ticklabel:font, font size, and text color for time ticks
+        MVPC_plotset.yfont_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',  MVPC_plotset.yfont_title,'String','Font',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
+        fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
+        MVPC_plotset.yfont_custom = uicontrol('Style','popupmenu','Parent', MVPC_plotset.yfont_title,'String',fonttype,...
+            'callback',@yaxisfont, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',1); %
+        MVPC_plotset.yfont_custom.KeyPressFcn = @mvpc_plotsetting_presskey;
+        uicontrol('Style','text','Parent', MVPC_plotset.yfont_title ,'String','Size',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
+        yfontsize={'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        MVPC_plotset.yfont_custom_size = uicontrol('Style','popupmenu','Parent', MVPC_plotset.yfont_title ,'String',yfontsize,...
+            'callback',@yaxisfontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',5); %
+        MVPC_plotset.yfont_custom_size.KeyPressFcn = @mvpc_plotsetting_presskey;
+        set(MVPC_plotset.yfont_title,'Sizes',[30 100 30 80]);
+        
+        %%% color for y ticklabel text
+        MVPC_plotset.ylabelcolor_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',  MVPC_plotset.ylabelcolor_title,'String','Color',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); %
+        ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
+        MVPC_plotset.ytextcolor = uicontrol('Style','popupmenu','Parent', MVPC_plotset.ylabelcolor_title ,'String',ytextColor,...
+            'callback',@yaxisfontcolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',1); %
+        MVPC_plotset.ytextcolor.KeyPressFcn = @mvpc_plotsetting_presskey;
+        uiextras.Empty('Parent',  MVPC_plotset.ylabelcolor_title);
+        set(MVPC_plotset.ylabelcolor_title,'Sizes',[40 100 -1]);
         
         %%standard error of the mean
         MVPC_plotset.SEM_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
@@ -137,17 +220,9 @@ varargout{1} = MVPC_plotset_box;
             'String','Apply','callback',@plot_setting_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
         set(MVPC_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
+        set(MVPC_plotset.plotop, 'Sizes', [20 20 20 20 20 20 20 25 25 20 20 20 20 20 20 30]);
         
-        set(MVPC_plotset.plotop, 'Sizes', [20 20 20 20 25 25 20 20 20 30]);
-        estudioworkingmemory('MVPC_plotset_pars',[]);
         estudioworkingmemory('MVPC_plotset',0);
-        MVPC_plotset.timet_auto_reset = 1;
-        MVPC_plotset.timeticks_auto_reset = 1;
-        MVPC_plotset.gridlayputarray = [];
-        MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
-        MVPC_plotset.paras{2} = MVPC_plotset.timetick_auto.Value;
-        MVPC_plotset.paras{3} = MVPC_plotset.yscale_auto.Value;
-        MVPC_plotset.paras{4} = MVPC_plotset.ytick_auto.Value;
     end
 
 %%**************************************************************************%%
@@ -318,6 +393,62 @@ varargout{1} = MVPC_plotset_box;
             return;
         end
     end
+%%----------------------------precision for x axis-------------------------
+    function xticksprecison(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+%%-------------------------font for x axis---------------------------------
+    function xtimefont(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+%%-------------------------fontsize for x axis-----------------------------
+    function xtimefontsize(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+%%--------------------------text color for x axis--------------------------
+    function xtimecolor(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
 
 %%---------------------------------Auto Amplitude Axis---------------------------------*
     function yscale_auto( src, ~ )
@@ -536,11 +667,7 @@ varargout{1} = MVPC_plotset_box;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex==1
-            observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
-        end
+        
         estudioworkingmemory('MVPC_plotset',1);
         MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
@@ -554,6 +681,61 @@ varargout{1} = MVPC_plotset_box;
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
+    end
+
+%%------------------------precision for y axis-----------------------------
+    function yticksprecison(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+%%----------------------------font for y axis------------------------------
+    function yaxisfont(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+%%------------------------font size fort  y axis---------------------------
+    function yaxisfontsize(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+%%-----------------------text color for y axis-----------------------------
+    function yaxisfontcolor(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
     end
 
 
@@ -635,11 +817,6 @@ varargout{1} = MVPC_plotset_box;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex==1
-            observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
-        end
         
         estudioworkingmemory('MVPC_plotset',0);
         MVPC_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
@@ -653,20 +830,18 @@ varargout{1} = MVPC_plotset_box;
         %
         %%------------------------------time range-------------------------
         MVPC_plotset.timet_auto.Value=MVPC_plotset.paras{1};
-        MVPC_plotset.timetick_auto.Value=MVPC_plotset.paras{2};
-        
-        MVPC_plotset_pars =  estudioworkingmemory('MVPC_plotset_pars');
+        MVPC_plotset.timetick_auto.Value=MVPC_plotset.paras{3};
         timelowdef = observe_DECODE.MVPC.times(1);
         timehighdef= observe_DECODE.MVPC.times(end);
         [def xtickstepdef]= default_time_ticks_decode(observe_DECODE.MVPC, [timelowdef,timehighdef]);
-        if MVPC_plotset.timet_auto_reset==1
+        if MVPC_plotset.timet_auto.Value==1
             Enablerange = 'off';
             timelow = timelowdef;
             timehigh = timehighdef;
         else
             Enablerange = 'on';
             try
-                timerange = MVPC_plotset_pars{1};
+                timerange = MVPC_plotset.paras{2};
                 timelow = timerange(1);
                 timehigh = timerange(2);
             catch
@@ -679,7 +854,7 @@ varargout{1} = MVPC_plotset_box;
             Enablerange1 = 'off';
         else
             try
-                xtickstep = MVPC_plotset_pars{2};
+                xtickstep = MVPC_plotset.paras{4};
             catch
                 xtickstep = xtickstepdef;
             end
@@ -705,22 +880,35 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.timet_low.String = num2str(timelow);
         MVPC_plotset.timet_high.String = num2str(timehigh);
         MVPC_plotset.timet_step.String =  num2str(xtickstep);
-        MVPC_plotset_pars{1} = [timelow,timehigh];
-        MVPC_plotset_pars{2}= xtickstep;
+        %%precision for x axis
+        try xticks_precision = MVPC_plotset.paras{5}; catch xticks_precision=1; end
+        if isempty(xticks_precision) || numel(xticks_precision)~=1 || any(xticks_precision(:)<1) || any(xticks_precision(:)>7)
+            xticks_precision=1;
+        end
+        MVPC_plotset.xticks_precision.Value = xticks_precision;
+        %%font for x axis
+        try xtimefont_custom=MVPC_plotset.paras{6}; catch  xtimefont_custom=1;end
+        if isempty(xtimefont_custom) || numel(xtimefont_custom)~=1 || any(xtimefont_custom(:)<1) || any(xtimefont_custom(:)>5)
+            xtimefont_custom=1;
+        end
+        MVPC_plotset.xtimefont_custom.Value=xtimefont_custom;
+        %%font size for x axis
+        try xtimefontsize=MVPC_plotset.paras{7}; catch  xtimefontsize=5;end
+        if isempty(xtimefontsize) || numel(xtimefontsize)~=1 || any(xtimefontsize(:)<1) || any(xtimefontsize(:)>20)
+            xtimefontsize=5;
+        end
+        MVPC_plotset.xtimefontsize.Value = xtimefontsize;
+        %%text color for x axis
+        try xtimetextcolor=MVPC_plotset.paras{8}; catch  xtimetextcolor=1;end
+        if isempty(xtimetextcolor) || numel(xtimetextcolor)~=1 || any(xtimetextcolor(:)<1) || any(xtimetextcolor(:)>7)
+            xtimetextcolor=5;
+        end
+        MVPC_plotset.xtimetextcolor.Value = xtimetextcolor;
+        
         %
         %%------------------------Amplitude Axis----------------------------------
-        MVPC_plotset.yscale_auto.Value = MVPC_plotset.paras{3};
-        MVPC_plotset.ytick_auto.Value = MVPC_plotset.paras{4};
-        BinArray= estudioworkingmemory('ERP_BinArray');
-        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_DECODE.MVPC.nbin)
-            BinArray = [1:observe_DECODE.MVPC.nbin];
-            estudioworkingmemory('ERP_BinArray',BinArray);
-        end
-        ChanArray=estudioworkingmemory('ERP_ChanArray');
-        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_DECODE.MVPC.nchan)
-            ChanArray = [1:observe_DECODE.MVPC.nchan];
-            estudioworkingmemory('ERP_ChanArray',ChanArray);
-        end
+        MVPC_plotset.yscale_auto.Value = MVPC_plotset.paras{9};
+        MVPC_plotset.ytick_auto.Value = MVPC_plotset.paras{11};
         
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
@@ -740,20 +928,16 @@ varargout{1} = MVPC_plotset_box;
             minydef=0;
             maxydef=1;
         end
-        try Yscale = MVPC_plotset_pars{3}; catch Yscale=[]; end
+        
+        try Yscale = MVPC_plotset.paras{10}; catch Yscale=[]; end
         try Yscales_low = Yscale(1);catch Yscales_low=[];end
         try Yscales_high = Yscale(2);catch Yscales_high=[];end
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             MVPC_plotset.yscale_low.String = str2num(minydef);
             Yscales_low= minydef;
-            msgboxText = 'Plotting MVPCsets> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ';
-            titlNamerro = 'Warning for Pattern Classification Tab';
-            estudio_warning(msgboxText,titlNamerro);
         end
         if isempty(Yscales_high) || numel(Yscales_high)~=1
             MVPC_plotset.yscale_high.String = str2num(maxydef);
-            Yscales_high= maxydef;
-            
         end
         if any(Yscales_high<=Yscales_low)
             MVPC_plotset.yscale_low.String = str2num(minydef);
@@ -773,11 +957,9 @@ varargout{1} = MVPC_plotset_box;
         end
         MVPC_plotset.yscale_low.String = num2str(Yscales_low);
         MVPC_plotset.yscale_high.String = num2str(Yscales_high);
-        MVPC_plotset_pars{3} = [Yscales_low,Yscales_high];
-        
         
         if MVPC_plotset.ytick_auto.Value==1
-            Enableflag = 'off';
+            MVPC_plotset.yscale_step.Enable = 'off';
             defyticks = default_amp_ticks_viewer([Yscales_low,Yscales_high]);
             defyticks = str2num(defyticks);
             if ~isempty(defyticks) && numel(defyticks)>=2
@@ -786,15 +968,42 @@ varargout{1} = MVPC_plotset_box;
                 MVPC_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
             end
         else
-            Enableflag = 'on';
-            yscale= MVPC_plotset_pars{4};
+            MVPC_plotset.yscale_step.Enable= 'on';
+            yscale= MVPC_plotset.paras{12};
             MVPC_plotset.yscale_step.String = num2str(yscale);
         end
-        MVPC_plotset.yscale_step.Enable = Enableflag;
+        %%precision for y axis
+        try yticks_precision = MVPC_plotset.paras{13}; catch yticks_precision=1; end
+        if isempty(yticks_precision) || numel(yticks_precision)~=1 || any(yticks_precision(:)<1) || any(yticks_precision(:)>7)
+            yticks_precision=1;
+        end
+        MVPC_plotset.yticks_precision.Value=yticks_precision;
+        
+        
+        %%font for y axis
+        try yfont_custom=MVPC_plotset.paras{14}; catch  yfont_custom=1;end
+        if isempty(yfont_custom) || numel(yfont_custom)~=1 || any(yfont_custom(:)<1) || any(yfont_custom(:)>5)
+            yfont_custom=1;
+        end
+        MVPC_plotset.yfont_custom.Value=yfont_custom;
+        %%font size for y axis
+        try yfont_custom_size=MVPC_plotset.paras{15}; catch  yfont_custom_size=5;end
+        if isempty(yfont_custom_size) || numel(yfont_custom_size)~=1 || any(yfont_custom_size(:)<1) || any(yfont_custom_size(:)>20)
+            yfont_custom_size=5;
+        end
+        MVPC_plotset.yfont_custom_size.Value = yfont_custom_size;
+        %%text color for y axis
+        try ytextcolor=MVPC_plotset.paras{16}; catch  ytextcolor=1;end
+        if isempty(ytextcolor) || numel(ytextcolor)~=1 || any(ytextcolor(:)<1) || any(ytextcolor(:)>7)
+            ytextcolor=5;
+        end
+        MVPC_plotset.ytextcolor.Value = ytextcolor;
+        
+        
         
         
         %%-------SEM----------
-        try SMEFlag = MVPC_plotset_pars{11};catch SMEFlag = [0 1 0.2];end
+        try SMEFlag = MVPC_plotset.paras{17};catch SMEFlag = [0 2 3];end
         try show_SEM = SMEFlag(1);catch show_SEM=0; end
         if isempty(show_SEM) || numel(show_SEM)~=1 ||(show_SEM~=0&& show_SEM~=1)
             show_SEM=0;
@@ -808,26 +1017,44 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.SEMtrans_custom.Enable = 'off';
         end
         
-        try SEM_custom = SMEFlag(2);catch SEM_custom = SMEFlag(2); end
-        if isempty(SEM_custom)|| numel(SEM_custom)~=1 || any(SEM_custom<0) || any(SEM_custom>10)
-            SEM_custom=1;
+        try SEM_custom = SMEFlag(2);catch SEM_custom = 2; end
+        if isempty(SEM_custom)|| numel(SEM_custom)~=1 || any(SEM_custom<0) || any(SEM_custom>11)
+            SEM_custom=2;
         end
-        MVPC_plotset.SEM_custom.Value = SEM_custom+1;
+        MVPC_plotset.SEM_custom.Value = SEM_custom;
         
-        try SEMtrans_custom = SMEFlag(3);catch SEMtrans_custom = SMEFlag(3); end
-        if isempty(SEMtrans_custom)|| numel(SEMtrans_custom)~=1 || any(SEMtrans_custom<0) || any(SEMtrans_custom>1)
-            SEMtrans_custom=0.2;
+        try SEMtrans_custom = SMEFlag(3);catch SEMtrans_custom = 3; end
+        if isempty(SEMtrans_custom)|| numel(SEMtrans_custom)~=1 || any(SEMtrans_custom<0) || any(SEMtrans_custom>11)
+            SEMtrans_custom=3;
         end
-        MVPC_plotset.SEMtrans_custom.Value = SEMtrans_custom*10+1;
-        if MVPC_plotset.show_SEM.Value == 1
-            SEM_custom = MVPC_plotset.SEM_custom.Value-1;
-            SEMtrans_custom = (MVPC_plotset.SEMtrans_custom.Value-1)/10;
-            MVPC_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
-        else
-            MVPC_plotset_pars{11} = [0,MVPC_plotset.SEM_custom.Value-1,(MVPC_plotset.SEMtrans_custom.Value-1)/10];
-        end
+        MVPC_plotset.SEMtrans_custom.Value = SEMtrans_custom;
         
-        estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
+        try chanceline = MVPC_plotset.paras{18}; catch  chanceline=0; end
+        if isempty(chanceline) || numel(chanceline)~=1 || (chanceline~=0 && chanceline~=1)
+            chanceline=0;
+        end
+        MVPC_plotset.chanceline.Value = chanceline;
+        
+        MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
+        MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
+        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
+        MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
+        MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
+        MVPC_plotset.paras{7} = MVPC_plotset.xtimefontsize.Value; %%fontsize for x axis
+        MVPC_plotset.paras{8} = MVPC_plotset.xtimetextcolor.Value;%%text color for x axis
+        MVPC_plotset.paras{9} =MVPC_plotset.yscale_auto.Value;
+        MVPC_plotset.paras{10} = [str2num(MVPC_plotset.yscale_low.String),str2num(MVPC_plotset.yscale_high.String)];
+        MVPC_plotset.paras{11} =MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{12} =str2num(MVPC_plotset.yscale_step.String);
+        MVPC_plotset.paras{13} =MVPC_plotset.yticks_precision.Value;
+        MVPC_plotset.paras{14} =MVPC_plotset.yfont_custom.Value;
+        MVPC_plotset.paras{15} =MVPC_plotset.yfont_custom_size.Value;
+        MVPC_plotset.paras{16} =MVPC_plotset.ytextcolor.Value;
+        MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
+        MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
+        estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset.paras);
+        
         observe_DECODE.Process_messg =2;
     end
 
@@ -848,8 +1075,6 @@ varargout{1} = MVPC_plotset_box;
         
         estudioworkingmemory('f_decode_proces_messg','Plotting MVPCsets>Apply');
         observe_DECODE.Process_messg =1;
-        MVPC_plotset.timet_auto_reset = MVPC_plotset.timet_auto.Value;
-        MVPC_plotset.timeticks_auto_reset = MVPC_plotset.yscale_auto.Value;
         %
         %%time range
         timeStartdef = observe_DECODE.MVPC.times(1);
@@ -884,7 +1109,6 @@ varargout{1} = MVPC_plotset_box;
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
-        MVPC_plotset_pars{1} = [timeStart,timEnd];
         
         xtickstep = str2num(MVPC_plotset.timet_step.String);
         if isempty(xtickstep) || numel(xtickstep)~=1 ||  any(xtickstep<=0)
@@ -894,11 +1118,8 @@ varargout{1} = MVPC_plotset_box;
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
-        MVPC_plotset_pars{2} = xtickstep;
-        
         %
         %%Amplitude Axis
-        
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -942,26 +1163,31 @@ varargout{1} = MVPC_plotset_box;
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
-        MVPC_plotset_pars{3} = [Yscales_low,Yscales_high];
-        MVPC_plotset_pars{4} = str2num(MVPC_plotset.yscale_step.String);
-        
-        SEM_custom = MVPC_plotset.SEM_custom.Value-1;
-        SEMtrans_custom = (MVPC_plotset.SEMtrans_custom.Value-1)/10;
         if MVPC_plotset.show_SEM.Value == 1
             MVPC_plotset.SEM_custom.Enable = 'on';
             MVPC_plotset.SEMtrans_custom.Enable = 'on';
-            SEM_custom = MVPC_plotset.SEM_custom.Value-1;
-            SEMtrans_custom = (MVPC_plotset.SEMtrans_custom.Value-1)/10;
-            MVPC_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
         else
-            MVPC_plotset_pars{11} = [0,SEM_custom,SEMtrans_custom];
         end
-        estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);%%save the changed paras to memory file
-        
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
-        MVPC_plotset.paras{2} = MVPC_plotset.timetick_auto.Value;
-        MVPC_plotset.paras{3} = MVPC_plotset.yscale_auto.Value;
-        MVPC_plotset.paras{4} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
+        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
+        MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
+        MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
+        MVPC_plotset.paras{7} = MVPC_plotset.xtimefontsize.Value; %%fontsize for x axis
+        MVPC_plotset.paras{8} = MVPC_plotset.xtimetextcolor.Value;%%text color for x axis
+        MVPC_plotset.paras{9} =MVPC_plotset.yscale_auto.Value;
+        MVPC_plotset.paras{10} = [str2num(MVPC_plotset.yscale_low.String),str2num(MVPC_plotset.yscale_high.String)];
+        MVPC_plotset.paras{11} =MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{12} =str2num(MVPC_plotset.yscale_step.String);
+        MVPC_plotset.paras{13} =MVPC_plotset.yticks_precision.Value;
+        MVPC_plotset.paras{14} =MVPC_plotset.yfont_custom.Value;
+        MVPC_plotset.paras{15} =MVPC_plotset.yfont_custom_size.Value;
+        MVPC_plotset.paras{16} =MVPC_plotset.ytextcolor.Value;
+        MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
+        MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
+        estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset.paras);
+        
         observe_DECODE.Count_currentMVPC=1;
     end
 
@@ -970,7 +1196,6 @@ varargout{1} = MVPC_plotset_box;
         if observe_DECODE.Count_currentMVPC~=3
             return;
         end
-        
         ViewerFlag=estudioworkingmemory('ViewerFlag');%%when open advanced wave viewer
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
@@ -990,7 +1215,14 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.yscale_high.Enable =enbaleflag;
         MVPC_plotset.ytick_auto.Enable =enbaleflag;
         MVPC_plotset.yscale_step.Enable =enbaleflag;
-        
+        MVPC_plotset.xticks_precision.Enable =enbaleflag;
+        MVPC_plotset.xtimefont_custom.Enable =enbaleflag;
+        MVPC_plotset.xtimefontsize.Enable =enbaleflag;
+        MVPC_plotset.xtimetextcolor.Enable =enbaleflag;
+        MVPC_plotset.yticks_precision.Enable =enbaleflag;
+        MVPC_plotset.yfont_custom.Enable =enbaleflag;
+        MVPC_plotset.yfont_custom_size.Enable =enbaleflag;
+        MVPC_plotset.ytextcolor.Enable =enbaleflag;
         MVPC_plotset.SEM_custom.Enable = enbaleflag;
         MVPC_plotset.SEMtrans_custom.Enable = enbaleflag;
         MVPC_plotset.show_SEM.Enable = enbaleflag;
@@ -1025,7 +1257,6 @@ varargout{1} = MVPC_plotset_box;
             timeStart = observe_DECODE.MVPC.times(1);
             timEnd = observe_DECODE.MVPC.times(end);
         end
-        MVPC_plotset_pars{1} = [timeStart,timEnd];
         [def xstep]= default_time_ticks_decode(observe_DECODE.MVPC, [timeStart,timEnd]);
         if MVPC_plotset.timetick_auto.Value==1
             MVPC_plotset.timet_step.String = num2str(xstep);
@@ -1036,7 +1267,6 @@ varargout{1} = MVPC_plotset_box;
             xtickstep= xstep;
             MVPC_plotset.timet_step.String = num2str(xstep);
         end
-        MVPC_plotset_pars{2} = xtickstep;
         %
         %%Amplitude Axis
         %%Yscale
@@ -1049,7 +1279,6 @@ varargout{1} = MVPC_plotset_box;
         end
         
         [def, minydef, maxydef] = default_amp_ticks_decode(observe_DECODE.ALLMVPC(MVPCArray));
-        
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
                 minydef=0;
@@ -1075,14 +1304,12 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
         end
-        
         if any(Yscales_high<=Yscales_low)
             MVPC_plotset.yscale_low.String = num2str(minydef);
             Yscales_low= minydef;
             MVPC_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
         end
-        MVPC_plotset_pars{3} = [Yscales_low,Yscales_high];
         
         if MVPC_plotset.ytick_auto.Value==1
             defyticks = default_amp_ticks_viewer([Yscales_low,Yscales_high]);
@@ -1094,9 +1321,6 @@ varargout{1} = MVPC_plotset_box;
             end
             MVPC_plotset.yscale_step.Enable = 'off';
         end
-        
-        MVPC_plotset_pars{4} = str2num(MVPC_plotset.yscale_step.String);
-        
         if isempty(observe_DECODE.MVPC.stderror)
             MVPC_plotset.show_SEM.Value=0;
             MVPC_plotset.show_SEM.Enable = 'off';
@@ -1104,27 +1328,34 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.show_SEM.Enable = 'on';
         end
         %%standard error
-        SEM_custom = MVPC_plotset.SEM_custom.Value-1;
-        SEMtrans_custom = (MVPC_plotset.SEMtrans_custom.Value-1)/10;
         if MVPC_plotset.show_SEM.Value == 1
             MVPC_plotset.SEM_custom.Enable = 'on';
             MVPC_plotset.SEMtrans_custom.Enable = 'on';
-            SEM_custom = MVPC_plotset.SEM_custom.Value-1;
-            SEMtrans_custom = (MVPC_plotset.SEMtrans_custom.Value-1)/10;
-            MVPC_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
         else
-            MVPC_plotset_pars{11} = [0,SEM_custom,SEMtrans_custom];
             MVPC_plotset.SEM_custom.Enable = 'off';
             MVPC_plotset.SEMtrans_custom.Enable = 'off';
         end
-        estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
-        MVPC_plotset.paras{2} = MVPC_plotset.timetick_auto.Value;
-        MVPC_plotset.paras{3} = MVPC_plotset.yscale_auto.Value;
-        MVPC_plotset.paras{4} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
+        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
+        MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
+        MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
+        MVPC_plotset.paras{7} = MVPC_plotset.xtimefontsize.Value; %%fontsize for x axis
+        MVPC_plotset.paras{8} = MVPC_plotset.xtimetextcolor.Value;%%text color for x axis
+        MVPC_plotset.paras{9} =MVPC_plotset.yscale_auto.Value;
+        MVPC_plotset.paras{10} = [str2num(MVPC_plotset.yscale_low.String),str2num(MVPC_plotset.yscale_high.String)];
+        MVPC_plotset.paras{11} =MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{12} =str2num(MVPC_plotset.yscale_step.String);
+        MVPC_plotset.paras{13} =MVPC_plotset.yticks_precision.Value;
+        MVPC_plotset.paras{14} =MVPC_plotset.yfont_custom.Value;
+        MVPC_plotset.paras{15} =MVPC_plotset.yfont_custom_size.Value;
+        MVPC_plotset.paras{16} =MVPC_plotset.ytextcolor.Value;
+        MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
+        MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;MVPC_plotset_pars = MVPC_plotset.paras;
+        estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
         observe_DECODE.Count_currentMVPC=4;
     end
-
 
 %%--------------press return to execute "Apply"----------------------------
     function mvpc_plotsetting_presskey(hObject, eventdata)
@@ -1169,6 +1400,7 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.timet_high.String = '';
         end
         MVPC_plotset.timetick_auto.Value=1;
+        
         MVPC_plotset.ytick_auto.Value=1;
         MVPC_plotset.yscale_auto.Value=1;
         if ~isempty(observe_DECODE.MVPC)
@@ -1201,62 +1433,50 @@ varargout{1} = MVPC_plotset_box;
                 MVPC_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
             end
         else
-            xstep = [];
             MVPC_plotset.timet_step.String = '';
             MVPC_plotset.yscale_low.String = '';
             MVPC_plotset.yscale_high.String = '';
             MVPC_plotset.yscale_step.String  = '';
-            minydef = [];
-            maxydef = [];
         end
         MVPC_plotset.yscale_low.Enable = 'off';
         MVPC_plotset.yscale_high.Enable = 'off';
         MVPC_plotset.yscale_step.Enable = 'off';
-        MVPC_plotset.positive_up.Value =1;
-        
-        try
-            MVPC_plotset_pars{1} = [observe_DECODE.MVPC.times(1),observe_DECODE.MVPC.times(end)];
-        catch
-            MVPC_plotset_pars{1} = [];
-        end
-        MVPC_plotset_pars{2} = xstep;
-        MVPC_plotset_pars{3} = [minydef,maxydef];
-        MVPC_plotset_pars{4} = str2num(MVPC_plotset.yscale_step.String);
-        MVPC_plotset_pars{6} =MVPC_plotset.positive_up.Value;
-        MVPC_plotset_pars{7} =0;
-        
-        try show_SEM = MVPC_plotset_pars{11};catch  show_SEM=[0,1,0.2];end;
-        try  MVPC_plotset.show_SEM.Value =show_SEM(1); catch  MVPC_plotset.show_SEM.Value=0; end;
-        
-        try SEM_custom = show_SEM(2); catch SEM_custom=1;  end
-        if isempty(SEM_custom) || numel(SEM_custom)~=1 || any(SEM_custom<0) || any(SEM_custom>10)
-            SEM_custom=1;
-        end
-        MVPC_plotset.SEM_custom.Value = SEM_custom+1;
-        
-        try SEMtrans_custom = show_SEM(3); catch SEMtrans_custom = 0.2; end
-        if isempty(SEMtrans_custom) || numel(SEMtrans_custom)~=1 || any(SEMtrans_custom<0) || any(SEMtrans_custom>1)
-            SEMtrans_custom=0.2;
-        end
-        MVPC_plotset.SEMtrans_custom.Value = SEMtrans_custom*10+1;
-        SEM_custom = MVPC_plotset.SEM_custom.Value-1;
-        SEMtrans_custom = (MVPC_plotset.SEMtrans_custom.Value-1)/10;
-        if MVPC_plotset.show_SEM.Value == 1
-            SEM_custom = MVPC_plotset.SEM_custom.Value-1;
-            SEMtrans_custom = (MVPC_plotset.SEMtrans_custom.Value-1)/10;
-            MVPC_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
-            MVPC_plotset.SEM_custom.Enable = 'on';
-            MVPC_plotset.SEMtrans_custom.Enable = 'on';
-        else
-            MVPC_plotset_pars{11} = [0,SEM_custom,SEMtrans_custom];
-            MVPC_plotset.SEM_custom.Enable = 'off';
-            MVPC_plotset.SEMtrans_custom.Enable = 'off';
-        end
-        
+        MVPC_plotset.xticks_precision.Value=1;
+        MVPC_plotset.xtimefont_custom.Value =1;
+        MVPC_plotset.xtimefontsize.Value =5;
+        MVPC_plotset.xtimetextcolor.Value =1;
+        %%-------x axis---------
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
-        MVPC_plotset.paras{2} = MVPC_plotset.timetick_auto.Value;
-        MVPC_plotset.paras{3} = MVPC_plotset.yscale_auto.Value;
-        MVPC_plotset.paras{4} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
+        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
+        MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
+        MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
+        MVPC_plotset.paras{7} = MVPC_plotset.xtimefontsize.Value; %%fontsize for x axis
+        MVPC_plotset.paras{8} = MVPC_plotset.xtimetextcolor.Value;%%text color for x axis
+        %%--------y axis--------
+        MVPC_plotset.paras{9} =MVPC_plotset.yscale_auto.Value;
+        MVPC_plotset.paras{10} = [str2num(MVPC_plotset.yscale_low.String),str2num(MVPC_plotset.yscale_high.String)];
+        MVPC_plotset.paras{11} =MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{12} =str2num(MVPC_plotset.yscale_step.String);
+        MVPC_plotset.yticks_precision.Value =1;
+        MVPC_plotset.yfont_custom.Value =1;
+        MVPC_plotset.yfont_custom_size.Value =5;
+        MVPC_plotset.ytextcolor.Value =1;
+        MVPC_plotset.paras{13} =MVPC_plotset.yticks_precision.Value;
+        MVPC_plotset.paras{14} =MVPC_plotset.yfont_custom.Value;
+        MVPC_plotset.paras{15} =MVPC_plotset.yfont_custom_size.Value;
+        MVPC_plotset.paras{16} =MVPC_plotset.ytextcolor.Value;
+        %%standard error of mean
+        MVPC_plotset.show_SEM.Value =0;
+        MVPC_plotset.SEM_custom.Value = 2;
+        MVPC_plotset.SEMtrans_custom.Value = 3;
+        MVPC_plotset.SEM_custom.Enable = 'off';
+        MVPC_plotset.SEMtrans_custom.Enable = 'off';
+        MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
+        MVPC_plotset.chanceline.Value=0;
+        MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
+        MVPC_plotset_pars = MVPC_plotset.paras;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
         observe_DECODE.Reset_MVPC_paras_panel=4;
     end

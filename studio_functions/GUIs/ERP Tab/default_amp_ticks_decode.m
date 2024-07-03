@@ -44,7 +44,7 @@ miny = min(ymin(:));
 maxy = max(ymax(:))*1.1;
 if isempty(miny) || isempty(maxy)
     miny  = 0;
-    maxy  = 0;
+    maxy  = 1;
     return
 end
 if isempty(yrange)
@@ -54,5 +54,7 @@ end
 if numel(unique(yrange))==1 || numel(yrange)==1 || (yrange(1)>=yrange(2))
     yrange = [0 1];
 end
-
+yrange = roundn(yrange,-2);
+miny = round(miny,2);
+maxy = round(maxy,2);
 def= default_amp_ticks_viewer(yrange);
