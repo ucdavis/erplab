@@ -425,14 +425,14 @@ varargout{1} = EEG_basecorr_detrend_box;
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-            if roundn(BaselineMethod(2),-3) > roundn(observe_EEGDAT.EEG.times(end),-3)
+            if round(BaselineMethod(2),3) > round(observe_EEGDAT.EEG.times(end),3)
                 msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-            if roundn(BaselineMethod(1),-3) < roundn(observe_EEGDAT.EEG.times(1),-3)
+            if round(BaselineMethod(1),3) < round(observe_EEGDAT.EEG.times(1),3)
                 msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);

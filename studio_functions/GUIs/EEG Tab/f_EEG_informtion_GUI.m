@@ -150,7 +150,7 @@ drawui_EEG_info(FonsizeDefault);
         end
         EEG = observe_EEGDAT.EEG;
         if ~isempty(EEG)
-            EEG_time_resolution = strcat(num2str(EEG.srate),32,'Hz',32,'(',num2str(roundn(1000/EEG.srate,-2)),32,'ms /sample)');
+            EEG_time_resolution = strcat(num2str(EEG.srate),32,'Hz',32,'(',num2str(round(1000/EEG.srate,2)),32,'ms /sample)');
         else
             EEG_time_resolution = strcat('');
         end
@@ -231,7 +231,7 @@ drawui_EEG_info(FonsizeDefault);
             if N_trial_total ==0
                 Total_rejected_trials = ['Total rejected trials:',32,'0 (0%)'];
             else
-                Total_rejected_trials = strcat([num2str(N_trial_rejected),32,'(',num2str(roundn(N_trial_rejected/N_trial_total,-3)*100),'%)']);
+                Total_rejected_trials = strcat([num2str(N_trial_rejected),32,'(',num2str(round(N_trial_rejected/N_trial_total,3)*100),'%)']);
             end
             gui_EEG_info.total_rejected_percentage.String = ['Total rejected trials:',32,Total_rejected_trials];
             Enable_label = 'on';

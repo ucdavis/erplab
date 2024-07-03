@@ -204,7 +204,7 @@ else%%If any of bins, channels, samples varies across the selected ERPsets.
         
         ERP_sg =  ALLERP(ERPsetArray(ERPselectIndex));%%The information for individual subject
         ERPdata(1:chanNum_mp(ERPselectIndex),:,1:BinNum_mp(ERPselectIndex),ERPselectIndex) = ERP_sg.bindata;
-        if isequal(ERP_sg.bindataa,ERP_sg.binerror)
+        if isequal(ERP_sg.bindata,ERP_sg.binerror)
             errordata =  ERP_sg.binerror;
         else
             errordata=[];
