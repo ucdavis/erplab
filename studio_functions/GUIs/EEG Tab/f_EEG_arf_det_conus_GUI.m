@@ -691,7 +691,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         if any(lowfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
             Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
-            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The lowest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The lowest frequency should be smaller than',32,num2str(round(observe_EEGDAT.EEG.srate/2,2))];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -735,7 +735,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
         if any(highfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
             Eegtab_EEG_art_det_conus.highfre_edit.String = '';
-            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The highest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The highest frequency should be smaller than',32,num2str(round(observe_EEGDAT.EEG.srate/2,2))];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -1249,7 +1249,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             
             if any(lowfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
                 Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
-                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The lowest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The lowest frequency should be smaller than',32,num2str(round(observe_EEGDAT.EEG.srate/2,2))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
@@ -1271,7 +1271,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             end
             if any(highfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
                 Eegtab_EEG_art_det_conus.highfre_edit.String = '';
-                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The highest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The highest frequency should be smaller than',32,num2str(round(observe_EEGDAT.EEG.srate/2,2))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
@@ -1506,7 +1506,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             
             if any(lowfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
                 Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
-                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: The lowest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: The lowest frequency should be smaller than',32,num2str(round(observe_EEGDAT.EEG.srate/2,2))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =2;
@@ -1524,7 +1524,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             
             if any(highfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
                 Eegtab_EEG_art_det_conus.highfre_edit.String = '';
-                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: The highest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: The highest frequency should be smaller than',32,num2str(round(observe_EEGDAT.EEG.srate/2,2))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =2;

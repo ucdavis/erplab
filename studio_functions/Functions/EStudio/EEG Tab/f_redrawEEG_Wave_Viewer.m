@@ -1501,7 +1501,7 @@ end
 Colorgbwave = [];
 %%set the wave color for each channel
 if ~isempty(data)
-    ColorNamergb = roundn([255 0 7;186 85 255;255 192 0;0 238 237;0 78 255;0 197 0]/255,-3);
+    ColorNamergb = round([255 0 7;186 85 255;255 192 0;0 238 237;0 78 255;0 197 0]/255,3);
     Colorgb_chan = [];
     if ~isempty(dataeeg)
         chanNum = numel(ChanArray);
@@ -1520,8 +1520,7 @@ if ~isempty(data)
     end
     
     %%colors for ICs
-    %     Coloricrgb = roundn([211,211,211;169,169,16;128,128,128]/255,-3);
-    Coloricrgb = roundn([180 0 0;127 68 127;228 88 44;15 175 175;0 0 0;9 158 74]/255,-3);
+    Coloricrgb = round([180 0 0;127 68 127;228 88 44;15 175 175;0 0 0;9 158 74]/255,3);
     Colorgb_IC = [];
     if ~isempty(ICArray)
         ICNum = numel(ICArray);

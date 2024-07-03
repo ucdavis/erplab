@@ -542,7 +542,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         end
         temperiod = str2num(Eegtab_EEG_art_det_epoch.periods_edit.String);
         if isempty(temperiod) || numel(temperiod)~=2
-            temperiod = [roundn(observe_EEGDAT.EEG.times(1),-1),roundn(observe_EEGDAT.EEG.times(end),-1)];
+            temperiod = [round(observe_EEGDAT.EEG.times(1),1),round(observe_EEGDAT.EEG.times(end),1)];
             Eegtab_EEG_art_det_epoch.periods_edit.String = num2str(temperiod);
         end
         if Source.Value==1
@@ -1480,7 +1480,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.mflag8.Value];
         [~,Flagmarks] = find(mflag==1);
         
-        epochStart = roundn(observe_EEGDAT.EEG.times(1),-1); epochEnd = roundn(observe_EEGDAT.EEG.times(end),-1);
+        epochStart = round(observe_EEGDAT.EEG.times(1),1); epochEnd = round(observe_EEGDAT.EEG.times(end),1);
         %%test time period
         Testperiod = str2num(Eegtab_EEG_art_det_epoch.periods_edit.String);
         if isempty(Testperiod) || numel(Testperiod)~=2
@@ -1791,7 +1791,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         temperiod = str2num(Eegtab_EEG_art_det_epoch.periods_edit.String);
         if isempty(temperiod) || numel(temperiod)~=2
-            temperiod = [roundn(observe_EEGDAT.EEG.times(1),-1),roundn(observe_EEGDAT.EEG.times(end),-1)];
+            temperiod = [round(observe_EEGDAT.EEG.times(1),1),round(observe_EEGDAT.EEG.times(end),1)];
             Eegtab_EEG_art_det_epoch.periods_edit.String = num2str(temperiod);
         end
         algValue =Eegtab_EEG_art_det_epoch.det_algo.Value;

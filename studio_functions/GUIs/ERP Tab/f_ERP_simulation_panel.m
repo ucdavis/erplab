@@ -2294,8 +2294,8 @@ varargout{1} = ERP_simulation_box;
         if ~isempty(ERP)
             Times= ERP.times;
         end
-        [x1,y1]  = find(roundn(Times,-3)==roundn(EpochStart,-3));
-        [x2,y2]  = find(roundn(Times,-3)==roundn(EpochStop,-3));
+        [x1,y1]  = find(round(Times,-3)==round(EpochStart,-3));
+        [x2,y2]  = find(round(Times,-3)==round(EpochStop,-3));
         if isempty(y1) || isempty(y2)
             msgboxText = 'Create Artificial ERP Waveform> The exact time periods you have specified cannot be exactly created with the specified sampling rate. We will round to the nearest possible time values when the ERPset is created.';
             titlNamerro = 'Warning for ERP Tab';

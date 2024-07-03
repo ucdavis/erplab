@@ -258,16 +258,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
             if isempty(Winlength)|| Winlength<=0 ||  (Winlength>floor(Frames/multiplier_winleg))
                 Winlength = floor(Frames/multiplier_winleg);
-                %                 msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
-                %                 titlNamerro = 'Warning for EEG Tab';
-                %                 estudio_warning(msgboxText,titlNamerro);
             end
         else
             if isempty(Winlength)|| Winlength<=0 || numel(Winlength)~=1
                 Winlength = 5;
-                %                 msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
-                %                 titlNamerro = 'Warning for EEG Tab';
-                %                 estudio_warning(msgboxText,titlNamerro);
             end
         end
         Source.String = num2str(Winlength);

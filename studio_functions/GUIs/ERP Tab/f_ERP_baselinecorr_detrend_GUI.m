@@ -420,13 +420,13 @@ varargout{1} = ERP_basecorr_detrend_box;
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            if roundn(BaselineMethod(2),-3) > roundn(observe_ERPDAT.ERP.times(end),-3)
+            if round(BaselineMethod(2),3) > round(observe_ERPDAT.ERP.times(end),3)
                 msgboxText =  ['Baseline Correction & Linear Detrend - Second value must be smaller than',32,num2str(observe_ERPDAT.ERP.times(end))];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            if roundn(BaselineMethod(1),-3) < roundn(observe_ERPDAT.ERP.times(1),-3)
+            if round(BaselineMethod(1),3) < round(observe_ERPDAT.ERP.times(1),3)
                 msgboxText =  ['Baseline Correction & Linear Detrend - First value must be larger than',32,num2str(observe_ERPDAT.ERP.times(1))];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);

@@ -152,13 +152,13 @@ drawui_erp_information(FonsizeDefault);
         
         ERP = observe_ERPDAT.ERP;
         if ~isempty(ERP)
-            ERP_time_resolution = strcat('Sampling:',32,num2str(ERP.srate),32,'Hz',32,'(',num2str(roundn(1000/ERP.srate,-2)),32,'ms/sample)');
+            ERP_time_resolution = strcat('Sampling:',32,num2str(ERP.srate),32,'Hz',32,'(',num2str(round(1000/ERP.srate,2)),32,'ms/sample)');
         else
             ERP_time_resolution = strcat('Sampling: ');
         end
         gui_erp_information.samplingrate_resolution.String = [ERP_time_resolution];
         try
-            gui_erp_information.epoch_name.String=strcat('Epoch:',32,num2str(roundn(ERP.times(1),-2)),32,'to',32,num2str(roundn(ERP.times(end),-2)),32,...
+            gui_erp_information.epoch_name.String=strcat('Epoch:',32,num2str(round(ERP.times(1),2)),32,'to',32,num2str(round(ERP.times(end),2)),32,...
                 'ms (',num2str(numel(ERP.times)),32,'pnts)');
         catch
             gui_erp_information.epoch_name.String=['Epoch:'];
@@ -209,7 +209,7 @@ drawui_erp_information(FonsizeDefault);
             if N_trial_total ==0
                 Total_rejected_trials = strcat('Total rejected trials: 0 (0)');
             else
-                Total_rejected_trials = strcat('Total rejected trials:',32,[num2str(N_trial_rejected),32,'(',num2str(roundn(N_trial_rejected/N_trial_total,-3)*100),'%)']);
+                Total_rejected_trials = strcat('Total rejected trials:',32,[num2str(N_trial_rejected),32,'(',num2str(round(N_trial_rejected/N_trial_total,3)*100),'%)']);
             end
             gui_erp_information.total_rejected_percentage.String = Total_rejected_trials;
             Enable_label = 'on';

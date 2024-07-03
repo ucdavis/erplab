@@ -966,7 +966,7 @@ varargout{1} = ERP_filtering_box;
                 
                 gui_erp_filtering.lp_halfamp.String = num2str(hicutoff);
                 gui_erp_filtering.lp_halfamp.Enable = 'off';
-                gui_erp_filtering.hp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+                gui_erp_filtering.hp_halfpow.String = num2str(round(frec3dB(1),2));
                 gui_erp_filtering.lp_halfpow.String = '---';
             end
             %%Low pass filtering
@@ -979,7 +979,7 @@ varargout{1} = ERP_filtering_box;
                 gui_erp_filtering.lp_halfamp.Enable = 'on';
                 gui_erp_filtering.hp_halfamp.String = num2str(locutoff);
                 gui_erp_filtering.hp_halfamp.Enable = 'off';
-                gui_erp_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+                gui_erp_filtering.lp_halfpow.String = num2str(round(frec3dB(1),-2));
                 gui_erp_filtering.hp_halfpow.String = '---';
                 
             end
@@ -993,8 +993,8 @@ varargout{1} = ERP_filtering_box;
                 gui_erp_filtering.hp_halfamp.Enable = 'on';
                 gui_erp_filtering.lp_halfamp.String = num2str(hicutoff);
                 gui_erp_filtering.lp_halfamp.Enable = 'on';
-                gui_erp_filtering.hp_halfpow.String = num2str(roundn(frec3dB(2),-2));
-                gui_erp_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+                gui_erp_filtering.hp_halfpow.String = num2str(round(frec3dB(2),2));
+                gui_erp_filtering.lp_halfpow.String = num2str(round(frec3dB(1),2));
             end
         end%%setting end for IIR butter filter
         %%*************Filter the selected ERPsets***************************
@@ -1277,7 +1277,7 @@ varargout{1} = ERP_filtering_box;
                 hp_halfamp_enable = 'on';
                 lowpass_toggle_value = 0;
                 lp_halfamp_Enable = 'off';
-                hp_halfpow_string =num2str(roundn(frec3dB(1),-2));
+                hp_halfpow_string =num2str(round(frec3dB(1),2));
                 lp_halfpow_string ='---';
             end
             %%Low pass filtering
@@ -1286,17 +1286,17 @@ varargout{1} = ERP_filtering_box;
                 hp_halfamp_enable = 'off';
                 lowpass_toggle_value = 1;
                 lp_halfamp_Enable = 'on';
-                lp_halfpow_string =num2str(roundn(frec3dB,-2));
+                lp_halfpow_string =num2str(round(frec3dB,2));
                 hp_halfpow_string ='---';
             end
             %%Band pass filtering or notch filtering
             if locutoff >0 && hicutoff>0
                 highpass_toggle_value = 1;
                 hp_halfamp_enable = 'on';
-                hp_halfpow_string =num2str(roundn(frec3dB(2),-2));
+                hp_halfpow_string =num2str(round(frec3dB(2),2));
                 lowpass_toggle_value = 1;
                 lp_halfamp_Enable = 'on';
-                lp_halfpow_string =num2str(roundn(frec3dB(1),-2));
+                lp_halfpow_string =num2str(round(frec3dB(1),2));
             end
             
             if locutoff==0 && hicutoff==0
@@ -1386,7 +1386,7 @@ varargout{1} = ERP_filtering_box;
         filterorder = 2*gui_erp_filtering.roll_off.Value;
         [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
         gui_erp_filtering.hp_halfpow.String = '---';
-        gui_erp_filtering.lp_halfpow.String = num2str(roundn(frec3dB,-2));
+        gui_erp_filtering.lp_halfpow.String = num2str(round(frec3dB,-2));
         gui_erp_filtering.hp_halfamp.Enable = 'off';
         gui_erp_filtering.lp_halfamp.Enable = 'on';
         gui_erp_filtering.hp_halfamp.String = '0';
