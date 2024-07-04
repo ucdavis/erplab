@@ -212,14 +212,18 @@ varargout{1} = MVPC_plotset_box;
         
         %%cancel & apply
         MVPC_plotset.reset_apply = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
+        %         uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
         MVPC_plotset.plot_reset = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
             'String','Cancel','callback',@plot_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
+        MVPC_plotset.plot_ops = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
+            'String','Option','callback',@plot_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        
+        %         uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
         MVPC_plotset.plot_apply = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
             'String','Apply','callback',@plot_setting_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
-        set(MVPC_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
+        %         uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
+        %         set(MVPC_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
+        
         set(MVPC_plotset.plotop, 'Sizes', [20 20 20 20 20 20 20 25 25 20 20 20 20 20 20 30]);
         
         estudioworkingmemory('MVPC_plotset',0);
@@ -241,6 +245,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         if src.Value == 1
             MVPC_plotset.timet_low.Enable = 'off';
             MVPC_plotset.timet_high.Enable = 'off';
@@ -264,6 +270,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         xtixlk_min = str2num(src.String);
         xtixlk_max = str2num(MVPC_plotset.timet_high.String);
         if isempty(xtixlk_min)|| numel(xtixlk_min)~=1
@@ -280,7 +288,6 @@ varargout{1} = MVPC_plotset_box;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        
     end
 
 %%----------------------high interval of time ticks--------------------------------*
@@ -295,7 +302,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         xtixlk_min = str2num(MVPC_plotset.timet_low.String);
         xtixlk_max = str2num(src.String);
         if isempty(xtixlk_max) || numel(xtixlk_max)~=1
@@ -327,6 +335,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         if MVPC_plotset.timetick_auto.Value==1
             timeStart = str2num(MVPC_plotset.timet_low.String);
             if isempty(timeStart) || numel(timeStart)~=1 || timeStart>=observe_DECODE.MVPC.times(end) %%|| timeStart<observe_DECODE.MVPC.times(1)
@@ -375,10 +385,10 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         timeStart = str2num(MVPC_plotset.timet_low.String);
         timEnd = str2num(MVPC_plotset.timet_high.String);
-        
         if ~isempty(timeStart) && ~isempty(timEnd) && numel(timEnd)==1 && numel(timeStart) ==1 && timeStart < timEnd
             [def xtickstepdef]= default_time_ticks_decode(observe_DECODE.MVPC, [timEnd,timeStart]);
         else
@@ -405,6 +415,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 %%-------------------------font for x axis---------------------------------
@@ -419,6 +431,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 %%-------------------------fontsize for x axis-----------------------------
@@ -433,6 +447,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 %%--------------------------text color for x axis--------------------------
@@ -447,6 +463,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 
@@ -462,6 +480,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         if MVPC_plotset.yscale_auto.Value ==1
             MVPCArray= estudioworkingmemory('MVPCArray');
             if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
@@ -470,9 +490,7 @@ varargout{1} = MVPC_plotset_box;
                 observe_DECODE.CURRENTMVPC = MVPCArray;
                 estudioworkingmemory('MVPCArray',MVPCArray);
             end
-            
             [def, minydef, maxydef] = default_amp_ticks_decode(observe_DECODE.ALLMVPC(MVPCArray));
-            
             if ~isempty(minydef) && ~isempty(maxydef)
                 if minydef==maxydef
                     minydef=0;
@@ -505,7 +523,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -554,8 +573,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -611,8 +630,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -620,7 +639,6 @@ varargout{1} = MVPC_plotset_box;
             observe_DECODE.CURRENTMVPC = MVPCArray;
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
-        
         [def, minydef, maxydef] = default_amp_ticks_decode(observe_DECODE.ALLMVPC(MVPCArray));
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
@@ -667,13 +685,14 @@ varargout{1} = MVPC_plotset_box;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        
         estudioworkingmemory('MVPC_plotset',1);
         MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         val = str2num(src.String);
         if isempty(val)  || numel(val)~=1 || any(val(:)<=0)
             src.String = '';
@@ -695,6 +714,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 %%----------------------------font for y axis------------------------------
     function yaxisfont(~,~)
@@ -708,6 +729,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 %%------------------------font size fort  y axis---------------------------
@@ -722,6 +745,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 %%-----------------------text color for y axis-----------------------------
@@ -736,9 +761,11 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
-
+%%---------------------standard error of mean------------------------------
     function showSEM(Source,~)
         if isempty(observe_DECODE.MVPC)
             observe_DECODE.Count_currentMVPC=1;
@@ -755,7 +782,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         if Source.Value ==1
             MVPC_plotset.SEM_custom.Enable = 'on';
             MVPC_plotset.SEMtrans_custom.Enable = 'on';
@@ -765,6 +793,7 @@ varargout{1} = MVPC_plotset_box;
         end
     end
 
+%%-------------------------number of SD------------------------------------
     function SEMerror(~,~)
         if isempty(observe_DECODE.MVPC)
             observe_DECODE.Count_currentMVPC=1;
@@ -781,6 +810,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 
@@ -795,6 +826,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 %%---------------------------chance line-----------------------------------
@@ -809,6 +842,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
     end
 
 %%--------------Reset the parameters for plotting panel--------------------
@@ -817,14 +852,14 @@ varargout{1} = MVPC_plotset_box;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        
         estudioworkingmemory('MVPC_plotset',0);
         MVPC_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
         MVPC_plotset.plot_apply.ForegroundColor = [0 0 0];
         MVPC_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [1 1 1];
         MVPC_plotset.plot_reset.ForegroundColor = [0 0 0];
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 1 1 1];
+        MVPC_plotset.plot_ops.ForegroundColor = [0 0 0];
         estudioworkingmemory('f_decode_proces_messg','Plotting MVPCsets>Cancel');
         observe_DECODE.Process_messg =1;
         %
@@ -904,7 +939,6 @@ varargout{1} = MVPC_plotset_box;
             xtimetextcolor=5;
         end
         MVPC_plotset.xtimetextcolor.Value = xtimetextcolor;
-        
         %
         %%------------------------Amplitude Axis----------------------------------
         MVPC_plotset.yscale_auto.Value = MVPC_plotset.paras{9};
@@ -999,9 +1033,6 @@ varargout{1} = MVPC_plotset_box;
         end
         MVPC_plotset.ytextcolor.Value = ytextcolor;
         
-        
-        
-        
         %%-------SEM----------
         try SMEFlag = MVPC_plotset.paras{17};catch SMEFlag = [0 2 3];end
         try show_SEM = SMEFlag(1);catch show_SEM=0; end
@@ -1054,10 +1085,59 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset.paras);
-        
         observe_DECODE.Process_messg =2;
     end
 
+%%----------------------------------option---------------------------------
+    function plot_ops(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        estudioworkingmemory('MVPC_plotset',1);
+        MVPC_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_apply.ForegroundColor = [1 1 1];
+        MVPC_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        MVPC_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
+        MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
+        
+        MVPC_lineslegendops= estudioworkingmemory('MVPC_lineslegendops');
+        try Lineparas =  MVPC_lineslegendops{1}; catch  Lineparas = [];end
+        try legendparas=  MVPC_lineslegendops{2}; catch  legendparas = [];end
+        
+        MVPCArray= estudioworkingmemory('MVPCArray');
+        if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
+            MVPCArray = length(observe_DECODE.ALLMVPC);
+            observe_DECODE.MVPC = observe_DECODE.ALLMVPC(end);
+            observe_DECODE.CURRENTMVPC = MVPCArray;
+            estudioworkingmemory('MVPCArray',MVPCArray);
+        end
+        [serror, msgwrng] = f_checkmvpc( observe_DECODE.ALLMVPC,MVPCArray);
+        if serror==1 && ~isempty(msgwrng)
+            try legendparas{4} = '1'; catch   end
+        else
+            try legendparas{4} = num2str(ceil(sqrt(MVPCArray))); catch   end
+        end
+        
+        
+        app = feval('Decode_mvpc_line_legend_ops',Lineparas,legendparas);
+        waitfor(app,'Finishbutton',1);
+        try
+            MVPC_lineslegendops = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.1); %wait for app to leave
+        catch
+            return;
+        end
+        if isempty(MVPC_lineslegendops)
+            return;
+        end
+        
+        estudioworkingmemory('MVPC_lineslegendops',MVPC_lineslegendops);
+        
+    end
 
 %------------Apply current parameters in plotting panel to the selected ERPset---------
     function plot_setting_apply(~,~)
@@ -1072,7 +1152,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [1 1 1];
         MVPC_plotset.plot_reset.ForegroundColor = [0 0 0];
-        
+        MVPC_plotset.plot_ops.BackgroundColor =  [1 1 1];
+        MVPC_plotset.plot_ops.ForegroundColor = [0 0 0];
         estudioworkingmemory('f_decode_proces_messg','Plotting MVPCsets>Apply');
         observe_DECODE.Process_messg =1;
         %
@@ -1229,7 +1310,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.chanceline.Enable = enbaleflag;
         MVPC_plotset.plot_reset.Enable =enbaleflag;
         MVPC_plotset.plot_apply.Enable =enbaleflag;
-        
+        MVPC_plotset.plot_ops.Enable =enbaleflag;
         if isempty(observe_DECODE.ALLMVPC)|| isempty(observe_DECODE.MVPC)
             observe_DECODE.Count_currentMVPC =4;
             return;
@@ -1372,6 +1453,8 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
             MVPC_plotset.plot_reset.BackgroundColor =  [1 1 1];
             MVPC_plotset.plot_reset.ForegroundColor = [0 0 0];
+            MVPC_plotset.plot_ops.BackgroundColor =  [1 1 1];
+            MVPC_plotset.plot_ops.ForegroundColor = [0 0 0];
         else
             return;
         end
@@ -1389,6 +1472,8 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         MVPC_plotset.plot_reset.BackgroundColor =  [1 1 1];
         MVPC_plotset.plot_reset.ForegroundColor = [0 0 0];
+        MVPC_plotset.plot_ops.BackgroundColor =  [1 1 1];
+        MVPC_plotset.plot_ops.ForegroundColor = [0 0 0];
         MVPC_plotset.timet_auto.Value=1;
         MVPC_plotset.timet_low.Enable = 'off';
         MVPC_plotset.timet_high.Enable = 'off';

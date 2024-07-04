@@ -64,21 +64,21 @@ end
 estudioworkingmemory('Startimes',Startimes);
 
 %%Selected EEGsets from memory file
-EEGset_selected = estudioworkingmemory('EEGArray');
+EEGArray = estudioworkingmemory('EEGArray');
 if ~isempty(observe_EEGDAT.ALLEEG)  && ~isempty(observe_EEGDAT.EEG)
-    if isempty(EEGset_selected) || min(EEGset_selected(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGset_selected(:))>length(observe_EEGDAT.ALLEEG)
-        EEGset_selected =  length(observe_EEGDAT.ALLEEG) ;
-        estudioworkingmemory('EEGArray',EEGset_selected);
-        observe_EEGDAT.CURRENTSET = EEGset_selected;
-        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGset_selected);
+    if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:))>length(observe_EEGDAT.ALLEEG)
+        EEGArray =  length(observe_EEGDAT.ALLEEG) ;
+        estudioworkingmemory('EEGArray',EEGArray);
+        observe_EEGDAT.CURRENTSET = EEGArray;
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','ALLEEG', observe_EEGDAT.ALLEEG);
         assignin('base','CURRENTSET', observe_EEGDAT.CURRENTSET);
     end
-    [xpos,ypos] = find(EEGset_selected==observe_EEGDAT.CURRENTSET);
+    [xpos,ypos] = find(EEGArray==observe_EEGDAT.CURRENTSET);
     if ~isempty(ypos)
         pagecurrentNum = ypos;
-        pageNum = numel(EEGset_selected);
+        pageNum = numel(EEGArray);
         PageStr = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET).setname;
     else
         pageNum=1;
@@ -87,6 +87,7 @@ if ~isempty(observe_EEGDAT.ALLEEG)  && ~isempty(observe_EEGDAT.EEG)
     end
     Enableflag = 'on';
 else
+    EEGArray=1;
     pageNum=1;
     pagecurrentNum=1;
     PageStr = 'No EEG was loaded';
@@ -97,7 +98,7 @@ EEG_autoplot = EStudio_gui_erp_totl.EEG_autoplot;
 
 EStudio_gui_erp_totl.eegpageinfo_text.String=['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
 EStudio_gui_erp_totl.eegpageinfo_minus.Callback=@page_minus;
-set(EStudio_gui_erp_totl.eegpageinfo_edit,'String',num2str(pagecurrentNum),'Enable','on');
+set(EStudio_gui_erp_totl.eegpageinfo_edit,'String',num2str(EEGArray(pagecurrentNum)),'Enable','on');
 if EEG_autoplot ==0
     EStudio_gui_erp_totl.eegpageinfo_text.String='Plotting is disabled, to enable it, please go to "Plotting Options" at the bottom of the plotting area to active it.';
     Enableflag = 'off';
@@ -747,22 +748,24 @@ if ~isempty(messgStr)
     observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
 end
 
-Pagecurrent = str2num(Source.String);
+EEGindex = str2num(Source.String);
 
-EEGset_selected = estudioworkingmemory('EEGArray');
-if isempty(EEGset_selected)
-    EEGset_selected=observe_EEGDAT.CURRENTSET;
-    estudioworkingmemory('EEGArray',EEGset_selected);
+EEGArray = estudioworkingmemory('EEGArray');
+if isempty(EEGArray)
+    EEGArray=observe_EEGDAT.CURRENTSET;
+    estudioworkingmemory('EEGArray',EEGArray);
 end
 
-pageNum = numel(EEGset_selected);
-if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
-    Pagecurrent =Pagecurrent(1);
+pageNum = numel(EEGArray);
+if  ~isempty(EEGindex) &&  numel(EEGindex)~=1 %%if two or more numbers are entered
+    EEGindex =EEGindex(1);
 end
+EEGArray = reshape(EEGArray,1,numel(EEGArray));
+[~,Pagecurrent] = find(EEGArray==EEGindex);
 
 if ~isempty(Pagecurrent) && Pagecurrent>0 && Pagecurrent<= pageNum%%
-    Source.String = num2str(Pagecurrent);
-    observe_EEGDAT.CURRENTSET = EEGset_selected(Pagecurrent);
+    Source.String = num2str(EEGArray(Pagecurrent));
+    observe_EEGDAT.CURRENTSET = EEGArray(Pagecurrent);
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer();
@@ -785,21 +788,26 @@ end
 if ~isempty(messgStr)
     observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
 end
-Pagecurrent = str2num(EStudio_gui_erp_totl.eegpageinfo_edit.String);
-EEGset_selected = estudioworkingmemory('EEGArray');
-if isempty(EEGset_selected)
-    EEGset_selected=observe_EEGDAT.CURRENTSET;
-    estudioworkingmemory('EEGArray',EEGset_selected);
+EEGindex = str2num(EStudio_gui_erp_totl.eegpageinfo_edit.String);
+EEGArray = estudioworkingmemory('EEGArray');
+if isempty(EEGArray)
+    EEGArray=observe_EEGDAT.CURRENTSET;
+    estudioworkingmemory('EEGArray',EEGArray);
 end
 
-pageNum = numel(EEGset_selected);
+if  ~isempty(EEGindex) &&  numel(EEGindex)~=1 %%if two or more numbers are entered
+    EEGindex =EEGindex(1);
+end
+EEGArray = reshape(EEGArray,1,numel(EEGArray));
+[~,Pagecurrent] = find(EEGArray==EEGindex);
+pageNum = numel(EEGArray);
 if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
     Pagecurrent =Pagecurrent(1);
 elseif isempty(Pagecurrent)
-    [xpos, ypos] = find(EEGset_selected==observe_EEGDAT.CURRENTSET);
+    [xpos, ypos] = find(EEGArray==observe_EEGDAT.CURRENTSET);
     if isempty(ypos)
         Pagecurrent=1;
-        observe_EEGDAT.CURRENTSET = EEGset_selected(1);
+        observe_EEGDAT.CURRENTSET = EEGArray(1);
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     else
         Pagecurrent = ypos;
@@ -807,8 +815,8 @@ elseif isempty(Pagecurrent)
 end
 Pagecurrent = Pagecurrent-1;
 if  Pagecurrent>0 && Pagecurrent<=pageNum
-    EStudio_gui_erp_totl.eegpageinfo_edit.String = num2str(Pagecurrent);
-    observe_EEGDAT.CURRENTSET = EEGset_selected(Pagecurrent);
+    EStudio_gui_erp_totl.eegpageinfo_edit.String = num2str(EEGArray(Pagecurrent));
+    observe_EEGDAT.CURRENTSET = EEGArray(Pagecurrent);
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer(1);
@@ -831,21 +839,23 @@ end
 if ~isempty(messgStr)
     observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
 end
-Pagecurrent = str2num(EStudio_gui_erp_totl.eegpageinfo_edit.String);
-EEGset_selected = estudioworkingmemory('EEGArray');
-if isempty(EEGset_selected)
-    EEGset_selected=observe_EEGDAT.CURRENTSET;
-    estudioworkingmemory('EEGArray',EEGset_selected);
+EEGindex = str2num(EStudio_gui_erp_totl.eegpageinfo_edit.String);
+EEGArray = estudioworkingmemory('EEGArray');
+if isempty(EEGArray)
+    EEGArray=observe_EEGDAT.CURRENTSET;
+    estudioworkingmemory('EEGArray',EEGArray);
 end
+EEGArray = reshape(EEGArray,1,numel(EEGArray));
+[~,Pagecurrent] = find(EEGArray==EEGindex);
 
-pageNum = numel(EEGset_selected);
+pageNum = numel(EEGArray);
 if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
     Pagecurrent =Pagecurrent(1);
 elseif isempty(Pagecurrent)
-    [xpos, ypos] = find(EEGset_selected==observe_EEGDAT.CURRENTSET);
+    [xpos, ypos] = find(EEGArray==observe_EEGDAT.CURRENTSET);
     if isempty(ypos)
         Pagecurrent=1;
-        observe_EEGDAT.CURRENTSET = EEGset_selected(1);
+        observe_EEGDAT.CURRENTSET = EEGArray(1);
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
@@ -856,8 +866,8 @@ elseif isempty(Pagecurrent)
 end
 Pagecurrent = Pagecurrent+1;
 if  Pagecurrent>0 && Pagecurrent<=pageNum
-    EStudio_gui_erp_totl.eegpageinfo_edit.String = num2str(Pagecurrent);
-    observe_EEGDAT.CURRENTSET = EEGset_selected(Pagecurrent);
+    EStudio_gui_erp_totl.eegpageinfo_edit.String = num2str(EEGArray(Pagecurrent));
+    observe_EEGDAT.CURRENTSET = EEGArray(Pagecurrent);
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer(1);

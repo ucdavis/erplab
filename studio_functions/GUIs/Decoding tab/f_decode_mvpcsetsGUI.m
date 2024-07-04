@@ -434,7 +434,7 @@ varargout{1} = box_mvpcset_gui;
         estudioworkingmemory('MVPCArray',MVPCArray);
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 2;
-        if EStudio_gui_erp_totl.ERP_autoplot==1
+        if EStudio_gui_erp_totl.Decode_autoplot==1
             
         end
     end
@@ -688,7 +688,7 @@ varargout{1} = box_mvpcset_gui;
         assignin('base','CURRENTMVPC',observe_DECODE.CURRENTMVPC);
         
         observe_DECODE.Count_currentMVPC = 2;
-        %         if EStudio_gui_erp_totl.ERP_autoplot==1
+        %         if EStudio_gui_erp_totl.Decode_autoplot==1
         %             f_redrawERP();
         %         end
     end

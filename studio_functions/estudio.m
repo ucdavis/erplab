@@ -40,7 +40,6 @@ tic;%
 disp('Estudio is launching. Please be patient...');
 
 erplabver1 = geterplabeversion;
-
 EStudioversion = erplabver1;
 SignalProcessingToolboxCheck;
 %%--------------------check memory file------------------------------------
@@ -240,13 +239,12 @@ addlistener(observe_DECODE,'MVPC_changed',@MVPC_changed);
 addlistener(observe_DECODE,'CURRENTMVPC_changed',@CURRENTMVPC_changed);
 addlistener(observe_DECODE,'Count_currentMVPC_changed',@Count_currentMVPC_changed);
 
-
-
 EStudio_gui_erp_totl = struct();
 EStudio_gui_erp_totl = createInterface();
 EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
 EStudio_gui_erp_totl.EEG_autoplot = 1; %%Automatic plotting for eegsets
 EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
+EStudio_gui_erp_totl.Decode_autoplot=1;
 estudioworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
 
 
@@ -347,7 +345,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.context_tabs.SelectionChangedFcn = @SelectedTab;
         EStudio_gui_erp_totl.context_tabs.HighlightColor = [0 0 0];
         EStudio_gui_erp_totl.context_tabs.FontWeight = 'bold';
-        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
         EStudio_gui_erp_totl.context_tabs.BackgroundColor = ColorB_def;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

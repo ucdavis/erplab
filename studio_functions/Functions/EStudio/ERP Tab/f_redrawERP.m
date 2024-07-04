@@ -94,9 +94,12 @@ EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewConta
 pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
 pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
 EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
-EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',{@page_minus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
-EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',...
+    {@page_minus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(ERPArray(pagecurrentNum)),...
+    'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next',...
+    'Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 set(pageinfo_box, 'Sizes', [-1 70 50 70] );
 set(pageinfo_box,'BackgroundColor',ColorB_def);
 
@@ -267,7 +270,6 @@ function popmemu_erp(Source,~)
 global EStudio_gui_erp_totl;
 Value = Source.Value;
 if Value==2
-    
     app = feval('EStudio_plot_set_waves',EStudio_gui_erp_totl.ERP_autoplot,2);
     waitfor(app,'Finishbutton',1);
     try
@@ -484,7 +486,10 @@ if isempty(ERPArray)
     estudioworkingmemory('selectederpstudio',ERPArray);
 end
 
-Pagecurrent = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
+ERPindex = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
+ERPArray = reshape(ERPArray,1,numel(ERPArray));
+[~,Pagecurrent] = find(ERPArray==ERPindex);
+
 pageNum = numel(ERPArray);
 if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
     Pagecurrent =1;
@@ -504,7 +509,7 @@ else
 end
 
 Current_erp_Index = ERPArray(Pagecurrent);
-EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
+EStudio_gui_erp_totl.pageinfo_edit.String = num2str(ERPArray(Pagecurrent));
 
 observe_ERPDAT.CURRENTERP =  Current_erp_Index;
 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
@@ -560,7 +565,10 @@ if isempty(ERPArray)
     estudioworkingmemory('selectederpstudio',ERPArray);
 end
 
-Pagecurrent = str2num(Str.String);
+ERPindex = str2num(Str.String);
+ERPArray = reshape(ERPArray,1,numel(ERPArray));
+[~,Pagecurrent] = find(ERPArray==ERPindex);
+
 if isempty(Pagecurrent) || numel(Pagecurrent)~=1 || any(Pagecurrent>numel(ERPArray)) || any(Pagecurrent<1)
     [xpos, ypos] = find(ERPArray==observe_ERPDAT.CURRENTERP);
     if isempty(ypos)
@@ -571,7 +579,7 @@ if isempty(Pagecurrent) || numel(Pagecurrent)~=1 || any(Pagecurrent>numel(ERPArr
     observe_ERPDAT.CURRENTERP =  ERPArray(Pagecurrent);
     observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(ERPArray(Pagecurrent));
 end
-EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
+EStudio_gui_erp_totl.pageinfo_edit.String = num2str(ERPArray(Pagecurrent));
 Current_erp_Index = ERPArray(Pagecurrent);
 observe_ERPDAT.CURRENTERP =  Current_erp_Index;
 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
@@ -622,7 +630,11 @@ if isempty(ERPArray)
     observe_ERPDAT.CURRENTERP = ERPArray;
     estudioworkingmemory('selectederpstudio',ERPArray);
 end
-Pagecurrent = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
+ERPindex = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
+ERPArray = reshape(ERPArray,1,numel(ERPArray));
+[~,Pagecurrent] = find(ERPArray==ERPindex);
+
+
 pageNum = numel(ERPArray);
 if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
     Pagecurrent =1;
@@ -642,7 +654,7 @@ else
 end
 
 Current_erp_Index = ERPArray(Pagecurrent);
-EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
+EStudio_gui_erp_totl.pageinfo_edit.String = num2str(ERPArray(Pagecurrent));
 
 observe_ERPDAT.CURRENTERP =  Current_erp_Index;
 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
@@ -834,7 +846,6 @@ if reset_paras(3)==1
         observe_ERPDAT.CURRENTERP  = 1;
         estudioworkingmemory('selectederpstudio',1);
     end
-    
 else
     if EStudio_gui_erp_totl.clear_allerp == 1
         
@@ -887,7 +898,6 @@ FonsizeDefault = f_get_default_fontsize();
 %%matlab version
 matlab_ver = version('-release');
 Matlab_ver = str2double(matlab_ver(1:4));
-
 
 qtimeRange = [timeStart timEnd];
 if BinchanOverlay==0
