@@ -737,7 +737,7 @@ global EStudio_gui_erp_totl;
 if EStudio_gui_erp_totl.context_tabs.Selection==2%% ERP Tab
     f_redrawERP();
 elseif EStudio_gui_erp_totl.context_tabs.Selection==3%% ERP Tab
-    
+    f_redrawmvpc_Wave_Viewer();
 else%%EEG Tab
     f_redrawEEG_Wave_Viewer();
 end

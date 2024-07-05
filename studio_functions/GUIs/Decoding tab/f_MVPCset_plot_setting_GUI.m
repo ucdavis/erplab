@@ -1068,7 +1068,7 @@ varargout{1} = MVPC_plotset_box;
         
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
         MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
-        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{3} = MVPC_plotset.timetick_auto.Value;
         MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
         MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
         MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
@@ -1134,9 +1134,7 @@ varargout{1} = MVPC_plotset_box;
         if isempty(MVPC_lineslegendops)
             return;
         end
-        
         estudioworkingmemory('MVPC_lineslegendops',MVPC_lineslegendops);
-        
     end
 
 %------------Apply current parameters in plotting panel to the selected ERPset---------
@@ -1251,7 +1249,7 @@ varargout{1} = MVPC_plotset_box;
         end
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
         MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
-        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{3} = MVPC_plotset.timetick_auto.Value;
         MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
         MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
         MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
@@ -1418,7 +1416,7 @@ varargout{1} = MVPC_plotset_box;
         end
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
         MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
-        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{3} = MVPC_plotset.timetick_auto.Value;
         MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
         MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
         MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
@@ -1533,7 +1531,7 @@ varargout{1} = MVPC_plotset_box;
         %%-------x axis---------
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;
         MVPC_plotset.paras{2} = [str2num(MVPC_plotset.timet_low.String),str2num(MVPC_plotset.timet_high.String)];
-        MVPC_plotset.paras{3} = MVPC_plotset.ytick_auto.Value;
+        MVPC_plotset.paras{3} = MVPC_plotset.timetick_auto.Value;
         MVPC_plotset.paras{4} = str2num(MVPC_plotset.timet_step.String);
         MVPC_plotset.paras{5} = MVPC_plotset.xticks_precision.Value; %%precision for x axis
         MVPC_plotset.paras{6} = MVPC_plotset.xtimefont_custom.Value; %%font for x axis
