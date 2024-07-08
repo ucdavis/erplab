@@ -112,7 +112,6 @@ varargout{1} = box_mvpcset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Duplicate');
         observe_DECODE.Process_messg =1;
         
@@ -137,7 +136,6 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.butttons_datasets.String = BESTlistName;
         Mvpcsetops.butttons_datasets.Min = 1;
         Mvpcsetops.butttons_datasets.Max = length(BESTlistName)+1;
-        
         try
             MVPCArray =  [length(observe_DECODE.ALLMVPC)-numel(MVPCArray)+1:length(observe_DECODE.ALLMVPC)];
             Mvpcsetops.butttons_datasets.Value = MVPCArray;
@@ -188,14 +186,12 @@ varargout{1} = box_mvpcset_gui;
         if isempty(mvpcnames)
             return;
         end
-        
         ALLMVPC = observe_DECODE.ALLMVPC(MVPCArray);
         [ALLMVPC, BESTCOM] = pop_renamemvpc( ALLMVPC, 'mvpcnames',mvpcnames,...
             'Saveas', 'off', 'History', 'gui');
         if isempty(BESTCOM)
             return;
         end
-        
         observe_DECODE.ALLMVPC(MVPCArray) = ALLMVPC;
         observe_DECODE.MVPC = observe_DECODE.ALLMVPC(observe_DECODE.CURRENTMVPC);
         BESTlistName =  getMVPCsets();
@@ -203,7 +199,7 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.butttons_datasets.Min = 1;
         Mvpcsetops.butttons_datasets.Max = length(BESTlistName)+1;
         observe_DECODE.Process_messg =2;
-        observe_DECODE.Count_currentMVPC=2;
+        observe_DECODE.Count_currentMVPC=1;
     end
 
 %%--------------------------------Add Suffix---------------------------------
@@ -246,7 +242,7 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.butttons_datasets.Min = 1;
         Mvpcsetops.butttons_datasets.Max = length(BESTlistName)+1;
         observe_DECODE.Process_messg =2;
-        observe_DECODE.Count_currentMVPC = 2;
+        observe_DECODE.Count_currentMVPC = 1;
     end
 
 %%-------------------------------fresh ------------------------------------
@@ -308,7 +304,7 @@ varargout{1} = box_mvpcset_gui;
         else
             Mvpcsetops.butttons_datasets.Value = CURRENTMVPC;
         end
-        observe_DECODE.Count_currentMVPC=2;
+        observe_DECODE.Count_currentMVPC=1;
         observe_DECODE.Process_messg =2;
     end
 
@@ -371,7 +367,7 @@ varargout{1} = box_mvpcset_gui;
         end
         
         observe_DECODE.Process_messg =2;
-        observe_DECODE.Count_currentMVPC = 2;
+        observe_DECODE.Count_currentMVPC = 1;
         
     end
 
@@ -433,10 +429,8 @@ varargout{1} = box_mvpcset_gui;
         MVPCArray = observe_DECODE.CURRENTMVPC;
         estudioworkingmemory('MVPCArray',MVPCArray);
         observe_DECODE.Process_messg =2;
-        observe_DECODE.Count_currentMVPC = 2;
-        if EStudio_gui_erp_totl.Decode_autoplot==1
-            
-        end
+        observe_DECODE.Count_currentMVPC = 1;
+        
     end
 
 
@@ -570,7 +564,7 @@ varargout{1} = box_mvpcset_gui;
         estudioworkingmemory('MVPCArray',MVPCArray);
         
         Mvpcsetops.butttons_datasets.Value = MVPCArray;
-        observe_DECODE.Count_currentMVPC = 2;
+        observe_DECODE.Count_currentMVPC = 1;
         observe_DECODE.Process_messg =2;
     end
 
@@ -686,11 +680,10 @@ varargout{1} = box_mvpcset_gui;
         assignin('base','MVPC',observe_DECODE.MVPC);
         assignin('base','ALLMVPC',observe_DECODE.ALLMVPC);
         assignin('base','CURRENTMVPC',observe_DECODE.CURRENTMVPC);
-        
-        observe_DECODE.Count_currentMVPC = 2;
-        %         if EStudio_gui_erp_totl.Decode_autoplot==1
-        %             f_redrawERP();
-        %         end
+        observe_DECODE.Count_currentMVPC = 2; 
+        if EStudio_gui_erp_totl.Decode_autoplot==1
+            f_redrawmvpc_Wave_Viewer();
+        end
     end
 
 %%------------------get the names of MVPCsets-------------------------------

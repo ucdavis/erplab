@@ -34,10 +34,16 @@ EStudio_gui_erp_totl.decode_panel{2} = f_decode_MVPA_GUI(EStudio_gui_erp_totl.de
 EStudio_gui_erp_totl.decode_panelSizes(2) = 530;
 EStudio_gui_erp_totl.decode_panel{3} = f_decode_mvpcsetsGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(3) = 290;
-EStudio_gui_erp_totl.decode_panel{4} = f_mvpc_grandaverageGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.decode_panelSizes(4) = 160;
-EStudio_gui_erp_totl.decode_panel{5} = f_MVPCset_plot_setting_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.decode_panelSizes(5) = 390;
+EStudio_gui_erp_totl.decode_panel{4} = f_MVPCset_plot_setting_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(4) = 390;
+EStudio_gui_erp_totl.decode_panel{5} = f_mvpc_grandaverageGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(5) = 160;
+EStudio_gui_erp_totl.decode_panel{6} = f_mvpc_plotconfusionGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(6) = 190;
+EStudio_gui_erp_totl.decode_panel{7} = f_decode_mvpclass_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(7) = 190;
+EStudio_gui_erp_totl.decode_panel{8} = f_decode_history_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(8) = 190;
 
 EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(EStudio_gui_erp_totl.decode_panelSizes);
 
@@ -64,8 +70,6 @@ end %% End for shrinking panels 4-10
 
 %% + Create the view
 FonsizeDefault = f_get_default_fontsize();
-p = EStudio_gui_erp_totl.decode_ViewContainer;
-EStudio_gui_erp_totl.View_decode_Axes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorB_def);
 
 estudioworkingmemory('MVPCArray',1);
 EStudio_gui_erp_totl.plot_decode_grid = uix.VBox('Parent',EStudio_gui_erp_totl.decode_ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
@@ -78,7 +82,6 @@ EStudio_gui_erp_totl.View_decode_Axes = uix.ScrollingPanel( 'Parent', EStudio_gu
 
 EStudio_gui_erp_totl.decode_blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
 uiextras.Empty('Parent', EStudio_gui_erp_totl.decode_blank,'BackgroundColor',ColorB_def); % 1A
-
 
 commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
 EStudio_gui_erp_totl.decode_zoom_in = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom In',...
@@ -98,7 +101,6 @@ set(commandfig_panel, 'Sizes', [70 50 70 -1 150 50 5]);
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
 EStudio_gui_erp_totl.Process_decode_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
-
 
 EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
 EStudio_gui_erp_totl.plot_decode_grid.Heights(1) = 70;% set the first element (pageinfo) to 30px high
@@ -139,7 +141,7 @@ if Value==2
     end
     EStudio_gui_erp_totl.decode_popmemu.String=popmemu_eegString;
     EStudio_gui_erp_totl.Decode_autoplot = plotSet;
-  
+    
 elseif Value==3
     EStudiowinsize();
 end
@@ -209,8 +211,6 @@ f_redrawERP();
 EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
 
 end
-
-
 
 %%---------------------reset parameters for decode Tab---------------------
 function decode_reset(~,~)

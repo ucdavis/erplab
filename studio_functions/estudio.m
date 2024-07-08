@@ -195,7 +195,7 @@ estudioworkingmemory('f_EEG_proces_messg_pre',{'',0});
 estudioworkingmemory('ViewerFlag',0);
 estudioworkingmemory('Change2epocheeg',0);%%Indicate whether we need to force "Epoched EEG" to be selected in EEGsets panel after epoched EEG.
 estudioworkingmemory('eegicinspectFlag',0);%%Update the current EEG after Inspect/label ICs.
-estudioworkingmemory('ERPTab_zoomSpace',0);%%zoom in/out for erp tab
+estudioworkingmemory('ERPTab_zoomSpace',100);%%zoom in/out for erp tab
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -248,10 +248,8 @@ EStudio_gui_erp_totl.Decode_autoplot=1;
 estudioworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
 
 
-
-
-f_redrawERP();
-f_redrawEEG_Wave_Viewer();
+% f_redrawERP();
+% f_redrawEEG_Wave_Viewer();
 timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 

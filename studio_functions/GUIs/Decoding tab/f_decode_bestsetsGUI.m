@@ -742,15 +742,10 @@ varargout{1} = box_bestset_gui;
         Bestsetops.curr_folder.Enable='on';
         Bestsetops.butttons_datasets.Enable = Edit_label;
         Bestsetops.append.Enable = Edit_label;
-        
         assignin('base','BEST',observe_DECODE.BEST);
         assignin('base','ALLBEST',observe_DECODE.ALLBEST);
         assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST);
-        
         observe_DECODE.Count_currentbest = 2;
-        %         if EStudio_gui_erp_totl.ERP_autoplot==1
-        %             f_redrawERP();
-        %         end
     end
 
 %%------------------get the names of BESTsets-------------------------------

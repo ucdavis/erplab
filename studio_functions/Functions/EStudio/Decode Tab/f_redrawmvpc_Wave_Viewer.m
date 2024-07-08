@@ -64,8 +64,8 @@ else
 end
 
 set(EStudio_gui_erp_totl.decode_zoom_in,'Callback',@zoomin,'Enable',Enableflag);
-set(EStudio_gui_erp_totl.decode_zoom_edit,'Callback',@zoomedit,'Enable',Enableflag);
-set(EStudio_gui_erp_totl.zoom_out,'Callback',@zoomout,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.decode_zoom_edit,'Callback',@zoomedit,'Enable',Enableflag,'String',num2str(zoomSpace));
+set(EStudio_gui_erp_totl.decode_zoom_out,'Callback',@zoomout,'Enable',Enableflag);
 
 if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC)
     set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'},...
@@ -91,35 +91,38 @@ EStudio_gui_erp_totl.plot_decode_grid.Heights(3) = 5;
 EStudio_gui_erp_totl.plot_decode_grid.Heights(4) = 30;
 EStudio_gui_erp_totl.plot_decode_grid.Heights(5) = 30;% set the second element (x axis) to 30px high
 EStudio_gui_erp_totl.plot_decode_grid.Units = 'pixels';
+EStudio_gui_erp_totl.View_decode_Axes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_decode_legend,'BackgroundColor',[1 1 1]);
 
 if isempty(observe_DECODE.ALLMVPC)  ||  isempty(observe_DECODE.MVPC) || Decode_autoplot==0
-    EStudio_gui_erp_totl.View_decode_Axes = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes,'Color','none','Box','on','FontWeight','normal');
-    set(EStudio_gui_erp_totl.View_decode_Axes, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
+    EStudio_gui_erp_totl.mvpcwave_Axes = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes,'Color','none','Box','on','FontWeight','normal');
+    set(EStudio_gui_erp_totl.mvpcwave_Axes, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 end
 
 if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_autoplot==1
-    EStudio_gui_erp_totl.View_decode_Axes = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes,'Color','none','Box','on','FontWeight','normal');
-    hold(EStudio_gui_erp_totl.View_decode_Axes,'on');
-    EStudio_gui_erp_totl.View_decode_Axes_legend = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes_legend,'Color','none','Box','off');
-    hold(EStudio_gui_erp_totl.View_decode_Axes_legend,'on');
-    set(EStudio_gui_erp_totl.View_decode_Axes_legend, 'XTick', [], 'YTick', []);
+    EStudio_gui_erp_totl.mvpcwave_Axes = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes,'Color','none','Box','on','FontWeight','normal');
+    hold(EStudio_gui_erp_totl.mvpcwave_Axes,'on');
+    EStudio_gui_erp_totl.mvpcwave_Axes_legend = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes_legend,'Color','none','Box','off');
+    hold(EStudio_gui_erp_totl.mvpcwave_Axes_legend,'on');
+    set(EStudio_gui_erp_totl.mvpcwave_Axes_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
     MVPC = observe_DECODE.MVPC;
     OutputViewerparerp = f_preparms_decodetab(MVPC,0);
     
     % %%Plot the eeg waves
     if ~isempty(OutputViewerparerp)
-        f_plotabmvpcwave(MVPC,OutputViewerparerp{1},OutputViewerparerp{2},...
-            OutputViewerparerp{3},OutputViewerparerp{4},OutputViewerparerp{5},...
-            OutputViewerparerp{6},OutputViewerparerp{9},OutputViewerparerp{10},OutputViewerparerp{11},...
+        f_plotabmvpcwave(observe_DECODE.ALLMVPC,OutputViewerparerp{1}, OutputViewerparerp{2},OutputViewerparerp{3},...
+            OutputViewerparerp{4},OutputViewerparerp{5},OutputViewerparerp{6},OutputViewerparerp{7},...
+            OutputViewerparerp{8},OutputViewerparerp{9},OutputViewerparerp{10},OutputViewerparerp{11},...
             OutputViewerparerp{12},OutputViewerparerp{13},OutputViewerparerp{14},OutputViewerparerp{15},...
-            EStudio_gui_erp_totl.View_decode_Axes,EStudio_gui_erp_totl.View_decode_Axes_legend,OutputViewerparerp{7});
+            OutputViewerparerp{16},OutputViewerparerp{17},OutputViewerparerp{18},OutputViewerparerp{19},...
+            OutputViewerparerp{20},OutputViewerparerp{21},OutputViewerparerp{22},OutputViewerparerp{23},...
+            OutputViewerparerp{24},EStudio_gui_erp_totl.mvpcwave_Axes,EStudio_gui_erp_totl.mvpcwave_Axes_legend);
     else
         return;
     end
     pb_height =  1*Resolation(4);
-    splot_n = 1;
-    if splot_n*pb_height<(EStudio_gui_erp_totl.plot_decode_grid.Position(4)-EStudio_gui_erp_totl.plot_decode_grid.Heights(1))
-        pb_height = 0.9*(EStudio_gui_erp_totl.plot_decode_grid.Position(4)-EStudio_gui_erp_totl.plot_decode_grid.Heights(1)-EStudio_gui_erp_totl.plot_decode_grid.Heights(2))/splot_n;
+    
+    if pb_height<(EStudio_gui_erp_totl.plot_decode_grid.Position(4)-EStudio_gui_erp_totl.plot_decode_grid.Heights(1))
+        pb_height = 0.9*(EStudio_gui_erp_totl.plot_decode_grid.Position(4)-EStudio_gui_erp_totl.plot_decode_grid.Heights(1)-EStudio_gui_erp_totl.plot_decode_grid.Heights(2));
     else
         pb_height = 0.9*pb_height;
     end
@@ -127,7 +130,7 @@ if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_a
     if zoomSpace <=0
         EStudio_gui_erp_totl.View_decode_Axes.Heights = 0.95*EStudio_gui_erp_totl.View_decode_Axes.Position(4);
     else
-        EStudio_gui_erp_totl.View_decode_Axes.Heights = splot_n*pb_height*(1+zoomSpace/100);
+        EStudio_gui_erp_totl.View_decode_Axes.Heights = pb_height*(1+zoomSpace/100);
     end
     
     widthViewer = EStudio_gui_erp_totl.View_decode_Axes.Position(3)-EStudio_gui_erp_totl.View_decode_Axes.Position(2);
@@ -156,10 +159,10 @@ end
 EStudio_gui_erp_totl.View_decode_Axes.Children.Title.Color = [1 0 0];
 end
 
+
 %%-------------------------------------------------------------------------
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
-
 function decode_popmemu(Source,~)
 global EStudio_gui_erp_totl;
 Value = Source.Value;
@@ -184,8 +187,7 @@ if Value==2
     end
     EStudio_gui_erp_totl.decode_popmemu.String=popmemu_eegString;
     EStudio_gui_erp_totl.Decode_autoplot = plotSet;
-    f_redrawERP();
-    
+    f_redrawmvpc_Wave_Viewer();
 elseif Value==3
     EStudiowinsize();
 elseif Value==4
@@ -224,7 +226,7 @@ MessageViewer= char(strcat('Zoom In'));
 estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
 try
     observe_DECODE.Process_messg =1;
-    f_redrawERP();
+   f_redrawmvpc_Wave_Viewer();
     observe_DECODE.Process_messg =2;
 catch
     observe_DECODE.Process_messg =3;
@@ -247,7 +249,7 @@ if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
     estudioworkingmemory('DecodeTab_zoomSpace',zoomspaceEdit);
     try
         observe_DECODE.Process_messg =1;
-        f_redrawERP();
+       f_redrawmvpc_Wave_Viewer();
         observe_DECODE.Process_messg =2;
         return;
     catch
@@ -297,7 +299,7 @@ end
 MessageViewer= char(strcat('Zoom Out'));
 estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
 observe_DECODE.Process_messg =1;
-f_redrawERP();
+f_redrawmvpc_Wave_Viewer();
 observe_DECODE.Process_messg =2;
 end
 
@@ -361,227 +363,11 @@ catch
 end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
-EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
+ f_redrawmvpc_Wave_Viewer();
+EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
 %         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
 end
 
-%------------------Display the waveform for proir ERPset-------------------
-function page_minus(~,~,EStudio_gui_erp_totl)
-global observe_DECODE;
-if isempty(observe_DECODE.ALLMVPC) || isempty(observe_DECODE.MVPC)
-    return;
-end
-
-MVPCArray= estudioworkingmemory('MVPCArray');
-if isempty(MVPCArray)
-    MVPCArray = length(observe_DECODE.ALLMVPC);
-    observe_DECODE.MVPC = observe_DECODE.ALLMVPC(end);
-    observe_DECODE.CURRENTMVPC = MVPCArray;
-    estudioworkingmemory('MVPCArray',MVPCArray);
-end
-
-ERPindex = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
-MVPCArray = reshape(MVPCArray,1,numel(MVPCArray));
-[~,Pagecurrent] = find(MVPCArray==ERPindex);
-
-pageNum = numel(MVPCArray);
-if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
-    Pagecurrent =1;
-elseif isempty(Pagecurrent)
-    [xpos, ypos] = find(MVPCArray==observe_DECODE.CURRENTMVPC);
-    if isempty(ypos)
-        Pagecurrent=1;
-    else
-        Pagecurrent = ypos;
-    end
-end
-
-Pagecurrent = Pagecurrent-1;
-if  Pagecurrent>0 && Pagecurrent<=pageNum
-else
-    Pagecurrent=1;
-end
-
-Current_erp_Index = MVPCArray(Pagecurrent);
-EStudio_gui_erp_totl.pageinfo_edit.String = num2str(MVPCArray(Pagecurrent));
-
-observe_DECODE.CURRENTMVPC =  Current_erp_Index;
-observe_DECODE.MVPC = observe_DECODE.ALLMVPC(Current_erp_Index);
-
-% f_redrawERP();
-if length(MVPCArray) ==1
-    Enable_minus = 'off';
-    Enable_plus = 'off';
-    Enable_plus_BackgroundColor = [0 0 0];
-    Enable_minus_BackgroundColor = [0 0 0];
-else
-    if Pagecurrent ==1
-        Enable_minus = 'off';
-        Enable_plus = 'on';
-        Enable_plus_BackgroundColor = [0 1 0];
-        Enable_minus_BackgroundColor = [0 0 0];
-    elseif  Pagecurrent == length(MVPCArray)
-        Enable_minus = 'on';
-        Enable_plus = 'off';
-        Enable_plus_BackgroundColor = [0 0 0];
-        Enable_minus_BackgroundColor = [0 1 0];
-    else
-        Enable_minus = 'on';
-        Enable_plus = 'on';
-        Enable_plus_BackgroundColor = [0 1 0];
-        Enable_minus_BackgroundColor = [0 1 0];
-    end
-end
-EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
-EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
-EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
-EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-
-MessageViewer= char(strcat('Plot previous page (<)'));
-estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
-observe_DECODE.Process_messg =1;
-observe_DECODE.Count_currentMVPC = 1;
-end
-
-
-%%--------------------Edit the index of ERPsets----------------------------
-function page_edit(Str,~)
-global observe_DECODE;
-global EStudio_gui_erp_totl;
-if isempty(observe_DECODE.ALLMVPC) || isempty(observe_DECODE.MVPC)
-    return;
-end
-MVPCArray= estudioworkingmemory('MVPCArray');
-if isempty(MVPCArray)
-    MVPCArray = length(observe_DECODE.ALLMVPC);
-    observe_DECODE.MVPC = observe_DECODE.ALLMVPC(end);
-    observe_DECODE.CURRENTMVPC = MVPCArray;
-    estudioworkingmemory('MVPCArray',MVPCArray);
-end
-
-ERPindex = str2num(Str.String);
-MVPCArray = reshape(MVPCArray,1,numel(MVPCArray));
-[~,Pagecurrent] = find(MVPCArray==ERPindex);
-
-if isempty(Pagecurrent) || numel(Pagecurrent)~=1 || any(Pagecurrent>numel(MVPCArray)) || any(Pagecurrent<1)
-    [xpos, ypos] = find(MVPCArray==observe_DECODE.CURRENTMVPC);
-    if isempty(ypos)
-        Pagecurrent=1;
-    else
-        Pagecurrent = ypos;
-    end
-    observe_DECODE.CURRENTMVPC =  MVPCArray(Pagecurrent);
-    observe_DECODE.MVPC = observe_DECODE.ALLMVPC(MVPCArray(Pagecurrent));
-end
-EStudio_gui_erp_totl.pageinfo_edit.String = num2str(MVPCArray(Pagecurrent));
-Current_erp_Index = MVPCArray(Pagecurrent);
-observe_DECODE.CURRENTMVPC =  Current_erp_Index;
-observe_DECODE.MVPC = observe_DECODE.ALLMVPC(Current_erp_Index);
-if length(MVPCArray) ==1
-    Enable_minus = 'off';
-    Enable_plus = 'off';
-    Enable_plus_BackgroundColor = [0 0 0];
-    Enable_minus_BackgroundColor = [0 0 0];
-else
-    if Pagecurrent ==1
-        Enable_minus = 'off';
-        Enable_plus = 'on';
-        Enable_plus_BackgroundColor = [0 1 0];
-        Enable_minus_BackgroundColor = [1 1 1];
-    elseif  Pagecurrent == length(MVPCArray)
-        Enable_minus = 'on';
-        Enable_plus = 'off';
-        Enable_plus_BackgroundColor = [0 0 0];
-        Enable_minus_BackgroundColor = [0 1 0];
-    else
-        Enable_minus = 'on';
-        Enable_plus = 'on';
-        Enable_plus_BackgroundColor = [0 1 0];
-        Enable_minus_BackgroundColor = [0 1 0];
-    end
-end
-EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
-EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
-EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
-EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-
-observe_DECODE.Count_currentMVPC = 1;
-observe_DECODE.Process_messg =2;
-end
-
-
-%------------------Display the waveform for next ERPset--------------------
-function page_plus(~,~,EStudio_gui_erp_totl)
-global observe_DECODE;
-
-if isempty(observe_DECODE.ALLMVPC) || isempty(observe_DECODE.MVPC)
-    return;
-end
-MVPCArray= estudioworkingmemory('MVPCArray');
-if isempty(MVPCArray)
-    MVPCArray = length(observe_DECODE.ALLMVPC);
-    observe_DECODE.MVPC = observe_DECODE.ALLMVPC(end);
-    observe_DECODE.CURRENTMVPC = MVPCArray;
-    estudioworkingmemory('MVPCArray',MVPCArray);
-end
-ERPindex = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
-MVPCArray = reshape(MVPCArray,1,numel(MVPCArray));
-[~,Pagecurrent] = find(MVPCArray==ERPindex);
-
-
-pageNum = numel(MVPCArray);
-if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
-    Pagecurrent =1;
-elseif isempty(Pagecurrent)
-    [xpos, ypos] = find(MVPCArray==observe_DECODE.CURRENTMVPC);
-    if isempty(ypos)
-        Pagecurrent=1;
-    else
-        Pagecurrent = ypos;
-    end
-end
-
-Pagecurrent = Pagecurrent+1;
-if  Pagecurrent>0 && Pagecurrent<=pageNum
-else
-    Pagecurrent = pageNum;
-end
-
-Current_erp_Index = MVPCArray(Pagecurrent);
-EStudio_gui_erp_totl.pageinfo_edit.String = num2str(MVPCArray(Pagecurrent));
-
-observe_DECODE.CURRENTMVPC =  Current_erp_Index;
-observe_DECODE.MVPC = observe_DECODE.ALLMVPC(Current_erp_Index);
-estudioworkingmemory('MVPCArray',MVPCArray);
-if length(MVPCArray) ==1
-    Enable_minus = 'off';
-    Enable_plus = 'off';
-    Enable_plus_BackgroundColor = [0 0 0];
-    Enable_minus_BackgroundColor = [0 0 0];
-else
-    if Pagecurrent ==1
-        Enable_minus = 'off';
-        Enable_plus = 'on';
-        Enable_plus_BackgroundColor = [0 1 0];
-        Enable_minus_BackgroundColor = [1 1 1];
-    elseif  Pagecurrent == length(MVPCArray)
-        Enable_minus = 'on';
-        Enable_plus = 'off';
-        Enable_plus_BackgroundColor = [0 0 0];
-        Enable_minus_BackgroundColor = [0 1 0];
-    else
-        Enable_minus = 'on';
-        Enable_plus = 'on';
-        Enable_plus_BackgroundColor = [0 1 0];
-        Enable_minus_BackgroundColor = [0 1 0];
-    end
-end
-EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
-EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
-EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
-EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-observe_DECODE.Count_currentMVPC = 1;
-end
 
 
 
@@ -758,16 +544,10 @@ end
 
 
 
-function f_plotabmvpcwave(ALLMVPC,MVPCArray,qtimeRange,qXticks,Xtickdecimal,Xlabelfont,Xlabelfontsize,Xlabelcolor,...
-    qYScales,qYticks,qYtickdecimal,qYlabelfont,qYlabelfontsize,qYlabelcolor,columNum,Standerr,Transparency,...
-    qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,qFontLeg,qTextcolorLeg,qLegcolumns,qFontSizeLeg,...
-    rowNums,waveview,legendview)
-
-FonsizeDefault = f_get_default_fontsize();
-%%matlab version
-matlab_ver = version('-release');
-Matlab_ver = str2double(matlab_ver(1:4));
-
+function f_plotabmvpcwave(ALLMVPC,MVPCArray,qtimeRange,qXticks,qXtickdecimal,Xlabelfont,Xlabelfontsize,Xlabelcolor,...
+    qYScales,qYticks,qYtickdecimal,qYlabelfont,qYlabelfontsize,qYlabelcolor,Standerr,Transparency,...
+    qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,qFontLeg,qTextcolorLeg,qLegcolumns,qFontSizeLeg,chanLevel,...
+    waveview,legendview)
 
 %%------------Get the data and SEM (standard error of the mean)------------
 if isempty(MVPCArray) || any(MVPCArray(:)<1) || any(MVPCArray(:)>length(ALLMVPC))
@@ -787,9 +567,15 @@ MVPC = ALLMVPC(MVPCArray(1));
 if isempty(qXticks)
     qXticks =  str2num(timeticksdef);
 end
+%%precision
+if isempty(qXtickdecimal) || ~isnumeric(qXtickdecimal) || numel(qXtickdecimal)~=1 || any(qXtickdecimal(:)<1)
+    qXtickdecimal=0;
+end
+
+
 %%font for x axis
 if isempty(Xlabelfont) || ~ischar(Xlabelfontsize)
-    Xlabelfont = 'Courier';
+    Xlabelfont = 'Helvetica';
 end
 %%font size for x axis
 if isempty(Xlabelfontsize) || ~isnumeric(Xlabelfontsize) || numel(Xlabelfontsize)~=1
@@ -799,7 +585,6 @@ end
 if isempty(Xlabelcolor) || ~isnumeric(Xlabelcolor) || any(Xlabelcolor(:)<0) || any(Xlabelcolor(:)>1) || numel(Xlabelcolor)~=3
     Xlabelcolor = [0 0 0];
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%------------------------settings for y axis------------------------------
@@ -830,8 +615,8 @@ if isempty(qYtickdecimal) || ~isnumeric(qYtickdecimal) || numel(qYtickdecimal)~=
     qYtickdecimal=1;
 end
 %%font for y axis
-if isempty(qYlabelfont) || ~char(qYlabelfont)
-    qYlabelfont = 'Courier';
+if isempty(qYlabelfont) %%|| ~char(qYlabelfont)
+    qYlabelfont = 'Helvetica';
 end
 %%font size for y axis
 if isempty(qYlabelfontsize) || numel(qYlabelfontsize)~=1 || any(qYlabelfontsize(:)<1)
@@ -854,32 +639,34 @@ end
 %%line color
 for Numofmvpc = 1:numel(MVPCArray)
     try
-        colornames =  qLineColorspec(:,Numofmvpc);
-        if isempy(colornames) || numel(colornames)~=3 || any(colornames(:)<0)|| any(colornames(:)>1)
+        colornames =  qLineColorspec(Numofmvpc,:);
+        if isempty(colornames) || numel(colornames)~=3 || any(colornames(:)<0)|| any(colornames(:)>1)
             colornames = [0 0 0];
         end
-        qLineColorspec(:,Numofmvpc) = colornames;
+        qLineColorspec(Numofmvpc,:) = colornames;
     catch
-        qLineColorspec(:,Numofmvpc)  = [0 0 0];
+        qLineColorspec(Numofmvpc,:)  = [0 0 0];
     end
 end
+
+
 %%line styles
 for Numofmvpc = 1:numel(MVPCArray)
     try
         colornames =  qLineStylespec{Numofmvpc};
-        if isempy(colornames) || ~ischar(colornames) || ~ismember_bc2({'-','--',':','-.','none'},colornames)
+        if isempty(colornames) || ~ischar(colornames) || ~ismember_bc2({'-','--',':','-.','none'},colornames)
             colornames = 'none';
         end
         qLineStylespec{Numofmvpc} = colornames;
     catch
-        qLineStylespec{Numofmvpc}  = 'none';
+        qLineStylespec{Numofmvpc}  = '-';
     end
 end
 %%line marks
 for Numofmvpc = 1:numel(MVPCArray)
     try
         colornames =  qLineMarkerspec{Numofmvpc};
-        if isempy(colornames) || ~ischar(colornames)
+        if isempty(colornames) || ~ischar(colornames)
             colornames = 'none';
         end
         qLineMarkerspec{Numofmvpc} = colornames;
@@ -891,7 +678,7 @@ end
 for Numofmvpc = 1:numel(MVPCArray)
     try
         linewidthone =  qLineWidthspec(Numofmvpc);
-        if isempy(linewidthone) || ~isnumeric(linewidthone) || any(linewidthone(:)<1)
+        if isempty(linewidthone) || ~isnumeric(linewidthone) || any(linewidthone(:)<1)
             linewidthone =1;
         end
         qLineWidthspec(Numofmvpc) = linewidthone;
@@ -900,11 +687,15 @@ for Numofmvpc = 1:numel(MVPCArray)
     end
 end
 
+if isempty(chanLevel) || numel(chanLevel)~=1 || (chanLevel~=0 && chanLevel~=1)
+    chanLevel=1;
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%------------------------------setting for legend-------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if isempty(qFontLeg) || ~ischar(qFontLeg)
-    qFontLeg ='Courier';
+    qFontLeg ='Helvetica';
 end
 
 if isempty(qTextcolorLeg) || ~isnumeric(qTextcolorLeg) || numel(qTextcolorLeg)~=1 || (qTextcolorLeg~=0 && qTextcolorLeg~=1)
@@ -919,7 +710,6 @@ if isempty(qFontSizeLeg) || ~isnumeric(qFontSizeLeg) || numel(qFontSizeLeg)~=1 |
 end
 
 
-
 %%remove the margins of a plot
 ax = waveview;
 outerpos = ax.OuterPosition;
@@ -928,219 +718,78 @@ left = outerpos(1) + ti(1);
 bottom = outerpos(2) + ti(2);
 ax_width = outerpos(3) - ti(1) - ti(3);
 ax_height = outerpos(4) - ti(2) - ti(4);
-ax.Position = [left bottom ax_width ax_height];
+% ax.Position = [left bottom ax_width ax_height];
+% ax.Position(3:4) = [ax_width ax_height];
 
 %%check elements in qGridposArray
-
-fontnames = 'Helvetica';
-hplot = [];
-countPlot = 0;
+hplot11 = [];
+if chanLevel==1
+    yline(waveview,ALLMVPC(MVPCArray(1)).chance,'--','Color' ,[0 0 0],'LineWidth',1);
+end
 for Numofoverlay = 1:numel(MVPCArray)
     bindatatrs = bindata(:,Numofoverlay);
     bindataerrtrs = bindataerror(:,Numofoverlay);
     if  Standerr>=1 &&Transparency>0 %SEM
         yt1 = bindatatrs - bindataerrtrs.*Standerr;
         yt2 = bindatatrs + bindataerrtrs.*Standerr;
-        fill(waveview,[timesnew fliplr(timesnew)],[yt2 fliplr(yt1)], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
+        fill(waveview,[timesnew fliplr(timesnew)],[yt2' fliplr(yt1')], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
     end
     try
-        hplot(Numofoverlay) = plot(waveview,timesnew, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
-            'Color', qLineColorspec(Numofoverlay,:),'Marker',qLineMarkerspec{Numofoverlay},'LineStyle',qLineStylespec{Numofoverlay});
+        hplot11(Numofoverlay) = plot(waveview,timesnew, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
+            'Color', qLineColorspec(Numofoverlay,:),'Marker',char(qLineMarkerspec{Numofoverlay}),...
+            'LineStyle',char(qLineStylespec{Numofoverlay}));
     catch
-        hplot(Numofoverlay) = plot(waveview,timesnew, bindatatrs,'LineWidth',1,...
+        hplot11(Numofoverlay) = plot(waveview,timesnew, bindatatrs,'LineWidth',1,...
             'Color', [0 0 0]);
     end
 end
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%----------------------Adjust y axis------------------------%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-props = get(waveview);
-props.YTick = qYticks;
-props.YTickLabel = cell(numel(props.YTick),1);
-for Numofytick = 1:numel(props.YTick)
-    props.YTickLabel(Numofytick) = {num2str(props.YTick(Numofytick))};
-end
-
-[x,y_0] = find(Xtimerange==0);
-if isempty(y_0)
-    y_0 = 1;
-end
-myY_Crossing = Xtimerangetrasf(y_0);
-tick_top = 0;
-
-if countPlot ==1
-    ytick_bottom = -props.TickLength(1)*diff(props.XLim);
-    ytick_bottomratio = abs(ytick_bottom)/diff(props.XLim);
-else
-    try
-        ytick_bottom = ytick_bottom;
-        ytick_bottomratio = ytick_bottomratio;
-    catch
-        ytick_bottom = -props.TickLength(1)*diff(props.XLim);
-        ytick_bottomratio = abs(ytick_bottom)/diff(props.XLim);
+set(waveview,'box','off');
+xlim(waveview,[timesnew(1),timesnew(end)]);
+ylim(waveview,qYScales)
+%%x axis
+if ~isempty(qXticks)
+    waveview.XAxis.TickValues = qXticks;
+    for Numofytick = 1:numel(qXticks)
+        xtick_label= sprintf(['%.',num2str(qXtickdecimal),'f'],qXticks(Numofytick));
+        waveview.XAxis.TickLabels{Numofytick,1} = xtick_label;
     end
 end
-%%add  yunits
-if ~isempty(props.YTick)
-    ytick_y = repmat(props.YTick, 2, 1);
-    ytick_x = repmat([tick_top;ytick_bottom] +myY_Crossing, 1, length(props.YTick));
-    line(waveview,ytick_x(:,:), ytick_y(:,:), 'color', 'k','LineWidth',1);
-    try
-        [~,y_below0] =find(qYticks<0);
-        if isempty(y_below0) && qYScales(1)<0
-            line(waveview,ytick_x(:,:), ones(2,1)*(qYScales(1)+OffSetY(Numofrows)), 'color', 'k','LineWidth',1);
+waveview.XAxis.FontSize = Xlabelfontsize;
+waveview.XAxis.FontName = Xlabelfont;
+waveview.XAxis.Color = Xlabelcolor;
+xlabel(waveview,'Time (ms)','FontSize',Xlabelfontsize,'FontWeight',...
+    'normal','Color',Xlabelcolor,'FontName',Xlabelfont);
+waveview.TickDir = 'out';
+waveview.XAxis.LineWidth=1;
+
+%%Y axis
+if ~isempty(qYticks)
+    waveview.YAxis.TickValues = qYticks;
+    for Numofytick = 1:numel(qYticks)
+        xtick_label= sprintf(['%.',num2str(qYtickdecimal),'f'],qYticks(Numofytick));
+        waveview.YAxis.TickLabels{Numofytick,1} = xtick_label;
+    end
+end
+waveview.YAxis.FontSize = qYlabelfontsize;
+waveview.YAxis.FontName = qYlabelfont;
+waveview.YAxis.Color = qYlabelcolor;
+ylabel(waveview,'Decoding Accuracy','FontSize',qYlabelfontsize,'FontWeight',...
+    'normal','Color',qYlabelcolor,'FontName',qYlabelfont);
+waveview.YAxis.LineWidth=1;
+if ~isempty(hplot11)
+    for Numofoverlay = 1:numel(hplot11)
+        qLegendName{Numofoverlay} = strrep(ALLMVPC(MVPCArray(Numofoverlay)).mvpcname,'_','\_');
+        if qTextcolorLeg==1
+            legdcolor = [0 0 0];
+        else
+            legdcolor = qLineColorspec(Numofoverlay,:);
         end
-        [~,y_over0] =find(qYticks>0);
-        if isempty(y_over0) && qYScales(2)>0
-            line(waveview,ytick_x(:,:), ones(2,1)*(qYScales(2)+OffSetY(Numofrows)), 'color', 'k','LineWidth',1);
-        end
-    catch
-    end
-end
-
-if ~isempty(qYScales)  && numel(qYScales)==2 %qYScales(end))+OffSetY(1)
-    
-    qYScalestras = qYScales;
-    
-    plot(waveview,ones(numel(qYScalestras),1)*myY_Crossing, qYScalestras+OffSetY(Numofrows),'k','LineWidth',1);
-else
-    if ~isempty(y_scale_def) && numel(unique(y_scale_def))==2
-        
-        qYScalestras = y_scale_def;
-        plot(waveview,ones(numel(qYScales),1)*myY_Crossing, qYScalestras+OffSetY(Numofrows),'k','LineWidth',1);
-    else
-    end
-end
-
-nYTicks = length(props.YTick);
-for iCount = 1:nYTicks
-    ytick_label= sprintf(['%.',num2str(qYtickdecimal),'f'],str2num(char(props.YTickLabel(iCount, :))));
-    
-    if str2num(char(ytick_label)) ==0 || (str2num(char(ytick_label))<0.0001 && str2num(char(ytick_label))>0) || (str2num(char(ytick_label))>-0.0001 && str2num(char(ytick_label))<0)
-        ytick_label = '';
-    end
-    text(waveview,myY_Crossing-2*abs(ytick_bottom),props.YTick(iCount),  ...
-        ytick_label, ...
-        'HorizontalAlignment', 'right', ...
-        'VerticalAlignment', 'middle', ...
-        'FontSize', qYlabelfontsize, ...
-        'FontAngle', props.FontAngle, ...
-        'FontUnits', props.FontUnits,...
-        'FontName', qYlabelfont, ...
-        'Color',qYlabelcolor);%
-end
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%----------------------Adjust x axis------------------------%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-props.XTick = qXtickstransf;
-props.XTickLabel = cell(numel(qXticks),1);
-for Numofytick = 1:numel(props.XTick)
-    props.XTickLabel(Numofytick) = {num2str(qXticks(Numofytick))};
-end
-myX_Crossing = OffSetY(Numofrows);
-if countPlot ==1
-    xtick_bottom = -props.TickLength(2)*max(props.YLim);
-    if abs(xtick_bottom)/max(props.YLim) > ytick_bottomratio
-        xtick_bottom = -ytick_bottomratio*max(props.YLim);
-    end
-else
-    try
-        xtick_bottom = xtick_bottom;
-    catch
-        xtick_bottom = -props.TickLength(2)*max(props.YLim);
-        if abs(xtick_bottom)/max(props.YLim) > ytick_bottomratio
-            xtick_bottom = -ytick_bottomratio*max(props.YLim);
-        end
-    end
-end
-if ~isempty(props.XTick)
-    xtick_x = repmat(props.XTick, 2, 1);
-    xtick_y = repmat([xtick_bottom; tick_top]*0.5 + myX_Crossing, 1, length(props.XTick));
-    line(waveview,xtick_x, xtick_y, 'color', 'k','LineWidth',1);
-end
-[x_xtick,y_xtick] = find(props.XTick==0);
-if ~isempty(y_xtick)
-    props.XTick(y_xtick) = 2*xtick_bottom;
-end
-plot(waveview,Xtimerangetrasf, myX_Crossing.*ones(numel(Xtimerangetrasf),1),'k','LineWidth',1);
-nxTicks = length(props.XTick);
-qXticklabel = 'on';
-for iCount = 1:nxTicks
-    xtick_label = (props.XTickLabel(iCount, :));
-    if strcmpi(qXticklabel,'on')
-        if strcmpi(xtick_label,'0')
-            xtick_label = '';
-        end
-    else
-        xtick_label = '';
-    end
-    text(waveview,props.XTick(iCount), xtick_bottom*0.5 + myX_Crossing, ...
-        xtick_label, ...
-        'HorizontalAlignment', 'Center', ...
-        'VerticalAlignment', 'Top', ...
-        'FontSize', Xlabelfontsize, ...
-        'FontAngle', props.FontAngle, ...
-        'FontUnits', props.FontUnits,...
-        'FontName', Xlabelfont, ...
-        'Color',Xlabelcolor);%'FontName', qXlabelfont, ...
-end
-%%-----------------minor X---------------
-set(waveview,'xlim',[timesnew(1),timesnew(end)]);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%------------------channel/bin/erpset label-----------------%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ypercentage =100;
-ypos_LABEL = (qYScalestras(end)-qYScalestras(1))*(ypercentage)/100+qYScalestras(1);
-xpercentage = CBELabels(1);
-xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
-labelcbe =  strrep(char(labelcbe),'_','\_');
-try
-    labelcbe = regexp(labelcbe, '\;', 'split');
-catch
-end
-text(waveview,xpos_LABEL,ypos_LABEL+OffSetY(Numofrows), char(labelcbe),'FontName', fontnames,'HorizontalAlignment', 'left');%'FontWeight', 'bold',
-
-try
-    if 2<columNum && columNum<5
-        set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
-    elseif columNum==1
-        set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
-    elseif columNum==2
-        set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);
-    else
-        set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
-    end
-catch
-    
-end
-
-
-if numel(OffSetY)==1 && OffSetY==0
-    YscalesNew =  y_scale_def;
-    set(waveview,'ylim',1.05*YscalesNew);
-else
-    ylimleftedge = floor(y_scale_def(1));
-    ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
-    
-    set(waveview,'ylim',[ylimleftedge,1.05*ylimrightedge]);
-end
-
-set(waveview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
-if ~isempty(hplot)
-    NumColumns = ceil(sqrt(length(qLegendName)));
-    for Numofoverlay = 1:numel(hplot)
-        qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
-        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str([0 0 0]),'}',32,qLegendName{Numofoverlay}));
+        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(legdcolor),'}',32,qLegendName{Numofoverlay}));
     end
     p  = get(legendview,'position');
-    h_legend = legend(legendview,hplot,qLegendName);
+    h_legend = legend(legendview,hplot11,LegendName);
     legend(legendview,'boxoff');
-    set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault);
+    set(h_legend,'NumColumns',qLegcolumns,'FontName', qFontLeg, 'Color', [1 1 1], 'position', p,'FontSize',qFontSizeLeg);
 end
 end
 

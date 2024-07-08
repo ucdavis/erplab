@@ -274,7 +274,7 @@ varargout{1} = MVPC_grdavg_box_gui;
             MVPC = Answer{1};
             Save_file_label = Answer{2};
         end
-                
+        
         ALLMVPC = observe_DECODE.ALLMVPC;
         if Save_file_label==1
             [pathstr, file_name, ext] = fileparts(MVPC.filename);
@@ -308,7 +308,7 @@ varargout{1} = MVPC_grdavg_box_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentMVPC_changed(~,~)
-        if observe_DECODE.Count_currentMVPC~=2
+        if observe_DECODE.Count_currentMVPC~=3
             return;
         end
         if isempty(observe_DECODE.MVPC) || length(observe_DECODE.ALLMVPC)<2
@@ -331,7 +331,7 @@ varargout{1} = MVPC_grdavg_box_gui;
             binset = erase(binset,{'[',']'});
             gui_mvpc_grdavg.mvpc_edit.String = binset;
         end
-        observe_DECODE.Count_currentMVPC=3;
+        observe_DECODE.Count_currentMVPC=4;
     end
 
 %%--------------press return to execute "Apply"----------------------------
@@ -356,7 +356,7 @@ varargout{1} = MVPC_grdavg_box_gui;
 
 
     function Reset_best_panel_change(~,~)
-        if observe_DECODE.Reset_erp_paras_panel~=11
+        if observe_DECODE.Reset_Best_paras_panel~=3
             return;
         end
         if ~isempty(observe_DECODE.ALLMVPC)
@@ -372,9 +372,7 @@ varargout{1} = MVPC_grdavg_box_gui;
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
         gui_mvpc_grdavg.warning_checbox.Value = 0;
         gui_mvpc_grdavg.paras{3} = gui_mvpc_grdavg.warning_checbox.Value;
-        
-        %%%XXXXXX
-        
+        observe_DECODE.Reset_Best_paras_panel=4;
     end
 
 end

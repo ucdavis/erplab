@@ -10,6 +10,7 @@
 
 function varargout = f_MVPCset_plot_setting_GUI(varargin)
 global observe_DECODE;
+global EStudio_gui_erp_totl;
 addlistener(observe_DECODE,'Count_currentMVPC_changed',@Count_currentMVPC_changed);
 addlistener(observe_DECODE,'Reset_best_panel_change',@Reset_best_panel_change);
 
@@ -91,7 +92,7 @@ varargout{1} = MVPC_plotset_box;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); %
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         MVPC_plotset.xtimefont_custom = uicontrol('Style','popupmenu','Parent', MVPC_plotset.xtimefont_title ,'String',fonttype,...
-            'callback',@xtimefont,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',1); %
+            'callback',@xtimefont,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',3); %
         MVPC_plotset.xtimefont_custom.KeyPressFcn = @mvpc_plotsetting_presskey;
         uicontrol('Style','text','Parent', MVPC_plotset.xtimefont_title ,'String','Size',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); %
@@ -161,7 +162,7 @@ varargout{1} = MVPC_plotset_box;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         MVPC_plotset.yfont_custom = uicontrol('Style','popupmenu','Parent', MVPC_plotset.yfont_title,'String',fonttype,...
-            'callback',@yaxisfont, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',1); %
+            'callback',@yaxisfont, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off','Value',3); %
         MVPC_plotset.yfont_custom.KeyPressFcn = @mvpc_plotsetting_presskey;
         uicontrol('Style','text','Parent', MVPC_plotset.yfont_title ,'String','Size',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
@@ -217,15 +218,9 @@ varargout{1} = MVPC_plotset_box;
             'String','Cancel','callback',@plot_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         MVPC_plotset.plot_ops = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
             'String','Option','callback',@plot_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
-        %         uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
         MVPC_plotset.plot_apply = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
             'String','Apply','callback',@plot_setting_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        %         uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
-        %         set(MVPC_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
-        
         set(MVPC_plotset.plotop, 'Sizes', [20 20 20 20 20 20 20 25 25 20 20 20 20 20 20 30]);
-        
         estudioworkingmemory('MVPC_plotset',0);
     end
 
@@ -1266,13 +1261,14 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset.paras);
-        
-        observe_DECODE.Count_currentMVPC=1;
+         if EStudio_gui_erp_totl.Decode_autoplot==1
+            f_redrawmvpc_Wave_Viewer();
+        end
     end
 
 %%-------------------------------------------------------------------------
     function Count_currentMVPC_changed(~,~)
-        if observe_DECODE.Count_currentMVPC~=3
+        if observe_DECODE.Count_currentMVPC~=2
             return;
         end
         ViewerFlag=estudioworkingmemory('ViewerFlag');%%when open advanced wave viewer
@@ -1310,7 +1306,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.plot_apply.Enable =enbaleflag;
         MVPC_plotset.plot_ops.Enable =enbaleflag;
         if isempty(observe_DECODE.ALLMVPC)|| isempty(observe_DECODE.MVPC)
-            observe_DECODE.Count_currentMVPC =4;
+            observe_DECODE.Count_currentMVPC =3;
             return;
         end
         %%time range
@@ -1433,7 +1429,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;MVPC_plotset_pars = MVPC_plotset.paras;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
-        observe_DECODE.Count_currentMVPC=4;
+        observe_DECODE.Count_currentMVPC=3;
     end
 
 %%--------------press return to execute "Apply"----------------------------
@@ -1461,7 +1457,7 @@ varargout{1} = MVPC_plotset_box;
 
 %%---------------reset the parameters for all panels-----------------------
     function Reset_best_panel_change(~,~)
-        if observe_DECODE.Reset_MVPC_paras_panel~=3
+        if observe_DECODE.Reset_MVPC_paras_panel~=2
             return;
         end
         estudioworkingmemory('MVPC_plotset',0);
@@ -1525,7 +1521,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.yscale_high.Enable = 'off';
         MVPC_plotset.yscale_step.Enable = 'off';
         MVPC_plotset.xticks_precision.Value=1;
-        MVPC_plotset.xtimefont_custom.Value =1;
+        MVPC_plotset.xtimefont_custom.Value =3;
         MVPC_plotset.xtimefontsize.Value =5;
         MVPC_plotset.xtimetextcolor.Value =1;
         %%-------x axis---------
@@ -1543,7 +1539,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{11} =MVPC_plotset.ytick_auto.Value;
         MVPC_plotset.paras{12} =str2num(MVPC_plotset.yscale_step.String);
         MVPC_plotset.yticks_precision.Value =1;
-        MVPC_plotset.yfont_custom.Value =1;
+        MVPC_plotset.yfont_custom.Value =3;
         MVPC_plotset.yfont_custom_size.Value =5;
         MVPC_plotset.ytextcolor.Value =1;
         MVPC_plotset.paras{13} =MVPC_plotset.yticks_precision.Value;
@@ -1561,6 +1557,6 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
         MVPC_plotset_pars = MVPC_plotset.paras;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
-        observe_DECODE.Reset_MVPC_paras_panel=4;
+        observe_DECODE.Reset_MVPC_paras_panel=3;
     end
 end

@@ -40,8 +40,8 @@ for k=1:nMVPC
     ymin(k) = min(ALLMVPC(k).average_score(:));
     ymax(k) = max(ALLMVPC(k).average_score(:));
 end
-miny = min(ymin(:));
-maxy = max(ymax(:))*1.1;
+miny = 0.8*min(ymin(:));
+maxy = 1.1*max(ymax(:));
 if isempty(miny) || isempty(maxy)
     miny  = 0;
     maxy  = 1;

@@ -467,8 +467,9 @@ catch
 end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
-EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
-%         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+f_redrawmvpc_Wave_Viewer();
+EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
+
 end
 
 %------------------Display the waveform for proir ERPset-------------------

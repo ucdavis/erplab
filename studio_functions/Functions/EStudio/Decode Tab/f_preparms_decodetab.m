@@ -11,7 +11,6 @@
 function OutputViewerparerp = f_preparms_decodetab(MVPC,matlabfig,History,FigureName)
 global observe_DECODE;
 
-
 OutputViewerparerp = '';
 if nargin<1
     help f_preparms_decodetab();
@@ -32,7 +31,6 @@ end
 if nargin <4
     FigureName = '';
 end
-
 
 %%---------------Selected MVPC sets------------------
 MVPCArray = estudioworkingmemory('MVPCArray');
@@ -111,17 +109,15 @@ if isempty(qXticks)%%|| stepX==xtickstep
 end
 
 
-
 %%Precision
-try Xtickdecimal=MVPC_plotset.paras{5};catch MVPC_plotset.paras{5}=1; end
+try Xtickdecimal=MVPC_plotset_pars{5};catch Xtickdecimal=1; end
 Xtickdecimal =Xtickdecimal-1;
 if isempty(Xtickdecimal) || numel(Xtickdecimal)~=1 || any(Xtickdecimal(:)<0)
     Xtickdecimal=0;
 end
 
-
 %%
-try Xlabelfontflg = MVPC_plotset.paras{6} ; catch Xlabelfontflg=1; end
+try Xlabelfontflg = MVPC_plotset_pars{6} ; catch Xlabelfontflg=1; end
 if isempty(Xlabelfontflg) || numel(Xlabelfontflg)~=1 || any(Xlabelfontflg(:)>5)
     Xlabelfontflg=1;
 end
@@ -132,20 +128,18 @@ fontsizes  = str2double({'4','6','8','10','12','14','16','18','20','24','28','32
 
 Xlabelfont = fonttype{Xlabelfontflg};
 %%font size
-try Xlabelfontsize = MVPC_plotset.paras{7};  catch Xlabelfontsize=5;  end
+try Xlabelfontsize = MVPC_plotset_pars{7};  catch Xlabelfontsize=5;  end
 if isempty(Xlabelfontsize) || numel(Xlabelfontsize)~=1 || any(Xlabelfontsize(:)>20)
     Xlabelfontsize=5;
 end
 Xlabelfontsize = fontsizes(Xlabelfontsize);
 
 %%text color for x axis
-try XlabelcolorFlag = MVPC_plotset.paras{8}; catch  XlabelcolorFlag=1; end
+try XlabelcolorFlag = MVPC_plotset_pars{8}; catch  XlabelcolorFlag=1; end
 if isempty(XlabelcolorFlag) || numel(XlabelcolorFlag)~=1 || any(XlabelcolorFlag(:)>7)
     XlabelcolorFlag=1;
 end
 switch XlabelcolorFlag
-    case 1
-        Xlabelcolor  = [0 0 0];%% black
     case 2
         Xlabelcolor  = [1 0 0];%% red
     case 3
@@ -161,7 +155,6 @@ switch XlabelcolorFlag
     otherwise
         Xlabelcolor = [0 0 0];%%black
 end
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -286,10 +279,8 @@ switch YlabelcolorFlag
         Ylabelcolor = [0 0 0];%%black
 end
 
-
 %%-----------------------standard error of mean----------------------------
 try SEMValue = MVPC_plotset_pars{17};catch  SEMValue = [0 0 0];end
-
 try SEMFlag =SEMValue(1); catch SEMFlag=0; end
 if isempty(SEMFlag) || (SEMFlag~=0 && SEMFlag~=1)
     SEMFlag=0;
@@ -308,6 +299,10 @@ else
     Transparency=0;
 end
 
+try ChanceLevel = MVPC_plotset_pars{18};catch  ChanceLevel=1;end
+if isempty(ChanceLevel) || numel(ChanceLevel)~=1 || (ChanceLevel~=0 && ChanceLevel~=1)
+    ChanceLevel=1;
+end
 
 %%--------------Settings for lines-------------------
 MVPC_lineslegendops = estudioworkingmemory('MVPC_lineslegendops');
@@ -357,7 +352,7 @@ try
         end
     end
 catch
-    [lineNameStr,linecolors,linetypes,linewidths] = f_get_lineset_ERPviewer(numel(OverlayArray));
+    [lineNameStr,linecolors,linetypes,linewidths] = f_get_lineset_ERPviewer();
     lineset_str  =table(lineNameStr,linecolors,linetypes,linewidths);
     LineData = table2cell(lineset_str);
     LineDataColor = linecolorsrgb;
@@ -426,15 +421,15 @@ if isempty(legauto) ||  numel(legauto)~=1 || (legauto~=0 && legauto~=1)
     legauto =1;
 end
 if legauto==1
-    FontLeg = 'Courier';
+    FontLeg = 'Helvetica';
     TextcolorLeg=1;
     Legcolumns = ceil(sqrt(OverlayArray));
     FontSizeLeg = 12;
 else
-    try fontnames = legendparas{2};catch fontnames = 'Courier';end
+    try fontnames = legendparas{2};catch fontnames = 'Helvetica';end
     [~,IA] =ismember_bc2(fontnames,fonttype);
     if IA==0
-        FontLeg = 'Courier';
+        FontLeg = 'Helvetica';
     else
         FontLeg=fonttype{IA};
     end
@@ -456,10 +451,7 @@ else
     else
         Legcolumns = str2num(columnStr{IA2});
     end
-    
 end
-
-
 
 
 figSize = estudioworkingmemory('egfigsize');
@@ -467,14 +459,12 @@ if isempty(figSize)
     figSize = [];
 end
 
-
-
 TextcolorLeg = 1;
 
 
 
 % CBELabels = [0 100 1];
-Legcolumns = ceil(sqrt(length(LegendName)));
+% Legcolumns = ceil(sqrt(length(LegendName)));
 
 
 new_pos = estudioworkingmemory('EStudioScreenPos');
@@ -490,7 +480,7 @@ end
 
 FigOutpos = [ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100]*8/9;
 if isempty(FigureName)
-    FigureName = MVPC.erpname;
+    FigureName = MVPC.mvpcname;
 end
 
 if matlabfig==1
@@ -507,7 +497,7 @@ else
 
     OutputViewerparerp{1} =  MVPCArray;
     OutputViewerparerp{2} =timeRange;
-    OutputViewerparerp{3} =timeticks;
+    OutputViewerparerp{3} =qXticks;
     OutputViewerparerp{4} =Xtickdecimal;
     OutputViewerparerp{5} =Xlabelfont;
     OutputViewerparerp{6} =Xlabelfontsize;
@@ -528,7 +518,7 @@ else
     OutputViewerparerp{21} =TextcolorLeg;
     OutputViewerparerp{22} =Legcolumns;
     OutputViewerparerp{23} =FontSizeLeg;
-    
+    OutputViewerparerp{24} =ChanceLevel;
 end
 
 end

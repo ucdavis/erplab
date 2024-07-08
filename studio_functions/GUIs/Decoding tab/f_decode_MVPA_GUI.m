@@ -12,6 +12,7 @@
 
 function varargout = f_decode_MVPA_GUI(varargin)
 global observe_DECODE;
+
 addlistener(observe_DECODE,'Count_currentbest_change',@Count_currentbest_change);
 addlistener(observe_DECODE,'Reset_best_panel_change',@Reset_best_panel_change);
 addlistener(observe_DECODE,'Count_currentMVPC_changed',@Count_currentMVPC_changed);
@@ -1390,6 +1391,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.Paras{8} = Docode_do_mvpa.eq_trials_acrbest_checkbox.Value;
         Docode_do_mvpa.Paras{9} = str2num(Docode_do_mvpa.manfloor_edit.String);
         Docode_do_mvpa.paras_ops = {1,1,1,[],1,0};
+        observe_DECODE.Reset_Best_paras_panel=2;
     end
 
 end
