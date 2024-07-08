@@ -44,7 +44,6 @@ EStudio_gui_erp_totl.decode_panel{7} = f_decode_mvpclass_GUI(EStudio_gui_erp_tot
 EStudio_gui_erp_totl.decode_panelSizes(7) = 190;
 EStudio_gui_erp_totl.decode_panel{8} = f_decode_history_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(8) = 190;
-
 EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(EStudio_gui_erp_totl.decode_panelSizes);
 
 %% Hook up the minimize callback and IsMinimized
@@ -53,7 +52,7 @@ for Numofpanel = 1:length(EStudio_gui_erp_totl.decode_panel)
 end
 
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [1:length(EStudio_gui_erp_totl.decode_panel)];
+whichpanel = setdiff([1:length(EStudio_gui_erp_totl.decode_panel)],[]);
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.decode_panel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.decode_settingLayout, 'Sizes' );
@@ -208,8 +207,8 @@ catch
 end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
+f_redrawmvpc_Wave_Viewer();
 EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
-
 end
 
 %%---------------------reset parameters for decode Tab---------------------

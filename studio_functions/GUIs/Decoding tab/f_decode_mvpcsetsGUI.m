@@ -621,6 +621,7 @@ varargout{1} = box_mvpcset_gui;
             estudio_warning(msgboxText,titlNamerro);
         elseif serror==2 && ~isempty(msgwrng)
         end
+        observe_DECODE.Count_currentMVPC = 1;
     end
 
 %%%--------------Up this panel--------------------------------------
@@ -680,7 +681,7 @@ varargout{1} = box_mvpcset_gui;
         assignin('base','MVPC',observe_DECODE.MVPC);
         assignin('base','ALLMVPC',observe_DECODE.ALLMVPC);
         assignin('base','CURRENTMVPC',observe_DECODE.CURRENTMVPC);
-        observe_DECODE.Count_currentMVPC = 2; 
+        observe_DECODE.Count_currentMVPC = 2;
         if EStudio_gui_erp_totl.Decode_autoplot==1
             f_redrawmvpc_Wave_Viewer();
         end
@@ -703,7 +704,7 @@ varargout{1} = box_mvpcset_gui;
 
 
     function Reset_best_panel_change(~,~)
-        if observe_DECODE.Reset_erp_paras_panel~=1
+        if observe_DECODE.Reset_Best_paras_panel~=1
             return;
         end
         if ~isempty(observe_DECODE.ALLMVPC)
@@ -712,7 +713,7 @@ varargout{1} = box_mvpcset_gui;
             estudioworkingmemory('MVPCArray',observe_DECODE.CURRENTMVPC);
             Mvpcsetops.butttons_datasets.Value = observe_DECODE.CURRENTMVPC;
         end
-        observe_DECODE.Reset_erp_paras_panel=2;
+        observe_DECODE.Reset_Best_paras_panel=2;
     end
 
 end

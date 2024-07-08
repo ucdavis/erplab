@@ -1525,6 +1525,7 @@ if ~isempty(extfig)
     catch
         print(fig_gui,'-dpdf',figFileName);
     end
+%     fprintf(['\n User selected the path to save waves for decoding accuracy:',figFileName,'\n']);
 end
 
 return;

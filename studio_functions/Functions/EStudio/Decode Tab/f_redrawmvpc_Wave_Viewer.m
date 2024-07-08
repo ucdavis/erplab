@@ -191,12 +191,10 @@ if Value==2
 elseif Value==3
     EStudiowinsize();
 elseif Value==4
-    Advanced_viewer();
-elseif Value==5
     Show_command();
-elseif Value==6
+elseif Value==5
     figure_saveas();
-elseif Value==7
+elseif Value==6
     figure_out();
 end
 Source.Value=1;
@@ -226,7 +224,7 @@ MessageViewer= char(strcat('Zoom In'));
 estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
 try
     observe_DECODE.Process_messg =1;
-   f_redrawmvpc_Wave_Viewer();
+    f_redrawmvpc_Wave_Viewer();
     observe_DECODE.Process_messg =2;
 catch
     observe_DECODE.Process_messg =3;
@@ -249,7 +247,7 @@ if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
     estudioworkingmemory('DecodeTab_zoomSpace',zoomspaceEdit);
     try
         observe_DECODE.Process_messg =1;
-       f_redrawmvpc_Wave_Viewer();
+        f_redrawmvpc_Wave_Viewer();
         observe_DECODE.Process_messg =2;
         return;
     catch
@@ -363,7 +361,7 @@ catch
 end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
- f_redrawmvpc_Wave_Viewer();
+f_redrawmvpc_Wave_Viewer();
 EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
 %         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
 end
@@ -381,10 +379,10 @@ end
 if ~isempty(messgStr)
     observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
 end
-estudioworkingmemory('f_ERP_proces_messg','Show Command');
-observe_DECODE.Process_messg =1;
-f_preparms_erptab(observe_DECODE.MVPC,1,'command');
-observe_DECODE.Process_messg =2;
+% estudioworkingmemory('f_ERP_proces_messg','Show Command');
+% observe_DECODE.Process_messg =1;
+f_preparms_decodetab(observe_DECODE.MVPC,1,'command');
+% observe_DECODE.Process_messg =2;
 end
 
 %%----------------------------save figure as-------------------------------
@@ -398,18 +396,12 @@ if ~isempty(messgStr)
     observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
 end
 
-estudioworkingmemory('f_ERP_proces_messg','Save figure as');
-observe_DECODE.Process_messg =1;
 pathstr = pwd;
-namedef =[observe_DECODE.MVPC.erpname,'.pdf'];
+namedef =['decoding_accuracy.pdf'];
 [erpfilename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
     'Save as',[fullfile(pathstr,namedef)]);
 
-
 if isequal(erpfilename,0)
-    beep;
-    observe_DECODE.Process_messg =3;
-    disp('User selected Cancel')
     return
 end
 
@@ -422,8 +414,7 @@ else
     figurename = fullfile(erppathname,erpfilename);
 end
 
-f_preparms_erptab(observe_DECODE.MVPC,1,History,figurename);
-observe_DECODE.Process_messg =2;
+f_preparms_decodetab(observe_DECODE.MVPC,1,History,figurename);
 end
 
 %%--------------------Create static/eportable plot-------------------------
@@ -438,16 +429,14 @@ if ~isempty(messgStr)
 end
 
 MessageViewer= char(strcat('Create Static/Exportable Plot'));
-estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
-observe_DECODE.Process_messg =1;
-try
-    figurename = observe_DECODE.MVPC.erpname;
-catch
+% estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
+% observe_DECODE.Process_messg =1;
+
     figurename = '';
-end
+
 History = 'off';
-f_preparms_erptab(observe_DECODE.MVPC,1,History,figurename);
-observe_DECODE.Process_messg =2;
+f_preparms_decodetab(observe_DECODE.MVPC,1,History,figurename);
+% observe_DECODE.Process_messg =2;
 end
 
 
@@ -456,14 +445,15 @@ function decode_reset(~,~)
 global observe_DECODE;
 global EStudio_gui_erp_totl;
 global observe_EEGDAT;
+global observe_ERPDAT;
 
 estudioworkingmemory('ViewerFlag', 0);
 
-MessageViewer= char(strcat('Reset parameters for ERP panels '));
+MessageViewer= char(strcat('Reset parameters for Pattern Classification Tab '));
 estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
-app = feval('estudio_reset_paras',[0 0 1 0]);
+app = feval('estudio_reset_paras',[0 0 0 0 1 0]);
 waitfor(app,'Finishbutton',1);
-reset_paras = [0 0 0 0];
+reset_paras = [0 0 0 0 0 0];
 try
     reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
     app.delete; %delete app from view
@@ -476,6 +466,7 @@ if isempty(reset_paras)
 end
 EStudio_gui_erp_totl.Decode_autoplot=1;
 EStudio_gui_erp_totl.EEG_autoplot = 1;
+EStudio_gui_erp_totl.Decode_autoplot=1;
 %%---------------------------EEG Tab---------------------------------------
 if reset_paras(2)==1
     EStudio_gui_erp_totl.clear_alleeg = 1;
@@ -513,30 +504,68 @@ if reset_paras(4)==1
 else
     EStudio_gui_erp_totl.clear_allerp = 0;
 end
-observe_DECODE.Process_messg =1;
+
 if reset_paras(3)==1
-    if ~isempty(observe_DECODE.MVPC) && ~isempty(observe_DECODE.ALLMVPC)
-        observe_DECODE.Reset_erp_paras_panel = 1;
-    end
+    observe_ERPDAT.Reset_erp_paras_panel = 1;
     if EStudio_gui_erp_totl.clear_allerp == 0
         f_redrawERP();
     else
-        observe_DECODE.ALLMVPC = [];
-        observe_DECODE.MVPC = [];
-        observe_DECODE.CURRENTMVPC  = 1;
-        estudioworkingmemory('MVPCArray',1);
+        observe_ERPDAT.ALLERP = [];
+        observe_ERPDAT.ERP = [];
+        observe_ERPDAT.CURRENTERP  = 1;
+        estudioworkingmemory('selectederpstudio',1);
+        observe_ERPDAT.Count_currentERP = 1;
     end
 else
     if EStudio_gui_erp_totl.clear_allerp == 1
-        
-        observe_DECODE.ALLMVPC = [];
-        observe_DECODE.MVPC = [];
-        observe_DECODE.CURRENTMVPC  = 1;
-        estudioworkingmemory('MVPCArray',1);
+        observe_ERPDAT.ALLERP = [];
+        observe_ERPDAT.ERP = [];
+        observe_ERPDAT.CURRENTERP  = 1;
+        estudioworkingmemory('selectederpstudio',1);
+        observe_ERPDAT.Count_currentERP = 1;
     end
 end
-observe_DECODE.Count_currentMVPC = 1;
-observe_DECODE.Process_messg =2;
+
+
+%%----------------------reste decode Tab---------------------------
+if reset_paras(6)==1
+    EStudio_gui_erp_totl.clear_alldecode = 1;
+else
+    EStudio_gui_erp_totl.clear_alldecode = 0;
+end
+if reset_paras(5)==1
+    observe_DECODE.Reset_Best_paras_panel = 1;
+    if EStudio_gui_erp_totl.clear_alldecode == 0
+        f_redrawmvpc_Wave_Viewer();
+    else
+        observe_ERPDAT.ALLMVPC = [];
+        observe_ERPDAT.MVPC = [];
+        observe_ERPDAT.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.Count_currentMVPC = 1;
+        observe_DECODE.BEST =  [];
+        observe_DECODE.CURRENTBEST = 1;
+        observe_DECODE.ALLBEST =  [];
+        estudioworkingmemory('BESTArray',1);
+        observe_DECODE.Count_currentbest=1;
+    end
+else
+    if EStudio_gui_erp_totl.clear_alldecode == 1
+        observe_ERPDAT.ALLMVPC = [];
+        observe_ERPDAT.MVPC = [];
+        observe_ERPDAT.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.Count_currentMVPC = 1;
+        
+        observe_DECODE.BEST =  [];
+        observe_DECODE.CURRENTBEST = 1;
+        observe_DECODE.ALLBEST =  [];
+        estudioworkingmemory('BESTArray',1);
+        observe_DECODE.Count_currentbest=1;
+    end
+end
+
+
 end
 
 
@@ -574,7 +603,7 @@ end
 
 
 %%font for x axis
-if isempty(Xlabelfont) || ~ischar(Xlabelfontsize)
+if isempty(Xlabelfont) || ~ischar(Xlabelfont)
     Xlabelfont = 'Helvetica';
 end
 %%font size for x axis
@@ -654,7 +683,7 @@ end
 for Numofmvpc = 1:numel(MVPCArray)
     try
         colornames =  qLineStylespec{Numofmvpc};
-        if isempty(colornames) || ~ischar(colornames) || ~ismember_bc2({'-','--',':','-.','none'},colornames)
+        if isempty(colornames) || ~ischar(colornames) || ~ismember_bc2(colornames,{'-','--',':','-.','none'})
             colornames = 'none';
         end
         qLineStylespec{Numofmvpc} = colornames;
@@ -726,21 +755,25 @@ hplot11 = [];
 if chanLevel==1
     yline(waveview,ALLMVPC(MVPCArray(1)).chance,'--','Color' ,[0 0 0],'LineWidth',1);
 end
-for Numofoverlay = 1:numel(MVPCArray)
-    bindatatrs = bindata(:,Numofoverlay);
-    bindataerrtrs = bindataerror(:,Numofoverlay);
-    if  Standerr>=1 &&Transparency>0 %SEM
-        yt1 = bindatatrs - bindataerrtrs.*Standerr;
-        yt2 = bindatatrs + bindataerrtrs.*Standerr;
-        fill(waveview,[timesnew fliplr(timesnew)],[yt2' fliplr(yt1')], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
-    end
-    try
-        hplot11(Numofoverlay) = plot(waveview,timesnew, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
-            'Color', qLineColorspec(Numofoverlay,:),'Marker',char(qLineMarkerspec{Numofoverlay}),...
-            'LineStyle',char(qLineStylespec{Numofoverlay}));
-    catch
-        hplot11(Numofoverlay) = plot(waveview,timesnew, bindatatrs,'LineWidth',1,...
-            'Color', [0 0 0]);
+timerangold = [ALLMVPC(MVPCArray(1)).times(1),ALLMVPC(MVPCArray(1)).times(end)];
+[xxx, latsamp1, latdiffms] = closest(timesnew, timerangold);
+if ~isempty(latsamp1)
+    for Numofoverlay = 1:numel(MVPCArray)
+        bindatatrs = bindata(latsamp1(1):latsamp1(2),Numofoverlay);
+        bindataerrtrs = bindataerror(latsamp1(1):latsamp1(2),Numofoverlay);
+        if  Standerr>=1 &&Transparency>0 %SEM
+            yt1 = bindatatrs - bindataerrtrs.*Standerr;
+            yt2 = bindatatrs + bindataerrtrs.*Standerr;
+            fill(waveview,[timesnew(latsamp1(1):latsamp1(2)) fliplr(timesnew(latsamp1(1):latsamp1(2)))],[yt2' fliplr(yt1')], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
+        end
+        try
+            hplot11(Numofoverlay) = plot(waveview,timesnew(latsamp1(1):latsamp1(2)), bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
+                'Color', qLineColorspec(Numofoverlay,:),'Marker',char(qLineMarkerspec{Numofoverlay}),...
+                'LineStyle',char(qLineStylespec{Numofoverlay}));
+        catch
+            hplot11(Numofoverlay) = plot(waveview,timesnew(latsamp1(1):latsamp1(2)), bindatatrs,'LineWidth',1,...
+                'Color', [0 0 0]);
+        end
     end
 end
 set(waveview,'box','off');

@@ -10,6 +10,7 @@
 
 function OutputViewerparerp = f_preparms_decodetab(MVPC,matlabfig,History,FigureName)
 global observe_DECODE;
+global EStudio_gui_erp_totl;
 
 OutputViewerparerp = '';
 if nargin<1
@@ -40,7 +41,7 @@ if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe
     observe_DECODE.CURRENTMVPC = MVPCArray;
     estudioworkingmemory('MVPCArray',MVPCArray);
 end
-
+ALLMVPC = observe_DECODE.ALLMVPC;
 %
 %%Plot setting
 MVPC_plotset_pars = estudioworkingmemory('MVPC_plotset_pars');
@@ -352,7 +353,7 @@ try
         end
     end
 catch
-    [lineNameStr,linecolors,linetypes,linewidths] = f_get_lineset_ERPviewer();
+    [lineNameStr,linecolors,linetypes,linewidths,~,~,~,linecolorsrgb] = f_get_lineset_ERPviewer();
     lineset_str  =table(lineNameStr,linecolors,linetypes,linewidths);
     LineData = table2cell(lineset_str);
     LineDataColor = linecolorsrgb;
@@ -435,21 +436,33 @@ else
     end
     
     try fontsizenames = legendparas{3};catch fontsizenames = '12';end
+    fontsizenames = str2num(fontsizenames);
+    if isempty(fontsizenames) || numel(fontsizenames)~=1 || any(fontsizenames(:)<1)
+        fontsizenames=12;
+    end
     [~,IA1] =ismember_bc2(fontsizenames,fontsizes);
     if IA1==0
         FontSizeLeg = 12;
     else
-        FontSizeLeg = str2num(fontsizes(IA1));
+        FontSizeLeg = fontsizes(IA1);
     end
     for Numoflegend = 1:100
-        columnStr{Numoflegend} = num2str(Numoflegend);
+        columnStr(Numoflegend) = Numoflegend;
     end
     try columnsnum = legendparas{4};catch columnsnum = '2';end
+    columnsnum = str2num(columnsnum);
+    if isempty(columnsnum) || numel(columnsnum)~=1 || any(columnsnum(:)<1)
+        columnsnum=2;
+    end
     [~,IA2] =ismember_bc2(columnsnum,columnStr);
     if IA1==0
         Legcolumns = ceil(sqrt(OverlayArray));
     else
-        Legcolumns = str2num(columnStr{IA2});
+        Legcolumns = columnStr(IA2);
+    end
+    try TextcolorLeg= double(legendparas{5});catch TextcolorLeg = 1;end
+    if isempty(TextcolorLeg) || numel(TextcolorLeg)~=1 || (TextcolorLeg~=0 && TextcolorLeg~=1)
+        TextcolorLeg = 1;
     end
 end
 
@@ -459,7 +472,7 @@ if isempty(figSize)
     figSize = [];
 end
 
-TextcolorLeg = 1;
+
 
 
 
@@ -477,24 +490,23 @@ try
 catch
     ScreenPos =  get( 0, 'Screensize' );
 end
-
+ ScreenPos = EStudio_gui_erp_totl.ScreenPos;
+ 
+ 
 FigOutpos = [ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100]*8/9;
-if isempty(FigureName)
-    FigureName = MVPC.mvpcname;
-end
+% if isempty(FigureName)
+%     FigureName = MVPC.mvpcname;
+% end
+
 
 if matlabfig==1
-    [ERP, erpcom] = pop_plotERPwaviewer(MVPC,1,1, BinArray, ChanArray,...
-        'PLOTORG',PLOTORG,'GridposArray',GridposArray,'LabelsName',LabelsName, 'Blc', 'none','Box',plotBox,'LineColor',LineColorspec,'LineStyle',LineStylespec,...
-        'LineMarker',LineMarkerspec,'LineWidth',LineWidthspec,'LegendName',LegendName,'LegendFontsize',FontSizeLeg,...
-        'Labeloc',CBELabels,'Labelfontsize',CBEFontsize,'SEM',Standerr,'Transparency', Transparency,...
-        'TimeRange',timeRange,'Xticks',timeticks,'Xlabelfontsize',Xlabelfontsize,...
-        'Xlabelcolor',Xlabelcolor,'YScales',yscale,'Yticks',Yticks,'Ylabelfontsize',YlabelFontsize,...
-        'Ylabelcolor',ylabelFontcolor,'LegtextColor',TextcolorLeg,'Legcolumns',Legcolumns,...
-        'FigureName',FigureName,'FigbgColor',[1 1 1],'Labelcolor',CBETcolor,'Ytickdecimal',1,'Xtickdecimal',0,'XtickdisFlag',XdispFlag,...
-        'FigOutpos',FigOutpos,'History', History);%
+    [ALLMVPC, mvpcom] = pop_plotmvpcset(ALLMVPC,'MVPCArray',MVPCArray,'timeRange',timeRange,'Xticks',qXticks,'Xtickdecimal',Xtickdecimal,...
+        'Xlabelfont',Xlabelfont,'Xlabelfontsize',Xlabelfontsize,'Xlabelcolor',Xlabelcolor,'YScales',yscale,'Yticks',Yticks,...
+        'Ytickdecimal',Ytickdecimal,'Ylabelfont',Ylabelfont,'Ylabelfontsize',Ylabelfontsize,'Ylabelcolor',Ylabelcolor,'Standerr',Standerr,...
+        'Transparency',Transparency,'LineColorspec',LineColorspec,'LineStylespec',LineStylespec,'LineMarkerspec',LineMarkerspec,...
+        'LineWidthspec',LineWidthspec,'FontLeg',FontLeg,'TextcolorLeg',TextcolorLeg,'Legcolumns',Legcolumns,'FontSizeLeg',FontSizeLeg,...
+        'chanLevel',ChanceLevel,'figureName',FigureName,'FigOutpos',FigOutpos,'History', History);
 else
-
     OutputViewerparerp{1} =  MVPCArray;
     OutputViewerparerp{2} =timeRange;
     OutputViewerparerp{3} =qXticks;
@@ -509,7 +521,7 @@ else
     OutputViewerparerp{12} =Ylabelfontsize;
     OutputViewerparerp{13} =Ylabelcolor;
     OutputViewerparerp{14} =Standerr;
-    OutputViewerparerp{15} =Transparency;  
+    OutputViewerparerp{15} =Transparency;
     OutputViewerparerp{16} =LineColorspec;
     OutputViewerparerp{17} =LineStylespec;
     OutputViewerparerp{18} =LineMarkerspec;

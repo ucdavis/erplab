@@ -52,7 +52,7 @@ varargout{1} = box_decode_history;
         
         ERP_history = [];
         if isempty(ERP_history)
-            ERP_history = char('No history exist in the Pattern Classification Tab');
+            ERP_history = char('No history is for Pattern Classification Tab');
         end
         [~, total_len] = size(ERP_history);
         if total_len <500
@@ -111,7 +111,7 @@ varargout{1} = box_decode_history;
             ERP_history = '';
         end
         if isempty(ERP_history)
-            ERP_history = {'No command history was found for Pattern Classification Tab'};
+            ERP_history = {'No command history is for Pattern Classification Tab'};
         end
         ERP_history_display = {};
         count = 0;
@@ -135,7 +135,7 @@ varargout{1} = box_decode_history;
             ERP_history = '';
         end
         if isempty(ERP_history)
-            disp(['No command history for Pattern Classification Tab']);
+            disp(['No command history is for Pattern Classification Tab']);
             observe_DECODE.Process_messg=2;
             return;
         end
@@ -160,7 +160,7 @@ varargout{1} = box_decode_history;
         end
         
         if isempty(ERP_history)
-            ERP_history = char('No history exist in the Pattern Classification Tab');
+            ERP_history = char('No history is for the Pattern Classification Tab');
         end
         ERP_history_display = {};
         for Numofrow = size(ERP_history,1):-1:1

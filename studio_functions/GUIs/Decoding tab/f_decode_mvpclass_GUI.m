@@ -103,10 +103,9 @@ varargout{1} = box_decode_mvpclass;
                     catch
                         datastr{count,3} = [''];
                     end
-                    gui_decode_mvpclass.uitable.ColumnName={'MVPC ID','Class name','# trials/class'};
-                    gui_decode_mvpclass.uitable.ColumnWidth = {80 80 80};
+                    gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {70 70 100};
                 end
-                
             end
         end
         set(gui_decode_mvpclass.uitable,'Data',datastr);
@@ -116,7 +115,7 @@ varargout{1} = box_decode_mvpclass;
 
 
     function Reset_best_panel_change(~,~)
-        if  observe_DECODE.Reset_Best_paras_panel~=5;
+        if  observe_DECODE.Reset_Best_paras_panel~=5
             return;
         end
         Enableflag = 'on';
@@ -145,9 +144,9 @@ varargout{1} = box_decode_mvpclass;
                     catch
                         datastr{count,3} = [''];
                     end
-                    gui_decode_mvpclass.uitable.ColumnName={'MVPC ID','Class','# trials'};
+                    gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {70 70 100};
                 end
-                
             end
         end
         set(gui_decode_mvpclass.uitable,'Data',datastr);

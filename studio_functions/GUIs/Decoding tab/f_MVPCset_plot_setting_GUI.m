@@ -1113,7 +1113,7 @@ varargout{1} = MVPC_plotset_box;
         if serror==1 && ~isempty(msgwrng)
             try legendparas{4} = '1'; catch   end
         else
-            try legendparas{4} = num2str(ceil(sqrt(MVPCArray))); catch   end
+            try legendparas{4} = num2str(ceil(sqrt(numel(MVPCArray)))); catch   end
         end
         
         
@@ -1138,7 +1138,6 @@ varargout{1} = MVPC_plotset_box;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        
         estudioworkingmemory('MVPC_plotset',0);
         MVPC_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
         MVPC_plotset.plot_apply.ForegroundColor = [0 0 0];
@@ -1261,7 +1260,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset.paras);
-         if EStudio_gui_erp_totl.Decode_autoplot==1
+        if EStudio_gui_erp_totl.Decode_autoplot==1
             f_redrawmvpc_Wave_Viewer();
         end
     end
@@ -1457,7 +1456,7 @@ varargout{1} = MVPC_plotset_box;
 
 %%---------------reset the parameters for all panels-----------------------
     function Reset_best_panel_change(~,~)
-        if observe_DECODE.Reset_MVPC_paras_panel~=2
+        if observe_DECODE.Reset_Best_paras_panel~=2
             return;
         end
         estudioworkingmemory('MVPC_plotset',0);
@@ -1471,6 +1470,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.timet_auto.Value=1;
         MVPC_plotset.timet_low.Enable = 'off';
         MVPC_plotset.timet_high.Enable = 'off';
+        MVPC_plotset.timet_step.Enable = 'off';
         try
             MVPC_plotset.timet_low.String = num2str(observe_DECODE.MVPC.times(1));
             MVPC_plotset.timet_high.String = num2str(observe_DECODE.MVPC.times(end));
@@ -1557,6 +1557,6 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
         MVPC_plotset_pars = MVPC_plotset.paras;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
-        observe_DECODE.Reset_MVPC_paras_panel=3;
+        observe_DECODE.Reset_Best_paras_panel=3;
     end
 end

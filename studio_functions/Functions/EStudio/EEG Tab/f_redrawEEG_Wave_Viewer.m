@@ -950,6 +950,7 @@ function eeg_paras_reset(~,~)
 global observe_EEGDAT;
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
+global observe_DECODE;
 
 estudioworkingmemory('EEGUpdate',0);
 observe_EEGDAT.count_current_eeg =1;
@@ -964,9 +965,9 @@ if ~isempty(messgStr)
 end
 
 estudioworkingmemory('f_EEG_proces_messg','Reset parameters for EEG panels');
-app = feval('estudio_reset_paras',[1 0 0 0]);
+app = feval('estudio_reset_paras',[1 0 0 0 0 0]);
 waitfor(app,'Finishbutton',1);
-reset_paras = [0 0 0 0];
+reset_paras = [0 0 0 0 0 0];
 try
     reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
     app.delete; %delete app from view
@@ -977,8 +978,9 @@ end
 if isempty(reset_paras)
     return;
 end
-EStudio_gui_erp_totl.ERP_autoplot=1;
-EStudio_gui_erp_totl.EEG_autoplot = 1;
+EStudio_gui_erp_totl.EEG_autoplot = 1; %%Automatic plotting for eegsets
+EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
+EStudio_gui_erp_totl.Decode_autoplot=1;
 
 observe_EEGDAT.eeg_panel_message=1;
 if reset_paras(2)==1
@@ -1037,6 +1039,43 @@ else
     end
 end
 
+%%----------------------reste decode Tab---------------------------
+if reset_paras(6)==1
+    EStudio_gui_erp_totl.clear_alldecode = 1;
+else
+    EStudio_gui_erp_totl.clear_alldecode = 0;
+end
+if reset_paras(5)==1
+    observe_DECODE.Reset_Best_paras_panel = 1;
+    if EStudio_gui_erp_totl.clear_alldecode == 0
+        f_redrawmvpc_Wave_Viewer();
+    else
+        observe_ERPDAT.ALLMVPC = [];
+        observe_ERPDAT.MVPC = [];
+        observe_ERPDAT.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.Count_currentMVPC = 1;
+        observe_DECODE.BEST =  [];
+        observe_DECODE.CURRENTBEST = 1;
+        observe_DECODE.ALLBEST =  [];
+        estudioworkingmemory('BESTArray',1);
+        observe_DECODE.Count_currentbest=1;
+    end
+else
+    if EStudio_gui_erp_totl.clear_alldecode == 1
+        observe_ERPDAT.ALLMVPC = [];
+        observe_ERPDAT.MVPC = [];
+        observe_ERPDAT.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.Count_currentMVPC = 1;
+        
+        observe_DECODE.BEST =  [];
+        observe_DECODE.CURRENTBEST = 1;
+        observe_DECODE.ALLBEST =  [];
+        estudioworkingmemory('BESTArray',1);
+        observe_DECODE.Count_currentbest=1;
+    end
+end
 end
 
 

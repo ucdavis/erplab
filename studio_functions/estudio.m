@@ -421,7 +421,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         end
         f_redrawEEG_Wave_Viewer();
         f_redrawERP();
-        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
+        f_redrawmvpc_Wave_Viewer();
+        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
     end
 
 
@@ -438,12 +439,17 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         if EStudio_gui_erp_totl.context_tabs.SelectedChild==1
             estudioworkingmemory('f_EEG_proces_messg','Reset parameters for ALL panels');
             observe_EEGDAT.eeg_panel_message=1;
-            app = feval('estudio_reset_paras',[1 0 0 0]);
+            app = feval('estudio_reset_paras',[1 0 0 0 0 0 ]);
         elseif EStudio_gui_erp_totl.context_tabs.SelectedChild==2
             MessageViewer= char(strcat('Reset parameters for ALL panels '));
             estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg =2;
-            app = feval('estudio_reset_paras',[0 0 1 0]);
+            app = feval('estudio_reset_paras',[0 0 1 0 0 0]);
+        elseif  EStudio_gui_erp_totl.context_tabs.SelectedChild==3
+            MessageViewer= char(strcat('Reset parameters for ALL panels '));
+            estudioworkingmemory('f_Decode_proces_messg',MessageViewer);
+            observe_DECODE.Process_messg =2;
+            app = feval('estudio_reset_paras',[0 0 0 0 1 0]);
         end
         
         waitfor(app,'Finishbutton',1);
@@ -487,6 +493,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             observe_EEGDAT.eeg_panel_message=2;
         elseif EStudio_gui_erp_totl.context_tabs.SelectedChild==2
             observe_ERPDAT.Process_messg =2;
+        elseif EStudio_gui_erp_totl.context_tabs.SelectedChild==3
+            observe_DECODE.Process_messg =2;
         end
         %%---------------- -------------erp tab------------------------------------
         if reset_paras(4)==1
@@ -515,6 +523,44 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_ERPDAT.Count_currentERP = 1;
             end
         end
+        %%----------------------reste decode Tab---------------------------
+        if reset_paras(6)==1
+            EStudio_gui_erp_totl.clear_alldecode = 1;
+        else
+            EStudio_gui_erp_totl.clear_alldecode = 0;
+        end
+        if reset_paras(5)==1
+            observe_DECODE.Reset_Best_paras_panel = 1;
+            if EStudio_gui_erp_totl.clear_alldecode == 0
+                f_redrawmvpc_Wave_Viewer();
+            else
+                observe_ERPDAT.ALLMVPC = [];
+                observe_ERPDAT.MVPC = [];
+                observe_ERPDAT.CURRENTMVPC  = 1;
+                estudioworkingmemory('MVPCArray',1);
+                observe_DECODE.Count_currentMVPC = 1;
+                observe_DECODE.BEST =  [];
+                observe_DECODE.CURRENTBEST = 1;
+                observe_DECODE.ALLBEST =  [];
+                estudioworkingmemory('BESTArray',1);
+                observe_DECODE.Count_currentbest=1; 
+            end
+        else
+            if EStudio_gui_erp_totl.clear_alldecode == 1
+                observe_ERPDAT.ALLMVPC = [];
+                observe_ERPDAT.MVPC = [];
+                observe_ERPDAT.CURRENTMVPC  = 1;
+                estudioworkingmemory('MVPCArray',1);
+                observe_DECODE.Count_currentMVPC = 1;
+                
+                observe_DECODE.BEST =  [];
+                observe_DECODE.CURRENTBEST = 1;
+                observe_DECODE.ALLBEST =  [];
+                estudioworkingmemory('BESTArray',1);
+                observe_DECODE.Count_currentbest=1;
+            end
+        end
+        
     end
 
 
