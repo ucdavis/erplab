@@ -242,7 +242,7 @@ if isempty(MVPCArray) || any(MVPCArray(:)<1) || any(MVPCArray(:)>length(ALLMVPC)
 end
 [serror, msgwrng] = f_checkmvpc(ALLMVPC,MVPCArray);
 if serror==1
-    MVPCArray  = length(ALLMVPC);
+    MVPCArray  =MVPCArray(1);
 end
 MVPC = ALLMVPC(MVPCArray(1));
 
@@ -266,7 +266,7 @@ end
 %%font for x axis
 qXlabelfont = p_Results.Xlabelfont;
 if isempty(qXlabelfont) ||~ischar(qXlabelfont)
-    Xlabelfont = 'Helvetica';
+    qXlabelfont = 'Helvetica';
 end
 %%fontsize for x axis
 qXlabelfontsize = p_Results.Xlabelfontsize;
@@ -575,7 +575,5 @@ switch shist
         mvpcom = '';
         return
 end
-
-
 
 return;

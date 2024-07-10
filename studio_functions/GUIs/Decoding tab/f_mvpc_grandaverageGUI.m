@@ -316,6 +316,16 @@ varargout{1} = MVPC_grdavg_box_gui;
         else
             enableFlag = 'on';
         end
+        if ~isempty(observe_DECODE.MVPC) && ~isempty(observe_DECODE.ALLMVPC)
+            MVPCArray= estudioworkingmemory('MVPCArray');
+            if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
+                MVPCArray = 1:length(observe_DECODE.ALLMVPC);
+            end
+            [serror, msgwrng] = f_checkmvpc(ALLMVPC,MVPCArray);
+            if serror==1 || serror==2
+                enableFlag = 'off';
+            end
+        end
         gui_mvpc_grdavg.mvpc_edit.Enable = enableFlag;
         gui_mvpc_grdavg.mvpc_browse.Enable = enableFlag;
         gui_mvpc_grdavg.sem_checkbox.Enable = enableFlag;
@@ -353,7 +363,6 @@ varargout{1} = MVPC_grdavg_box_gui;
             return;
         end
     end
-
 
     function Reset_best_panel_change(~,~)
         if observe_DECODE.Reset_Best_paras_panel~=3

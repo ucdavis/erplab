@@ -294,18 +294,20 @@ end
 
 %overwriting in BESTset menu list
 if overw==1
-    
+    if strcmpi(Tooltype,'erplab')
     ALLBEST     = evalin('base', 'ALLBEST');
     CURRENTBEST = evalin('base', 'CURRENTBEST');
     ALLBEST(CURRENTBEST) = BEST;
     assignin('base','ALLBEST',ALLBEST);  % save to workspace
     updatemenubest(ALLBEST,1)            % overwrite erpset at erpsetmenu
-    
+    end
 elseif overw == 0
+    if strcmpi(Tooltype,'erplab')
     assignin('base','BEST',BEST);
     pop_loadbest('filename', 'workspace', 'UpdateMainGui', 'on');
     if issave ~= 2
         issave = 1;
+    end
     end
     
 end

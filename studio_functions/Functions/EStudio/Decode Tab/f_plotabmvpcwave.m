@@ -43,7 +43,7 @@ if isempty(MVPCArray) || any(MVPCArray(:)<1) || any(MVPCArray(:)>length(ALLMVPC)
 end
 [serror, msgwrng] = f_checkmvpc(ALLMVPC,MVPCArray);
 if serror==1
-    MVPCArray  = length(ALLMVPC);
+    MVPCArray  = MVPCArray(1);
 end
 MVPC = ALLMVPC(MVPCArray(1));
 

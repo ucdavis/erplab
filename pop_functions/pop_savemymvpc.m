@@ -134,6 +134,11 @@ else
     shist = 0; % off
 end
 
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
+
 
 if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset
     
@@ -305,30 +310,29 @@ end
 
 %overwriting in MVPCset menu list
 if overw==1
-    %this isn't possible if using Decoding GUI toolbox
-    ALLMVPC     = evalin('base', 'ALLMVPC');
-    CURRENTMVPC = evalin('base', 'CURRENTMVPC');
-    ALLMVPC(CURRENTMVPC) = MVPC;
-    assignin('base','ALLERP',ALLMVPC);  % save to workspace
-    updatemenumvpc(ALLMVPC,1)            % overwrite erpset at erpsetmenu
-    
-    
-else
-    if strcmpi(p.Results.gui,'erplab')
-        %in case of many mvpc sets through Decoding GUI toolbox
-        assignin('base','ALLMVPC2',ALLMVPC)
-        pop_loadmvpc('filename', 'decodingtoolbox', 'UpdateMainGui', 'on');
-        
-    else
-        assignin('base','MVPC',MVPC);
-        pop_loadmvpc('filename', 'workspace', 'UpdateMainGui', 'on');
+    if strcmpi(Tooltype,'erplab')
+        %this isn't possible if using Decoding GUI toolbox
+        ALLMVPC     = evalin('base', 'ALLMVPC');
+        CURRENTMVPC = evalin('base', 'CURRENTMVPC');
+        ALLMVPC(CURRENTMVPC) = MVPC;
+        assignin('base','ALLERP',ALLMVPC);  % save to workspace
+        updatemenumvpc(ALLMVPC,1)            % overwrite erpset at erpsetmenu
     end
     
+else
+    if strcmpi(Tooltype,'erplab')
+        if strcmpi(p.Results.gui,'erplab')
+            %in case of many mvpc sets through Decoding GUI toolbox
+            assignin('base','ALLMVPC2',ALLMVPC)
+            pop_loadmvpc('filename', 'decodingtoolbox', 'UpdateMainGui', 'on');
+        else
+            assignin('base','MVPC',MVPC);
+            pop_loadmvpc('filename', 'workspace', 'UpdateMainGui', 'on');
+        end
+    end
     if issave ~= 2
         issave = 1;
     end
-    
-    
 end
 
 
@@ -354,10 +358,7 @@ if ~isempty(filepathx)
     end
 end
 mvpccom = sprintf('%s);', mvpccom);
-Tooltype = p.Results.Tooltype;%%GH, June 2024
-if isempty(Tooltype)%%GH, June 2024
-    Tooltype = 'erplab';
-end
+
 if strcmpi(Tooltype,'erplab')%%GH, June 2024
     eegh(mvpccom);
 end

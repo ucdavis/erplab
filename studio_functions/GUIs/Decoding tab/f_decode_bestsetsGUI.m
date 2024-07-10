@@ -154,7 +154,8 @@ varargout{1} = box_bestset_gui;
         assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST);
         estudioworkingmemory('BESTArray',BESTArray);
         observe_DECODE.Process_messg =2;
-        observe_DECODE.Count_currentbest = 1;
+        observe_DECODE.Count_currentbest = 2;
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 
@@ -212,8 +213,6 @@ varargout{1} = box_bestset_gui;
                 ALLBEST_out(length(ALLBEST_out)+1)=BEST;
             end
         end
-        
-        
         observe_DECODE.ALLBEST(BESTArray) = ALLBEST_out;
         observe_DECODE.BEST = observe_DECODE.ALLBEST(observe_DECODE.CURRENTBEST);
         BESTlistName =  getBESTsets();
@@ -222,6 +221,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.butttons_datasets.Max = length(BESTlistName)+1;
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentbest=2;
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 %%--------------------------------Add Suffix---------------------------------
@@ -250,7 +250,6 @@ varargout{1} = box_bestset_gui;
             return;
         end
         
-        
         ALLBEST_out = [];
         ALLBEST = observe_DECODE.ALLBEST(BESTArray);
         [ALLBEST, BESTCOM] = pop_suffixbest( ALLBEST, 'suffixstr',suffixstr,...
@@ -258,6 +257,7 @@ varargout{1} = box_bestset_gui;
         if isempty(BESTCOM)
             return;
         end
+        eegh(BESTCOM);
         for Numofbest = 1:numel(BESTArray)
             BEST = ALLBEST(Numofbest);
             if ~isempty(BESTCOM) && ~isempty(BEST.EEGhistory)
@@ -282,6 +282,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.butttons_datasets.Max = length(BESTlistName)+1;
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentbest = 2;
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 %%-------------------------------fresh ------------------------------------
@@ -398,10 +399,7 @@ varargout{1} = box_bestset_gui;
         assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST);
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentbest = 2;
-        
-        if EStudio_gui_erp_totl.ERP_autoplot==1
-            
-        end
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 %%----------------------Clear the selected BESTsets-------------------------
@@ -423,7 +421,7 @@ varargout{1} = box_bestset_gui;
         if isempty(LASTCOM)
             return;
         end
-        
+        eegh(LASTCOM);
         if isempty(ALLBEST)
             observe_DECODE.ALLBEST = [];
             observe_DECODE.BEST = [];
@@ -462,9 +460,7 @@ varargout{1} = box_bestset_gui;
         estudioworkingmemory('BESTArray',BESTArray);
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentbest = 2;
-        if EStudio_gui_erp_totl.ERP_autoplot==1
-            
-        end
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 
@@ -509,8 +505,9 @@ varargout{1} = box_bestset_gui;
             checkfileindex = checkfilexists([pathName,filesep,filename]);
             if checkfileindex==1
                 [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname, 'filename',...
-                    filename, 'filepath',pathName,'History','gui');
+                    filename, 'filepath',pathName,'gui','save','History','gui','Tooltype','estudio');
                 if Numoferp==1
+                    eegh(BESTCOM);
                     fprintf( ['\n\n',repmat('-',1,100) '\n']);
                     fprintf(['*BESTsets>Save*',32,32,32,32,datestr(datetime('now')),'\n']);
                     fprintf( [BESTCOM]);
@@ -529,10 +526,10 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.ALLBEST(BESTArray(Numoferp)) = BEST;
         end
         observe_DECODE.BEST = observe_DECODE.ALLBEST(observe_DECODE.CURRENTBEST);
-        assignin('base','ALLBESTCOM',ALLBESTCOM);
-        try assignin('base','ERPCOM',ERPCOM);catch; end
-        observe_DECODE.Count_currentbest = 1;
+        
+        observe_DECODE.Count_currentbest = 2;
         observe_DECODE.Process_messg =2;
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 %------------------------- Save as-----------------------------------------
@@ -580,9 +577,9 @@ varargout{1} = box_bestset_gui;
             erpFilename = char(strcat(erpfilename,ext));
             
             [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname,...
-                'filename', erpFilename, 'filepath',BEST.filepath,'History','gui');
-            
+                'filename', erpFilename, 'filepath',BEST.filepath,'History','gui','gui','save','Tooltype','estudio');
             if Numoferp==1
+                eegh(BESTCOM);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 fprintf(['*BESTsets>Save a Copy*',32,32,32,32,datestr(datetime('now')),'\n']);
                 fprintf( [BESTCOM]);
@@ -604,7 +601,6 @@ varargout{1} = box_bestset_gui;
         Bestsetops.butttons_datasets.String = BESTlistName;
         Bestsetops.butttons_datasets.Min = 1;
         Bestsetops.butttons_datasets.Max = length(BESTlistName)+1;
-        
         try
             BESTArray =  [length(observe_DECODE.ALLBEST)-numel(BESTArray)+1:length(observe_DECODE.ALLBEST)];
             Bestsetops.butttons_datasets.Value = BESTArray;
@@ -620,6 +616,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.butttons_datasets.Value = BESTArray;
         observe_DECODE.Count_currentbest = 2;
         observe_DECODE.Process_messg =2;
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 
@@ -660,9 +657,8 @@ varargout{1} = box_bestset_gui;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end
-        
         estudioworkingmemory('EEG_save_folder',sel_path1);
-        %         observe_DECODE.Count_currentbest = 20;
+        observe_DECODE.Count_currentMVPC=6;
     end
 
 
@@ -684,9 +680,6 @@ varargout{1} = box_bestset_gui;
         observe_DECODE.CURRENTBEST = Current_ERP_selected;
         observe_DECODE.BEST = observe_DECODE.ALLBEST(Current_ERP_selected);
         observe_DECODE.Count_currentbest = 2;
-        if EStudio_gui_erp_totl.ERP_autoplot==1
-            
-        end
     end
 
 %%%--------------Up this panel--------------------------------------

@@ -88,7 +88,7 @@ if isempty(timetick_auto) || numel(timetick_auto)~=1 || (timetick_auto~=0 && tim
 end
 
 try xtickstep = MVPC_plotset_pars{4}; catch xtickstep = xstepdef; end
-if isempty(xtickstep) || numel(xtickstep)~=1 || any(xtickstep<=0) || xtickstep > (timEnd-timeStart) ||timetick_auto==1
+if isempty(xtickstep) || numel(xtickstep)~=1 || any(xtickstep<=0) || xtickstep > (timEnd-timeStart) 
     xtickstep = xstepdef;
 end
 

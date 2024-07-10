@@ -66,6 +66,28 @@ for j = 1:numel(MVPCArray)
             break
         end
         
+          %%start time of epoch
+        if pre_startpnt~=MVPCT.times(1)
+            msgwrng =  sprintf('MVPCsets #%g and #%g have different starting time of the epoch', MVPCArray(j-1), MVPCArray(j));
+            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
+            %errorfound(msgboxText, title);
+            %return
+            serror = 1;
+            break
+        end
+        
+        %%end time of epoch
+        if pre_endpnt~=MVPCT.times(end)
+            msgwrng =  sprintf('MVPCsets #%g and #%g have different stop time of the epoch',MVPCArray(j-1), MVPCArray(j));
+            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
+            %errorfound(msgboxText, title);
+            %return
+            serror = 1;
+            break
+        end
+        
+        
+        
         % basic test for number of channels (for now...)
         if  pre_nchan ~= size(MVPCT.electrodes,2)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of channels!', MVPCArray(j-1), MVPCArray(j));
@@ -120,7 +142,7 @@ for j = 1:numel(MVPCArray)
         end
         
         %%sampling rate
-        if ~strcmpi(pre_srate, MVPCT.srate)
+        if pre_srate~=MVPCT.srate
             msgwrng =  sprintf('MVPCsets #%g and #%g have different sampling rates', MVPCArray(j-1), MVPCArray(j));
             %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
             %errorfound(msgboxText, title);
@@ -129,26 +151,7 @@ for j = 1:numel(MVPCArray)
             break
         end
         
-        %%start time of epoch
-        if ~strcmpi(pre_startpnt, MVPCT.times(1))
-            msgwrng =  sprintf('MVPCsets #%g and #%g have different starting time of the epoch', MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %errorfound(msgboxText, title);
-            %return
-            serror = 2;
-            break
-        end
-        
-        %%end time of epoch
-        if ~strcmpi(pre_endpnt, MVPCT.times(end))
-            msgwrng =  sprintf('MVPCsets #%g and #%g have different stop time of the epoch',MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %errorfound(msgboxText, title);
-            %return
-            serror = 2;
-            break
-        end
-        
+      
         
     end
     

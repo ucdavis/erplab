@@ -247,10 +247,16 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.timet_high.Enable = 'off';
             MVPC_plotset.timet_low.String = num2str(observe_DECODE.MVPC.times(1));
             MVPC_plotset.timet_high.String = num2str(observe_DECODE.MVPC.times(end));
+            if  MVPC_plotset.timetick_auto.Value==1
+                [def xstep]= default_time_ticks_decode(observe_DECODE.MVPC, [observe_DECODE.MVPC.times(1),observe_DECODE.MVPC.times(end)]);
+                MVPC_plotset.timet_step.String = num2str(xstep);
+            end
         else
             MVPC_plotset.timet_low.Enable = 'on';
             MVPC_plotset.timet_high.Enable = 'on';
         end
+        
+        
     end
 
 %%--------------------------Min. interval of time ticks---------------------
@@ -267,22 +273,29 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.plot_reset.ForegroundColor = [1 1 1];
         MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
-        xtixlk_min = str2num(src.String);
+        xtixlk_min = str2num( MVPC_plotset.timet_low.String);
         xtixlk_max = str2num(MVPC_plotset.timet_high.String);
         if isempty(xtixlk_min)|| numel(xtixlk_min)~=1
-            src.String = num2str(observe_DECODE.MVPC.times(1));
+            MVPC_plotset.timet_low.String= num2str(observe_DECODE.MVPC.times(1));
+            xtixlk_min = observe_DECODE.MVPC.times(1);
             msgboxText =  ['Plotting MVPCsets> Time Axis- Input of low edge must be a single numeric.'];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
-            return;
         end
         if any(xtixlk_max<=xtixlk_min)
-            src.String = num2str(observe_DECODE.MVPC.times(1));
+            MVPC_plotset.timet_low.String = num2str(observe_DECODE.MVPC.times(1));
+            MVPC_plotset.timet_high.String = num2str(observe_DECODE.MVPC.times(end));
             msgboxText =  ['Plotting MVPCsets> Time Axis- Low edge must be  smaller than',32,num2str(xtixlk_max(1))];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
-            return;
         end
+        xtixlk_min = str2num( MVPC_plotset.timet_low.String);
+        xtixlk_max = str2num(MVPC_plotset.timet_high.String);
+        if  MVPC_plotset.timetick_auto.Value==1 && ~isempty(xtixlk_min) && ~isempty(xtixlk_max)
+            [def xstep]= default_time_ticks_decode(observe_DECODE.MVPC, [xtixlk_min,xtixlk_max]);
+            MVPC_plotset.timet_step.String = num2str(xstep);
+        end
+        
     end
 
 %%----------------------high interval of time ticks--------------------------------*
@@ -300,7 +313,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.plot_ops.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         MVPC_plotset.plot_ops.ForegroundColor = [1 1 1];
         xtixlk_min = str2num(MVPC_plotset.timet_low.String);
-        xtixlk_max = str2num(src.String);
+        xtixlk_max = str2num(MVPC_plotset.timet_high.String);
         if isempty(xtixlk_max) || numel(xtixlk_max)~=1
             src.String = num2str(observe_DECODE.MVPC.times(end));
             msgboxText =  ['Plotting MVPCsets> Amplitude Axis- Input of ticks edge must be a single numeric'];
@@ -309,11 +322,17 @@ varargout{1} = MVPC_plotset_box;
             return;
         end
         if any(xtixlk_max < xtixlk_min)
-            src.String =  num2str(observe_DECODE.MVPC.times(end));
+            MVPC_plotset.timet_low.String = num2str(observe_DECODE.MVPC.times(1));
+            MVPC_plotset.timet_high.String = num2str(observe_DECODE.MVPC.times(end));
             msgboxText =  ['Plotting MVPCsets> Time Axis- high edge must be higher than',32,num2str(xtixlk_min),'ms'];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
-            return;
+        end
+        xtixlk_min = str2num( MVPC_plotset.timet_low.String);
+        xtixlk_max = str2num(MVPC_plotset.timet_high.String);
+        if  MVPC_plotset.timetick_auto.Value==1 && ~isempty(xtixlk_min) && ~isempty(xtixlk_max)
+            [def xstep]= default_time_ticks_decode(observe_DECODE.MVPC, [xtixlk_min,xtixlk_max]);
+            MVPC_plotset.timet_step.String = num2str(xstep);
         end
     end
 
@@ -550,9 +569,24 @@ varargout{1} = MVPC_plotset_box;
         if any(Yscales_high<=Yscales_low)
             MVPC_plotset.yscale_low.String = num2str(minydef);
             MVPC_plotset.yscale_high.String = num2str(maxydef);
+            Yscales_high = maxydef;
+            Yscales_low = minydef;
             msgboxText = ['Plotting MVPCsets> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
+        end
+        if  MVPC_plotset.ytick_auto.Value==1
+            if ~isempty(Yscales_low) && ~isempty(Yscales_high) && Yscales_low<Yscales_high
+                def= default_amp_ticks_viewer([Yscales_low,Yscales_high]);
+                def = str2num(def);
+                if ~isempty(def) && numel(def)>1
+                    stepx = diff( def);
+                    stepx = min(stepx(:));
+                    if ~isempty(stepx)
+                        MVPC_plotset.yscale_step.String = num2str(stepx);
+                    end
+                end
+            end
         end
     end
 
@@ -601,10 +635,26 @@ varargout{1} = MVPC_plotset_box;
         if any(Yscales_high<=Yscales_low)
             MVPC_plotset.yscale_low.String = num2str(minydef);
             MVPC_plotset.yscale_high.String = num2str(maxydef);
+            Yscales_low = minydef;
+            Yscales_high = maxydef;
             msgboxText=['Plotting MVPCsets> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
+        if  MVPC_plotset.ytick_auto.Value==1
+            if ~isempty(Yscales_low) && ~isempty(Yscales_high) && Yscales_low<Yscales_high
+                def= default_amp_ticks_viewer([Yscales_low,Yscales_high]);
+                def = str2num(def);
+                if ~isempty(def) && numel(def)>1
+                    stepx = diff( def);
+                    stepx = min(stepx(:));
+                    if ~isempty(stepx)
+                        MVPC_plotset.yscale_step.String = num2str(stepx);
+                    end
+                end
+            end
+        end
+        
     end
 
 %%------------------y ticks automatically----------------------------------
@@ -855,7 +905,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.plot_reset.ForegroundColor = [0 0 0];
         MVPC_plotset.plot_ops.BackgroundColor =  [ 1 1 1];
         MVPC_plotset.plot_ops.ForegroundColor = [0 0 0];
-        estudioworkingmemory('f_decode_proces_messg','Plotting MVPCsets>Cancel');
+        estudioworkingmemory('f_Decode_proces_messg','Plotting MVPCsets>Cancel');
         observe_DECODE.Process_messg =1;
         %
         %%------------------------------time range-------------------------
@@ -1146,8 +1196,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.plot_reset.ForegroundColor = [0 0 0];
         MVPC_plotset.plot_ops.BackgroundColor =  [1 1 1];
         MVPC_plotset.plot_ops.ForegroundColor = [0 0 0];
-        estudioworkingmemory('f_decode_proces_messg','Plotting MVPCsets>Apply');
-        observe_DECODE.Process_messg =1;
+        
         %
         %%time range
         timeStartdef = observe_DECODE.MVPC.times(1);
@@ -1260,9 +1309,13 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{17} = [MVPC_plotset.show_SEM.Value MVPC_plotset.SEM_custom.Value MVPC_plotset.SEMtrans_custom.Value];
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset.paras);
+        estudioworkingmemory('f_Decode_proces_messg','Plotting MVPCsets>Apply');
+        observe_DECODE.Process_messg =1;
+        
         if EStudio_gui_erp_totl.Decode_autoplot==1
             f_redrawmvpc_Wave_Viewer();
         end
+        observe_DECODE.Process_messg =2;
     end
 
 %%-------------------------------------------------------------------------
@@ -1557,6 +1610,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.paras{18}=MVPC_plotset.chanceline.Value;
         MVPC_plotset_pars = MVPC_plotset.paras;
         estudioworkingmemory('MVPC_plotset_pars',MVPC_plotset_pars);
+        estudioworkingmemory('MVPC_lineslegendops',[]);
         observe_DECODE.Reset_Best_paras_panel=3;
     end
 end

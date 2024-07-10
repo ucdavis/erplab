@@ -11,6 +11,7 @@
 function f_redrawmvpc_Wave_Viewer()
 global observe_DECODE;
 global EStudio_gui_erp_totl;
+addlistener(observe_DECODE,'Messg_change',@Messg_change);
 
 FonsizeDefault = f_get_default_fontsize();
 try
@@ -96,6 +97,9 @@ EStudio_gui_erp_totl.View_decode_Axes = uix.ScrollingPanel( 'Parent', EStudio_gu
 if isempty(observe_DECODE.ALLMVPC)  ||  isempty(observe_DECODE.MVPC) || Decode_autoplot==0
     EStudio_gui_erp_totl.mvpcwave_Axes = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes,'Color','none','Box','on','FontWeight','normal');
     set(EStudio_gui_erp_totl.mvpcwave_Axes, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
+    EStudio_gui_erp_totl.mvpcwave_Axes_legend = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes_legend,'Color','none','Box','off');
+    hold(EStudio_gui_erp_totl.mvpcwave_Axes_legend,'on');
+    set(EStudio_gui_erp_totl.mvpcwave_Axes_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 end
 
 if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_autoplot==1
@@ -163,6 +167,74 @@ end
 %%-------------------------------------------------------------------------
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
+% %%------------------------Message panel------------------------------------
+function Messg_change(~,~)
+global observe_DECODE;
+global EStudio_gui_erp_totl;
+% addlistener(observe_DECODE,'count_current_eeg_change',@count_current_eeg_change);
+
+% if isempty(observe_DECODE.MVPC) || isempty(observe_DECODE.ALLMVPC)
+%     return;
+% end
+FonsizeDefault = f_get_default_fontsize();
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+Processed_Method=estudioworkingmemory('f_Decode_proces_messg');
+EEGMessagepre = estudioworkingmemory('f_Decode_proces_messg_pre');
+if isempty(EEGMessagepre)
+    EEGMessagepre = {'',0};
+end
+try
+    if strcmpi(EEGMessagepre{1},Processed_Method) && observe_DECODE.Process_messg == EEGMessagepre{2}
+        return;
+    end
+catch
+end
+estudioworkingmemory('f_Decode_proces_messg_pre',{Processed_Method,observe_DECODE.Process_messg});
+
+
+EStudio_gui_erp_totl.Process_decode_messg.BackgroundColor = [0.95 0.95 0.95];
+EStudio_gui_erp_totl.Process_decode_messg.FontSize = FonsizeDefault;
+
+if observe_DECODE.Process_messg==1
+    EStudio_gui_erp_totl.Process_decode_messg.String =  strcat('1- ',Processed_Method,': Running....');
+    EStudio_gui_erp_totl.Process_decode_messg.ForegroundColor = [0 0 0];
+    pause(0.1);
+elseif observe_DECODE.Process_messg==2
+    EStudio_gui_erp_totl.Process_decode_messg.String =  strcat('2- ',Processed_Method,': Complete');
+    EStudio_gui_erp_totl.Process_decode_messg.ForegroundColor = [0 0.5 0];
+    pause(0.1);
+elseif observe_DECODE.Process_messg==3
+    if ~strcmp(EStudio_gui_erp_totl.Process_decode_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
+    EStudio_gui_erp_totl.Process_decode_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
+    EStudio_gui_erp_totl.Process_decode_messg.ForegroundColor = [1 0 0];
+else
+    if ~strcmpi(EStudio_gui_erp_totl.Process_decode_messg.String,strcat('Warning:',32,Processed_Method,32,'(see Command Window).'))
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
+    EStudio_gui_erp_totl.Process_decode_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
+    
+    pause(0.1);
+    EStudio_gui_erp_totl.Process_decode_messg.ForegroundColor = [1 0.65 0];
+end
+if  observe_DECODE.Process_messg==2 || observe_DECODE.Process_messg==3
+    pause(0.01);
+    EStudio_gui_erp_totl.Process_decode_messg.String = '';
+    EStudio_gui_erp_totl.Process_decode_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];
+end
+end
+
+
+
+
 function decode_popmemu(Source,~)
 global EStudio_gui_erp_totl;
 Value = Source.Value;
@@ -221,7 +293,7 @@ else
     estudioworkingmemory('DecodeTab_zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom In'));
-estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
+estudioworkingmemory('f_Decode_proces_messg',MessageViewer);
 try
     observe_DECODE.Process_messg =1;
     f_redrawmvpc_Wave_Viewer();
@@ -242,7 +314,7 @@ end
 
 zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
-estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
+estudioworkingmemory('f_Decode_proces_messg',MessageViewer);
 if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
     estudioworkingmemory('DecodeTab_zoomSpace',zoomspaceEdit);
     try
@@ -256,17 +328,17 @@ if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
     end
 else
     if isempty(zoomspaceEdit)
-        estudioworkingmemory('f_ERP_proces_messg',['\n Zoom Editor:The input must be a number']);
+        estudioworkingmemory('f_Decode_proces_messg',['\n Zoom Editor:The input must be a number']);
         observe_DECODE.Process_messg =4;
         return;
     end
     if numel(zoomspaceEdit)>1
-        estudioworkingmemory('f_ERP_proces_messg',['Zoom Editor:The input must be a single number']);
+        estudioworkingmemory('f_Decode_proces_messg',['Zoom Editor:The input must be a single number']);
         observe_DECODE.Process_messg =4;
         return;
     end
     if zoomspaceEdit<100
-        estudioworkingmemory('f_ERP_proces_messg',[' Zoom Editor:The input must not be smaller than 100.']);
+        estudioworkingmemory('f_Decode_proces_messg',[' Zoom Editor:The input must not be smaller than 100.']);
         observe_DECODE.Process_messg =4;
         return;
     end
@@ -295,7 +367,7 @@ else
     estudioworkingmemory('DecodeTab_zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom Out'));
-estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
+estudioworkingmemory('f_Decode_proces_messg',MessageViewer);
 observe_DECODE.Process_messg =1;
 f_redrawmvpc_Wave_Viewer();
 observe_DECODE.Process_messg =2;
@@ -341,7 +413,7 @@ end
 try New_pos1(2) = abs(New_pos1(2));catch; end;
 
 if isempty(New_pos1) || numel(New_pos1)~=2
-    estudioworkingmemory('f_ERP_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+    estudioworkingmemory('f_Decode_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
     observe_DECODE.Process_messg =4;
     return;
 end
@@ -354,7 +426,7 @@ try
     end
     set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
 catch
-    estudioworkingmemory('f_ERP_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+    estudioworkingmemory('f_Decode_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
     observe_DECODE.Process_messg =4;
     set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
     estudioworkingmemory('EStudioScreenPos',[75 75]);
@@ -363,7 +435,6 @@ f_redrawEEG_Wave_Viewer();
 f_redrawERP();
 f_redrawmvpc_Wave_Viewer();
 EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
-%         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
 end
 
 
@@ -379,7 +450,7 @@ end
 if ~isempty(messgStr)
     observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
 end
-% estudioworkingmemory('f_ERP_proces_messg','Show Command');
+% estudioworkingmemory('f_Decode_proces_messg','Show Command');
 % observe_DECODE.Process_messg =1;
 f_preparms_decodetab(observe_DECODE.MVPC,1,'command');
 % observe_DECODE.Process_messg =2;
@@ -427,16 +498,9 @@ end
 if ~isempty(messgStr)
     observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
 end
-
-MessageViewer= char(strcat('Create Static/Exportable Plot'));
-% estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
-% observe_DECODE.Process_messg =1;
-
-    figurename = '';
-
+figurename = '';
 History = 'off';
 f_preparms_decodetab(observe_DECODE.MVPC,1,History,figurename);
-% observe_DECODE.Process_messg =2;
 end
 
 
@@ -444,13 +508,12 @@ end
 function decode_reset(~,~)
 global observe_DECODE;
 global EStudio_gui_erp_totl;
-global observe_EEGDAT;
 global observe_ERPDAT;
 
 estudioworkingmemory('ViewerFlag', 0);
 
 MessageViewer= char(strcat('Reset parameters for Pattern Classification Tab '));
-estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
+estudioworkingmemory('f_Decode_proces_messg',MessageViewer);
 app = feval('estudio_reset_paras',[0 0 0 0 1 0]);
 waitfor(app,'Finishbutton',1);
 reset_paras = [0 0 0 0 0 0];
@@ -475,25 +538,25 @@ else
 end
 
 if reset_paras(1)==1
-    if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.ALLEEG)
-        observe_EEGDAT.Reset_eeg_paras_panel=1;
+    if ~isempty(observe_DECODE.EEG) && ~isempty(observe_DECODE.ALLEEG)
+        observe_DECODE.Reset_eeg_paras_panel=1;
     end
     if EStudio_gui_erp_totl.clear_alleeg == 0
         f_redrawEEG_Wave_Viewer();
     else
-        observe_EEGDAT.ALLEEG = [];
-        observe_EEGDAT.EEG = [];
-        observe_EEGDAT.CURRENTSET  = 0;
+        observe_DECODE.ALLEEG = [];
+        observe_DECODE.EEG = [];
+        observe_DECODE.CURRENTSET  = 0;
         estudioworkingmemory('EEGArray',1);
-        observe_EEGDAT.count_current_eeg =1;
+        observe_DECODE.count_current_eeg =1;
     end
 else
     if EStudio_gui_erp_totl.clear_alleeg == 1
-        observe_EEGDAT.ALLEEG = [];
-        observe_EEGDAT.EEG = [];
-        observe_EEGDAT.CURRENTSET  = 0;
+        observe_DECODE.ALLEEG = [];
+        observe_DECODE.EEG = [];
+        observe_DECODE.CURRENTSET  = 0;
         estudioworkingmemory('EEGArray',1);
-        observe_EEGDAT.count_current_eeg =1;
+        observe_DECODE.count_current_eeg =1;
     end
 end
 
@@ -525,7 +588,6 @@ else
         observe_ERPDAT.Count_currentERP = 1;
     end
 end
-
 
 %%----------------------reste decode Tab---------------------------
 if reset_paras(6)==1
@@ -564,15 +626,13 @@ else
         observe_DECODE.Count_currentbest=1;
     end
 end
-
-
 end
 
 
 
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%----------------------------Plot decoding accuracy-----------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f_plotabmvpcwave(ALLMVPC,MVPCArray,qtimeRange,qXticks,qXtickdecimal,Xlabelfont,Xlabelfontsize,Xlabelcolor,...
     qYScales,qYticks,qYtickdecimal,qYlabelfont,qYlabelfontsize,qYlabelcolor,Standerr,Transparency,...
     qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,qFontLeg,qTextcolorLeg,qLegcolumns,qFontSizeLeg,chanLevel,...
@@ -584,7 +644,7 @@ if isempty(MVPCArray) || any(MVPCArray(:)<1) || any(MVPCArray(:)>length(ALLMVPC)
 end
 [serror, msgwrng] = f_checkmvpc(ALLMVPC,MVPCArray);
 if serror==1
-    MVPCArray  = length(ALLMVPC);
+    MVPCArray  = MVPCArray(1);
 end
 MVPC = ALLMVPC(MVPCArray(1));
 

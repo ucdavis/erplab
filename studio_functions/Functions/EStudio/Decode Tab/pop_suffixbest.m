@@ -79,11 +79,9 @@ p.parse(ALLBEST, varargin{:});
 suffixstr = p.Results.suffixstr;
 
 for Numoferp = 1:numel(ALLBEST)
-    ALLBEST(Numoferp).setname = [ALLBEST(Numoferp).bestname,'_',suffixstr];
+    ALLBEST(Numoferp).bestname = [ALLBEST(Numoferp).bestname,'_',suffixstr];
     ALLBEST(Numoferp).saved  = 'no';
 end
-
-
 
 
 if strcmpi(p.Results.Saveas,'on')

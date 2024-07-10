@@ -474,7 +474,7 @@ varargout{1} = box_mvpcset_gui;
             checkfileindex = checkfilexists([pathName,filesep,filename]);
             if checkfileindex==1
                 [MVPC, issave, MVPCCOM] = pop_savemymvpc(MVPC, 'mvpcname', MVPC.mvpcname, 'filename',...
-                    filename, 'filepath',pathName,'History','gui');
+                    filename, 'filepath',pathName,'History','script','Tooltype','estudio','gui','save');
                 if Numoferp==1
                     fprintf( ['\n\n',repmat('-',1,100) '\n']);
                     fprintf(['*MVPCsets>Save*',32,32,32,32,datestr(datetime('now')),'\n']);
@@ -534,7 +534,7 @@ varargout{1} = box_mvpcset_gui;
             erpFilename = char(strcat(erpfilename,ext));
             
             [MVPC, issave, MVPCCOM] = pop_savemymvpc(MVPC, 'mvpcname', MVPC.mvpcname,...
-                'filename', erpFilename, 'filepath',MVPC.filepath,'History','gui');
+                'filename', erpFilename, 'filepath',MVPC.filepath,'History','script','Tooltype','estudio','gui','save');
             
             if Numoferp==1
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -602,11 +602,7 @@ varargout{1} = box_mvpcset_gui;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
-        if ~isempty(messgStr)
-            observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
-        end
+        
         MVPCArray = source.Value;
         estudioworkingmemory('MVPCArray',MVPCArray);
         
@@ -721,7 +717,7 @@ end
 
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%% 2024
-checkfileindex=0;
+checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr,filesep, file_name,'.mvpc'];
 if exist(filenamex, 'file')~=0
