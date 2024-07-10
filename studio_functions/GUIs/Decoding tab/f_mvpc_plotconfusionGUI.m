@@ -73,9 +73,9 @@ varargout{1} = MVPC_confusion_box_gui;
             'String','','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
         gui_mvpc_confusion.latency_exp = uicontrol('Style','text','Parent', gui_mvpc_confusion.latency_title2,...
             'String','','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        set(gui_mvpc_confusion.latency_title2,'Sizes',[90 -1]);
+        set(gui_mvpc_confusion.latency_title2,'Sizes',[30 -1]);
         if gui_mvpc_confusion.measure_method.Value == 1
-            text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or or 100:50:350 to plot at 100, 150, 200,...,350 ms)' ;
+            text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or 100:50:350 to plot at 100,...,350 ms)' ;
         else
             text_instruct = '(e.g., 200 250 to plot average confusion matrix across 200 to 250 ms)';
         end
@@ -88,7 +88,7 @@ varargout{1} = MVPC_confusion_box_gui;
             'String',{'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' },'Enable','off','callback',@measure_color,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_confusion.measure_color.KeyPressFcn = @mvpc_graverage_presskey;
         
-        set(gui_mvpc_confusion.color_title,'Sizes',[50 -1]);
+        set(gui_mvpc_confusion.color_title,'Sizes',[80 -1]);
         %%default parameters
         def = estudioworkingmemory('pop_plotconfusions');
         try measure_method =def{1};catch measure_method=1; end
@@ -142,7 +142,7 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
         if gui_mvpc_confusion.measure_method.Value == 1
-            text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or or 100:50:350 to plot at 100, 150, 200,...,350 ms)' ;
+            text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or 100:50:350 to plot at 100,...,350 ms)' ;
         else
             text_instruct = '(e.g., 200 250 to plot average confusion matrix across 200 to 250 ms)';
         end
@@ -371,7 +371,7 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
         if gui_mvpc_confusion.measure_method.Value == 1
-            text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or or 100:50:350 to plot at 100, 150, 200,...,350 ms)' ;
+            text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or 100:50:350 to plot at 100,...,350 ms)' ;
         else
             text_instruct = '(e.g., 200 250 to plot average confusion matrix across 200 to 250 ms)';
         end

@@ -61,17 +61,24 @@ varargout{1} = MVPC_grdavg_box_gui;
             'String','Browse','Enable','off','callback',@mvpc_browse,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_grdavg.mvpc_browse.KeyPressFcn = @mvpc_graverage_presskey;
         set(gui_mvpc_grdavg.weigavg_title,'Sizes',[70 -1 70]);
-        
+        try avg_def=  estudioworkingmemory('pop_mvpcaverager'); catch avg_def = [];  end;
+        try sem_checkbox =avg_def{4};  catch   sem_checkbox=1;end
+        if isempty(avg_def) || numel(avg_def)~=1 || (avg_def~=0 && avg_def~=1)
+            avg_def=1;
+        end
         gui_mvpc_grdavg.cbdatq_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_mvpc_grdavg.sem_checkbox = uicontrol('Style','checkbox','Parent', gui_mvpc_grdavg.cbdatq_title,'Enable','off',...
-            'String','','Value',1,'callback',@sem_checkbox,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','','Value',avg_def,'callback',@sem_checkbox,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         gui_mvpc_grdavg.sem_checkbox.String =  '<html>Compute point-by-point standard error of mean </html>';
         gui_mvpc_grdavg.sem_checkbox.KeyPressFcn = @mvpc_graverage_presskey;
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
-        
+        try warning_checbox =avg_def{5};  catch   warning_checbox=0;end
+        if isempty(warning_checbox) || numel(warning_checbox)~=1 || (warning_checbox~=0 && warning_checbox~=1)
+            warning_checbox=0;
+        end
         gui_mvpc_grdavg.warning_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_mvpc_grdavg.warning_checbox = uicontrol('Style','checkbox','Parent', gui_mvpc_grdavg.warning_title,'Enable','off',...
-            'String','','Value',0,'callback',@warning_checbox,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','','Value',warning_checbox,'callback',@warning_checbox,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         gui_mvpc_grdavg.warning_checbox.String =  '<html>Warning (to command line) if there are<br />any difference in decoding parameters</html>';
         gui_mvpc_grdavg.warning_checbox.KeyPressFcn = @mvpc_graverage_presskey;
         gui_mvpc_grdavg.paras{3} = gui_mvpc_grdavg.warning_checbox.Value;
@@ -85,7 +92,6 @@ varargout{1} = MVPC_grdavg_box_gui;
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',gui_mvpc_grdavg.location_title);
         set(gui_mvpc_grdavg.location_title,'Sizes',[20 95 30 95 20]);
-        
         set(gui_mvpc_grdavg.DataSelBox,'Sizes',[30,30,30,30]);
     end
 
@@ -261,6 +267,9 @@ varargout{1} = MVPC_grdavg_box_gui;
         else
             warnon_str = 'off';
         end
+        
+        estudioworkingmemory('pop_mvpcaverager',{[],0,'',stderror,warnon});
+        
         
         ALLMVPC = observe_DECODE.ALLMVPC;
         
