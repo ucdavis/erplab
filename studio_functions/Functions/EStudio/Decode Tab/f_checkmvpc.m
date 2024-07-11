@@ -45,7 +45,7 @@ if nargin<2
 end
 
 
-if isempty(MVPCArray) || any(MVPCArray>length(ALLMVPC)) || any(MVPCArray<1)
+if isempty(MVPCArray) || any(MVPCArray(:)>length(ALLMVPC)) || any(MVPCArray(:)<1)
     MVPCArray   = [1:length(ALLMVPC)];
 end
 

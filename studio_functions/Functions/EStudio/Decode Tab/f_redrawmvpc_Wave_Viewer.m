@@ -79,13 +79,13 @@ EStudio_gui_erp_totl.decode_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.
 EStudio_gui_erp_totl.decode_zoom_out = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom Out',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
 uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
-  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
 EStudio_gui_erp_totl.decode_popmemu = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','popupmenu','String',{'Plotting Options','Automatic Plotting:On','Window Size'},...
-   'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 EStudio_gui_erp_totl.decode_reset = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Reset',...
-  'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
-  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
 set(EStudio_gui_erp_totl.commdecode_panel_title, 'Sizes', [70 50 70 -1 150 50 5]);
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
@@ -97,11 +97,11 @@ set(EStudio_gui_erp_totl.decode_zoom_edit,'Callback',@zoomedit,'Enable',Enablefl
 set(EStudio_gui_erp_totl.decode_zoom_out,'Callback',@zoomout,'Enable',Enableflag);
 
 if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC)
-   set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'},...
-    'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'},...
+        'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 else
-     set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size'},...
-    'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size'},...
+        'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 end
 decode_popmemu = EStudio_gui_erp_totl.decode_popmemu.String;
 if Decode_autoplot==1
@@ -540,6 +540,7 @@ estudioworkingmemory('ViewerFlag', 0);
 
 MessageViewer= char(strcat('Reset parameters for Pattern Classification Tab '));
 estudioworkingmemory('f_Decode_proces_messg',MessageViewer);
+observe_DECODE.Process_messg=1;
 app = feval('estudio_reset_paras',[0 0 0 0 1 0]);
 waitfor(app,'Finishbutton',1);
 reset_paras = [0 0 0 0 0 0];
@@ -652,6 +653,7 @@ else
         observe_DECODE.Count_currentbest=1;
     end
 end
+observe_DECODE.Process_messg=2;
 end
 
 
@@ -743,10 +745,10 @@ if isempty(qYlabelcolor) || ~isnumeric(qYlabelcolor) || numel(qYlabelcolor)~=3 |
 end
 
 %%standard error of mean
-if isempty(Standerr) || numel(Standerr)~=1 || any(Standerr<0) || any(Standerr>10)
+if isempty(Standerr) || numel(Standerr)~=1 || any(Standerr(:)<0) || any(Standerr(:)>10)
     Standerr=1;
 end
-if isempty(Transparency) || numel(Transparency)~=1 || any(Transparency<0)|| any(Transparency>1)
+if isempty(Transparency) || numel(Transparency)~=1 || any(Transparency(:)<0)|| any(Transparency(:)>1)
     Transparency=0.2;
 end
 

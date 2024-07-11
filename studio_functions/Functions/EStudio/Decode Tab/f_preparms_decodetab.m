@@ -287,9 +287,9 @@ if isempty(SEMFlag) || (SEMFlag~=0 && SEMFlag~=1)
     SEMFlag=0;
 end
 if SEMFlag==1
-    try Standerr = SEMValue(2); catch Standerr=1; end
+    try Standerr = SEMValue(2)-1; catch Standerr=0; end
     if isempty(Standerr) || numel(Standerr)~=1 || any(Standerr<0) || any(Standerr>10)
-        Standerr=1;
+        Standerr=0;
     end
     try Transparency = SEMValue(3); catch Transparency=0.2; end
     if isempty(Transparency) || numel(Transparency)~=1 || any(Transparency<0) || any(Transparency>1)

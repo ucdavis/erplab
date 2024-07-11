@@ -104,7 +104,7 @@ varargout{1} = box_decode_mvpclass;
                         datastr{count,3} = [''];
                     end
                     gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
-                    gui_decode_mvpclass.uitable.ColumnWidth = {70 70 100};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 70};
                 end
             end
         end
@@ -112,8 +112,7 @@ varargout{1} = box_decode_mvpclass;
         observe_DECODE.Count_currentMVPC=6;
     end
 
-
-
+%%----------------------reset parameters for this panel--------------------
     function Reset_best_panel_change(~,~)
         if  observe_DECODE.Reset_Best_paras_panel~=5
             return;
@@ -145,7 +144,7 @@ varargout{1} = box_decode_mvpclass;
                         datastr{count,3} = [''];
                     end
                     gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
-                    gui_decode_mvpclass.uitable.ColumnWidth = {70 70 100};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 70};
                 end
             end
         end

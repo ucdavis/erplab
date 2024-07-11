@@ -123,7 +123,7 @@ varargout{1} = MVPC_confusion_box_gui;
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',gui_mvpc_confusion.location_title);
         set(gui_mvpc_confusion.location_title,'Sizes',[20 95 30 95 20]);
-        set(gui_mvpc_confusion.DataSelBox,'Sizes',[30, 30,30,30,30]);
+        set(gui_mvpc_confusion.DataSelBox,'Sizes',[30, 25,35,30,30]);
     end
 
 %%**************************************************************************%%

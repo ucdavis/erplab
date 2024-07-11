@@ -332,11 +332,11 @@ end
 
 %%standard error of mean
 qStanderr = p_Results.Standerr;
-if isempty(qStanderr) || numel(qStanderr)~=1 || any(qStanderr<0) || any(qStanderr>10)
+if isempty(qStanderr) || numel(qStanderr)~=1 || any(qStanderr(:)<0) || any(qStanderr(:)>10)
     qStanderr=1;
 end
 qTransparency = p_Results.Transparency;
-if isempty(qTransparency) || numel(qTransparency)~=1 || any(qTransparency<0)|| any(qTransparency>1)
+if isempty(qTransparency) || numel(qTransparency)~=1 || any(qTransparency(:)<0)|| any(qTransparency(:)>1)
     qTransparency=0.2;
 end
 

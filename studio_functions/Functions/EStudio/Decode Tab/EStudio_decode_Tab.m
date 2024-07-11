@@ -36,6 +36,7 @@ EStudio_gui_erp_totl.decode_panel{3} = f_decode_mvpcsetsGUI(EStudio_gui_erp_totl
 EStudio_gui_erp_totl.decode_panelSizes(3) = 290;
 EStudio_gui_erp_totl.decode_panel{4} = f_MVPCset_plot_setting_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(4) = 390;
+disp('Pattern Classification: Launching BESTsets, Multivariate Pattern Classification, MVPCsets, Plotting MVPCsets,...');
 EStudio_gui_erp_totl.decode_panel{5} = f_mvpc_grandaverageGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(5) = 160;
 EStudio_gui_erp_totl.decode_panel{6} = f_mvpc_plotconfusionGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -44,6 +45,8 @@ EStudio_gui_erp_totl.decode_panel{7} = f_decode_mvpclass_GUI(EStudio_gui_erp_tot
 EStudio_gui_erp_totl.decode_panelSizes(7) = 190;
 EStudio_gui_erp_totl.decode_panel{8} = f_decode_history_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(8) = 190;
+disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
+    'Average Across MVPCsets (Grand Average), Plot Confusion Matrices, MVPCset Classes, and History panels.']);
 set(EStudio_gui_erp_totl.decode_settingLayout, 'Heights', EStudio_gui_erp_totl.decode_panelSizes);
 EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(EStudio_gui_erp_totl.decode_panelSizes);
 

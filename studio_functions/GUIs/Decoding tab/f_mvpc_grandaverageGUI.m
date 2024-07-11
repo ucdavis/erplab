@@ -330,7 +330,7 @@ varargout{1} = MVPC_grdavg_box_gui;
             if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
                 MVPCArray = 1:length(observe_DECODE.ALLMVPC);
             end
-            [serror, msgwrng] = f_checkmvpc(ALLMVPC,MVPCArray);
+            [serror, msgwrng] = f_checkmvpc(observe_DECODE.ALLMVPC,MVPCArray);
             if serror==1 || serror==2
                 enableFlag = 'off';
             end
