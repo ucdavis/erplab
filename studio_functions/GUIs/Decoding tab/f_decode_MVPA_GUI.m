@@ -1064,6 +1064,7 @@ varargout{1} = box_bestset_gui;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             if isempty(ALLMVPC_out)
                 ALLMVPC_out = MVPC;
+                eegh(BESTCOM);
             else
                 ALLMVPC_out(LENGTH(ALLMVPC_out)+1) = MVPC;
             end
