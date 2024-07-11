@@ -13,7 +13,7 @@ classdef TabPanel < uix.Container & uix.mixin.Panel
     %
     %  See also: uitabgroup, uitab, uix.CardPanel
     
-    %  Copyright 2009-2020 The MathWorks, Inc.
+    %  Copyright 2009-2024 The MathWorks, Inc.
     
     properties( Access = public, Dependent, AbortSet )
         FontAngle % font angle

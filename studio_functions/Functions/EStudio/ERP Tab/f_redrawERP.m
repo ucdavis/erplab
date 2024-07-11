@@ -110,8 +110,8 @@ EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_le
 %%waves
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
-%%note that needs to go to lines 487,491, 495, 670,671 of "uix.ScrollingPanel" if change the background color of scrollingbar or this toolbox is updated
-
+%%note that needs to go to lines 487,491, 495, 670,671 of "uix.ScrollingPanel" if change the background color ([0.9 0.9 0.9]) of scrollingbar or this toolbox is updated
+ 
 
 EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def); % 1A
