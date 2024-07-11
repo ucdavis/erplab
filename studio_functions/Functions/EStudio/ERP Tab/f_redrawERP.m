@@ -219,12 +219,11 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autopl
     end
     pb_height =  1*Resolation(4);  %px
     
-    Fill=1;
     splot_n = OutputViewerparerp{12};
     if isempty(splot_n) || any(splot_n<=0)
         splot_n = size(OutputViewerparerp{13},1);
     end
-    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fill
+    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))
         pb_height = 0.9*(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
     else
         pb_height = 0.9*pb_height;

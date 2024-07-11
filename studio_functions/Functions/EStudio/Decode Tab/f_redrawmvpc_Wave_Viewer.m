@@ -12,7 +12,6 @@ function f_redrawmvpc_Wave_Viewer()
 global observe_DECODE;
 global EStudio_gui_erp_totl;
 addlistener(observe_DECODE,'Messg_change',@Messg_change);
-
 FonsizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
@@ -35,9 +34,6 @@ try
 catch
     EStudio_gui_erp_totl.decode_VerticalOffsets=0;
     EStudio_gui_erp_totl.decode_HorizontalOffsets=0;
-end
-if ishandle( EStudio_gui_erp_totl.View_decode_Axes )
-    delete( EStudio_gui_erp_totl.View_decode_Axes );
 end
 zoomSpace = estudioworkingmemory('DecodeTab_zoomSpace');
 if isempty(zoomSpace)
@@ -64,16 +60,48 @@ else
     Enableflag = 'off';
 end
 
+EStudio_gui_erp_totl.plot_decode_grid = uix.VBox('Parent',EStudio_gui_erp_totl.decode_ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
+%%legends
+EStudio_gui_erp_totl.ViewAxes_legend_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.View_decode_Axes_legend = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.ViewAxes_legend_title,'BackgroundColor',[1 1 1]);
+%%waves
+EStudio_gui_erp_totl.plot_decode_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.View_decode_Axes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_decode_legend,'BackgroundColor',[1 1 1]);
+%%empty panel
+EStudio_gui_erp_totl.decode_blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
+uiextras.Empty('Parent', EStudio_gui_erp_totl.decode_blank,'BackgroundColor',ColorB_def); % 1A
+
+EStudio_gui_erp_totl.commdecode_panel_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
+EStudio_gui_erp_totl.decode_zoom_in = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom In',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.decode_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','edit','String','100',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.decode_zoom_out = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom Out',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
+  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+EStudio_gui_erp_totl.decode_popmemu = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','popupmenu','String',{'Plotting Options','Automatic Plotting:On','Window Size'},...
+   'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+EStudio_gui_erp_totl.decode_reset = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Reset',...
+  'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
+  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+set(EStudio_gui_erp_totl.commdecode_panel_title, 'Sizes', [70 50 70 -1 150 50 5]);
+%%message
+xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
+EStudio_gui_erp_totl.Process_decode_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+
+
 set(EStudio_gui_erp_totl.decode_zoom_in,'Callback',@zoomin,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.decode_zoom_edit,'Callback',@zoomedit,'Enable',Enableflag,'String',num2str(zoomSpace));
 set(EStudio_gui_erp_totl.decode_zoom_out,'Callback',@zoomout,'Enable',Enableflag);
 
 if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC)
-    set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'},...
-        'Callback',@decode_popmemu);
+   set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'},...
+    'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 else
-    set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size'},...
-        'Enable','on','BackgroundColor',ColorB_def,'Callback',@decode_popmemu);
+     set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size'},...
+    'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 end
 decode_popmemu = EStudio_gui_erp_totl.decode_popmemu.String;
 if Decode_autoplot==1
@@ -82,17 +110,13 @@ else
     decode_popmemu{2} = 'Automatic Plotting: Off';
 end
 EStudio_gui_erp_totl.decode_popmemu.String=decode_popmemu;
-set(EStudio_gui_erp_totl.decode_reset,'Callback', @decode_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+set(EStudio_gui_erp_totl.decode_reset,'Callback', @reserpars_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 if Decode_autoplot==0
     EStudio_gui_erp_totl.Process_decode_messg.String='Plotting is disabled, to enable it, please go to "Plotting Options" at the bottom of the plotting area to active it.';
 end
+% set(EStudio_gui_erp_totl.commdecode_panel_title, 'Sizes', [70 50 70 -1 150 50 5]);
 
-EStudio_gui_erp_totl.plot_decode_grid.Heights(1) = 70;% set the first element (pageinfo) to 30px high
-EStudio_gui_erp_totl.plot_decode_grid.Heights(3) = 5;
-EStudio_gui_erp_totl.plot_decode_grid.Heights(4) = 30;
-EStudio_gui_erp_totl.plot_decode_grid.Heights(5) = 30;% set the second element (x axis) to 30px high
 EStudio_gui_erp_totl.plot_decode_grid.Units = 'pixels';
-EStudio_gui_erp_totl.View_decode_Axes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_decode_legend,'BackgroundColor',[1 1 1]);
 
 if isempty(observe_DECODE.ALLMVPC)  ||  isempty(observe_DECODE.MVPC) || Decode_autoplot==0
     EStudio_gui_erp_totl.mvpcwave_Axes = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes,'Color','none','Box','on','FontWeight','normal');
@@ -101,7 +125,10 @@ if isempty(observe_DECODE.ALLMVPC)  ||  isempty(observe_DECODE.MVPC) || Decode_a
     hold(EStudio_gui_erp_totl.mvpcwave_Axes_legend,'on');
     set(EStudio_gui_erp_totl.mvpcwave_Axes_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 end
-
+EStudio_gui_erp_totl.plot_decode_grid.Heights(1) = 70;% set the first element (pageinfo) to 30px high
+EStudio_gui_erp_totl.plot_decode_grid.Heights(3) = 5;
+EStudio_gui_erp_totl.plot_decode_grid.Heights(4) = 30;
+EStudio_gui_erp_totl.plot_decode_grid.Heights(5) = 30;% set the second element (x axis) to 30px high
 if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_autoplot==1
     EStudio_gui_erp_totl.mvpcwave_Axes = axes('Parent', EStudio_gui_erp_totl.View_decode_Axes,'Color','none','Box','on','FontWeight','normal');
     hold(EStudio_gui_erp_totl.mvpcwave_Axes,'on');
@@ -123,8 +150,7 @@ if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_a
     else
         return;
     end
-    pb_height =  1*Resolation(4);
-    
+    pb_height =  Resolation(4);
     if pb_height<(EStudio_gui_erp_totl.plot_decode_grid.Position(4)-EStudio_gui_erp_totl.plot_decode_grid.Heights(1))
         pb_height = 0.9*(EStudio_gui_erp_totl.plot_decode_grid.Position(4)-EStudio_gui_erp_totl.plot_decode_grid.Heights(1)-EStudio_gui_erp_totl.plot_decode_grid.Heights(2));
     else
@@ -160,7 +186,7 @@ if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_a
         end
     end
 end
-EStudio_gui_erp_totl.View_decode_Axes.Children.Title.Color = [1 0 0];
+% EStudio_gui_erp_totl.View_decode_Axes.Children.Title.Color = [1 0 0];
 end
 
 
@@ -235,7 +261,7 @@ end
 
 
 
-function decode_popmemu(Source,~)
+function plotops_decode(Source,~)
 global EStudio_gui_erp_totl;
 Value = Source.Value;
 if Value==2
@@ -505,7 +531,7 @@ end
 
 
 %%------------------------Reset parameters---------------------------------
-function decode_reset(~,~)
+function reserpars_decode(~,~)
 global observe_DECODE;
 global EStudio_gui_erp_totl;
 global observe_ERPDAT;

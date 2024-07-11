@@ -248,8 +248,9 @@ EStudio_gui_erp_totl.Decode_autoplot=1;
 estudioworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
 
 
-% f_redrawERP();
-% f_redrawEEG_Wave_Viewer();
+f_redrawERP();
+f_redrawEEG_Wave_Viewer();
+f_redrawmvpc_Wave_Viewer();
 timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 

@@ -70,39 +70,38 @@ end %% End for shrinking panels 4-10
 
 %% + Create the view
 FonsizeDefault = f_get_default_fontsize();
-
 estudioworkingmemory('MVPCArray',1);
 EStudio_gui_erp_totl.plot_decode_grid = uix.VBox('Parent',EStudio_gui_erp_totl.decode_ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
 %%legends
-ViewAxes_legend_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',[1 1 1]);
-EStudio_gui_erp_totl.View_decode_Axes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_legend_title,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.ViewAxes_legend_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.View_decode_Axes_legend = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.ViewAxes_legend_title,'BackgroundColor',[1 1 1]);
 %%waves
 EStudio_gui_erp_totl.plot_decode_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.View_decode_Axes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_decode_legend,'BackgroundColor',[1 1 1]);
-
+%%empty panel
 EStudio_gui_erp_totl.decode_blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
 uiextras.Empty('Parent', EStudio_gui_erp_totl.decode_blank,'BackgroundColor',ColorB_def); % 1A
 
-commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
-EStudio_gui_erp_totl.decode_zoom_in = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom In',...
+EStudio_gui_erp_totl.commdecode_panel_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
+EStudio_gui_erp_totl.decode_zoom_in = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom In',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-EStudio_gui_erp_totl.decode_zoom_edit = uicontrol('Parent',commandfig_panel,'Style','edit','String','100',...
+EStudio_gui_erp_totl.decode_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','edit','String','100',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-EStudio_gui_erp_totl.decode_zoom_out = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom Out',...
+EStudio_gui_erp_totl.decode_zoom_out = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom Out',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-uiextras.Empty('Parent', commandfig_panel); % 1A
-
-EStudio_gui_erp_totl.decode_popmemu = uicontrol('Parent',commandfig_panel,'Style','popupmenu','String',{'Plotting Options','Automatic Plotting:On','Window Size'},...
-    'Callback',@popmemu_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
-EStudio_gui_erp_totl.decode_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
-    'Callback', @decode_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
-uiextras.Empty('Parent', commandfig_panel); % 1A
-set(commandfig_panel, 'Sizes', [70 50 70 -1 150 50 5]);
+uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
+  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+EStudio_gui_erp_totl.decode_popmemu = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','popupmenu','String',{'Plotting Options','Automatic Plotting:On','Window Size'},...
+   'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+EStudio_gui_erp_totl.decode_reset = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Reset',...
+  'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
+  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+set(EStudio_gui_erp_totl.commdecode_panel_title, 'Sizes', [70 50 70 -1 150 50 5]);
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
 EStudio_gui_erp_totl.Process_decode_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
 
-EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
 EStudio_gui_erp_totl.plot_decode_grid.Heights(1) = 70;% set the first element (pageinfo) to 30px high
 EStudio_gui_erp_totl.plot_decode_grid.Heights(3) = 5;
 EStudio_gui_erp_totl.plot_decode_grid.Heights(4) = 30;
@@ -113,114 +112,7 @@ end
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
 
-function popmemu_decode(Source,~)
-global EStudio_gui_erp_totl;
-global observe_DECODE;
-if ~isempty(observe_DECODE.MVPC)
-    return;
-end
-Value = Source.Value;
-if Value==2
-    app = feval('EStudio_plot_set_waves',EStudio_gui_erp_totl.ERP_autoplot,3);
-    waitfor(app,'Finishbutton',1);
-    try
-        plotSet = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-        app.delete; %delete app from view
-        pause(0.01); %wait for app to leave
-    catch
-        return;
-    end
-    if isempty(plotSet)||numel(plotSet)~=1 || (plotSet~=0&&plotSet~=1)
-        plotSet=1;
-    end
-    popmemu_eegString = EStudio_gui_erp_totl.decode_popmemu.String;
-    if plotSet==1
-        popmemu_eegString{2} = 'Automatic Plotting: On';
-    else
-        popmemu_eegString{2} = 'Automatic Plotting: Off';
-    end
-    EStudio_gui_erp_totl.decode_popmemu.String=popmemu_eegString;
-    EStudio_gui_erp_totl.Decode_autoplot = plotSet;
-    
-elseif Value==3
-    EStudiowinsize();
-end
-Source.Value=1;
-end
-
-%%--------------------Setting for EStudio window size----------------------
-function EStudiowinsize(~,~)
-global EStudio_gui_erp_totl;
-global observe_DECODE;
-if ~isempty(observe_DECODE.MVPC)
-    return;
-end
-try
-    ScreenPos= EStudio_gui_erp_totl.ScreenPos;
-catch
-    ScreenPos =  get( 0, 'Screensize' );
-end
-try
-    New_pos = EStudio_gui_erp_totl.Window.Position;
-catch
-    return;
-end
-try
-    New_posin = estudioworkingmemory('EStudioScreenPos');
-catch
-    New_posin = [75,75];
-end
-if isempty(New_posin) ||numel(New_posin)~=2
-    New_posin = [75,75];
-end
-New_posin(2) = abs(New_posin(2));
-
-app = feval('EStudio_pos_gui',New_posin);
-waitfor(app,'Finishbutton',1);
-try
-    New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-    app.delete; %delete app from view
-    pause(0.5); %wait for app to leave
-catch
-    disp('User selected Cancel');
-    return;
-end
-try New_pos1(2) = abs(New_pos1(2));catch; end;
-
-if isempty(New_pos1) || numel(New_pos1)~=2
-    estudioworkingmemory('f_ERP_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
-    observe_DECODE.Process_messg =4;
-    return;
-end
-estudioworkingmemory('EStudioScreenPos',New_pos1);
-try
-    POS4 = (New_pos1(2)-New_posin(2))/100;
-    new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
-    if new_pos(2) <  -abs(new_pos(4))%%if
-        
-    end
-    set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
-catch
-    estudioworkingmemory('f_ERP_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
-    observe_DECODE.Process_messg =4;
-    set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
-    estudioworkingmemory('EStudioScreenPos',[75 75]);
-end
-f_redrawEEG_Wave_Viewer();
-f_redrawERP();
-f_redrawmvpc_Wave_Viewer();
-EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
-end
-
-%%---------------------reset parameters for decode Tab---------------------
-function decode_reset(~,~)
-global observe_DECODE;
-if ~isempty(observe_DECODE.MVPC)
-    return;
-end
-observe_DECODE.Reset_Best_paras_panel =1;
-end
-
+% 
 function nMinimize( eventSource, eventData, whichpanel ) %#ok<INUSL>
 global EStudio_gui_erp_totl;
 

@@ -22,7 +22,7 @@ EStudio_gui_erp_totl.ViewContainer = uicontainer('Parent', EStudio_gui_erp_totl.
 
 EStudio_gui_erp_totl.panelscroll = uix.ScrollingPanel('Parent', EStudio_gui_erp_totl.tabERP);
 set(EStudio_gui_erp_totl.panelscroll,'BackgroundColor',ColorB_def);
-set( EStudio_gui_erp_totl.tabERP, 'Widths', [-4, 300]); % Viewpanel and settings panel
+set(EStudio_gui_erp_totl.tabERP, 'Widths', [-4, 300]); % Viewpanel and settings panel
 
 
 EStudio_gui_erp_totl.panel_fonts  = f_get_default_fontsize();
@@ -136,21 +136,20 @@ set(pageinfo_box, 'Sizes', [-1 70 50 70] );
 set(pageinfo_box,'BackgroundColor',ColorB_def);
 set(EStudio_gui_erp_totl.pageinfo_text,'BackgroundColor',ColorB_def);
 
-commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
-uiextras.Empty('Parent', commandfig_panel); % 1A
-EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
+EStudio_gui_erp_totl.eegtab_command = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+uiextras.Empty('Parent', EStudio_gui_erp_totl.eegtab_command); % 1A
+EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',EStudio_gui_erp_totl.eegtab_command,'Style','pushbutton','String','Reset',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-EStudio_gui_erp_totl.erp_popmenu = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
+EStudio_gui_erp_totl.erp_popmenu = uicontrol('Parent',EStudio_gui_erp_totl.eegtab_command,'Style','pushbutton','String','Reset',...
     'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
-uiextras.Empty('Parent', commandfig_panel); % 1A
-set(commandfig_panel, 'Sizes', [-1 150 50 5]);
+uiextras.Empty('Parent', EStudio_gui_erp_totl.eegtab_command); % 1A
+set(EStudio_gui_erp_totl.eegtab_command, 'Sizes', [-1 150 50 5]);
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
 EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
 EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
 EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
-
 EStudio_gui_erp_totl.plotgrid.Heights(4) = 5;
 EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
 EStudio_gui_erp_totl.plotgrid.Heights(6) = 30;
