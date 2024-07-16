@@ -96,7 +96,7 @@ varargout{1} = box_decode_mvpclass;
                     end
                     try
                         if strcmpi(MVPC.average_status,'grandaverage')
-                            datastr{count,3} = ['grandavg'];
+                            datastr{count,3} = ['not applicable'];
                         else
                             datastr{count,3}  = num2str(MVPC.n_trials_per_class(Numofclass));
                         end
@@ -104,7 +104,7 @@ varargout{1} = box_decode_mvpclass;
                         datastr{count,3} = [''];
                     end
                     gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
-                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 70};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 90};
                 end
             end
         end
@@ -136,7 +136,7 @@ varargout{1} = box_decode_mvpclass;
                     end
                     try
                         if strcmpi(MVPC.average_status,'grandaverage')
-                            datastr{count,3} = ['grandavg'];
+                            datastr{count,3} = ['not applicable'];
                         else
                             datastr{count,3}  = num2str(MVPC.n_trials_per_class(Numofclass));
                         end
@@ -144,7 +144,7 @@ varargout{1} = box_decode_mvpclass;
                         datastr{count,3} = [''];
                     end
                     gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
-                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 70};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 90};
                 end
             end
         end

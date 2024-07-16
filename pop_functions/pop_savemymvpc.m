@@ -242,10 +242,6 @@ else
         end
         fprintf('\nNOTE: Since ''filename'' and ''filepath'' were not specified, \nERPLAB used BEST.filename and BEST.filepath to save your ERPset.\n\n');
     end
-    
-    
-    
-    
 end
 
 if modegui == 0
@@ -260,10 +256,6 @@ if modegui == 0
     else
         issave =1 ;
     end
-    
-    
-    
-    
     
 elseif modegui == 1 %save directly
     

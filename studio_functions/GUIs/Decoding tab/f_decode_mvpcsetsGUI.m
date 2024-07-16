@@ -83,6 +83,8 @@ varargout{1} = box_mvpcset_gui;
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
             'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        Mvpcsetops.mvpc_Export = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Export', ...
+            'Callback', @mvpc_Export,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.refresh_mvpcset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
             'Callback', @refresh_mvpcset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
@@ -245,6 +247,80 @@ varargout{1} = box_mvpcset_gui;
         observe_DECODE.Count_currentMVPC = 1;
     end
 
+%%---------------------------export mvpc-----------------------------------
+    function mvpc_Export(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        
+        def  = estudioworkingmemory('pop_mvpc2text');
+        if isempty(def)
+            def = {1,1E-3, 0,''};
+            %istime
+            %timeunit
+            %transpose
+            %precision
+            %filename
+        end
+        
+        %
+        % Call GUI
+        %
+        %answer = mvpc2textGUI(MVPC, def); %app designer
+        pathName =  estudioworkingmemory('EEG_save_folder');
+        if isempty(pathName)
+            pathName =[pwd,filesep];
+        end
+        def{4} = pathName;
+        app = feval('mvpc2textGUI',observe_DECODE.MVPC,def,1);
+        waitfor(app,'FinishButton',1);
+        
+        try
+            answer = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.5); %wait for app to leave
+        catch
+            return
+        end
+        
+        istime    = answer{1};
+        tunit     = answer{2};
+        transpa   = answer{3};
+        filename  = answer{4};
+        
+        estudioworkingmemory('pop_mvpc2text', answer);
+        
+        if istime
+            time = 'on';
+        else
+            time = 'off';
+        end
+        
+        if transpa
+            tra = 'on';
+        else
+            tra = 'off';
+        end
+        estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Export');
+        observe_DECODE.Process_messg =1;
+        
+        MVPCArray= Mvpcsetops.butttons_datasets.Value;
+        if isempty(MVPCArray)
+            MVPCArray = length(observe_DECODE.ALLMVPC);
+            estudioworkingmemory('MVPCArray',MVPCArray);
+        end
+        for Numofmvpc = 1:numel(MVPCArray)
+            MVPC = observe_DECODE.ALLMVPC(MVPCArray(Numofmvpc));
+            [pathstr, prefname1, ext] = fileparts(filename);
+            filename1 = strcat([pathstr,filesep,MVPC.mvpcname,'_',prefname1,'.txt']);
+            [MVPC, mvpccom] = pop_mvpc2text(MVPC, filename1, 'time', time, 'timeunit', tunit, ...
+                'transpose', tra,'History', 'gui');
+        end
+        observe_DECODE.Process_messg =2;
+        observe_DECODE.Count_currentMVPC = 6;
+        
+    end
 %%-------------------------------fresh ------------------------------------
     function refresh_mvpcset(~,~)
         %%first checking if the changes on the other panels have been applied
@@ -673,6 +749,7 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.curr_folder.Enable='on';
         Mvpcsetops.butttons_datasets.Enable = Edit_label;
         Mvpcsetops.append.Enable = Edit_label;
+        Mvpcsetops.mvpc_Export.Enable = Edit_label;
         
         assignin('base','MVPC',observe_DECODE.MVPC);
         assignin('base','ALLMVPC',observe_DECODE.ALLMVPC);

@@ -236,7 +236,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.mvpa_cancel = uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
             'String','Cancel','callback',@mvpa_cancel,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.mvpa_ops = uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
-            'String','Option','callback',@mvpa_ops,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
+            'String','Options','callback',@mvpa_ops,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.mvpa_run = uicontrol('Style','pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
             'String','Run','callback',@mvpa_run,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         
@@ -825,7 +825,7 @@ varargout{1} = box_bestset_gui;
         end
     end
 
-%%-----------------------Options for MVPA----------------------------------
+%%-----------------------Optionss for MVPA----------------------------------
     function mvpa_ops(~,~)
         if isempty(observe_DECODE.BEST) || isempty(observe_DECODE.ALLBEST)
             observe_DECODE.Count_currentbest = 1;
@@ -1234,7 +1234,7 @@ varargout{1} = box_bestset_gui;
                     ' ',
                     'Please select BESTsets that match in terms of bins and channels!',
                     'You can:',
-                    '1: Select the indicies of the BESTsets that match in terms of bins and channels in the "From BESTsets Panel" option'};
+                    '1: Select the indicies of the BESTsets that match in terms of bins and channels in the "From BESTsets Panel" Options'};
                 Docode_do_mvpa.table_bins.Data = msgboxText;
                 Docode_do_mvpa.table_bins.ColumnName= {' '};
                 Docode_do_mvpa.table_bins.ColumnWidth ={600};
@@ -1396,7 +1396,7 @@ varargout{1} = box_bestset_gui;
                 ' ',
                 'Please select BESTsets that match in terms of bins and channels!',
                 'You can:',
-                '1: Select the indicies of the BESTsets that match in terms of bins and channels in the "From BESTsets Panel" option'};
+                '1: Select the indicies of the BESTsets that match in terms of bins and channels in the "From BESTsets Panel" Options'};
             Docode_do_mvpa.table_bins.Data = msgboxText;
             Docode_do_mvpa.table_bins.ColumnName= {' '};
             Docode_do_mvpa.table_bins.ColumnWidth ={600};

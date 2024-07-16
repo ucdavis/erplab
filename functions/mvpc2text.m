@@ -57,105 +57,105 @@ serror = 0; % no errors
 [pathstr, prefname1, ext] = fileparts(filename);
 
 if strcmp(ext,'')
-        ext = '.txt';
+    ext = '.txt';
 end
-precision = 4; 
+precision = 4;
 prefname2 = fullfile(pathstr, prefname1);
-try        
-        disp('Your MVPC results have been exported into the following files:')
-%        for ibin=1:nbin
-                
-                %
-                % ERP data
-                %
-                data = MVPC.average_score;
-                
-                %
-                % add time axis
-                %
-                if time==1
-                        %fprintf('bin #%g\n', ibin);
-                        time_val = (MVPC.times/1000)/timeunit; %Nov 2010
-                        auxdata  = zeros(size(data,1) + 1, size(data,2));
-                        auxdata(1,:)     = time_val;
-                        auxdata(2:end,:) = data;
-                        data = auxdata; clear auxdata;
-                end
-                
-                %
-                % transpose and write to disk
-                %
-                %strbindescr = MVPC.bindescr{binArray(ibin)};
-               % strbindescr = regexprep(strbindescr,'\\|\/|\*|\#|\$|\@|\:','_'); % replace forbidden characters
-                binfilename = [ prefname2 ext ]; % ...and add ext
-                fid = fopen(binfilename, 'w');
-                
-                if transpose==1 % no transpose
-                        
-                        %
-                        % writing electrodes
-                        %
-                        strprintf = '';
-                        for index = 1:size(data,1)
-                                if time==1 % show time values
-                                        tmpind = index-1;
-                                else
-                                        tmpind = index;
-                                end
-                                  
-                                if tmpind > 0
-%                                     if ~isempty(MVPC.chanlocs)
-%                                         labx = MVPC.chanlocs(tmpind).labels;
-%                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters
-%                                         fprintf(fid, '%s\t', labx);
-%                                     else
-                                        fprintf(fid, '\t');
-%                                     end
-                                else
-                                    fprintf(fid, 'time\t\n');
-                                end
-
-                                strprintf = [ strprintf '%.' num2str(precision) 'f\t' ];
-                        end
-                        
-                        strprintf(end) = 'n';
-                        
-%                         if electrodes==1
-%                                 fprintf(fid, '\n');
-%                         end
-                        fprintf(fid, strprintf, data);
-                else % transpose
-                        
-                        %
-                        % writing electrodes
-                        %
-                        for index = 1:size(data,1)
-                                if time==1
-                                        tmpind = index-1;
-                                else
-                                        tmpind = index;
-                                end
-%                                 if electrodes==1
-%                                         if tmpind > 0
-%                                                 if ~isempty(MVPC.chanlocs)
-%                                                         labx = MVPC.chanlocs(tmpind).labels;
-%                                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters.
-%                                                         fprintf(fid,'%s\t', labx);
-%                                                 else
-%                                                         fprintf(fid,'%d\t', tmpind);
-%                                                 end
-%                                         else
-%                                                 fprintf(fid, 'time\t');
-%                                         end
-%                                 end
-                                fprintf(fid,[ '%.' num2str(precision) 'f\t' ], data(index, :));
-                                fprintf(fid, '\n');
-                        end
-                end
-                fclose(fid);
-            %    disp(['<a href="matlab: open(''' binfilename ''')">' binfilename]);
-%        end
+try
+    disp('Your MVPC results have been exported into the following files:')
+    %        for ibin=1:nbin
+    
+    %
+    % ERP data
+    %
+    data = MVPC.average_score;
+    
+    %
+    % add time axis
+    %
+    if time==1
+        %fprintf('bin #%g\n', ibin);
+        time_val = (MVPC.times/1000)/timeunit; %Nov 2010
+        auxdata  = zeros(size(data,1) + 1, size(data,2));
+        auxdata(1,:)     = time_val;
+        auxdata(2:end,:) = data;
+        data = auxdata; clear auxdata;
+    end
+    
+    %
+    % transpose and write to disk
+    %
+    %strbindescr = MVPC.bindescr{binArray(ibin)};
+    % strbindescr = regexprep(strbindescr,'\\|\/|\*|\#|\$|\@|\:','_'); % replace forbidden characters
+    binfilename = [ prefname2 ext ]; % ...and add ext
+    fid = fopen(binfilename, 'w');
+    
+    if transpose==1 % no transpose
+        
+        %
+        % writing electrodes
+        %
+        strprintf = '';
+        for index = 1:size(data,1)
+            if time==1 % show time values
+                tmpind = index-1;
+            else
+                tmpind = index;
+            end
+            
+            if tmpind > 0
+                %                                     if ~isempty(MVPC.chanlocs)
+                %                                         labx = MVPC.chanlocs(tmpind).labels;
+                %                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters
+                %                                         fprintf(fid, '%s\t', labx);
+                %                                     else
+                fprintf(fid, '\t');
+                %                                     end
+            else
+                fprintf(fid, 'time\t\n');
+            end
+            
+            strprintf = [ strprintf '%.' num2str(precision) 'f\t' ];
+        end
+        
+        strprintf(end) = 'n';
+        
+        %                         if electrodes==1
+        %                                 fprintf(fid, '\n');
+        %                         end
+        fprintf(fid, strprintf, data);
+    else % transpose
+        
+        %
+        % writing electrodes
+        %
+        for index = 1:size(data,1)
+            if time==1
+                tmpind = index-1;
+            else
+                tmpind = index;
+            end
+            %                                 if electrodes==1
+            %                                         if tmpind > 0
+            %                                                 if ~isempty(MVPC.chanlocs)
+            %                                                         labx = MVPC.chanlocs(tmpind).labels;
+            %                                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters.
+            %                                                         fprintf(fid,'%s\t', labx);
+            %                                                 else
+            %                                                         fprintf(fid,'%d\t', tmpind);
+            %                                                 end
+            %                                         else
+            %                                                 fprintf(fid, 'time\t');
+            %                                         end
+            %                                 end
+            fprintf(fid,[ '%.' num2str(precision) 'f\t' ], data(index, :));
+            fprintf(fid, '\n');
+        end
+    end
+    fclose(fid);
+    %    disp(['<a href="matlab: open(''' binfilename ''')">' binfilename]);
+    %        end
 catch
-        serror = 1; %something went wrong
+    serror = 1; %something went wrong
 end
 fprintf('\n');

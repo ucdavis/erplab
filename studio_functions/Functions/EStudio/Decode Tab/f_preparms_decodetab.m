@@ -88,7 +88,7 @@ if isempty(timetick_auto) || numel(timetick_auto)~=1 || (timetick_auto~=0 && tim
 end
 
 try xtickstep = MVPC_plotset_pars{4}; catch xtickstep = xstepdef; end
-if isempty(xtickstep) || numel(xtickstep)~=1 || any(xtickstep<=0) || xtickstep > (timEnd-timeStart) 
+if isempty(xtickstep) || numel(xtickstep)~=1 || any(xtickstep<=0) || xtickstep > (timEnd-timeStart)
     xtickstep = xstepdef;
 end
 
@@ -118,9 +118,12 @@ if isempty(Xtickdecimal) || numel(Xtickdecimal)~=1 || any(Xtickdecimal(:)<0)
 end
 
 %%
-try Xlabelfontflg = MVPC_plotset_pars{6} ; catch Xlabelfontflg=1; end
+MVPC_lineslegendops = estudioworkingmemory('MVPC_lineslegendops');
+try fontsizepars = MVPC_lineslegendops{3}; catch fontsizepars = {3,5,1,3,5,1}; end
+
+try Xlabelfontflg = fontsizepars{1}; catch Xlabelfontflg=3; end
 if isempty(Xlabelfontflg) || numel(Xlabelfontflg)~=1 || any(Xlabelfontflg(:)>5)
-    Xlabelfontflg=1;
+    Xlabelfontflg=3;
 end
 fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
 
@@ -129,14 +132,14 @@ fontsizes  = str2double({'4','6','8','10','12','14','16','18','20','24','28','32
 
 Xlabelfont = fonttype{Xlabelfontflg};
 %%font size
-try Xlabelfontsize = MVPC_plotset_pars{7};  catch Xlabelfontsize=5;  end
+try Xlabelfontsize = fontsizepars{2}; catch Xlabelfontsize=5;  end
 if isempty(Xlabelfontsize) || numel(Xlabelfontsize)~=1 || any(Xlabelfontsize(:)>20)
     Xlabelfontsize=5;
 end
 Xlabelfontsize = fontsizes(Xlabelfontsize);
 
 %%text color for x axis
-try XlabelcolorFlag = MVPC_plotset_pars{8}; catch  XlabelcolorFlag=1; end
+try XlabelcolorFlag = fontsizepars{3};  catch  XlabelcolorFlag=1; end
 if isempty(XlabelcolorFlag) || numel(XlabelcolorFlag)~=1 || any(XlabelcolorFlag(:)>7)
     XlabelcolorFlag=1;
 end
@@ -241,22 +244,23 @@ try Ytickdecimal = MVPC_plotset_pars{13};catch Ytickdecimal=1; end
 if isempty(Ytickdecimal) || numel(Ytickdecimal)~=1 || any(Ytickdecimal(:)<0)
     Ytickdecimal=1;
 end
+Ytickdecimal = Ytickdecimal+1;
 
 %%font for y axis
-try YlabelfontFlag = MVPC_plotset_pars{14}; catch YlabelfontFlag=1; end
+try YlabelfontFlag = fontsizepars{4}; catch YlabelfontFlag=3; end
 if isempty(YlabelfontFlag) || numel(YlabelfontFlag)~=1 || any(YlabelfontFlag(:)>5)
-    YlabelfontFlag=1;
+    YlabelfontFlag=3;
 end
 Ylabelfont = fonttype{YlabelfontFlag};
 
 %%font size for y axis
-try  Ylabelfontsize = MVPC_plotset_pars{15};  catch Ylabelfontsize=5;  end;
+try  Ylabelfontsize =fontsizepars{5};   catch Ylabelfontsize=5;  end;
 if isempty(Ylabelfontsize) || numel(Ylabelfontsize)~=1 || any(Ylabelfontsize(:)>20)
     Ylabelfontsize=5;
 end
 Ylabelfontsize = fontsizes(Ylabelfontsize);
 %%text color for  y axis
-try  YlabelcolorFlag = MVPC_plotset_pars{16};  catch YlabelcolorFlag=1;  end
+try  YlabelcolorFlag =fontsizepars{6};   catch YlabelcolorFlag=1;  end
 
 if isempty(YlabelcolorFlag) || numel(YlabelcolorFlag)~=1 || any(YlabelcolorFlag(:)>7)
     YlabelcolorFlag=1;
@@ -490,9 +494,9 @@ try
 catch
     ScreenPos =  get( 0, 'Screensize' );
 end
- ScreenPos = EStudio_gui_erp_totl.ScreenPos;
- 
- 
+ScreenPos = EStudio_gui_erp_totl.ScreenPos;
+
+
 FigOutpos = [ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100]*8/9;
 % if isempty(FigureName)
 %     FigureName = MVPC.mvpcname;

@@ -190,8 +190,8 @@ if nargin == 1 %GUI
         %
         % Somersault
         %
-        
-        pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',currdata,...
+        ColorLimits = [];
+        pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',currdata,'ColorLimits',ColorLimits,...
             'filepath',pname, 'Colormap', cmaps{plot_cmap}, 'Format',frmts{frmt}, 'Saveas',savestr,'History', 'gui');
         pause(0.1)
         return
@@ -219,6 +219,7 @@ p.addParamValue('Saveas', 'off', @ischar);     % 'on', 'off'
 p.addParamValue('Warning', 'off', @ischar);    % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
+p.addParamValue('ColorLimits',[],@isnumeric);
 p.parse(ALLMVPC, Times, Type, varargin{:});
 mvpci = p.Results.MVPCindex;
 meas = p.Results.Type;
@@ -468,6 +469,11 @@ elseif strcmpi(meas,'average')
     avg_win = 1;
 end
 
+ColorLimits = p.Results.ColorLimits;%%GH July 2024
+if isempty(ColorLimits) || numel(ColorLimits)~=2 || min(ColorLimits(:))>1 || max(ColorLimits(:))<0
+    ColorLimits = [];
+end
+
 
 %% plot
 for pnt = 1:Npts
@@ -486,7 +492,9 @@ for pnt = 1:Npts
     if ~strcmpi(cmap,'default')
         h.Colormap = eval(cmap);
     end
-    
+    if ~isempty(ColorLimits) && numel(ColorLimits)==2
+        h.ColorLimits = ColorLimits;%%GH July 2024
+    end
     %labels
     
     if strcmpi(MVPC.DecodingMethod,'SVM')

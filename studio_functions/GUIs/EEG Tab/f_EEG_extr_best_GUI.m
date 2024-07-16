@@ -27,13 +27,13 @@ EEG_extr_best = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_best = uiextras.BoxPanel('Parent', fig, 'Title', 'Extract Bin-epoched Single Trial EEG',...
+    Eegtab_box_best = uiextras.BoxPanel('Parent', fig, 'Title', 'Extract Bin-Epoched Single Trials (BEST)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_best = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-epoched Single Trial EEG',...
+    Eegtab_box_best = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-Epoched Single Trials (BEST)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_best = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-epoched Single Trial EEG',...
+    Eegtab_box_best = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-Epoched Single Trials (BEST)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @avg_help
 end
 
@@ -252,7 +252,7 @@ varargout{1} = Eegtab_box_best;
             EEG_extr_best.table_bins.Data= [];
             EEG_extr_best.table_bins.ColumnName={'Select','Bin Description'};
             EEG_extr_best.table_bins.Enable = 'off';
-            msgboxText=['Extract Bin-epoched Single Trial EEG: Current EEGset is empty or it is not epoched EEG.'];
+            msgboxText=['Extract Bin-Epoched Single Trials (BEST): Current EEGset is empty or it is not epoched EEG.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -303,7 +303,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
         tranf_left = str2num(EEG_extr_best.tranf_left.String);
         if isempty(tranf_left) || numel(tranf_left)~=1 || any(tranf_left(:)<=0) || any(tranf_left(:)>observe_EEGDAT.EEG.srate)
-            msgboxText=['Extract Bin-epoched Single Trial EEG > Transform into phase-independent power: Left edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+            msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Transform into phase-independent power: Left edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             EEG_extr_best.tranf_left.String = '';
@@ -325,7 +325,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.avg_run.ForegroundColor = [1 1 1];
         tranf_right = str2num(EEG_extr_best.tranf_right.String);
         if isempty(tranf_right) || numel(tranf_right)~=1 || any(tranf_right(:)<=0) || any(tranf_right(:)>observe_EEGDAT.EEG.srate)
-            msgboxText=['Extract Bin-epoched Single Trial EEG > Transform into phase-independent power: Right edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+            msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Transform into phase-independent power: Right edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             EEG_extr_best.tranf_right.String = '';
@@ -346,7 +346,7 @@ varargout{1} = Eegtab_box_best;
         if ~isempty(messgStr) && eegpanelIndex~=20
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('f_EEG_proces_messg','Extract Bin-epoched Single Trial EEG > Cancel');
+        estudioworkingmemory('f_EEG_proces_messg','Extract Bin-Epoched Single Trials (BEST) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_best.TitleColor= [0.0500    0.2500    0.5000];
         EEG_extr_best.avg_cancel.BackgroundColor =  [1 1 1];
@@ -493,14 +493,14 @@ varargout{1} = Eegtab_box_best;
         end
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
-            msgboxText=['Extract Bin-epoched Single Trial EEG > Run: We cannot work for the EEGset without "EVENTLIST". Please check "EVENTLIST" for current EEG data and you may create it before further analysis.'];
+            msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run: We cannot work for the EEGset without "EVENTLIST". Please check "EVENTLIST" for current EEG data and you may create it before further analysis.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
-        estudioworkingmemory('f_EEG_proces_messg','Extract Bin-epoched Single Trial EEG > Run');
+        estudioworkingmemory('f_EEG_proces_messg','Extract Bin-Epoched Single Trials (BEST) > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_best.TitleColor= [0.0500    0.2500    0.5000];
@@ -526,14 +526,14 @@ varargout{1} = Eegtab_box_best;
             end
         end
         if isempty(binselec)
-            msgboxText=['Extract Bin-epoched Single Trial EEG > Run:  No bin was selected'];
+            msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run:  No bin was selected'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         if numel(binselec)<2
-            msgboxText=['Extract Bin-epoched Single Trial EEG > Run:  Must have at least two classes for decoding! '];
+            msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run:  Must have at least two classes for decoding! '];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -585,7 +585,7 @@ varargout{1} = Eegtab_box_best;
             tranf_left = str2num(EEG_extr_best.tranf_left.String);
             tranf_right = str2num(EEG_extr_best.tranf_right.String);
             if isempty(tranf_left) || numel(tranf_left)~=1 || any(tranf_left(:)<=0) || any(tranf_left(:)>observe_EEGDAT.EEG.srate)
-                msgboxText=['Extract Bin-epoched Single Trial EEG > Run: Left edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+                msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run: Left edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 EEG_extr_best.tranf_left.String = '';
@@ -593,7 +593,7 @@ varargout{1} = Eegtab_box_best;
             end
             
             if isempty(tranf_right) || numel(tranf_right)~=1 || any(tranf_right(:)<=0) || any(tranf_right(:)>observe_EEGDAT.EEG.srate)
-                msgboxText=['Extract Bin-epoched Single Trial EEG > Run: Right edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
+                msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run: Right edge of frequency band should be a single positive value that is smaller than',32,num2str(floor(observe_EEGDAT.EEG.srate/2))];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 EEG_extr_best.tranf_left.String = '';
@@ -601,7 +601,7 @@ varargout{1} = Eegtab_box_best;
             end
             
             if tranf_left>=tranf_right
-                msgboxText=['Extract Bin-epoched Single Trial EEG > Run: Left edge of frequency band should be smaller than right one'];
+                msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run: Left edge of frequency band should be smaller than right one'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 EEG_extr_best.tranf_left.String = '';
@@ -647,7 +647,7 @@ varargout{1} = Eegtab_box_best;
             setindex =EEGArray(Numofeeg);
             EEG = ALLEEG(setindex);
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Extract Bin-epoched Single Trial EEG > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Extract Bin-Epoched Single Trials (BEST) > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run the pop_ command with the user input from the GUI

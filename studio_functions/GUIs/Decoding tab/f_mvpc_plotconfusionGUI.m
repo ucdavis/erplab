@@ -113,7 +113,34 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.paras{1} = gui_mvpc_confusion.measure_method.Value;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
+        %%Color limits
+        try limitauto =def{6}; catch limitauto =1; end
+        if isempty(limitauto) || numel(limitauto)~=1 || (limitauto~=0 && limitauto~=1)
+            limitauto=1;
+        end
+        try colorlimit = def{7}; catch colorlimit = []; end
+        if numel(colorlimit)~=2 || min(colorlimit(:))>1 || max(colorlimit(:))<0
+            colorlimit = [];
+        end
+        try limimin = colorlimit(1); catch limimin=0;  end
+        try limimax = colorlimit(2); catch limimax=1;  end
+        gui_mvpc_confusion.color_limitstitle = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_mvpc_confusion.color_limiauto = uicontrol('Style','checkbox','Parent', gui_mvpc_confusion.color_limitstitle,'Value',limitauto,...
+            'String','Auto, limit: min ','Enable','off','callback',@color_limiauto,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        gui_mvpc_confusion.color_limimin = uicontrol('Style','edit','Parent', gui_mvpc_confusion.color_limitstitle,...
+            'String',num2str(limimin),'Enable','off','callback',@color_limimin,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+        gui_mvpc_confusion.color_limimin.KeyPressFcn = @mvpc_graverage_presskey;
+        uicontrol('Style','text','Parent',gui_mvpc_confusion.color_limitstitle,...
+            'String',', max','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+        gui_mvpc_confusion.color_limimax = uicontrol('Style','edit','Parent', gui_mvpc_confusion.color_limitstitle,...
+            'String',num2str(limimax),'Enable','off','callback',@color_limimax,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+        set(gui_mvpc_confusion.color_limitstitle,'Sizes',[110 60 30 60]);
+        gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
+        gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
         
+        
+        gui_mvpc_confusion.location_title1 = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',gui_mvpc_confusion.location_title1);
         gui_mvpc_confusion.location_title = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',gui_mvpc_confusion.location_title);
         gui_mvpc_confusion.cancel  = uicontrol('Style','pushbutton','Parent',gui_mvpc_confusion.location_title,'Enable','off',...
@@ -123,12 +150,70 @@ varargout{1} = MVPC_confusion_box_gui;
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',gui_mvpc_confusion.location_title);
         set(gui_mvpc_confusion.location_title,'Sizes',[20 95 30 95 20]);
-        set(gui_mvpc_confusion.DataSelBox,'Sizes',[30, 25,35,30,30]);
+        set(gui_mvpc_confusion.DataSelBox,'Sizes',[30, 25,35,30,20,5,30]);
     end
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%-------------------------------color limits------------------------------
+    function color_limiauto(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        gui_mvpc_confusion.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.run.ForegroundColor = [1 1 1];
+        MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        if  gui_mvpc_confusion.color_limiauto.Value==1
+            enableFlag = 'off';
+            gui_mvpc_confusion.color_limimin.String = '0';
+            gui_mvpc_confusion.color_limimax.String = '1';
+        else
+            enableFlag = 'on';
+        end
+        gui_mvpc_confusion.color_limimin.Enable = enableFlag;
+        gui_mvpc_confusion.color_limimax.Enable = enableFlag;
+    end
+
+%%------------------------min of color limits------------------------------
+    function color_limimin(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        gui_mvpc_confusion.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.run.ForegroundColor = [1 1 1];
+        MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        color_limimin = str2num(gui_mvpc_confusion.color_limimin.String);
+        if isempty(color_limimin) || numel(color_limimin)~=1
+            gui_mvpc_confusion.color_limimin.String = '';
+        end
+    end
+
+%%--------------------max of color limits----------------------------------
+    function color_limimax(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        gui_mvpc_confusion.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.run.ForegroundColor = [1 1 1];
+        MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        color_limimax = str2num( gui_mvpc_confusion.color_limimax.String);
+        if isempty(color_limimax) || numel(color_limimax)~=1
+            gui_mvpc_confusion.color_limimax.String = '';
+        end
+        
+    end
+
 
 %%---------------checkbox for weighted average-----------------------------
     function measure_method(~,~)
@@ -222,9 +307,37 @@ varargout{1} = MVPC_confusion_box_gui;
             measure_color=1;
         end
         gui_mvpc_confusion.measure_color.Value = measure_color;
+        
+        try color_limiauto = gui_mvpc_confusion.paras{4}; catch color_limiauto=1; end
+        if isempty(color_limiauto) || numel(color_limiauto)~=1 || (color_limiauto~=0 && color_limiauto~=1)
+            color_limiauto=1;
+        end
+        gui_mvpc_confusion.color_limiauto.Value=color_limiauto;
+        
+        if gui_mvpc_confusion.color_limiauto.Value==1
+            colorlimits = [0 1];
+        else
+            try colorlimits= gui_mvpc_confusion.paras{5}; catch colorlimits = []; end
+        end
+        if isempty(colorlimits) || numel(colorlimits)~=2 || min(colorlimits(:))>1 || max(colorlimits(:))<0
+            colorlimits = [];
+        end
+        try color_limimin =colorlimits(1); catch colorlimits=0; end
+        try color_limimax =colorlimits(2); catch color_limimax=1; end
+        gui_mvpc_confusion.color_limimin.String = num2str(color_limimin);
+        gui_mvpc_confusion.color_limimax.String = num2str(color_limimax);
+        if  gui_mvpc_confusion.color_limiauto.Value==1
+            enableFlag = 'off';
+        else
+            enableFlag = 'on';
+        end
+        gui_mvpc_confusion.color_limimin.Enable = enableFlag;
+        gui_mvpc_confusion.color_limimax.Enable = enableFlag;
         gui_mvpc_confusion.paras{1} = gui_mvpc_confusion.measure_method.Value;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
+        gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
+        gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
         gui_mvpc_confusion.run.BackgroundColor =  [1 1 1];
         gui_mvpc_confusion.run.ForegroundColor = [0 0 0];
         MVPC_confusion_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -263,7 +376,20 @@ varargout{1} = MVPC_confusion_box_gui;
                 return;
             end
         end
-        
+        if gui_mvpc_confusion.color_limiauto.Value==1
+            colorlimits = [0 1];  color_limiauto=1;
+        else
+            colorlimits= [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
+            color_limiauto=0;
+        end
+        if isempty(colorlimits) || numel(colorlimits)~=2 || min(colorlimits(:))>1 || max(colorlimits(:))<0
+            colorlimits = [];
+            gui_mvpc_confusion.color_limimin.String = '';
+            gui_mvpc_confusion.color_limimax.String = '';
+            msgboxText =  ['Plot Confusion Matrices>RUN - Color limits are invalid.'];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
         gui_mvpc_confusion.run.BackgroundColor =  [1 1 1];
         gui_mvpc_confusion.run.ForegroundColor = [0 0 0];
         MVPC_confusion_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -273,6 +399,8 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.paras{1} = gui_mvpc_confusion.measure_method.Value;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
+        gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
+        gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
         
         ALLMVPC = observe_DECODE.ALLMVPC;
         plot_menu = gui_mvpc_confusion.measure_method.Value;
@@ -295,12 +423,12 @@ varargout{1} = MVPC_confusion_box_gui;
         fprintf(['Plot Confusion Matrices',32,32,32,32,datestr(datetime('now')),'\n']);
         for Numofmvpc = 1:numel(MVPCArray)
             MVPCCOM= pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',MVPCArray(Numofmvpc),...
-                'Colormap', cmaps{plot_cmap}, 'History', 'script','Tooltype','estudio');
+                'Colormap', cmaps{plot_cmap}, 'History', 'script','Tooltype','estudio','ColorLimits',colorlimits);
         end
         fprintf([MVPCCOM]);
         fprintf( ['\n',repmat('-',1,100) '\n']);
         eegh(MVPCCOM);
-        def = {plot_menu, plot_cmap,1, tp, 1};
+        def = {plot_menu, plot_cmap,1, tp, 1,color_limiauto,colorlimits};
         estudioworkingmemory('pop_plotconfusions', def);
         observe_DECODE.Count_currentMVPC=5;
     end
@@ -321,6 +449,9 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.measure_color.Enable = enableFlag;
         gui_mvpc_confusion.cancel.Enable = enableFlag;
         gui_mvpc_confusion.run.Enable = enableFlag;
+        gui_mvpc_confusion.color_limiauto.Enable = enableFlag;
+        gui_mvpc_confusion.color_limimin.Enable = enableFlag;
+        gui_mvpc_confusion.color_limimax.Enable = enableFlag;
         try measure_latency =str2num(gui_mvpc_confusion.measure_latency.String) ; catch  measure_latency = [];end
         if ~isempty(observe_DECODE.MVPC)
             if ~isempty(measure_latency) && (any(measure_latency(:)<observe_DECODE.MVPC.times(1)) || any(measure_latency(:)>observe_DECODE.MVPC.times(end)))
@@ -332,10 +463,32 @@ varargout{1} = MVPC_confusion_box_gui;
                 measure_latency = [];
             end
         end
+        if gui_mvpc_confusion.color_limiauto.Value==1
+            colorlimits = [0 1];  color_limiauto=1;
+        else
+            colorlimits= [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
+            color_limiauto=0;
+        end
+        if isempty(colorlimits) || numel(colorlimits)~=2 || min(colorlimits(:))>1 || max(colorlimits(:))<0
+            colorlimits = [];
+        end
+        try color_limimin =colorlimits(1); catch colorlimits=0; end
+        try color_limimax =colorlimits(2); catch color_limimax=1; end
+        gui_mvpc_confusion.color_limimin.String = num2str(color_limimin);
+        gui_mvpc_confusion.color_limimax.String = num2str(color_limimax);
+        if  gui_mvpc_confusion.color_limiauto.Value==1
+            enableFlag = 'off';
+        else
+            enableFlag = 'on';
+        end
+        gui_mvpc_confusion.color_limimin.Enable = enableFlag;
+        gui_mvpc_confusion.color_limimax.Enable = enableFlag;
         gui_mvpc_confusion.measure_latency.String = num2str(measure_latency);
         gui_mvpc_confusion.paras{1} = gui_mvpc_confusion.measure_method.Value;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
+        gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
+        gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
         observe_DECODE.Count_currentMVPC=5;
     end
 
@@ -359,17 +512,30 @@ varargout{1} = MVPC_confusion_box_gui;
         end
     end
 
-
+%%---------------------------Reset parameters------------------------------
     function Reset_best_panel_change(~,~)
-        if observe_DECODE.Reset_erp_paras_panel~=4
+        if observe_DECODE.Reset_Best_paras_panel~=4
             return;
         end
         gui_mvpc_confusion.measure_method.Value=1;
         gui_mvpc_confusion.measure_latency.String = '';
         gui_mvpc_confusion.measure_color.Value=1;
+        gui_mvpc_confusion.color_limiauto.Value=1;
+        gui_mvpc_confusion.color_limimin.String = '0';
+        gui_mvpc_confusion.color_limimax.String = '1';
+        if  gui_mvpc_confusion.color_limiauto.Value==1
+            enableFlag = 'off';
+        else
+            enableFlag = 'on';
+        end
+        gui_mvpc_confusion.color_limimin.Enable = enableFlag;
+        gui_mvpc_confusion.color_limimax.Enable = enableFlag;
         gui_mvpc_confusion.paras{1} = gui_mvpc_confusion.measure_method.Value;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
+        gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
+        gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
+        
         if gui_mvpc_confusion.measure_method.Value == 1
             text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or 100:50:350 to plot at 100,...,350 ms)' ;
         else
