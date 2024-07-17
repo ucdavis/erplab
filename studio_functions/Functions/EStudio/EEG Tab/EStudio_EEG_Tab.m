@@ -97,7 +97,7 @@ EStudio_gui_erp_totl.eegpanelSizes(26) = 190;
 EStudio_gui_erp_totl.eegpanel{27} = f_EEG_history_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(27) = 300;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
-    'Extract Bin-epoched Single Trial EEG, Convert Voltage to CSD, EEG Utilities, and History panels.']);
+    'Extract Bin-Epoched Single Trials (BEST), Convert Voltage to CSD, EEG Utilities, and History panels.']);
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
 

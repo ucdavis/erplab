@@ -544,7 +544,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_DECODE.CURRENTBEST = 1;
                 observe_DECODE.ALLBEST =  [];
                 estudioworkingmemory('BESTArray',1);
-                observe_DECODE.Count_currentbest=1; 
+                observe_DECODE.Count_currentbest=1;
             end
         else
             if EStudio_gui_erp_totl.clear_alldecode == 1

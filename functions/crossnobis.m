@@ -1,15 +1,15 @@
 
-function [MVPC, ALLMVPC] = crossnobis(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,classcoding,equalT,ParWorkers,method)
+function [MVPC, ALLMVPC] = crossnobis(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,classcoding,equalT,ParWorkers,method,Tooltype)
 
-%% Subject List: 
+%% Subject List:
 nSubs = length(ALLBEST); % # files = # subjects
-
+global observe_DECODE;
 %% Step 9: Loop through participants
 for s = 1:nSubs %crossnobis is performed within each subject independently
     
-    %% Parameters to set per subject 
-    BEST = ALLBEST(s);   
-    mvpc = buildMVPCstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,classcoding,method); 
+    %% Parameters to set per subject
+    BEST = ALLBEST(s);
+    mvpc = buildMVPCstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,classcoding,method);
     
     % for brevity in analysis
     nBins =         mvpc.nClasses;
@@ -17,7 +17,7 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     nPerms =        nchoosek(nBins,2); %total # pairwise comparisions
     dataTime = BEST.times; %times of imported data
     %nBlocks =       mvpc.nCrossfolds;
-   % nElectrodes =   length(mvpc.electrodes); 
+    % nElectrodes =   length(mvpc.electrodes);
     nSamps =        length(mvpc.times);
     try
         sn =            BEST.mvpcname; %if data went through decoding GUI
@@ -26,19 +26,19 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     end
     
     %progress output to command window
-    fprintf('*** Currently Decoding (Crossnobis) Subject:\t%s ***\n ',sn); %is Decoding the word to use for crossnobis? 
+    fprintf('*** Currently Decoding (Crossnobis) Subject:\t%s ***\n ',sn); %is Decoding the word to use for crossnobis?
     
-     % grab EEG data from bin-list organized data 
+    % grab EEG data from bin-list organized data
     eegs = BEST.binwise_data;
     nPerBin = BEST.n_trials_per_bin;
     % we create index of timpoint of interests from original data
     tois = ismember(dataTime,dataTime);
-
     
-%     % Preallocate Matrices
-     final_xDist = nan(nSamps,nIter,nPerms);
-%     %BetaWeights_Raw = nan(nIter,nSamps,nBlocks,nElectrodes);
-%     %BetaWeights_Corr = BetaWeights_Raw;
+    
+    %     % Preallocate Matrices
+    final_xDist = nan(nSamps,nIter,nPerms);
+    %     %BetaWeights_Raw = nan(nIter,nSamps,nBlocks,nElectrodes);
+    %     %BetaWeights_Corr = BetaWeights_Raw;
     
     
     if nBins ~= max(size(eegs))
@@ -66,18 +66,18 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     % (NChan x nTP x nTrials(ideally randomized) x Nlabels)
     
     for b = 1:numel(nPerBin)
-        ntrial = size(eegs(b).data,3); 
-        shuff_list = randperm(ntrial); 
+        ntrial = size(eegs(b).data,3);
+        shuff_list = randperm(ntrial);
         
         %so we always allow the specified number of trials per bin
         %(nPerBin) by choosing from a (potentially) larger set of trials
         %within the bin
         
-        idx_list = shuff_list(1:nPerBin(b)); 
+        idx_list = shuff_list(1:nPerBin(b));
         
         indexed_data = eegs(b).data(:,:,idx_list);
-        eegs(b).data = indexed_data; 
-    
+        eegs(b).data = indexed_data;
+        
     end
     
     
@@ -86,14 +86,19 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     xdata = xdata(:,tois,:); %resampled data
     
     
-      %% Step 8: Loop through each iteration with random shuffling
+    %% Step 8: Loop through each iteration with random shuffling
     tic % start timing iteration loop
     
     %% Perform Cross-Nobis analysis at each requested time-point
     for iter = 1:nIter
         fprintf('Subject: %s, Iteration: %i / %i \n', sn, iter, nIter);
+        if ~strcmpi(Tooltype,'erplab')
+            messg = ['Subject:',32, sn,', Iteration:',32,num2str(iter),'/', num2str(nIter)]; %%GH
+            estudioworkingmemory('f_Decode_proces_messg',messg);
+            observe_DECODE.Process_messg =1;
+        end
         parfor (nTp = 1:nSamps,ParWorkers)
-           
+            
             % structs to hold shuffled data
             a_full_bin_label= struct();
             b_full_bin_label= struct();
@@ -162,29 +167,29 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
             final_xDist(nTp,iter,:) = xDist;
         end
     end
-
+    
     toc % stop timing the iteration loop
     
-    mvpc.details = []; 
-    mvpc.raw_predictions = final_xDist; 
+    mvpc.details = [];
+    mvpc.raw_predictions = final_xDist;
     
-    avg_distance_iter = squeeze(mean(final_xDist,2))'; 
-    avg_distance_scores =  squeeze(mean(avg_distance_iter,1)); 
+    avg_distance_iter = squeeze(mean(final_xDist,2))';
+    avg_distance_scores =  squeeze(mean(avg_distance_iter,1));
     
     mvpc.average_score = avg_distance_scores;
-    mvpc = avgconfusionCM(mvpc, final_xDist);  
-    mvpc.stderror = std(avg_distance_iter)/sqrt(size(final_xDist,1)); 
+    mvpc = avgconfusionCM(mvpc, final_xDist);
+    mvpc.stderror = std(avg_distance_iter)/sqrt(size(final_xDist,1));
     
     
-     %probably a better way
+    %probably a better way
     if nSubs == 1
-
+        
         MVPC = mvpc;
         ALLMVPC = mvpc;
     else
- 
-        MVPC = mvpc; 
-        ALLMVPC(s) = mvpc; 
+        
+        MVPC = mvpc;
+        ALLMVPC(s) = mvpc;
     end
     
     

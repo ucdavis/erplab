@@ -457,7 +457,7 @@ end
 % test requirement that 0 time-sample point must be included!
 
 if Decode_every_Npoint < 1
-    msgText = 'Must specify a positive value > 1 for decoding every Nth point'
+    msgText = 'Must specify a positive value > 1 for decoding every Nth point';
     title = 'ERPLAB: Wrong Value for Decoding every Nth point';
     errorfound(msgText,title);
     return
@@ -720,12 +720,15 @@ end
 
 
 %% Enter algorithm
-
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
 
 if method == 1 %SVM
-    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,BetaWeights);
+    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,BetaWeights,Tooltype);
 elseif method == 2 %crossnobis
-    [MVPC, ALLMVPC] = crossnobis(ALLBEST,nIter,0,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method);
+    [MVPC, ALLMVPC] = crossnobis(ALLBEST,nIter,0,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,Tooltype);
 end
 
 
@@ -814,10 +817,6 @@ for q=1:length(fn)
 end
 bestcom = sprintf( '%s );', bestcom);
 
-Tooltype = p.Results.Tooltype;%%GH, June 2024
-if isempty(Tooltype)%%GH, June 2024
-    Tooltype = 'erplab';
-end
 if strcmpi(Tooltype,'erplab')%%GH, June 2024
     eegh(bestcom);
 end

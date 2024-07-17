@@ -876,7 +876,7 @@ varargout{1} = box_bestset_gui;
 
 %%-------------------------------Run---------------------------------------
     function mvpa_run(~,~)
-        if observe_DECODE.Count_currentbest~=2
+        if isempty(observe_DECODE.BEST) || isempty(observe_DECODE.ALLBEST)
             return;
         end
         Docode_do_mvpa.run.BackgroundColor =  [ 1 1 1];
@@ -1066,7 +1066,7 @@ varargout{1} = box_bestset_gui;
                 ALLMVPC_out = MVPC;
                 eegh(BESTCOM);
             else
-                ALLMVPC_out(LENGTH(ALLMVPC_out)+1) = MVPC;
+                ALLMVPC_out(length(ALLMVPC_out)+1) = MVPC;
             end
         end
         
