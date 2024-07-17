@@ -110,8 +110,6 @@ varargout{1} = ERP_chan_operation_gui;
         set(gui_erp_chan_operation.mode_2,'Sizes',[55 -1]);
         %%-----------------Run---------------------------------------------
         gui_erp_chan_operation.run_title = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        
-        
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.cancel = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
             'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable','off','BackgroundColor',[1 1 1]);
@@ -119,8 +117,7 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.run = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
-        set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);
-        
+        set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);  
         set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30]);
         
         estudioworkingmemory('ERPTab_chanop',0);
@@ -593,7 +590,6 @@ varargout{1} = ERP_chan_operation_gui;
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
-        
         ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
@@ -643,7 +639,7 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.Paras{1} = gui_erp_chan_operation.edit_bineq.Data;
         gui_erp_chan_operation.Paras{2} =gui_erp_chan_operation.locaInfor.Value;
         gui_erp_chan_operation.Paras{3} = gui_erp_chan_operation.mode_modify.Value;
-        
+        ChanAllold = [1:observe_ERPDAT.ERP.nchan];
         estudioworkingmemory('f_ERP_proces_messg','ERP Bin Operations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
@@ -718,6 +714,14 @@ varargout{1} = ERP_chan_operation_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         estudioworkingmemory('f_ERP_bin_opt',1);
+        
+         ChanAllNew = [1:observe_ERPDAT.ERP.nchan];
+         chandiff = setdiff(ChanAllNew,ChanAllold);
+         ChanArray =  estudioworkingmemory('ERP_ChanArray');
+         if ~isempty(chandiff) && ~isempty(ChanArray) && numel(ChanArray)==numel(ChanAllold)
+             ChanArray = [ChanArray,chandiff];
+             estudioworkingmemory('ERP_ChanArray',ChanArray);
+         end
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         return;

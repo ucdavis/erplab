@@ -27,7 +27,7 @@ if isempty(ColorB_def)
     ColorB_def = [0.95 0.95 0.95];
 end
 
-mh = msgbox(Messagestr, ['Estudio:',32,titleName]);     %create msgbox
+mh = msgbox(Messagestr, ['ERPLAB Studio:',32,titleName]);     %create msgbox
 mh.Resize = 'on';
 th = findall(mh, 'Type', 'Text');                   %get handle to text within msgbox
 th.FontSize = FonsizeDefault;

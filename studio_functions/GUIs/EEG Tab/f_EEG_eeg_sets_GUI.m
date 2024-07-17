@@ -296,7 +296,7 @@ estudioworkingmemory('Startimes',0);%%set default value
                 ChanArray = [1:EEG.nbchan];
                 estudioworkingmemory('EEG_ChanArray',ChanArray);
             end
-            [EEG, LASTCOM] = pop_duplicateeg( EEG, 'ChanArray',ChanArray,...
+            [EEG, LASTCOM] = pop_duplicateeg( EEG, 'ChanArray',sort(ChanArray),...
                 'Saveas', 'off', 'History', 'gui');
             if isempty(LASTCOM)
                 return;

@@ -135,12 +135,13 @@ varargout{1} = box_erpset_gui;
         BinArray = def{1};
         ChanArray =def{2};
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
-        
+        ChanAllold = [1:observe_ERPDAT.ERP.nchan];
+        binAllold = [1:observe_ERPDAT.ERP.nbin];
         ALLERP_out = [];
         ALLERP = observe_ERPDAT.ALLERP;
         for Numoferp = 1:numel(ERPArray)
             ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
-            [ERP, ERPCOM] = pop_duplicaterp( ERP, 'ChanArray',ChanArray, 'BinArray',BinArray,...
+            [ERP, ERPCOM] = pop_duplicaterp( ERP, 'ChanArray',sort(ChanArray), 'BinArray',sort(BinArray),...
                 'Saveas', 'off', 'History', 'gui');
             if Numoferp ==numel(ERPArray)
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
@@ -207,6 +208,39 @@ varargout{1} = box_erpset_gui;
         assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
         estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Process_messg =2;
+        
+        ChanAllNew = [1:observe_ERPDAT.ERP.nchan];
+        chandiff = setdiff(ChanAllold,ChanAllNew);
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        if ~isempty(chandiff) && ~isempty(ChanArray)
+            chancom = intersect(ChanArray,chandiff);
+            if ~isempty(chancom)
+                ChanArray = reshape(ChanArray,1,numel(ChanArray));
+                for Numofchan = 1:numel(chancom)
+                    [~,ypos] = find(ChanArray==chancom(Numofchan));
+                    ChanArray(ypos) = [];
+                end
+                estudioworkingmemory('ERP_ChanArray',ChanArray);
+            end
+        end
+        
+        binAllNew = [1:observe_ERPDAT.ERP.nbin];
+        bindiff = setdiff(binAllNew,binAllold);
+        binArray =  estudioworkingmemory('ERP_BinArray');
+        if ~isempty(bindiff) && ~isempty(binArray)
+            bincom = intersect(binArray,bindiff);
+            if ~isempty(bincom)
+                binArray = reshape(binArray,1,numel(binArray));
+                for Numofbin = 1:numel(bincom)
+                    [~,ypos] = find(binArray==chancom(Numofbin));
+                    binArray(ypos) = [];
+                end
+                
+                estudioworkingmemory('ERP_BinArray',binArray);
+            end
+        end
+        
+        
         observe_ERPDAT.Count_currentERP = 1;
     end
 
@@ -790,7 +824,6 @@ varargout{1} = box_erpset_gui;
         end
         
         if ischar(filename)
-            
             [ERP, ~, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
                 'History', 'gui');
             ERP.filename = filename;
@@ -829,7 +862,13 @@ varargout{1} = box_erpset_gui;
         else
             Edit_label = 'on';
         end
-        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+        if ~isempty(observe_ERPDAT.ALLERP)
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+        else
+            observe_ERPDAT.ERP=[];
+            observe_ERPDAT.CURRENTERP = 1;
+        end
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
         ERPsetops.butttons_datasets.String = ERPlistName;
@@ -1224,8 +1263,31 @@ varargout{1} = box_erpset_gui;
         end
         ERPlistName = {};
         if ~isempty(ALLERP)
+            count1 =0;
+            count = 0;
+            FFTArray = [];
+            FFTstr = '';
             for ii = 1:length(ALLERP)
-                ERPlistName{ii,1} =    char(strcat(num2str(ii),'.',32, ALLERP(ii).erpname));
+                if strcmpi(ALLERP(ii).datatype,'TFFT')
+                    count1 = count1+1;
+                    FFTArray(count1) = ii;
+                    if count1==1
+                        FFTstr =  ALLERP(ii).erpname;
+                    else
+                        FFTstr =  [FFTstr,',',32,ALLERP(ii).erpname];
+                    end
+                else
+                    count = count+1;
+                    ERPlistName{count,1} =    char(strcat(num2str(ii),'.',32, ALLERP(ii).erpname));
+                end
+            end
+            if ~isempty(FFTArray)
+                observe_ERPDAT.ALLERP(FFTArray) = [];
+                observe_ERPDAT.Count_currentERP = 1;
+                msgboxText =  ['ERPLAB Studio doesnot work with ERPsets that have been transformed into the frequency domain, the details are as below:',32,FFTstr];
+                title = 'ERPsets panel';
+                estudio_warning(msgboxText,title);
+                return
             end
         else
             ERPlistName{1} = 'No erpset is available' ;
@@ -1236,7 +1298,6 @@ varargout{1} = box_erpset_gui;
         if observe_ERPDAT.Reset_erp_paras_panel~=1
             return;
         end
-        
         if ~isempty(observe_ERPDAT.ALLERP)
             observe_ERPDAT.ERP =  observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
