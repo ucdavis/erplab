@@ -73,7 +73,7 @@ varargout{1} = box_bestset_gui;
         end
         Docode_do_mvpa.select_classes = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.selclass_all = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.select_classes ,'Value',selclass_all,...
-            'String','ALL','callback',@selclass_all,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','All','callback',@selclass_all,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.selclass_all.KeyPressFcn=  @decode_mvpc_presskey;
         Docode_do_mvpa.selclass_custom = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.select_classes ,'Value',~selclass_all,...
             'String','Custom','callback',@selclass_custom,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
@@ -338,9 +338,8 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
         Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
         Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
-        
-        
-        ClassArray = Docode_do_mvpa.selclass_custom_defined.String;
+                
+        ClassArray = str2num(Docode_do_mvpa.selclass_custom_defined.String);
         if isempty(ClassArray) || numel(ClassArray)<2
             msgboxText =  ['Multivariate Pattern Classification>Class ID:Must have two classes at least to decode',];
             titlNamerro = 'Warning for Pattern Classification Tab';

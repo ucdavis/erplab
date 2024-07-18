@@ -98,7 +98,7 @@ if nargin==1 % read
     return
 elseif nargin==2 % write
     if ~isempty(vmemoryestudio) %  variable at the workspace for storing/reading memory
-        try 
+        try
             vmemoryestudio.(field) = input2store;
             assignin('base','vmemoryestudio', vmemoryestudio);
         catch
@@ -119,7 +119,11 @@ elseif nargin==2 % write
         catch
             msgboxText = ['EStudio could not find "memoryerpstudio.erpm" or does not have permission for writting on it.\n'...
                 'Please, run EStudio again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
-            
+            try
+                p1 = which('o_ERPDAT');
+                p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+                EStudioversion= 16;
+                save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion');catch  end
             try
                 cprintf([0.45 0.45 0.45], msgboxText');
             catch

@@ -54,7 +54,7 @@ end
 if iserpmem==0
     p1 = which('o_ERPDAT');
     p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
+    save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion');
 end
 
 %%close EEGLAB
@@ -65,7 +65,6 @@ try
     LASTCOM = [];
     global ALLCOM;
     ALLCOM =[];
-    %     eegh('estudio;');
     evalin('base', 'eeg_global;');
     eeg_global;
 catch

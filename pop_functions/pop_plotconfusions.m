@@ -89,7 +89,10 @@
 function mvpccom = pop_plotconfusions(ALLMVPC,Times,Type,varargin)
 mvpccom = '';
 MVPC = preloadMVPC;
-
+if nargin<1
+    help pop_plotconfusions
+    return
+end
 if nargin == 1 %GUI
     
     currdata = evalin('base','CURRENTMVPC');

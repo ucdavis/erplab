@@ -109,10 +109,10 @@ try
                 %                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters
                 %                                         fprintf(fid, '%s\t', labx);
                 %                                     else
-                fprintf(fid, '\t');
+%                 fprintf(fid, '\t');
                 %                                     end
             else
-                fprintf(fid, 'time\t\n');
+%                 fprintf(fid, 'time\t\n');
             end
             
             strprintf = [ strprintf '%.' num2str(precision) 'f\t' ];

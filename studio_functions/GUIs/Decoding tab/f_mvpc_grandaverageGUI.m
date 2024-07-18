@@ -275,7 +275,13 @@ varargout{1} = MVPC_grdavg_box_gui;
         
         MVPC = pop_mvpcaverager( ALLMVPC,'Mvpcsets',MVPCArray, 'SEM',  stdsstr,'Warning', warnon_str,'History','gui');
         
-        Answer = f_mvpc_save_multi_file(MVPC,1,'grandavg');
+          pathName =  estudioworkingmemory('EEG_save_folder');
+        if isempty(pathName)
+            pathName =[pwd,filesep];
+        end
+        
+        
+        Answer = f_mvpc_save_multi_file(MVPC,1,'grandavg',1,pathName);
         if isempty(Answer)
             return;
         end

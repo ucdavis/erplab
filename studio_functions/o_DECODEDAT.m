@@ -69,8 +69,9 @@ classdef o_DECODEDAT < handle
                 obj.Count_currentbest = value;
                 notify(obj,'Count_currentbest_change');
             catch
+                warning('on');
             end
-            warning('on');
+            
         end
         
         %Modified bins of the selected BEST

@@ -401,7 +401,7 @@ varargout{1} = MVPC_confusion_box_gui;
             pathName =[pwd,filesep];
         end
         
-        defx =  erpworkingmemory('pop_exportconfusions');
+        defx =  estudioworkingmemory('pop_exportconfusions');
         def = {1,[],3,[pathName,filesep,'Confusion_matrix']};
         if isempty(defx)
             defx = def;
@@ -417,12 +417,12 @@ varargout{1} = MVPC_confusion_box_gui;
         end
         pathName = [pathstr,filesep,erpfilename];
         try defx{4} = pathName;catch end
-        erpworkingmemory('pop_exportconfusions',defx);
+        estudioworkingmemory('pop_exportconfusions',defx);
         estudioworkingmemory('f_Decode_proces_messg','Plot Confusion Matrices>Export');
         observe_DECODE.Process_messg =1;
         
         
-        def  = erpworkingmemory('pop_exportconfusions');
+        def  = estudioworkingmemory('pop_exportconfusions');
         ALLMVPC= observe_DECODE.ALLMVPC;
         %
         % Open plot confusion GUI
@@ -452,7 +452,7 @@ varargout{1} = MVPC_confusion_box_gui;
         
         %def = {actualnset, optioni, mvpcset,stderror};
         def = {plot_menu, tp, decimalNum, fileNames};
-        erpworkingmemory('pop_exportconfusions', def);
+        estudioworkingmemory('pop_exportconfusions', def);
         
         if plot_menu == 1
             %single timepoint confusion matrix
@@ -687,6 +687,14 @@ varargout{1} = MVPC_confusion_box_gui;
             text_instruct = '(e.g., 200 250 to plot average confusion matrix across 200 to 250 ms)';
         end
         gui_mvpc_confusion.latency_exp.String = text_instruct;
+        
+        pathName =  estudioworkingmemory('EEG_save_folder');
+        if isempty(pathName)
+            pathName =[pwd,filesep];
+        end
+        
+        def = {1,[],3,[pathName,filesep,'Confusion_matrix']};
+        estudioworkingmemory('pop_exportconfusions',def);
         observe_DECODE.Reset_Best_paras_panel=5;
     end
 

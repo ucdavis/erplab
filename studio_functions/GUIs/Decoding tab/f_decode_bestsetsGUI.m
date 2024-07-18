@@ -12,7 +12,6 @@
 
 function varargout = f_decode_bestsetsGUI(varargin)
 global observe_DECODE;
-global EStudio_gui_erp_totl;
 addlistener(observe_DECODE,'Count_currentbest_change',@Count_currentbest_change);
 addlistener(observe_DECODE,'Reset_best_panel_change',@Reset_best_panel_change);
 

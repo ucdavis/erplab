@@ -1,12 +1,19 @@
-% PURPOSE  : Plot confusion matricies from MVPC data
+% PURPOSE  : Export confusion matricies from MVPC data
 %
 % FORMAT   :
 %
-% >> pop_exportconfusions(MVPC, Times, Type)
-%
+% >> pop_exportconfusions(ALLMVPC,MVPCindex, 'Times',tp,'Type',meas,...
+%'fileNames',fileNames,'decimalNum',decimalNum,'History', 'gui');
+
+
+
 % INPUTS (Required)  :
 %
-% MVPC or ALLMVPC       - input dataset (MVPCset) or input ALLMVCP
+%ALLMVPC       -  input ALLMVCP
+%MVPCindex     -indexes of the selected MVPCsets
+%
+%
+% The available parameters are as follows:
 %
 % Times                 - array of times (in milliseconds) to plot
 %                           depending on the 'Type' input paramter.
@@ -28,63 +35,26 @@
 %                        -Average: Confusion matrix averaged across
 %                        timepoints
 %                        (specified in 'Times').
+%decimalNum             -precision for the saved values
 %
-%
-% The available parameters are as follows:
-%
-%        'MVPCindex' 	- Index of MVPCset(s) to use when contained
-%                         within the ALLMVPC structure
-%                         If supplying only one MVPCset using MVPC structure this value
-%                         must be equal to 1 or left unspecified.
-%                         Def: [1]
-%
-%        'Saveas'       - 'on'/'off'(def)
-%
-%        'Filepath'     - Path to save plots ('Saveas' must be 'on');
-%                          default path: current working directory.
-%
-%        'Format'       -Format of saved file*: 'fig'(def)/'png'
-%                         *('Saveas' must be 'on')
-%
-%        'Colormap' 	- Colormap for coloring of confusion matrix heatmap cells
-%                       Predefined colormap options:
-%                       {'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' };
+%'fileNames'     - Path and file name to confusion matrix
 %
 %
 %
 % EXAMPLE  :
 %
-% pop_exportconfusions( ALLMVPC, 'Times', [ 200], 'Type', 'timepoint', 'MVPCindex', [ 11], 'Format', 'fig', 'Colormap', 'default');
+% pop_exportconfusions( ALLMVPC,  1:3, 'decimalNum', [ 2], 'fileNames', '/Users/gzhang/Confusion_matrix.txt', 'Times', [ 300 500], 'Tooltype', 'estudio', 'Type', 'average' );
 %
-% See also: plotconfusions.mlapp
+% See also: Save_Confusion_file_GUI.mlapp
 %
-% *** This function is part of ERPLAB Toolbox ***
+% *** This function is part of ERPLAB Studio Toolbox ***
 % Author: Guanghui Zhang
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
 % 2024
 
-%b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
-%
-% ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
-% Created by Javier Lopez-Calderon and Steven Luck
-% Center for Mind and Brain, University of California, Davis,
-% javlopez@ucdavis.edu, sjluck@ucdavis.edu
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 function mvpccom = pop_exportconfusions(ALLMVPC,MVPCindex,varargin)
 mvpccom = '';
@@ -537,7 +507,10 @@ end
 if strcmpi(ext,'.txt')
     fclose(fileID);
 end
-disp(['A new file for confusion matrix was created at <a href="matlab: open(''' fileNames ''')">' fileNames '</a>'])
+try
+    disp(['A new file for confusion matrix was created at <a href="matlab: open(''' fileNames ''')">' fileNames '</a>'])
+catch
+end
 
 
 skipfields = {'ALLMVPC','History','MVPCindex'};

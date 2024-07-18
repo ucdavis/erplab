@@ -52,11 +52,11 @@ try
     ALLERP  = varargin{1};
     EEGArray = varargin{2};
     suffix = varargin{3};
-    
+   
 catch
     suffix  = '';
     EEGLAB = [];
-    EEGLAB.erpname = 'No mvpcset was selected';
+    EEGLAB.mvpcname = 'No mvpcset was selected';
     EEGLAB.filename ='No mvpcset was selected';
     EEGLAB.event = [];
     EEGLAB.chanlocs = [];
@@ -69,6 +69,11 @@ try
     ERPIndex = varargin{4};
 catch
     ERPIndex=1;
+end
+try
+ pathNames = varargin{5};
+catch
+   pathNames = pwd; 
 end
 handles.ERPIndex = ERPIndex;
 % handles.erpnameor = erpname;
@@ -107,7 +112,7 @@ set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
 set(handles.uitable1_erpset_table,'Enable','on');
 set(handles.checkbox3_filename_erpname,'Enable','off');
-set(handles.edit_path,'Enable','off','String','');
+set(handles.edit_path,'Enable','off','String',pathNames);
 set(handles.pushbutton_path_browse,'Enable','off');
 
 
@@ -202,8 +207,14 @@ if Values
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = ALLERP(EEGArray(Numoferpset)).filename;
+        if isempty(fileName) && ~isempty(ALLERP(EEGArray(Numoferpset)).mvpcname)
+            fileName = ALLERP(EEGArray(Numoferpset)).mvpcname;
+        end
+        try 
         [pathstr, file_name, ext] = fileparts(fileName);
-        
+        catch
+           file_name = 'newmvpc'; 
+        end
         DataString{Numoferpset,2} = [file_name,'.mvpc'];
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
@@ -255,7 +266,11 @@ for Numoferpset = 1:size(DataString_before,1)
     if Value_filename_erpname==1
         DataString{Numoferpset,2} = file_name;
     else
+        if ~isempty(ALLERP(EEGArray).filename)
         DataString{Numoferpset,2} =  ALLERP(EEGArray).filename;
+        else
+           DataString{Numoferpset,2} =  ''; 
+        end
     end
 end
 
