@@ -476,6 +476,7 @@ varargout{1} = ERP_bin_operation_gui;
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         try  ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM =''; end;
         ALLERP =  observe_ERPDAT.ALLERP;
+        binAllold = [1:observe_ERPDAT.ERP.nbin];
         ALLERP_out = [];
         for Numoferp = 1:numel(ERPArray)%%Bin Operations for each selected ERPset
             ERP = ALLERP(ERPArray(Numoferp));
@@ -545,6 +546,15 @@ varargout{1} = ERP_bin_operation_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         estudioworkingmemory('f_ERP_bin_opt',1);
+        
+         binAllNew = [1:observe_ERPDAT.ERP.nbin];
+         bindiff = setdiff(binAllNew,binAllold);
+         binArray =  estudioworkingmemory('ERP_BinArray');
+         if ~isempty(bindiff) && ~isempty(binArray) && numel(binArray)==numel(binAllold)
+             binArray = [binArray,bindiff];
+             estudioworkingmemory('ERP_BinArray',binArray);
+         end
+         
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         return;

@@ -242,7 +242,10 @@ varargout{1} = EStudio_box_bin_chan;
         end
         if ~isempty(chandiff)
             estudioworkingmemory('ERP_ChanArray',ChanArray);
+        elseif isempty(chandiff) && numel(ChanArrayef)==numel(ChanArray)
+           estudioworkingmemory('ERP_ChanArray',ChanArrayef); 
         end
+        
         %
         %%selectd bins
         BinArray=  ERPTab_bin_chan.BinRange.Value;
@@ -264,6 +267,8 @@ varargout{1} = EStudio_box_bin_chan;
         end
         if ~isempty(bindiff)
             estudioworkingmemory('ERP_BinArray',BinArray);
+        elseif isempty(bindiff) && numel(BinArray)== numel(BinArraydef)
+            estudioworkingmemory('ERP_BinArray',BinArraydef); 
         end
         observe_ERPDAT.Count_currentERP=3;
         f_redrawERP();
