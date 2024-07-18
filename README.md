@@ -4,10 +4,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v11.02
+## ERPLAB v11.03
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/11.0/erplab11.02.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
+  <a href="https://github.com/ucdavis/erplab/releases/download/11.0/erplab11.03.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
@@ -25,7 +25,7 @@ We encourage most users to use this latest major version.
 
 ## Release Notes
 
-### ERPLAB v11.02 Release Notes
+### ERPLAB v11.03 Release Notes
 
 ERPLAB can now be accessed from two different user interfaces: 
 - [ERPLAB Classic](https://github.com/ucdavis/erplab/wiki/Manual) (our original software, which operates as an EEGLAB plugin)
