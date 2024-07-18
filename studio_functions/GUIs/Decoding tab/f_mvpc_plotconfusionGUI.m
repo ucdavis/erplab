@@ -142,14 +142,13 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.location_title1 = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',gui_mvpc_confusion.location_title1);
         gui_mvpc_confusion.location_title = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',gui_mvpc_confusion.location_title);
         gui_mvpc_confusion.cancel  = uicontrol('Style','pushbutton','Parent',gui_mvpc_confusion.location_title,'Enable','off',...
             'String','Cancel','callback',@average_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
-        uiextras.Empty('Parent',gui_mvpc_confusion.location_title);
+        gui_mvpc_confusion.export_ops  = uicontrol('Style','pushbutton','Parent',gui_mvpc_confusion.location_title,'Enable','off',...
+            'String','Export','callback',@average_export,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
+        
         gui_mvpc_confusion.run = uicontrol('Style','pushbutton','Parent',gui_mvpc_confusion.location_title,'Enable','off',...
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent',gui_mvpc_confusion.location_title);
-        set(gui_mvpc_confusion.location_title,'Sizes',[20 95 30 95 20]);
         set(gui_mvpc_confusion.DataSelBox,'Sizes',[30, 25,35,30,20,5,30]);
     end
 
@@ -168,6 +167,8 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [1 1 1];
         if  gui_mvpc_confusion.color_limiauto.Value==1
             enableFlag = 'off';
             gui_mvpc_confusion.color_limimin.String = '0';
@@ -190,6 +191,8 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [1 1 1];
         color_limimin = str2num(gui_mvpc_confusion.color_limimin.String);
         if isempty(color_limimin) || numel(color_limimin)~=1
             gui_mvpc_confusion.color_limimin.String = '';
@@ -207,6 +210,8 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [1 1 1];
         color_limimax = str2num( gui_mvpc_confusion.color_limimax.String);
         if isempty(color_limimax) || numel(color_limimax)~=1
             gui_mvpc_confusion.color_limimax.String = '';
@@ -226,6 +231,8 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [1 1 1];
         if gui_mvpc_confusion.measure_method.Value == 1
             text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or 100:50:350 to plot at 100,...,350 ms)' ;
         else
@@ -245,6 +252,8 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [1 1 1];
         measure_latency = str2num(gui_mvpc_confusion.measure_latency.String);
         if isempty(measure_latency)
             gui_mvpc_confusion.measure_latency.String = '';
@@ -276,6 +285,8 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_confusion.cancel.ForegroundColor = [1 1 1];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [1 1 1];
     end
 
 
@@ -343,7 +354,140 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [1 1 1];
         gui_mvpc_confusion.cancel.ForegroundColor = [0 0 0];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [1 1 1];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [0 0 0];
     end
+%%---------------------------Export confusion matrix-----------------------
+    function average_export(~,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        
+        measure_latency = str2num(gui_mvpc_confusion.measure_latency.String);
+        if isempty(measure_latency)
+            gui_mvpc_confusion.measure_latency.String = '';
+            msgboxText =  ['Plot Confusion Matrices>Export - The latency is EMPTY'];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        if any(measure_latency(:)<observe_DECODE.MVPC.times(1)) || any(measure_latency(:)>observe_DECODE.MVPC.times(end))
+            gui_mvpc_confusion.measure_latency.String = '';
+            msgboxText =  ['Plot Confusion Matrices>Export - The latency should be between ',32,num2tr(observe_DECODE.MVPC.times(1)),32,'and',32,num2tr(observe_DECODE.MVPC.times(2))];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        if gui_mvpc_confusion.measure_method.Value==2
+            if numel(measure_latency)~=2
+                msgboxText =  ['Plot Confusion Matrices>Export - The latency should be two numbers for "Average Confusion Matrix between two latencies".'];
+                titlNamerro = 'Warning for Pattern Classification Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+        end
+        
+        MVPCArray= estudioworkingmemory('MVPCArray');
+        if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
+            MVPCArray = length(observe_DECODE.ALLMVPC);
+            observe_DECODE.MVPC = observe_DECODE.ALLMVPC(end);
+            observe_DECODE.CURRENTMVPC = MVPCArray;
+            estudioworkingmemory('MVPCArray',MVPCArray);
+        end
+        
+        pathName =  estudioworkingmemory('EEG_save_folder');
+        if isempty(pathName)
+            pathName =[pwd,filesep];
+        end
+        
+        defx =  erpworkingmemory('pop_exportconfusions');
+        def = {1,[],3,[pathName,filesep,'Confusion_matrix']};
+        if isempty(defx)
+            defx = def;
+        end
+        try defx{2} = measure_latency;catch end
+        try PathNames=defx{4};catch PathNames=[pathName,filesep,'Confusion_matrix']; end
+        [pathstr, erpfilename, ext] = fileparts(PathNames) ;
+        if isempty(pathstr)
+            pathstr = pathName;
+        end
+        if isempty(erpfilename)
+            erpfilename = 'confusion_matrix';
+        end
+        pathName = [pathstr,filesep,erpfilename];
+        try defx{4} = pathName;catch end
+        erpworkingmemory('pop_exportconfusions',defx);
+        estudioworkingmemory('f_Decode_proces_messg','Plot Confusion Matrices>Export');
+        observe_DECODE.Process_messg =1;
+        
+        
+        def  = erpworkingmemory('pop_exportconfusions');
+        ALLMVPC= observe_DECODE.ALLMVPC;
+        %
+        % Open plot confusion GUI
+        %
+        app = feval('Save_Confusion_file_GUI',observe_DECODE.ALLMVPC,MVPCArray,def);
+        waitfor(app,'Finishbutton',1);
+        try
+            answer = app.Output; %NO you don't want to output BEST, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.1); %wait for app to leave
+        catch
+            return
+        end
+        if isempty(answer)
+            return
+        end
+        
+        MVPCindex    = answer{1}; %plot_menu
+        if isempty(MVPCindex) || any(MVPCindex(:)<1) || any(MVPCindex(:)>length(ALLMVPC))
+            MVPCindex = [1:length(ALLMVPC)];
+        end
+        
+        plot_menu =   answer{2}; % 0;1
+        tp = answer{3};
+        decimalNum = answer{4};
+        fileNames = answer{5};
+        
+        %def = {actualnset, optioni, mvpcset,stderror};
+        def = {plot_menu, tp, decimalNum, fileNames};
+        erpworkingmemory('pop_exportconfusions', def);
+        
+        if plot_menu == 1
+            %single timepoint confusion matrix
+            meas = 'timepoint';
+        elseif plot_menu==2
+            %average across time window confusion matrix
+            meas = 'average';
+        end
+        
+        %
+        % Somersault
+        %
+        MVPCCOM=pop_exportconfusions(ALLMVPC,MVPCindex, 'Times',tp,'Type',meas,...
+            'fileNames',fileNames,'decimalNum',decimalNum,'History', 'gui','Tooltype','estudio');
+        
+        if isempty(MVPCCOM)
+            return;
+        end
+        eegh(MVPCCOM);
+        observe_DECODE.Count_currentMVPC=5;
+        gui_mvpc_confusion.run.BackgroundColor =  [1 1 1];
+        gui_mvpc_confusion.run.ForegroundColor = [0 0 0];
+        MVPC_confusion_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_mvpc_confusion.cancel.BackgroundColor =  [1 1 1];
+        gui_mvpc_confusion.cancel.ForegroundColor = [0 0 0];
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [1 1 1];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [0 0 0];
+        gui_mvpc_confusion.paras{1} = gui_mvpc_confusion.measure_method.Value;
+        gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
+        gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
+        gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
+        gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
+        observe_DECODE.Process_messg =2;
+    end
+
 
 %%---------------------Run-------------------------------------------------
     function apply_run(~,~)
@@ -354,7 +498,6 @@ varargout{1} = MVPC_confusion_box_gui;
         
         measure_latency = str2num(gui_mvpc_confusion.measure_latency.String);
         if isempty(measure_latency)
-            gui_mvpc_confusion.measure_latency.String = '';
             gui_mvpc_confusion.measure_latency.String = '';
             msgboxText =  ['Plot Confusion Matrices>RUN - The latency is EMPTY'];
             titlNamerro = 'Warning for Pattern Classification Tab';
@@ -395,7 +538,8 @@ varargout{1} = MVPC_confusion_box_gui;
         MVPC_confusion_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_confusion.cancel.BackgroundColor =  [1 1 1];
         gui_mvpc_confusion.cancel.ForegroundColor = [0 0 0];
-        
+        gui_mvpc_confusion.export_ops.BackgroundColor =  [1 1 1];
+        gui_mvpc_confusion.export_ops.ForegroundColor = [0 0 0];
         gui_mvpc_confusion.paras{1} = gui_mvpc_confusion.measure_method.Value;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
@@ -452,6 +596,7 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.color_limiauto.Enable = enableFlag;
         gui_mvpc_confusion.color_limimin.Enable = enableFlag;
         gui_mvpc_confusion.color_limimax.Enable = enableFlag;
+        gui_mvpc_confusion.export_ops.Enable = enableFlag;
         try measure_latency =str2num(gui_mvpc_confusion.measure_latency.String) ; catch  measure_latency = [];end
         if ~isempty(observe_DECODE.MVPC)
             if ~isempty(measure_latency) && (any(measure_latency(:)<observe_DECODE.MVPC.times(1)) || any(measure_latency(:)>observe_DECODE.MVPC.times(end)))

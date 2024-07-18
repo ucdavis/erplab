@@ -477,13 +477,6 @@ if isempty(figSize)
 end
 
 
-
-
-
-% CBELabels = [0 100 1];
-% Legcolumns = ceil(sqrt(length(LegendName)));
-
-
 new_pos = estudioworkingmemory('EStudioScreenPos');
 if isempty(new_pos) || numel(new_pos)~=2
     new_pos = [75,75];
@@ -498,9 +491,7 @@ ScreenPos = EStudio_gui_erp_totl.ScreenPos;
 
 
 FigOutpos = [ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100]*8/9;
-% if isempty(FigureName)
-%     FigureName = MVPC.mvpcname;
-% end
+
 
 
 if matlabfig==1
