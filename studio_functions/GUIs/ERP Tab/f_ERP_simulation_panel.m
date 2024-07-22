@@ -151,7 +151,7 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.srate_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.srate=uicontrol('Style', 'radiobutton','Parent',  gui_erp_simulation.srate_title,...
-            'callback',@srateop,'String','Sampling rate','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
+            'callback',@simulation_srateop,'String','Sampling rate','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.Paras{7} = gui_erp_simulation.srate.Value;
         gui_erp_simulation.srate.KeyPressFcn= @erp_simuls_presskey;
         try
@@ -1107,7 +1107,7 @@ varargout{1} = ERP_simulation_box;
     end
 
 %%---------------------Sampling rate option--------------------------------
-    function srateop(~,~)
+    function simulation_srateop(~,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=13
              observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
