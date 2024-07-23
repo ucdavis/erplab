@@ -22,11 +22,11 @@ end
 
 if nargin == 0
     fig = figure(); % Parent figure
-    box_decode_history = uiextras.BoxPanel('Parent', fig, 'Title', 'History', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    box_decode_history = uiextras.BoxPanel('Parent', fig, 'Title', 'History (Current Session)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    box_decode_history = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'History', 'Padding', 5,'BackgroundColor',ColorB_def);
+    box_decode_history = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'History (Current Session)', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    box_decode_history = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'History', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    box_decode_history = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'History (Current Session)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------

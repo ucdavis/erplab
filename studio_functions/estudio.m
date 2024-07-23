@@ -142,7 +142,8 @@ CURRENTSET = 0;
 assignin('base','EEG',EEG);
 assignin('base','ALLEEG', ALLEEG);
 assignin('base','CURRENTSET', CURRENTSET);
-
+assignin('base','ALLMVPCCOM',[]);
+assignin('base','MVPCCOM',[]);
 
 observe_EEGDAT.ALLEEG = ALLEEG;
 observe_EEGDAT.CURRENTSET = CURRENTSET;
@@ -239,13 +240,12 @@ addlistener(observe_DECODE,'CURRENTMVPC_changed',@CURRENTMVPC_changed);
 addlistener(observe_DECODE,'Count_currentMVPC_changed',@Count_currentMVPC_changed);
 
 EStudio_gui_erp_totl = struct();
-EStudio_gui_erp_totl = createInterface();
 EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
 EStudio_gui_erp_totl.EEG_autoplot = 1; %%Automatic plotting for eegsets
 EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
 EStudio_gui_erp_totl.Decode_autoplot=1;
 estudioworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
-
+EStudio_gui_erp_totl = createInterface();
 
 f_redrawERP();
 f_redrawEEG_Wave_Viewer();

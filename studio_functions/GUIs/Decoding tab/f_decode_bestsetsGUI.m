@@ -129,7 +129,7 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Process_messg =2;
             return;
         end
-        eegh(bestcom);
+         mvpch(bestcom);
         observe_DECODE.ALLBEST = ALLBEST;
         
         BESTlistName =  getBESTsets();

@@ -128,8 +128,8 @@ if nargin <3%GUI
         %
         pop_exportconfusions(ALLMVPC,MVPCindex, 'Times',tp,'Type',meas,...
             'fileNames',fileNames,'decimalNum',decimalNum,'History', 'gui');
-        pause(0.1)
-        return
+        pause(0.1);
+        return;
     else
         fprintf('pop_exportconfusions() was called using a single (non-struct) input argument.\n\n');
     end
@@ -579,7 +579,6 @@ switch shist
     case 1 % from GUI
         % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
         displayEquiComERP(mvpccom);
-        
     case 2 % from script
         % ERP = erphistory(ERP, [], bestcom, 1);
     case 3

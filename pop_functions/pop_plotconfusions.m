@@ -2,7 +2,7 @@
 %
 % FORMAT   :
 %
-% >> pop_plotconfusions(MVPC, Times, Type)
+% >> pop_plotconfusions(MVPC);
 %
 % INPUTS (Required)  :
 %
@@ -86,9 +86,9 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function mvpccom = pop_plotconfusions(ALLMVPC,Times,Type,varargin)
+function [mvpccom] = pop_plotconfusions(ALLMVPC,varargin);
 mvpccom = '';
-MVPC = preloadMVPC;
+% MVPC = preloadMVPC;
 if nargin<1
     help pop_plotconfusions
     return
@@ -194,10 +194,10 @@ if nargin == 1 %GUI
         % Somersault
         %
         ColorLimits = [];
-        pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',currdata,'ColorLimits',ColorLimits,...
+        mvpccom =pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',currdata,'ColorLimits',ColorLimits,...
             'filepath',pname, 'Colormap', cmaps{plot_cmap}, 'Format',frmts{frmt}, 'Saveas',savestr,'History', 'gui');
-        pause(0.1)
-        return
+        pause(0.1);
+        return;
     else
         fprintf('pop_plotconfusions() was called using a single (non-struct) input argument.\n\n');
     end
@@ -223,7 +223,7 @@ p.addParamValue('Warning', 'off', @ischar);    % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 p.addParamValue('ColorLimits',[],@isnumeric);
-p.parse(ALLMVPC, Times, Type, varargin{:});
+p.parse(ALLMVPC, varargin{:});
 mvpci = p.Results.MVPCindex;
 meas = p.Results.Type;
 tp = p.Results.Times;
@@ -558,7 +558,7 @@ if issaveas ~= 1
 end
 
 
-mvpccom = sprintf( 'pop_plotconfusions( %s', inputvari);
+mvpccom = sprintf( 'mvpccom=pop_plotconfusions( %s', inputvari);
 for q=1:length(fn)
     fn2com = fn{q};
     if ~ismember_bc2(fn2com, skipfields)
@@ -639,4 +639,4 @@ switch shist
         mvpccom = '';
 end
 
-end
+return;
