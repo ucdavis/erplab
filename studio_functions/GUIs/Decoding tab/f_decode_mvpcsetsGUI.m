@@ -131,7 +131,7 @@ varargout{1} = box_mvpcset_gui;
             observe_DECODE.Process_messg =2;
             return;
         end
-        eegh(mvpcom);
+        mvpch(mvpcom);
         observe_DECODE.ALLMVPC = ALLMVPC;
         
         BESTlistName =  getMVPCsets();
@@ -194,6 +194,7 @@ varargout{1} = box_mvpcset_gui;
         if isempty(BESTCOM)
             return;
         end
+        mvpch(BESTCOM);
         observe_DECODE.ALLMVPC(MVPCArray) = ALLMVPC;
         observe_DECODE.MVPC = observe_DECODE.ALLMVPC(observe_DECODE.CURRENTMVPC);
         BESTlistName =  getMVPCsets();
@@ -227,6 +228,7 @@ varargout{1} = box_mvpcset_gui;
         
         suffixstr = f_EEG_suffix_gui('Suffix',2);
         if isempty(suffixstr)
+            observe_DECODE.Process_messg =2;
             return;
         end
         
@@ -234,9 +236,10 @@ varargout{1} = box_mvpcset_gui;
         [ALLMVPC, BESTCOM] = pop_suffixmvpc( ALLMVPC, 'suffixstr',suffixstr,...
             'Saveas', 'off', 'History', 'gui');
         if isempty(BESTCOM)
+            observe_DECODE.Process_messg =2;
             return;
         end
-        
+        mvpch(BESTCOM);
         observe_DECODE.ALLMVPC(MVPCArray) = ALLMVPC;
         observe_DECODE.MVPC = observe_DECODE.ALLMVPC(observe_DECODE.CURRENTMVPC);
         BESTlistName =  getMVPCsets();
@@ -316,6 +319,7 @@ varargout{1} = box_mvpcset_gui;
             filename1 = strcat([pathstr,filesep,MVPC.mvpcname,'_',prefname1,'.txt']);
             [MVPC, mvpccom] = pop_mvpc2text(MVPC, filename1, 'time', time, 'timeunit', tunit, ...
                 'transpose', tra,'History', 'gui');
+            mvpch(mvpccom);
         end
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 6;
@@ -399,11 +403,17 @@ varargout{1} = box_mvpcset_gui;
             'Load MVPCsets', ...
             'MultiSelect', 'on');
         if isequal(filename,0)
+            observe_DECODE.Process_messg =2;
             return;
         end
         
-        [MVPC,ALLMVPC] = pop_loadmvpc( 'filename', filename, 'filepath', filepath,...
-            'UpdateMainGui', 'off','History','gui' );
+        [MVPC,ALLMVPC,mvpccom] = pop_loadmvpc( 'filename', filename, 'filepath', filepath,...
+            'UpdateMainGui', 'off','History','gui','Tooltype','estudio');
+        if isempty(mvpccom)
+            observe_DECODE.Process_messg =2;
+            return;
+        end
+        mvpch(mvpccom);
         observe_DECODE.ALLMVPC = ALLMVPC;
         
         MVPClistName =  getMVPCsets();
@@ -441,10 +451,8 @@ varargout{1} = box_mvpcset_gui;
             estudio_warning(msgboxText,titlNamerro);
         elseif serror==2 && ~isempty(msgwrng)
         end
-        
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 1;
-        
     end
 
 %%----------------------Clear the selected MVPCsets-------------------------
@@ -464,9 +472,10 @@ varargout{1} = box_mvpcset_gui;
         ALLMVPC = observe_DECODE.ALLMVPC;
         [ALLMVPC,LASTCOM] = pop_deletemvpcset(ALLMVPC,'MVPCsets', MVPCArray, 'Saveas', 'off','History', 'gui' );
         if isempty(LASTCOM)
+            observe_DECODE.Process_messg =2;
             return;
         end
-        eegh(LASTCOM);
+        mvpch(LASTCOM);
         
         if isempty(ALLMVPC)
             observe_DECODE.ALLMVPC = [];
@@ -506,7 +515,6 @@ varargout{1} = box_mvpcset_gui;
         estudioworkingmemory('MVPCArray',MVPCArray);
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 1;
-        
     end
 
 
@@ -556,7 +564,7 @@ varargout{1} = box_mvpcset_gui;
                     fprintf(['*MVPCsets>Save*',32,32,32,32,datestr(datetime('now')),'\n']);
                     fprintf( [MVPCCOM]);
                     fprintf( ['\n',repmat('-',1,100) '\n']);
-                    eegh(MVPCCOM);
+                    mvpch(MVPCCOM);
                 end
             end
         end
@@ -617,7 +625,7 @@ varargout{1} = box_mvpcset_gui;
                 fprintf(['*MVPCsets>Save a Copy*',32,32,32,32,datestr(datetime('now')),'\n']);
                 fprintf( [MVPCCOM]);
                 fprintf( ['\n',repmat('-',1,100) '\n']);
-                eegh(MVPCCOM);
+                mvpch(MVPCCOM);
             end
             ALLMVPC(length(ALLMVPC)+1) = MVPC;
         end
@@ -667,7 +675,7 @@ varargout{1} = box_mvpcset_gui;
         erpcom  = sprintf('cd("%s',sel_path1);
         erpcom = [erpcom,'");'];
         fprintf( [erpcom,'\n']);
-        eegh(erpcom);
+        mvpch(erpcom);
         estudioworkingmemory('EEG_save_folder',sel_path1);
     end
 
@@ -788,7 +796,6 @@ varargout{1} = box_mvpcset_gui;
         end
         observe_DECODE.Reset_Best_paras_panel=2;
     end
-
 end
 
 

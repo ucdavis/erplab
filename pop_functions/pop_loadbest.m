@@ -20,7 +20,7 @@
 % Example :
 %
 % BEST = pop_loadbest( 'filename', 'Face_Emotion_302_ICA_removed.best', 'filepath',...
-% pwd); 
+% pwd);
 
 
 % *** This function is part of ERPLAB Toolbox ***
@@ -53,21 +53,22 @@
 
 
 
-function [BEST, ALLBEST] = pop_loadbest(varargin)
-BEST = preloadBEST; 
-try 
+function [BEST, ALLBEST,bestcom] = pop_loadbest(varargin)
+bestcom = '';%%GH, July 2024
+BEST = preloadBEST;
+try
     ALLBEST = evalin('base', 'ALLBEST');
-    preindex = length(ALLBEST); 
+    preindex = length(ALLBEST);
     
-catch 
+catch
     disp('WARNING: ALLBEST structure was not found. ERPLAB will create an empty one.')
     ALLBEST = [];
     %ALLERP   = buildERPstruct([]);
     preindex = 0;
-
+    
 end
 
-if nargin <1 
+if nargin <1
     help pop_loadbest
     
     return
@@ -76,36 +77,33 @@ end
 
 
 if nargin == 1
-        filename = varargin{1};
-        if strcmpi(filename,'workspace')
-                filepath = '';
+    filename = varargin{1};
+    if strcmpi(filename,'workspace')
+        filepath = '';
+    else
+        if isempty(filename)
+            [filename, filepath] = uigetfile({'*.best','BEST (*.best)'},...
+                'Load BEST','MultiSelect', 'on');
+            if isequal(filename,0)
+                disp('User selected Cancel')
+                return
+            end
+            
+            %
+            % test current directory
+            %
+            %changecd(filepath) % Steve does not like this...
         else
-                if isempty(filename)
-                        [filename, filepath] = uigetfile({'*.best','BEST (*.best)'},...
-                                'Load BEST','MultiSelect', 'on');
-                        if isequal(filename,0)
-                                disp('User selected Cancel')
-                                return
-                        end
-                        
-                        %
-                        % test current directory
-                        %
-                        %changecd(filepath) % Steve does not like this...
-                else
-                        filepath = cd;
-                end
+            filepath = cd;
         end
-        
-        %
-        % Somersault
-        %
-        
-        [BEST, ALLBEST] = pop_loadbest('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on','History','gui');
-        return
+    end
     
+    %
+    % Somersault
+    %
     
-    
+    [BEST, ALLBEST] = pop_loadbest('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on','History','gui');
+    return;
 end
 
 
@@ -121,6 +119,7 @@ p.addParamValue('Warning', 'off', @ischar);
 %p.addParamValue('multiload', 'off', @ischar); % ERP stores ALLERP's contain (ERP = ...), otherwise [ERP ALLERP] = ... must to be specified.
 p.addParamValue('UpdateMainGui', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 
 p.parse(varargin{:});
 
@@ -128,32 +127,32 @@ filename = strtrim(p.Results.filename);
 filepath = strtrim(p.Results.filepath);
 
 if strcmpi(filename,'workspace')
-        filepath = '';
-        nfile = 1;
-        loadfrom = 0;  % load from workspace
+    filepath = '';
+    nfile = 1;
+    loadfrom = 0;  % load from workspace
 else
-        loadfrom = 1; % load from: 1=hard drive; 0=workspace
+    loadfrom = 1; % load from: 1=hard drive; 0=workspace
 end
 
 if strcmpi(p.Results.Warning,'on')
-        popupwin = 1;
+    popupwin = 1;
 else
-        popupwin = 0;
+    popupwin = 0;
 end
 if strcmpi(p.Results.UpdateMainGui,'on')
-        updatemaingui = 1;
+    updatemaingui = 1;
 else
-        updatemaingui = 0;
+    updatemaingui = 0;
 end
 
 if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
+    shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
+    shist = 2; % script
 elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
+    shist = 1; % gui
 else
-        shist = 0; % off
+    shist = 0; % off
 end
 
 % if strcmpi(p.Results.multiload,'on')
@@ -163,15 +162,15 @@ end
 % end
 
 if loadfrom==1
-        if iscell(filename)
-                nfile      = length(filename);
-                inputfname = filename;
-        else
-                nfile = 1;
-                inputfname = {filename};
-        end
+    if iscell(filename)
+        nfile      = length(filename);
+        inputfname = filename;
+    else
+        nfile = 1;
+        inputfname = {filename};
+    end
 else
-        inputfname = {'workspace'};
+    inputfname = {'workspace'};
 end
 
 
@@ -186,39 +185,35 @@ conti     = 1; % continue?  1=yes; 0=no
 
 
 for i=1:nfile
-        if loadfrom==1
-            fullname = fullfile(inputpath, inputfname{i});
-            fprintf('Loading %s\n', fullname);
-            L   = load(fullname, '-mat');
-            BEST = L.BEST; 
-%             if i == 1
-%                 BEST = L.BEST;
-%             else
-%                 BEST(i) = L.BEST;
-%             end
-        else
-            BEST = evalin('base', 'BEST');
-        end
+    if loadfrom==1
+        fullname = fullfile(inputpath, inputfname{i});
+        fprintf('Loading %s\n', fullname);
+        L   = load(fullname, '-mat');
+        BEST = L.BEST;
+        %             if i == 1
+        %                 BEST = L.BEST;
+        %             else
+        %                 BEST(i) = L.BEST;
+        %             end
+    else
+        BEST = evalin('base', 'BEST');
+    end
+    
+    %
+    % Skipping all "checking" features for now
+    % - see pop_loaderp() for "checking ERP" routine
+    %
+    
+    if i == 1 && isempty(ALLBEST)
+        ALLBEST = BEST;
         
-        %
-        % Skipping all "checking" features for now
-        % - see pop_loaderp() for "checking ERP" routine
-        %
-        
-        if i == 1 && isempty(ALLBEST) 
-           ALLBEST = BEST;  
-           
-        else
-           ALLBEST(i+preindex) = BEST; 
-            
-            
-        end
-        
-        
+    else
+        ALLBEST(i+preindex) = BEST;
+    end
 end
 
 if conti==0
-        return
+    return
 end
 
 % if nargout==1 && multiload==1
@@ -226,9 +221,9 @@ end
 % end
 
 if nfile==1
-        outv = 'BEST';
+    outv = 'BEST';
 else
-        outv = '[BEST ALLBEST]';
+    outv = '[BEST ALLBEST]';
 end
 
 
@@ -277,27 +272,33 @@ for q=1:length(fn)
     end
 end
 bestcom = sprintf( '%s );', bestcom);
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
+if strcmpi(Tooltype,'erplab')%%GH, June 2024
 eegh(bestcom);
+end
 
 switch shist
-        case 1 % from GUI
-                displayEquiComERP(bestcom);
-        case 2 % from script
-                %ERP = erphistory(ERP, [], erpcom, 1);
-        case 3
-                % implicit
-                % ERP = erphistory(ERP, [], erpcom, 1);
-                % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
-        otherwise %off or none
-               % erpcom = '';
-                return
+    case 1 % from GUI
+        displayEquiComERP(bestcom);
+    case 2 % from script
+        %ERP = erphistory(ERP, [], erpcom, 1);
+    case 3
+        % implicit
+        % ERP = erphistory(ERP, [], erpcom, 1);
+        % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+    otherwise %off or none
+        % erpcom = '';
+        return
 end
 
 
 prefunc = dbstack;
 nf = length(unique_bc2({prefunc.name}));
 if nf==1
-        msg2end
+    msg2end
 end
 
 

@@ -84,9 +84,10 @@ varargout{1} = box_decode_history;
         estudioworkingmemory('f_decode_proces_messg',MessageViewer);
         observe_DECODE.Process_messg=1;
         try
-            erp_history = evalin('base','ALLCOM');
+            erp_history = evalin('base','ALLMVPCCOM');
             erp_history = erp_history';
         catch
+            observe_DECODE.Process_messg=2;
             return;
         end
         LASTCOM = pop_saveh(erp_history);
@@ -105,7 +106,7 @@ varargout{1} = box_decode_history;
         gui_decode_history.uitable.Enable = Enableflag;
         gui_decode_history.show_cmd.Enable = Enableflag;
         try
-            ERP_history = evalin('base','ALLCOM');
+            ERP_history = evalin('base','ALLMVPCCOM');
             ERP_history = ERP_history';
         catch
             ERP_history = '';
@@ -130,7 +131,7 @@ varargout{1} = box_decode_history;
         estudioworkingmemory('f_decode_proces_messg',MessageViewer);
         observe_DECODE.Process_messg=1;
         try
-            ERP_history = evalin('base','ALLCOM');
+            ERP_history = evalin('base','ALLMVPCCOM');
         catch
             ERP_history = '';
         end
@@ -154,7 +155,7 @@ varargout{1} = box_decode_history;
             return;
         end
         try
-            ERP_history =   evalin('base','ALLCOM');
+            ERP_history =   evalin('base','ALLMVPCCOM');
         catch
             ERP_history = '';
         end

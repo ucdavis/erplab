@@ -156,7 +156,7 @@ if issaveas
     end
 end
 
-eegh(mvpccom);
+% eegh(mvpccom);
 
 % get history from script. ALLMVPC
 switch shist

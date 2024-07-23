@@ -1063,7 +1063,7 @@ varargout{1} = box_bestset_gui;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             if isempty(ALLMVPC_out)
                 ALLMVPC_out = MVPC;
-                eegh(BESTCOM);
+                mvpch(BESTCOM);
             else
                 ALLMVPC_out(length(ALLMVPC_out)+1) = MVPC;
             end
@@ -1087,7 +1087,7 @@ varargout{1} = box_bestset_gui;
                 [MVPC, issave, MVPCCOM] = pop_savemymvpc(MVPC, 'mvpcname', MVPC.mvpcname, 'filename', MVPC.filename,...
                     'filepath',MVPC.filepath,'Tooltype','estudio');
                 if ~isempty(MVPCCOM) && Numofmvpc==1
-                    eegh(MVPCCOM);
+                    mvpch(MVPCCOM);
                 end
             else
                 MVPC.filename = '';

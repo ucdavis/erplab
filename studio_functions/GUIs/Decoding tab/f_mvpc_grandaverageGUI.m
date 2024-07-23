@@ -300,7 +300,7 @@ varargout{1} = MVPC_grdavg_box_gui;
             [MVPC, issave, MVPCCOM] = pop_savemymvpc(MVPC, 'mvpcname', MVPC.mvpcname, 'filename', MVPC.filename,...
                 'filepath',MVPC.filepath,'Tooltype','estudio');
             if ~isempty(MVPCCOM)
-                eegh(MVPCCOM);
+                mvpch(MVPCCOM);
             end
         else
             MVPC.filename = '';

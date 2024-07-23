@@ -231,7 +231,7 @@ for q=1:length(fn)
     end
 end
 mvpccom = sprintf( '%s );', mvpccom);
-eegh(mvpccom);
+% eegh(mvpccom);
 % get history from script. ERP
 switch shist
     case 1 % from GUI

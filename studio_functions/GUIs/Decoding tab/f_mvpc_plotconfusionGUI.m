@@ -437,6 +437,7 @@ varargout{1} = MVPC_confusion_box_gui;
             return
         end
         if isempty(answer)
+            observe_DECODE.Process_messg =2;
             return
         end
         
@@ -469,9 +470,10 @@ varargout{1} = MVPC_confusion_box_gui;
             'fileNames',fileNames,'decimalNum',decimalNum,'History', 'gui','Tooltype','estudio');
         
         if isempty(MVPCCOM)
+            observe_DECODE.Process_messg =2;
             return;
         end
-        eegh(MVPCCOM);
+        mvpch(MVPCCOM);
         observe_DECODE.Count_currentMVPC=5;
         gui_mvpc_confusion.run.BackgroundColor =  [1 1 1];
         gui_mvpc_confusion.run.ForegroundColor = [0 0 0];
@@ -571,7 +573,7 @@ varargout{1} = MVPC_confusion_box_gui;
         end
         fprintf([MVPCCOM]);
         fprintf( ['\n',repmat('-',1,100) '\n']);
-        eegh(MVPCCOM);
+        mvpch(MVPCCOM);
         def = {plot_menu, plot_cmap,1, tp, 1,color_limiauto,colorlimits};
         estudioworkingmemory('pop_plotconfusions', def);
         observe_DECODE.Count_currentMVPC=5;

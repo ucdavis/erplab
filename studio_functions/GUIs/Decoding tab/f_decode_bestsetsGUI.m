@@ -129,7 +129,7 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Process_messg =2;
             return;
         end
-         mvpch(bestcom);
+        mvpch(bestcom);
         observe_DECODE.ALLBEST = ALLBEST;
         
         BESTlistName =  getBESTsets();
@@ -197,6 +197,7 @@ varargout{1} = box_bestset_gui;
         if isempty(BESTCOM)
             return;
         end
+        mvpch(BESTCOM);
         for Numofbest = 1:numel(BESTArray)
             BEST = ALLBEST(Numofbest);
             if ~isempty(BESTCOM) && ~isempty(BEST.EEGhistory)
@@ -256,7 +257,7 @@ varargout{1} = box_bestset_gui;
         if isempty(BESTCOM)
             return;
         end
-        eegh(BESTCOM);
+        mvpch(BESTCOM);
         for Numofbest = 1:numel(BESTArray)
             BEST = ALLBEST(Numofbest);
             if ~isempty(BESTCOM) && ~isempty(BEST.EEGhistory)
@@ -362,11 +363,16 @@ varargout{1} = box_bestset_gui;
             'Load BESTsets', ...
             'MultiSelect', 'on');
         if isequal(filename,0)
+            observe_DECODE.Process_messg =1;
             return;
         end
         
-        [BEST,ALLBEST] = pop_loadbest( 'filename', filename, 'filepath', filepath,'History','gui' );
-        
+        [BEST,ALLBEST,BESTCOM] = pop_loadbest( 'filename', filename, 'filepath', filepath,'History','gui','Tooltype','estudio');
+        if isempty(BESTCOM)
+            observe_DECODE.Process_messg =1;
+            return;
+        end
+        mvpch(BESTCOM);
         observe_DECODE.ALLBEST = ALLBEST;
         
         BESTlistName =  getBESTsets();
@@ -416,11 +422,12 @@ varargout{1} = box_bestset_gui;
         observe_DECODE.Process_messg =1;
         BESTArray = Bestsetops.butttons_datasets.Value;
         ALLBEST = observe_DECODE.ALLBEST;
-        [ALLBEST,LASTCOM] = pop_deletebestset(ALLBEST,'BESTsets', BESTArray, 'Saveas', 'off','History', 'gui' );
-        if isempty(LASTCOM)
+        [ALLBEST,BESTCOM] = pop_deletebestset(ALLBEST,'BESTsets', BESTArray, 'Saveas', 'off','History', 'gui' );
+        if isempty(BESTCOM)
+            observe_DECODE.Process_messg =1;
             return;
         end
-        eegh(LASTCOM);
+        mvpch(BESTCOM);
         if isempty(ALLBEST)
             observe_DECODE.ALLBEST = [];
             observe_DECODE.BEST = [];
@@ -506,7 +513,7 @@ varargout{1} = box_bestset_gui;
                 [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname, 'filename',...
                     filename, 'filepath',pathName,'gui','save','History','gui','Tooltype','estudio');
                 if Numoferp==1
-                    eegh(BESTCOM);
+                    mvpch(BESTCOM);
                     fprintf( ['\n\n',repmat('-',1,100) '\n']);
                     fprintf(['*BESTsets>Save*',32,32,32,32,datestr(datetime('now')),'\n']);
                     fprintf( [BESTCOM]);
@@ -578,7 +585,7 @@ varargout{1} = box_bestset_gui;
             [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname,...
                 'filename', erpFilename, 'filepath',BEST.filepath,'History','gui','gui','save','Tooltype','estudio');
             if Numoferp==1
-                eegh(BESTCOM);
+                mvpch(BESTCOM);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 fprintf(['*BESTsets>Save a Copy*',32,32,32,32,datestr(datetime('now')),'\n']);
                 fprintf( [BESTCOM]);
@@ -639,10 +646,10 @@ varargout{1} = box_bestset_gui;
         end
         
         cd(sel_path1);
-        erpcom  = sprintf('cd("%s',sel_path1);
-        erpcom = [erpcom,'");'];
-        fprintf( [erpcom,'\n']);
-        eegh(erpcom);
+        BESTCOM  = sprintf('cd("%s',sel_path1);
+        BESTCOM = [BESTCOM,'");'];
+        fprintf( [BESTCOM,'\n']);
+        mvpch(BESTCOM);
         if ~isempty(observe_DECODE.BEST)
             BEST = observe_DECODE.BEST;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);

@@ -156,7 +156,7 @@ if issaveas
     end
 end
 
-eegh(bestcom);
+% eegh(bestcom);
 
 % get history from script. ALLBEST
 switch shist

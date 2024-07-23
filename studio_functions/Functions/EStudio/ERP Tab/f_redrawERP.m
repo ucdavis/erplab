@@ -82,7 +82,7 @@ else
     estudioworkingmemory('selectederpstudio',1);
     Enableflag = 'off';
 end
-ERP_autoplot = EStudio_gui_erp_totl.ERP_autoplot;
+try ERP_autoplot = EStudio_gui_erp_totl.ERP_autoplot;catch  ERP_autoplot=1; EStudio_gui_erp_totl.ERP_autoplot=1;end
 if ERP_autoplot==1
     Enableflag = 'on';
 else

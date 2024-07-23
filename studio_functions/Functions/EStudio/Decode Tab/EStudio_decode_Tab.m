@@ -93,13 +93,13 @@ EStudio_gui_erp_totl.decode_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.
 EStudio_gui_erp_totl.decode_zoom_out = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom Out',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
 uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
-  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
 EStudio_gui_erp_totl.decode_popmemu = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','popupmenu','String',{'Plotting Options','Automatic Plotting:On','Window Size'},...
-   'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 EStudio_gui_erp_totl.decode_reset = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Reset',...
-  'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
-  'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+    'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
 set(EStudio_gui_erp_totl.commdecode_panel_title, 'Sizes', [70 50 70 -1 150 50 5]);
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
@@ -115,7 +115,7 @@ end
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
 
-% 
+%
 function nMinimize( eventSource, eventData, whichpanel ) %#ok<INUSL>
 global EStudio_gui_erp_totl;
 
