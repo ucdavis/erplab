@@ -95,7 +95,11 @@ for Numofmvpc = 1:numel(MVPCArray)
     if numel(latsamp1)==numel(latsamp)
         bindata(latsamp(1):latsamp(2),Numofmvpc)  = ALLMVPC(MVPCArray(Numofmvpc)).average_score(latsamp1(1):latsamp1(2));
         if ~isempty(MVPC1.stderror)
-            bindataerror(latsamp(1):latsamp(2),Numofmvpc) = ALLMVPC(MVPCArray(Numofmvpc)).stderror(latsamp1(1):latsamp1(2));
+            try
+                bindataerror(latsamp(1):latsamp(2),Numofmvpc) = ALLMVPC(MVPCArray(Numofmvpc)).stderror(latsamp1(1):latsamp1(2));
+            catch
+                
+            end
         end
     end
 end

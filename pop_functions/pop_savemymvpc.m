@@ -193,12 +193,6 @@ elseif strcmpi(p.Results.gui,'averager')
     
     overw = 0;
     modegui = 1;
-    
-    
-    
-    
-    
-    
 elseif strcmpi(p.Results.gui, 'save') %just save, no ask
     if isempty(MVPC.mvpcname)
         modegui = 2; % open a "save as" window to save

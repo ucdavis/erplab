@@ -60,18 +60,13 @@ for j = 1:numel(MVPCArray)
         % basic test for number of points
         if pre_pnts  ~= MVPCT.pnts
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of points!', MVPCArray(j-1), MVPCArray(j));
-            %             title = 'ERPLAB: pop_gaverager() Error';
-            %             errorfound(msgboxText, title);
             serror = 1;
             break
         end
         
-          %%start time of epoch
+        %%start time of epoch
         if pre_startpnt~=MVPCT.times(1)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different starting time of the epoch', MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %errorfound(msgboxText, title);
-            %return
             serror = 1;
             break
         end
@@ -79,9 +74,6 @@ for j = 1:numel(MVPCArray)
         %%end time of epoch
         if pre_endpnt~=MVPCT.times(end)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different stop time of the epoch',MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %errorfound(msgboxText, title);
-            %return
             serror = 1;
             break
         end
@@ -91,10 +83,6 @@ for j = 1:numel(MVPCArray)
         % basic test for number of channels (for now...)
         if  pre_nchan ~= size(MVPCT.electrodes,2)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of channels!', MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
             serror = 2;
             break
         end
@@ -102,30 +90,18 @@ for j = 1:numel(MVPCArray)
         % basic test for number of bins (for now...)
         if pre_nClasses  ~= MVPCT.nClasses
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of classes!', MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
             serror = 2;
             break
         end
         
         if pre_nIter  ~= MVPCT.nIter
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of Iterations!',MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
             serror = 2;
             break
         end
         
         if pre_nCrossfolds  ~= MVPCT.nCrossfolds
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of Cross folds!', MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
             serror = 2;
             break
         end
@@ -134,9 +110,6 @@ for j = 1:numel(MVPCArray)
         %%basic test for data type (for now...)
         if ~strcmpi(pre_dtype, MVPCT.DecodingMethod)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different decoding methods ', MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %errorfound(msgboxText, title);
-            %return
             serror = 2;
             break
         end
@@ -144,14 +117,9 @@ for j = 1:numel(MVPCArray)
         %%sampling rate
         if pre_srate~=MVPCT.srate
             msgwrng =  sprintf('MVPCsets #%g and #%g have different sampling rates', MVPCArray(j-1), MVPCArray(j));
-            %                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
-            %errorfound(msgboxText, title);
-            %return
             serror = 2;
             break
         end
-        
-      
         
     end
     

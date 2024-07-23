@@ -256,10 +256,29 @@ varargout{1} = box_mvpcset_gui;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
+        MVPCArray= Mvpcsetops.butttons_datasets.Value;
+        if isempty(MVPCArray)
+            MVPCArray = length(observe_DECODE.ALLMVPC);
+            estudioworkingmemory('MVPCArray',MVPCArray);
+        end
+        [serror, msgwrng] = f_checkmvpc( observe_DECODE.ALLMVPC,MVPCArray);
+        if serror==1 && ~isempty(msgwrng)
+            msgboxText =  ['MVPCsets> Export: We can not export the selected MVPCsets becuase',32,msgwrng];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        elseif serror==2 && ~isempty(msgwrng)
+        end
+        
+        MVPCArray= Mvpcsetops.butttons_datasets.Value;
+        if isempty(MVPCArray)
+            MVPCArray = length(observe_DECODE.ALLMVPC);
+            estudioworkingmemory('MVPCArray',MVPCArray);
+        end
         
         def  = estudioworkingmemory('pop_mvpc2text');
         if isempty(def)
-            def = {1,1E-3, 0,''};
+            def = {1,1E-3, 0,[pwd,filesep,'MVPCValue.txt'],'proportion correct'};
             %istime
             %timeunit
             %transpose
@@ -273,10 +292,15 @@ varargout{1} = box_mvpcset_gui;
         %answer = mvpc2textGUI(MVPC, def); %app designer
         pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
-            pathName =[pwd,filesep];
+            pathName =[pwd];
         end
-        def{4} = pathName;
-        app = feval('mvpc2textGUI',observe_DECODE.MVPC,def,1);
+        pathName = [pathName,filesep,'MVPCValue.txt'];
+        
+        try defpath = def{4}; catch defpath = ''; end
+        if isempty(defpath)
+            def{4} = pathName;
+        end
+        app = feval('mvpc2textGUI',observe_DECODE.ALLMVPC(MVPCArray),def);
         waitfor(app,'FinishButton',1);
         
         try
@@ -291,7 +315,7 @@ varargout{1} = box_mvpcset_gui;
         tunit     = answer{2};
         transpa   = answer{3};
         filename  = answer{4};
-        
+        DecodingUnit =  answer{5};
         estudioworkingmemory('pop_mvpc2text', answer);
         
         if istime
@@ -308,22 +332,14 @@ varargout{1} = box_mvpcset_gui;
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Export');
         observe_DECODE.Process_messg =1;
         
-        MVPCArray= Mvpcsetops.butttons_datasets.Value;
-        if isempty(MVPCArray)
-            MVPCArray = length(observe_DECODE.ALLMVPC);
-            estudioworkingmemory('MVPCArray',MVPCArray);
-        end
-        for Numofmvpc = 1:numel(MVPCArray)
-            MVPC = observe_DECODE.ALLMVPC(MVPCArray(Numofmvpc));
-            [pathstr, prefname1, ext] = fileparts(filename);
-            filename1 = strcat([pathstr,filesep,MVPC.mvpcname,'_',prefname1,'.txt']);
-            [MVPC, mvpccom] = pop_mvpc2text(MVPC, filename1, 'time', time, 'timeunit', tunit, ...
-                'transpose', tra,'History', 'gui');
-            mvpch(mvpccom);
-        end
+        ALLMVPC= observe_DECODE.ALLMVPC(MVPCArray);
+        [MVPC, mvpccom] = pop_mvpc2text(ALLMVPC, filename, 'time', time, 'timeunit', tunit, ...
+            'transpose', tra,'DecodingUnit',DecodingUnit,'History', 'gui','Tooltype','estudio');
+        mvpch(mvpccom);
+        
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 6;
-        
+
     end
 %%-------------------------------fresh ------------------------------------
     function refresh_mvpcset(~,~)

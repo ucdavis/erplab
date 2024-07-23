@@ -64,19 +64,19 @@
 %
 % BUGs FIXED
 % Jan 3, 2012. Replace forbidden characters for bindesc and chan labels. Thanks Naomi Bleich
-function [MVPC, mvpccom] = pop_mvpc2text(MVPC, filename, varargin)
+function [ALLMVPC, mvpccom] = pop_mvpc2text(ALLMVPC, filename, varargin)
 mvpccom = '';
 if nargin < 1
     help pop_mvpc2text;
     return;
 end
-if isempty(MVPC)
+if isempty(ALLMVPC)
     msgboxText =  'No MVPCset was found!';
     title_msg  = 'ERPLAB: pop_mvpc2text() error:';
     errorfound(msgboxText, title_msg);
     return
 end
-if ~isfield(MVPC, 'average_score') %or use if DecodingUnit == 'None'?
+if ~isfield(ALLMVPC(1), 'average_score') %or use if DecodingUnit == 'None'?
     msgboxText =  'pop_mvpct2text cannot export an empty ERP dataset';
     title = 'ERPLAB: pop_mvpc2text() error:';
     errorfound(msgboxText, title);
@@ -84,9 +84,20 @@ if ~isfield(MVPC, 'average_score') %or use if DecodingUnit == 'None'?
 end
 
 if nargin==1
+    %%check the MVPCsets
+    [serror, msgwrng] = f_checkmvpc(ALLMVPC,[1:length(ALLMVPC)]);
+    if serror==1 && ~isempty(msgwrng)
+        msgboxText =  ['We can not export the selected MVPCsets becuase',32,msgwrng];
+        titlNamerro = 'ERPLAB: pop_mvpc2text() error:';
+        estudio_warning(msgboxText,titlNamerro);
+        return;
+    elseif serror==2 && ~isempty(msgwrng)
+    end
+    
+    
     def  = erpworkingmemory('pop_mvpc2text');
     if isempty(def)
-        def = {1,1E-3, 0,''};
+        def = {1,1E-3, 0,[pwd,filesep,'MVPCValue.txt'],'proportion correct'};
         %istime
         %timeunit
         %transpose
@@ -99,7 +110,7 @@ if nargin==1
     %
     %answer = mvpc2textGUI(MVPC, def); %app designer
     
-    app = feval('mvpc2textGUI',MVPC,def);
+    app = feval('mvpc2textGUI',ALLMVPC,def);
     waitfor(app,'FinishButton',1);
     
     try
@@ -107,7 +118,6 @@ if nargin==1
         app.delete; %delete app from view
         pause(0.5); %wait for app to leave
     catch
-        disp('User selected Cancel');
         return
     end
     
@@ -115,7 +125,7 @@ if nargin==1
     tunit     = answer{2};
     transpa   = answer{3};
     filename  = answer{4};
-    
+    DecodingUnit = answer{5};%%GH July 2024
     erpworkingmemory('pop_mvpc2text', answer);
     
     if istime
@@ -130,13 +140,11 @@ if nargin==1
         tra = 'off';
     end
     
-    
-    
     %
     % Somersault
     %
-    [MVPC, mvpccom] = pop_mvpc2text(MVPC, filename, 'time', time, 'timeunit', tunit, ...
-        'transpose', tra,'History', 'gui');
+    [ALLMVPC, mvpccom] = pop_mvpc2text(ALLMVPC, filename, 'time', time, 'timeunit', tunit, ...
+        'transpose', tra,'DecodingUnit',DecodingUnit,'History', 'gui');
     return
 end
 
@@ -146,16 +154,18 @@ end
 p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
-p.addRequired('MVPC');
+p.addRequired('ALLMVPC');
 p.addRequired('filename', @ischar);
 %p.addRequired('binArray', @isnumeric);
 % option(s)
 p.addParamValue('time', 'on', @ischar);
 p.addParamValue('timeunit', 1E-3, @isnumeric); % milliseconds by default
 p.addParamValue('transpose', 'on', @ischar);
+p.addParamValue('DecodingUnit', '', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 
-p.parse(MVPC, filename, varargin{:});
+p.parse(ALLMVPC, filename, varargin{:});
 
 if strcmpi(p.Results.time, 'on')
     time = 1;
@@ -183,7 +193,32 @@ end
 %
 % subroutine
 %
-serror = mvpc2text(MVPC, filename,time, timeunit, transpose);
+if ~isempty(ALLMVPC)%%GH July 2024
+    MVPCValueItem = '';
+    for Numofmvpc = 1:length(ALLMVPC)
+        Item_One = ALLMVPC(Numofmvpc).DecodingUnit;
+        [C,IA] = ismember_bc2({Item_One}, MVPCValueItem);
+        if IA==0
+            if isempty(MVPCValueItem)
+                MVPCValueItem{1,1} = Item_One;
+            else
+                MVPCValueItem{1,length(MVPCValueItem)+1} = Item_One;
+            end
+        end
+    end
+else
+    MVPCValueItem = {'proportion correct'};
+end
+
+DecodingUnit = p.Results.DecodingUnit;%%GH July 2024
+[C,IA] = ismember_bc2(DecodingUnit, MVPCValueItem);%%GH July 2024
+if IA ==0;%%GH July 2024
+    DecodingUnit =  MVPCValueItem{1};
+else
+    DecodingUnit =  MVPCValueItem{IA};
+end
+
+serror = mvpc2text(ALLMVPC, filename,time, timeunit, transpose,DecodingUnit);%%GH July 2024
 
 if serror==1
     msgboxText = 'Something went wrong...\n';
@@ -195,7 +230,7 @@ end
 %
 % History
 %
-skipfields = {'MVPC', 'filename','History'};
+skipfields = {'ALLMVPC', 'filename','History'};
 fn     = fieldnames(p.Results);
 mvpccom = sprintf( 'pop_mvpc2text( %s, ''%s'', %s', inputname(1), filename );
 for q=1:length(fn)
@@ -231,7 +266,13 @@ for q=1:length(fn)
     end
 end
 mvpccom = sprintf( '%s );', mvpccom);
-% eegh(mvpccom);
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
+if strcmpi(Tooltype,'erplab')%%GH, June 2024
+    eegh(mvpccom);
+end
 % get history from script. ERP
 switch shist
     case 1 % from GUI
