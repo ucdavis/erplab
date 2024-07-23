@@ -90,6 +90,12 @@ try
         etitle = 'ERPLAB: pop_mvpc2text';
         errorfound(sprintf(msgboxText), etitle);
     end
+    if isempty(data)
+        msgboxText = ['Warning message: The MVPC value “',DecodingUnit,'” does not exist in all the selected MVPCsets\n'];
+        etitle = 'ERPLAB: pop_mvpc2text';
+        errorfound(sprintf(msgboxText), etitle);
+        return;
+    end
     %
     % add time axis
     %
@@ -100,15 +106,10 @@ try
         data = [time_val',data];
     end
     
-    %
-    % transpose and write to disk
-    %
-    %strbindescr = MVPC.bindescr{binArray(ibin)};
-    % strbindescr = regexprep(strbindescr,'\\|\/|\*|\#|\$|\@|\:','_'); % replace forbidden characters
     binfilename = [ prefname2 ext ]; % ...and add ext
     fid = fopen(binfilename, 'w');
     
-    if transpose==1 % no transpose
+    if transpose==0 % no transpose
         dataF = data';
         MVPCNamesF = MVPCNames';
         columNums = size(dataF,2)+1;
@@ -127,7 +128,7 @@ try
         end
         formatSpec2 = [formatSpec2,'%s\n'];
     end
-    if transpose==1
+    if transpose==0
         for Numofrow = 1:size(dataF,1)
             data = [];
             data{1,1} = MVPCNamesF{Numofrow};
