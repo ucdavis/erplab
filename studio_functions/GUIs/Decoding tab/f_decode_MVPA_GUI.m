@@ -243,7 +243,7 @@ varargout{1} = box_bestset_gui;
         set(Docode_do_mvpa.vBox_decode,'Sizes',[20 25 25 20 25 25 25 25 25 25 16 16 25 100 30]);
         try  Docode_do_mvpa.paras_ops = MVPCA_panelparas{2}; catch  Docode_do_mvpa.paras_ops = [];end
         if isempty(Docode_do_mvpa.paras_ops )
-            Docode_do_mvpa.paras_ops = {1,1,1,[],1,0};
+            Docode_do_mvpa.paras_ops = {1,2,1,[],1,0};
         end
         %%(1)Methods (1.SVM; 2.Crossnobis),
         %%(2)SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
@@ -870,7 +870,6 @@ varargout{1} = box_bestset_gui;
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
-        
     end
 
 %%-------------------------------Run---------------------------------------
@@ -888,7 +887,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.mvpa_run.BackgroundColor =  [1 1 1];
         Docode_do_mvpa.mvpa_run.ForegroundColor = [0 0 0];
         
-        selected_method = Docode_do_mvpa.paras_ops{1};
+        try selected_method = Docode_do_mvpa.paras_ops{1};catch  selected_method=1; end
         if isempty(selected_method) || numel(selected_method)~=1 || (selected_method~=1 && selected_method~=2)
             selected_method = 1; Docode_do_mvpa.paras_ops{1}=1;
         end
@@ -897,9 +896,9 @@ varargout{1} = box_bestset_gui;
         elseif selected_method == 2
             smethod = 'Crossnobis';
         end
-        classcoding = Docode_do_mvpa.paras_ops{2};
+        try classcoding = Docode_do_mvpa.paras_ops{2}; catch  classcoding=2; end
         if isempty(classcoding) || numel(classcoding)~=1
-            classcoding=1; Docode_do_mvpa.paras_ops{2}=1;
+            classcoding=2; Docode_do_mvpa.paras_ops{2}=2;
         end
         if classcoding == 1
             strcoding = 'OneVsOne';
@@ -1117,7 +1116,6 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.Paras{7} = Docode_do_mvpa.eq_trials_acrclas_radio.Value;
         Docode_do_mvpa.Paras{8} = Docode_do_mvpa.eq_trials_acrbest_checkbox.Value;
         Docode_do_mvpa.Paras{9} = str2num(Docode_do_mvpa.manfloor_edit.String);
-        
         estudioworkingmemory('MVPCA_panelparas',{Docode_do_mvpa.Paras,Docode_do_mvpa.paras_ops});
     end
 
@@ -1436,7 +1434,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.Paras{7} = Docode_do_mvpa.eq_trials_acrclas_radio.Value;
         Docode_do_mvpa.Paras{8} = Docode_do_mvpa.eq_trials_acrbest_checkbox.Value;
         Docode_do_mvpa.Paras{9} = str2num(Docode_do_mvpa.manfloor_edit.String);
-        Docode_do_mvpa.paras_ops = {1,1,1,[],1,0};
+        Docode_do_mvpa.paras_ops = {1,2,1,[],1,0};
         observe_DECODE.Reset_Best_paras_panel=2;
     end
 
