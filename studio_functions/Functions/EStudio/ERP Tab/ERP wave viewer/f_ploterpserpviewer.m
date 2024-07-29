@@ -1072,7 +1072,7 @@ for Numofrows = 1:Numrows
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
             try
-                labelcbe = qplotArrayStr{countPlot};
+                labelcbe = qplotArrayStr{plotdatalabel};
                 if isempty(labelcbe)
                     labelcbe  = 'Label varies across ERPsets';
                 end
