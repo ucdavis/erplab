@@ -656,9 +656,7 @@ elseif strcmpi(equalize_trials,'floor')
             msgboxTest = sprintf('You selected an invalid floor %i. You cannot go less than 1 trial per ERP',floor_value);
             title = 'ERPLAB: Cross-Validation error';
             errorfound(msgboxTest, title);
-            
             return
-            
         end
         
         

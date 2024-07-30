@@ -105,7 +105,7 @@ if nargin <3%GUI
             return
         end
         
-    
+        
         
         plot_menu =   answer{1}; % 0;1
         tp = answer{2};
@@ -148,9 +148,11 @@ p.addParamValue('Type',[],@ischar);
 % p.addParamValue('MVPCindex', 1);               % same as Erpsets
 p.addParamValue('fileNames','',@ischar);
 p.addParamValue('decimalNum',3,@isnumeric);
-p.addParamValue('Warning', 'off', @ischar);    % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
+p.addParamValue('Warning','on',@ischar); % on/off warning for existing file
+
+
 p.parse(ALLMVPC,MVPCindex, varargin{:});
 MVPCArray = p.Results.MVPCindex;
 meas = p.Results.Type;
@@ -196,7 +198,11 @@ else
     shist = 0; % off
 end
 
-
+if strcmpi(p.Results.Warning,'on')
+    warnop = 1;
+else
+    warnop = 0;
+end
 
 MVPC = ALLMVPC(MVPCArray(1));
 
@@ -372,8 +378,18 @@ if isempty(fileNames)
     fileNames = 'Confusion_matrix';
 end
 fileNames = char(strcat(pathstr,filesep,fileNames,ext));
-try delete(fileNames);catch  end;
+% try delete(fileNames);catch  end;
 
+if exist(fileNames, 'file')~=0 && warnop==1
+    msgboxText =  ['This file that has the same name already exists.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'ERPLAB pop_exportconfusions: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        disp('User canceled')
+        return;
+    end
+end
 
 for Numofmvpc = 1:numel(MVPCArray)
     %% plot

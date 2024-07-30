@@ -260,10 +260,10 @@ varargout{1} = ERP_bin_operation_gui;
             observe_ERPDAT.Process_messg =2;
             return;
         end
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[cd,filesep];
+        %         end
         
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
@@ -423,10 +423,10 @@ varargout{1} = ERP_bin_operation_gui;
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
-        pathName_def =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName_def)
-            pathName_def =cd;
-        end
+        %         pathName_def =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName_def)
+        pathName_def =[cd,filesep];
+        %         end
         ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);

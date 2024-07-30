@@ -22,7 +22,7 @@ function varargout = f_ERP_save_multi_file(varargin)
 
 % Edit the above text to modify the response to help f_ERP_save_multi_file
 
-% Last Modified by GUIDE v2.5 16-Jan-2024 19:20:46
+% Last Modified by GUIDE v2.5 30-Jul-2024 10:39:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -459,3 +459,10 @@ if isequal(select_path,0)
     select_path = cd;
 end
 handles.edit_path.String = select_path;
+
+
+% --- Executes during object creation, after setting all properties.
+function pushbutton_path_browse_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton_path_browse (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

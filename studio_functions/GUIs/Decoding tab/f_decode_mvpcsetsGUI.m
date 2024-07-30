@@ -290,10 +290,10 @@ varargout{1} = box_mvpcset_gui;
         % Call GUI
         %
         %answer = mvpc2textGUI(MVPC, def); %app designer
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =[pwd];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[pwd];
+        %         end
         pathName = [pathName,filesep,'MVPCValue.txt'];
         
         try defpath = def{4}; catch defpath = ''; end
@@ -339,7 +339,7 @@ varargout{1} = box_mvpcset_gui;
         
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 6;
-
+        
     end
 %%-------------------------------fresh ------------------------------------
     function refresh_mvpcset(~,~)
@@ -549,10 +549,10 @@ varargout{1} = box_mvpcset_gui;
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Save');
         observe_DECODE.Process_messg =1;
         
-        pathNamedef =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathNamedef)
-            pathNamedef =  cd;
-        end
+        %         pathNamedef =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathNamedef)
+        pathNamedef =  [cd,filesep];
+        %         end
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || any(MVPCArray>length(observe_DECODE.ALLMVPC))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -603,10 +603,10 @@ varargout{1} = box_mvpcset_gui;
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Save a Copy');
         observe_DECODE.Process_messg =1;
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =  [cd,filesep];
+        %         end
         
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || any(MVPCArray(:)>length(observe_DECODE.ALLMVPC))
@@ -677,10 +677,10 @@ varargout{1} = box_mvpcset_gui;
             observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
         end
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =[pwd,filesep];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[pwd,filesep];
+        %         end
         title = 'Select one forlder for saving files in following procedures';
         sel_path1 = uigetdir(pathName,title);
         if isequal(sel_path1,0)

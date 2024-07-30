@@ -167,7 +167,7 @@ p.addParamValue('DecodingUnit', '', @ischar);
 p.addParamValue('precision',3,@isnumeric);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
-
+p.addParamValue('Warning','on',@ischar); % on/off warning for existing file
 
 p.parse(ALLMVPC, filename, varargin{:});
 
@@ -192,7 +192,6 @@ elseif strcmpi(p.Results.History,'gui')
 else
     shist = 0; % off
 end
-%precision  = p.Results.precision;
 
 %
 % subroutine
@@ -227,8 +226,15 @@ if isempty(precision) || numel(precision)~=1 || any(precision(:)<1)
     precision=3;
 end
 
+if strcmpi(p.Results.Warning,'on')
+    warnop = 1;
+else
+    warnop = 0;
+end
 
-serror = mvpc2text(ALLMVPC, filename,time, timeunit, transpose,DecodingUnit,precision);%%GH July 2024
+
+
+serror = mvpc2text(ALLMVPC, filename,time, timeunit, transpose,DecodingUnit,precision,warnop);%%GH July 2024
 
 if serror==1
     msgboxText = 'Something went wrong...\n';

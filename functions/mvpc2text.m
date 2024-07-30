@@ -51,19 +51,30 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function  serror = mvpc2text(ALLMVPC, filename, time, timeunit, transpose,DecodingUnit,precision)
+function  serror = mvpc2text(ALLMVPC, filename, time, timeunit, transpose,DecodingUnit,precision,warnop)
 serror = 0; % no errors
 %nbin = length(binArray);
 
 [pathstr, prefname1, ext] = fileparts(filename);
 
-if strcmp(ext,'')
-    ext = '.txt';
-end
+ext = '.txt';
 
 prefname2 = fullfile(pathstr, prefname1);
+
+filenamex = [prefname2,ext];
+if exist(filenamex, 'file')~=0 && warnop==1
+    msgboxText =  ['This file that has the same name already exists.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'ERPLAB: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        disp('User canceled')
+        return;
+    end
+end
+
+
 try
-    
     data = [];
     count = 0;
     count1= 0;

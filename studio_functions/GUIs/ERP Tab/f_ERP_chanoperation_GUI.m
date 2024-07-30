@@ -292,10 +292,10 @@ varargout{1} = ERP_chan_operation_gui;
             observe_ERPDAT.Process_messg =2;
             return;
         end
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[cd,filesep];
+        %         end
         
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)

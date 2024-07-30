@@ -414,10 +414,10 @@ varargout{1} = box_erp_append;
             return;
         end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
-        pathName_def =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName_def)
-            pathName_def =cd;
-        end
+        %         pathName_def =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName_def)
+        pathName_def =[cd,filesep];
+        %         end
         erpName_new = '';
         fileName_new = '';
         pathName_new = '';
@@ -545,10 +545,10 @@ varargout{1} = box_erp_append;
             return;
         end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
-        pathName_def =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName_def)
-            pathName_def =cd;
-        end
+        %         pathName_def =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName_def)
+        pathName_def =[cd,filesep];
+        %         end
         erpName_new = '';
         fileName_new = '';
         pathName_new = '';

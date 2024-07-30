@@ -107,10 +107,10 @@ varargout{1} = box_bestset_gui;
             return;
         end
         %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
-        if ~isempty(messgStr)
-            observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
-        end
+        %         [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
+        %         if ~isempty(messgStr)
+        %             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
+        %         end
         
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Duplicate');
         observe_DECODE.Process_messg =1;
@@ -485,10 +485,10 @@ varargout{1} = box_bestset_gui;
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Save');
         observe_DECODE.Process_messg =1;
         
-        pathNamedef =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathNamedef)
-            pathNamedef =  cd;
-        end
+        %         pathNamedef =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathNamedef)
+        pathNamedef =  [cd,filesep];
+        %         end
         BESTArray= estudioworkingmemory('BESTArray');
         if isempty(BESTArray) || any(BESTArray>length(observe_DECODE.ALLBEST))
             BESTArray = length(observe_DECODE.ALLBEST);
@@ -552,10 +552,10 @@ varargout{1} = box_bestset_gui;
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Save a Copy');
         observe_DECODE.Process_messg =1;
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =  [cd,filesep];
+        %         end
         
         BESTArray= estudioworkingmemory('BESTArray');
         if isempty(BESTArray) || any(BESTArray(:)>length(observe_DECODE.ALLBEST))
@@ -635,10 +635,10 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
         end
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =[pwd,filesep];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[pwd,filesep];
+        %         end
         title = 'Select one forlder for saving files in following procedures';
         sel_path1 = uigetdir(pathName,title);
         if isequal(sel_path1,0)

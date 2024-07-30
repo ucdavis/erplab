@@ -313,7 +313,7 @@ else
             pop_loadmvpc('filename', 'decodingtoolbox', 'UpdateMainGui', 'on');
         else
             assignin('base','MVPC',MVPC);
-            pop_loadmvpc('filename', 'workspace', 'UpdateMainGui', 'on');
+            pop_loadmvpc('filename', 'workspace', 'UpdateMainGui', 'off');
         end
     end
     if issave ~= 2

@@ -396,10 +396,10 @@ varargout{1} = MVPC_confusion_box_gui;
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =[pwd,filesep];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[pwd,filesep];
+        %         end
         
         defx =  estudioworkingmemory('pop_exportconfusions');
         def = {1,[],3,[pathName,filesep,'Confusion_matrix']};
@@ -685,10 +685,10 @@ varargout{1} = MVPC_confusion_box_gui;
         end
         gui_mvpc_confusion.latency_exp.String = text_instruct;
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =[pwd,filesep];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[pwd,filesep];
+        %         end
         
         def = {1,[],3,[pathName,filesep,'Confusion_matrix']};
         estudioworkingmemory('pop_exportconfusions',def);
