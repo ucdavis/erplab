@@ -19,7 +19,7 @@
 %         'electrodes'  - 'on'=include electrode labels' 'off'=don't include electrode labels
 %         'transpose'   - 'on'= (points=rows) & (electrode=columns)
 %                         'off' = (electrode=rows) & (points=column)
-%         'precision'   - [float] number of significant digits in output. Default 4.
+%         'precision'   - [float] number of significant digits in output. Default 3.
 %
 % OUTPUTS
 %
@@ -97,12 +97,13 @@ if nargin==1
     
     def  = erpworkingmemory('pop_mvpc2text');
     if isempty(def)
-        def = {1,1E-3, 0,[pwd,filesep,'MVPCValue.txt'],'proportion correct'};
+        def = {1,1E-3, 0,[pwd,filesep,'MVPCValue.txt',3],'proportion correct'};
         %istime
         %timeunit
         %transpose
         %precision
         %filename
+        %precision
     end
     
     %
@@ -126,6 +127,7 @@ if nargin==1
     transpa   = answer{3};
     filename  = answer{4};
     DecodingUnit = answer{5};%%GH July 2024
+    precision = answer{6};
     erpworkingmemory('pop_mvpc2text', answer);
     
     if istime
@@ -144,7 +146,7 @@ if nargin==1
     % Somersault
     %
     [ALLMVPC, mvpccom] = pop_mvpc2text(ALLMVPC, filename, 'time', time, 'timeunit', tunit, ...
-        'transpose', tra,'DecodingUnit',DecodingUnit,'History', 'gui');
+        'transpose', tra,'precision',precision,'DecodingUnit',DecodingUnit,'History', 'gui');
     return
 end
 
@@ -162,8 +164,10 @@ p.addParamValue('time', 'on', @ischar);
 p.addParamValue('timeunit', 1E-3, @isnumeric); % milliseconds by default
 p.addParamValue('transpose', 'on', @ischar);
 p.addParamValue('DecodingUnit', '', @ischar);
+p.addParamValue('precision',3,@isnumeric);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
+
 
 p.parse(ALLMVPC, filename, varargin{:});
 
@@ -218,7 +222,13 @@ else
     DecodingUnit =  MVPCValueItem{IA};
 end
 
-serror = mvpc2text(ALLMVPC, filename,time, timeunit, transpose,DecodingUnit);%%GH July 2024
+precision = p.Results.precision;
+if isempty(precision) || numel(precision)~=1 || any(precision(:)<1)
+    precision=3;
+end
+
+
+serror = mvpc2text(ALLMVPC, filename,time, timeunit, transpose,DecodingUnit,precision);%%GH July 2024
 
 if serror==1
     msgboxText = 'Something went wrong...\n';
@@ -251,7 +261,7 @@ for q=1:length(fn)
                     end
                     fnformat = '{%s}';
                 else
-                    fn2resstr = vect2colon(fn2res, 'Sort','on');
+                    fn2resstr = [vect2colon(fn2res, 'Sort','on'),','];
                     fnformat = '%s';
                 end
                 if strcmpi(fn2com,'Criterion')

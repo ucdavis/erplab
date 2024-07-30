@@ -69,10 +69,14 @@ if isempty(ALLMVPC)
     return
 end
 if nargin<2
-    MVPCindex = [1:length(ALLMVPC)];
+    try
+        MVPCindex = evalin('base', 'CURRENTMVPC');
+    catch
+        MVPCindex = [];
+    end
 end
 if isempty(MVPCindex) || any(MVPCindex(:)<1) || any(MVPCindex(:)>length(ALLMVPC))
-    MVPCindex = [1:length(ALLMVPC)];
+    MVPCindex = length(ALLMVPC);
 end
 
 if nargin <3%GUI
@@ -101,15 +105,12 @@ if nargin <3%GUI
             return
         end
         
-        MVPCindex    = answer{1}; %plot_menu
-        if isempty(MVPCindex) || any(MVPCindex(:)<1) || any(MVPCindex(:)>length(ALLMVPC))
-            MVPCindex = [1:length(ALLMVPC)];
-        end
+    
         
-        plot_menu =   answer{2}; % 0;1
-        tp = answer{3};
-        decimalNum = answer{4};
-        fileNames = answer{5};
+        plot_menu =   answer{1}; % 0;1
+        tp = answer{2};
+        decimalNum = answer{3};
+        fileNames = answer{4};
         
         %def = {actualnset, optioni, mvpcset,stderror};
         def = {plot_menu, tp, decimalNum, fileNames};

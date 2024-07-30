@@ -441,15 +441,10 @@ varargout{1} = MVPC_confusion_box_gui;
             return
         end
         
-        MVPCindex    = answer{1}; %plot_menu
-        if isempty(MVPCindex) || any(MVPCindex(:)<1) || any(MVPCindex(:)>length(ALLMVPC))
-            MVPCindex = [1:length(ALLMVPC)];
-        end
-        
-        plot_menu =   answer{2}; % 0;1
-        tp = answer{3};
-        decimalNum = answer{4};
-        fileNames = answer{5};
+        plot_menu =   answer{1}; % 0;1
+        tp = answer{2};
+        decimalNum = answer{3};
+        fileNames = answer{4};
         
         %def = {actualnset, optioni, mvpcset,stderror};
         def = {plot_menu, tp, decimalNum, fileNames};
@@ -466,7 +461,7 @@ varargout{1} = MVPC_confusion_box_gui;
         %
         % Somersault
         %
-        MVPCCOM=pop_exportconfusions(ALLMVPC,MVPCindex, 'Times',tp,'Type',meas,...
+        MVPCCOM=pop_exportconfusions(ALLMVPC,MVPCArray, 'Times',tp,'Type',meas,...
             'fileNames',fileNames,'decimalNum',decimalNum,'History', 'gui','Tooltype','estudio');
         
         if isempty(MVPCCOM)

@@ -278,7 +278,7 @@ varargout{1} = box_mvpcset_gui;
         
         def  = estudioworkingmemory('pop_mvpc2text');
         if isempty(def)
-            def = {1,1E-3, 0,[pwd,filesep,'MVPCValue.txt'],'proportion correct'};
+            def = {1,1E-3, 0,[pwd,filesep,'MVPCValue.txt',3],'proportion correct'};
             %istime
             %timeunit
             %transpose
@@ -317,7 +317,7 @@ varargout{1} = box_mvpcset_gui;
         filename  = answer{4};
         DecodingUnit =  answer{5};
         estudioworkingmemory('pop_mvpc2text', answer);
-        
+        precision =  answer{6};
         if istime
             time = 'on';
         else
@@ -334,7 +334,7 @@ varargout{1} = box_mvpcset_gui;
         
         ALLMVPC= observe_DECODE.ALLMVPC(MVPCArray);
         [MVPC, mvpccom] = pop_mvpc2text(ALLMVPC, filename, 'time', time, 'timeunit', tunit, ...
-            'transpose', tra,'DecodingUnit',DecodingUnit,'History', 'gui','Tooltype','estudio');
+            'transpose', tra,'DecodingUnit',DecodingUnit,'History', 'gui','Tooltype','estudio','precision',precision);
         mvpch(mvpccom);
         
         observe_DECODE.Process_messg =2;

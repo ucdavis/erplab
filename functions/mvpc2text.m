@@ -2,7 +2,7 @@
 %
 % FORMAT   :
 %
-% serror = mvpc2text(ERP, filename, time, timeunit,  transpose,DecodingUnit)
+% serror = mvpc2text(ERP, filename, time, timeunit,  transpose,DecodingUnit,precision)
 %
 %
 % INPUTS     :
@@ -13,7 +13,8 @@
 % timeunit'     - 1=seconds; 1E-3=milliseconds
 % transpose'    - 1= (points=rows) & (MVPCsets=columns)
 %                 0= (MVPCsets=rows) & (points=column)
-%
+%precision     - precision for exported AC value
+
 % OUTPUTS
 %
 % serror        - error report. 0 means no errors found; 1 means something went wrong...
@@ -50,7 +51,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function  serror = mvpc2text(ALLMVPC, filename, time, timeunit, transpose,DecodingUnit)
+function  serror = mvpc2text(ALLMVPC, filename, time, timeunit, transpose,DecodingUnit,precision)
 serror = 0; % no errors
 %nbin = length(binArray);
 
@@ -59,7 +60,7 @@ serror = 0; % no errors
 if strcmp(ext,'')
     ext = '.txt';
 end
-precision = 4;
+
 prefname2 = fullfile(pathstr, prefname1);
 try
     
