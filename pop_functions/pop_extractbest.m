@@ -1,4 +1,4 @@
-% PURPOSE  : Create BEST (.mat) file for the loaded subject bin-epoched (.set) file for decoding analyses. 
+% PURPOSE  : Create BEST (.mat) file for the loaded subject bin-epoched (.set) file for decoding analyses.
 %
 % FORMAT   :
 %
@@ -16,18 +16,18 @@
 %                          left unspecified.
 %        'Bins'        -    Bin index array as indicated in binlister file. Example: [1:4]
 %                            - If not supplied, all bins will be included
-%                            in BESTset. 
+%                            in BESTset.
 %        'Criterion'   - Inclusion/exclusion of marked epochs during
 %                           artifact detection:
 % 		                   'all'   - include all epochs (ignore artifact detections)
 % 		                   'good'  - exclude epochs marked during artifact detection
 % 		                   'bad'   - include only epochs marked with artifact rejection
-%                           Default: 'good'; 
+%                           Default: 'good';
 %        'ExcludeBoundary' - exclude epochs having boundary events.
 %                           'on'(def)/'off'
 %        'BandPass'    -  If desired, bandpass filtering: [Low_edge_freq High_edge_freq], e.g [8 12];
 %        'SaveAs'      -  (optional) open GUI for saving BESTset. Not
-%                       useful if scripting; use separate call to pop_savemybest(). 
+%                       useful if scripting; use separate call to pop_savemybest().
 %                           'on'/'off' (Default: off)
 %                           - (if "off", will not update in BESTset menu)
 %
@@ -40,7 +40,7 @@
 % [BEST] = pop_extractBEST(ALLEEG,'DSindex',currdata,'Bins',bins_to_use,'ApplyFS', cmk_fs, ...
 %        'ApplyBP', cmk_bp, 'Bandpass', bpfreq);
 %
-% See also: pop_savemybest.m 
+% See also: pop_savemybest.m
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons and Steven J Luck.
@@ -71,10 +71,10 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [BEST] = pop_extractbest(ALLEEG,varargin)
-com= '';
+function [BEST,bestcom] = pop_extractbest(ALLEEG,varargin)
+bestcom= '';%%GH, June 2024
 
-BEST = preloadBEST; 
+BEST = preloadBEST;
 
 
 if nargin<1
@@ -86,7 +86,7 @@ if isobject(ALLEEG)
     whenEEGisanObject
     return
 end
-   
+
 
 if nargin ==1 %GUI case, ALLEEG is input
     
@@ -98,12 +98,12 @@ if nargin ==1 %GUI case, ALLEEG is input
         errorfound(msgboxText, title);
         return
     end
-
+    
     serror = erplab_eegscanner(ALLEEG(currdata),'pop_extractBEST', 2,0,1,0,1); %requires epoch & event list
     
-
+    
     if serror
-        % need to create error checker if 
+        % need to create error checker if
         %1: not epoched
         %2: no eventlist (for bin descriptions)
         return
@@ -113,16 +113,16 @@ if nargin ==1 %GUI case, ALLEEG is input
     def  = erpworkingmemory('pop_extractBEST');
     
     nbins = ALLEEG(currdata).EVENTLIST.nbin;
-
     
-    if isempty(def) 
-        def = {1:nbins,0,{'',''},1,1}; 
-
+    
+    if isempty(def)
+        def = {1:nbins,0,{'',''},1,1};
+        
         %1: choose all bins (Def)
-        %2: apply freq- transform (1 yes 0 no); 
+        %2: apply freq- transform (1 yes 0 no);
         %3: bandpass freqs
         %4: include into epochs (def 1: exclude AD flagged epochs)
-        %5: exclude epochs with boundary events (def 1:YES, exclude) 
+        %5: exclude epochs with boundary events (def 1:YES, exclude)
     end
     
     
@@ -130,17 +130,17 @@ if nargin ==1 %GUI case, ALLEEG is input
     
     %Call GUIs
     
-    %subroutine: binselector 
-    % using APP DESIGNER: 
+    %subroutine: binselector
+    % using APP DESIGNER:
     % cludgy of using a GUI app with output
-
-    %bins_to_use = binselectorGUI(ALLEEG,currdata); %typical way  
+    
+    %bins_to_use = binselectorGUI(ALLEEG,currdata); %typical way
     app = feval('binselectorGUI', ALLEEG, currdata, def); %cludgy way
-    waitfor(app, 'FinishButton',1); 
+    waitfor(app, 'FinishButton',1);
     
     %outputs & delete gui
     try
-        res = app.output; 
+        res = app.output;
     catch
         disp('User canceled');
         return
@@ -148,9 +148,9 @@ if nargin ==1 %GUI case, ALLEEG is input
     bins_to_use = app.output{1}; %selected bins
     cmk_bp = double(app.output{2}); %apply bandpass?
     bpfreq = cell2mat(app.output{3}); %bandpass frequncies
-    artcrite = double(app.output{4}); 
-    exclude_be = app.output{5}; 
-
+    artcrite = double(app.output{4});
+    exclude_be = app.output{5};
+    
     if cmk_bp == 0
         bpfreq = [];
     end
@@ -165,13 +165,13 @@ if nargin ==1 %GUI case, ALLEEG is input
         disp('User selected Cancel')
         return
     end
-%     
-%     if ~isempty(bpfreq)
-%         bpfreq = str2num(bpfreq); 
-%     end
+    %
+    %     if ~isempty(bpfreq)
+    %         bpfreq = str2num(bpfreq);
+    %     end
     
     if artcrite == 0
-        crit = 'all'; 
+        crit = 'all';
     elseif artcrite == 1
         crit = 'good';
     elseif artcrite == 2
@@ -180,7 +180,6 @@ if nargin ==1 %GUI case, ALLEEG is input
     
     if exclude_be == 1
         excbound = 'on';
-        
     else
         excbound = 'off';
     end
@@ -189,18 +188,18 @@ if nargin ==1 %GUI case, ALLEEG is input
     % Somersault
     %
     
-%     pop_extractBEST(ALLEEG,'DSindex',currdata,'Bins',bins_to_use,...
-%         'ApplyBP', cmk_bp, 'Bandpass', bpfreq, 'Filename', filename_empty, 'Filepath', filepath_empty);
-
+    %     pop_extractBEST(ALLEEG,'DSindex',currdata,'Bins',bins_to_use,...
+    %         'ApplyBP', cmk_bp, 'Bandpass', bpfreq, 'Filename', filename_empty, 'Filepath', filepath_empty);
+    
     [BEST] = pop_extractbest(ALLEEG,'DSindex',currdata,'Bins',bins_to_use,...
-        'Criterion', crit, 'ExcludeBoundary',excbound,  ... 
+        'Criterion', crit, 'ExcludeBoundary',excbound,  ...
         'Bandpass', bpfreq,'Saveas', 'on','History','gui');
     
     
     pause(0.1)
     return
     
-
+    
 end
 
 
@@ -213,30 +212,30 @@ p.CaseSensitive = false;
 % input(s)
 p.addRequired('ALLEEG', @isstruct);
 % option(s)
-p.addParamValue('DSindex', 1,@isnumeric); %defaults to 1 
+p.addParamValue('DSindex', 1,@isnumeric); %defaults to 1
 p.addParamValue('Bins', [], @isnumeric);
 %p.addParamValue('ApplyBP', 0, @isnumeric);
 p.addParamValue('Bandpass', [], @isnumeric);
 p.addParamValue('Criterion','good',@ischar);
-p.addParamValue('ExcludeBoundary','on',@ischar); 
+p.addParamValue('ExcludeBoundary','on',@ischar);
 p.addParamValue('Saveas', 'off', @ischar);
-p.addParamValue('History','script',@ischar); 
+p.addParamValue('History','script',@ischar);
+p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 
+p.parse(ALLEEG, varargin{:});
 
-p.parse(ALLEEG, varargin{:}); 
-
-setindex = p.Results.DSindex; 
+setindex = p.Results.DSindex;
 bin_ind = p.Results.Bins;
-%bandpass_on = p.Results.ApplyBP; 
-bandpass_freq = p.Results.Bandpass; 
-artcrite = p.Results.Criterion; 
-exclude_be = p.Results.ExcludeBoundary; 
+%bandpass_on = p.Results.ApplyBP;
+bandpass_freq = p.Results.Bandpass;
+artcrite = p.Results.Criterion;
+exclude_be = p.Results.ExcludeBoundary;
 
-if isempty(bin_ind) 
-    %if no bins input, then use all bins 
-    bin_ind = 1:(ALLEEG.EVENTLIST.nbin); 
+if isempty(bin_ind)
+    %if no bins input, then use all bins
+    bin_ind = 1:(ALLEEG.EVENTLIST.nbin);
 end
-    
+
 
 
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
@@ -245,8 +244,14 @@ else
     issaveas  = 0;
 end
 
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
+
+
 if strcmpi(artcrite,'all')
-    artif = 0; 
+    artif = 0;
 elseif strcmpi(artcrite,'good')
     artif = 1;
 elseif strcmpi(artcrite,'bad')
@@ -254,7 +259,7 @@ elseif strcmpi(artcrite,'bad')
 end
 
 if strcmpi(exclude_be,'on')
-    excbound = 1; 
+    excbound = 1;
 elseif strcmpi(exclude_be,'off')
     excbound = 2;
 end
@@ -278,15 +283,15 @@ fs_original = EEG2.srate; % need original FS (for frequency transformation)
 
 if ~isempty(bandpass_freq)
     nElectrodes = EEG2.nbchan;
-    filtData = nan(EEG2.trials, EEG2.nbchan,EEG2.pnts); 
-    unfiltData = permute(EEG2.data,[3 1 2]); 
+    filtData = nan(EEG2.trials, EEG2.nbchan,EEG2.pnts);
+    unfiltData = permute(EEG2.data,[3 1 2]);
     
     for c = 1:nElectrodes
         
         filtData(:,c,:) =abs(hilbert(eegfilt(squeeze(unfiltData(:,c,:)),fs_original,bandpass_freq(1,1),bandpass_freq(1,2))')').^2;   %Instantaneous power
     end
     
-
+    
 end
 
 
@@ -304,22 +309,22 @@ end
 
 % Prepare info for averager call
 % Excludes epochs marked with artifacts and that contains boundary events
-stderror = 1; apod = []; nfft = []; dcompu = 1; avgText =0;  
+stderror = 1; apod = []; nfft = []; dcompu = 1; avgText =0;
 
 % Call ERP Averager subfunction, populating the epoch_list
 [ERP2, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname,epoch_list] = averager(EEG2, artif, stderror, excbound, dcompu, nfft, apod, avgText);
 
 if ~isempty(bandpass_freq) %if bandpassed, add filtered data to EEG2
     
-    filtData = permute(filtData,[2 3 1]); 
-    EEG2.data = filtData; 
+    filtData = permute(filtData,[2 3 1]);
+    EEG2.data = filtData;
     
 end
 
 
 % Create BEST structure fields from .set file data (subroutine)
 BEST = buildBESTstruct(EEG2); %BIN-EPOCHED SINGLE TRIAL (BEST)
-nbin = BEST.nbin; 
+nbin = BEST.nbin;
 
 % Prepare binorg data structure
 for bin = 1:nbin
@@ -329,12 +334,12 @@ for bin = 1:nbin
     
 end
 
-%output only the selected bins 
-BEST.binwise_data = BEST.binwise_data([bin_ind]); 
-BEST.n_trials_per_bin = BEST.n_trials_per_bin([bin_ind]); 
+%output only the selected bins
+BEST.binwise_data = BEST.binwise_data([bin_ind]);
+BEST.n_trials_per_bin = BEST.n_trials_per_bin([bin_ind]);
 BEST.bindesc = BEST.bindesc([bin_ind]);
-BEST.original_bin = BEST.original_bin([bin_ind]); 
-BEST.nbin = length(bin_ind); 
+BEST.original_bin = BEST.original_bin([bin_ind]);
+BEST.nbin = length(bin_ind);
 
 %
 % History
@@ -383,12 +388,12 @@ for q=1:length(fn)
                                 fn2resstr = [fn2resstr '''' auxcont ''''];
                             else
                                 fn2resstr = [fn2resstr ' ' vect2colon(auxcont, 'Delimiter', 'on')];
-                            end                            
+                            end
                         end
                     end
                     fnformat = '{%s}';
                 elseif isnumeric(fn2res)
-                    fn2res = mat2colon(fn2res);  
+                    fn2res = mat2colon(fn2res);
                     fn2resstr = num2str(fn2res); fnformat = '%s';
                 elseif isstruct(fn2res)
                     fn2resstr = 'DQ_spec_structure'; fnformat = '%s';
@@ -397,11 +402,11 @@ for q=1:length(fn)
                     fnformat = '%s';
                 end
                 
-%                 if strcmpi(fn2com,'DSindex') || strcmpi(fn2com,'Bins') || strcmpi(fn2com,'Bandpass')
-%                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
-%                 else
+                %                 if strcmpi(fn2com,'DSindex') || strcmpi(fn2com,'Bins') || strcmpi(fn2com,'Bandpass')
+                %                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
+                %                 else
                 bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
-%                 end
+                %                 end
                 
                 %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
             end
@@ -409,8 +414,9 @@ for q=1:length(fn)
     end
 end
 bestcom = sprintf( '%s );', bestcom);
-eegh(bestcom);
-
+if strcmpi(Tooltype,'erplab')%%GH, June 2024
+    eegh(bestcom);
+end
 
 switch shist
     case 1 % from GUI
@@ -424,7 +430,7 @@ switch shist
             end
         end
     case 2 % from script
-       % ERP = erphistory(ERP, [], bestcom, 1);
+        % ERP = erphistory(ERP, [], bestcom, 1);
     case 3
         % implicit
     otherwise % off or none
@@ -439,7 +445,7 @@ if issaveas
     [BEST, issave] = pop_savemybest(BEST,'gui','erplab');
     if issave>0
         if issave==2
-          %  erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
+            %  erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
             msgwrng = '*** Your BESTset was saved on your hard drive.***';
         else
             msgwrng = '*** Warning: Your BESTset was only saved on the workspace.***';
@@ -447,7 +453,7 @@ if issaveas
     else
         msgwrng = 'ERPLAB Warning: Your changes were not saved';
     end
-    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end 
+    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end
 end
 
 

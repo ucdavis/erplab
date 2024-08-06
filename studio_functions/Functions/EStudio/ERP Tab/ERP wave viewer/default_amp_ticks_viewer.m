@@ -29,13 +29,11 @@ function def = default_amp_ticks_viewer(yrange)
 def   = [];
 
 if nargin<1
-    beep;
     disp('Please input the y scale with two elements');
     return;
 end
 
 if numel(yrange) ==1 || isempty(yrange)
-    beep;
     disp('Please input the y scale with two elements');
     return;
 end

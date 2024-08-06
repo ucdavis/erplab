@@ -288,10 +288,10 @@ varargout{1} = EEG_chan_operation_gui;
             return;
         end
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  [cd,filesep];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =  [pwd,filesep];
+        %         end
         
         Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
         Formula_str = {};
@@ -603,10 +603,10 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
         
-        pathName_def =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName_def)
-            pathName_def =cd;
-        end
+        %         pathName_def =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName_def)
+        pathName_def =[pwd,filesep];
+        %         end
         EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;

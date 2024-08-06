@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% Oct.2023 
+% Oct.2023
 
 
 function varargout = f_EEG_interpolate_chan_epoch_GUI(varargin)

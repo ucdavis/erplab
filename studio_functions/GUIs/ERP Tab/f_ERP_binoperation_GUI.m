@@ -260,10 +260,10 @@ varargout{1} = ERP_bin_operation_gui;
             observe_ERPDAT.Process_messg =2;
             return;
         end
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[cd,filesep];
+        %         end
         
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
@@ -423,10 +423,10 @@ varargout{1} = ERP_bin_operation_gui;
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
-        pathName_def =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName_def)
-            pathName_def =cd;
-        end
+        %         pathName_def =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName_def)
+        pathName_def =[cd,filesep];
+        %         end
         ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
@@ -547,14 +547,14 @@ varargout{1} = ERP_bin_operation_gui;
         assignin('base','ERPCOM',ERPCOM);
         estudioworkingmemory('f_ERP_bin_opt',1);
         
-         binAllNew = [1:observe_ERPDAT.ERP.nbin];
-         bindiff = setdiff(binAllNew,binAllold);
-         binArray =  estudioworkingmemory('ERP_BinArray');
-         if ~isempty(bindiff) && ~isempty(binArray) && numel(binArray)==numel(binAllold)
-             binArray = [binArray,bindiff];
-             estudioworkingmemory('ERP_BinArray',binArray);
-         end
-         
+        binAllNew = [1:observe_ERPDAT.ERP.nbin];
+        bindiff = setdiff(binAllNew,binAllold);
+        binArray =  estudioworkingmemory('ERP_BinArray');
+        if ~isempty(bindiff) && ~isempty(binArray) && numel(binArray)==numel(binAllold)
+            binArray = [binArray,bindiff];
+            estudioworkingmemory('ERP_BinArray',binArray);
+        end
+        
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         return;
@@ -593,24 +593,37 @@ varargout{1} = ERP_bin_operation_gui;
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
             Enable_label = 'off';
             for ii = 1:100
-                if ii==101
-                    dsnames{ii,1} = '<html><font color="red">The number of bins and channles should be the same for the selected ERPset!';
-                else
-                    dsnames{ii,1} = '';
-                end
+                dsnames{ii,1} = '';
             end
             gui_erp_bin_operation.edit_bineq.Data = dsnames;
             set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         else
+            ERPArray= estudioworkingmemory('selectederpstudio');
+            if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+                ERPArray = length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+                estudioworkingmemory('selectederpstudio',ERPArray);
+            end
+            
+            binNumAll = [];
+            for Numoferp = 1:numel(ERPArray)
+                binNumAll(Numoferp) =observe_ERPDAT.ALLERP(ERPArray(Numoferp)).nbin;
+            end
+            
             Enable_label = 'on';
             binopDataor =  gui_erp_bin_operation.edit_bineq.Data;
             for ii = 1:100
                 binopDataorcell = char(binopDataor{ii,1});
-                aa = '<html><font color="red">The number of bins and channles should be the same for the selected ERPset!';
+                aa = '<html><font color="red">The number of bins should be the same for the selected ERPsets!';
                 if isempty(binopDataorcell) || strcmpi(binopDataorcell,aa)
                     dsnames{ii,1} = '';
                 else
                     dsnames{ii,1} = binopDataorcell;
+                end
+                if numel(unique(binNumAll)) >1
+                    dsnames{1,1} = aa;
+                    Enable_label = 'off';
                 end
             end
             gui_erp_bin_operation.edit_bineq.Data = dsnames;

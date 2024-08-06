@@ -1072,7 +1072,7 @@ for Numofrows = 1:Numrows
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
             try
-                labelcbe = qplotArrayStr{countPlot};
+                labelcbe = qplotArrayStr{plotdatalabel};
                 if isempty(labelcbe)
                     labelcbe  = 'Label varies across ERPsets';
                 end
@@ -1525,6 +1525,7 @@ if ~isempty(extfig)
     catch
         print(fig_gui,'-dpdf',figFileName);
     end
+%     fprintf(['\n User selected the path to save waves for decoding accuracy:',figFileName,'\n']);
 end
 
 return;

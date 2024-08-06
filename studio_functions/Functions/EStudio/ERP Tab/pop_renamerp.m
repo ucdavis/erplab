@@ -33,13 +33,13 @@ if nargin < 1
 end
 if isempty(ALLERP)
     msgboxText =  'Cannot rename an empty ALLERPset';
-    title = 'ALLERPLAB: pop_renamerp() error';
+    title = 'ERPLAB: pop_renamerp() error';
     errorfound(msgboxText, title);
     return
 end
 if isempty(ALLERP(1).bindata)
     msgboxText =  'Cannot rename an empty ALLERPset';
-    title = 'ALLERPLAB: pop_renamerp() error';
+    title = 'ERPLAB: pop_renamerp() error';
     errorfound(msgboxText, title);
     return
 end
@@ -47,7 +47,7 @@ end
 datatype = checkdatatype(ALLERP(1));
 if ~strcmpi(datatype, 'ERP')
     msgboxText =  'Cannot rename Power Spectrum waveforms!';
-    title = 'ALLERPLAB: pop_renamerp() error';
+    title = 'ERPLAB: pop_renamerp() error';
     errorfound(msgboxText, title);
     return
 end

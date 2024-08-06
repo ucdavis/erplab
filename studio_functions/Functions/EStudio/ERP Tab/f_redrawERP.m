@@ -82,7 +82,7 @@ else
     estudioworkingmemory('selectederpstudio',1);
     Enableflag = 'off';
 end
-ERP_autoplot = EStudio_gui_erp_totl.ERP_autoplot;
+try ERP_autoplot = EStudio_gui_erp_totl.ERP_autoplot;catch  ERP_autoplot=1; EStudio_gui_erp_totl.ERP_autoplot=1;end
 if ERP_autoplot==1
     Enableflag = 'on';
 else
@@ -110,8 +110,8 @@ EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_le
 %%waves
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
-%%note that needs to go to lines 487,491, 495, 670,671 of "uix.ScrollingPanel" if change the background color of scrollingbar or this toolbox is updated
-
+%%note that needs to go to lines 487,491, 495, 670,671 of "uix.ScrollingPanel" if change the background color ([0.9 0.9 0.9]) of scrollingbar or this toolbox is updated
+ 
 
 EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def); % 1A
@@ -219,12 +219,11 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autopl
     end
     pb_height =  1*Resolation(4);  %px
     
-    Fill=1;
     splot_n = OutputViewerparerp{12};
     if isempty(splot_n) || any(splot_n<=0)
         splot_n = size(OutputViewerparerp{13},1);
     end
-    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fill
+    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))
         pb_height = 0.9*(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
     else
         pb_height = 0.9*pb_height;
@@ -467,8 +466,9 @@ catch
 end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
-EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
-%         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+f_redrawmvpc_Wave_Viewer();
+EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
+
 end
 
 %------------------Display the waveform for proir ERPset-------------------
@@ -776,14 +776,16 @@ function erptab_reset(~,~)
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
 global observe_EEGDAT;
+global observe_DECODE;
+
 
 estudioworkingmemory('ViewerFlag', 0);
 
 MessageViewer= char(strcat('Reset parameters for ERP panels '));
 estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
-app = feval('estudio_reset_paras',[0 0 1 0]);
+app = feval('estudio_reset_paras',[0 0 1 0 0 0]);
 waitfor(app,'Finishbutton',1);
-reset_paras = [0 0 0 0];
+reset_paras = [0 0 0 0 0 0];
 try
     reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
     app.delete; %delete app from view
@@ -794,8 +796,9 @@ end
 if isempty(reset_paras)
     return;
 end
-EStudio_gui_erp_totl.ERP_autoplot=1;
-EStudio_gui_erp_totl.EEG_autoplot = 1;
+EStudio_gui_erp_totl.EEG_autoplot = 1; %%Automatic plotting for eegsets
+EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
+EStudio_gui_erp_totl.Decode_autoplot=1;
 %%---------------------------EEG Tab---------------------------------------
 if reset_paras(2)==1
     EStudio_gui_erp_totl.clear_alleeg = 1;
@@ -857,6 +860,46 @@ else
 end
 observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg =2;
+
+%%----------------------reste decode Tab---------------------------
+if reset_paras(6)==1
+    EStudio_gui_erp_totl.clear_alldecode = 1;
+else
+    EStudio_gui_erp_totl.clear_alldecode = 0;
+end
+if reset_paras(5)==1
+    observe_DECODE.Reset_Best_paras_panel = 1;
+    if EStudio_gui_erp_totl.clear_alldecode == 0
+        f_redrawmvpc_Wave_Viewer();
+    else
+        observe_ERPDAT.ALLMVPC = [];
+        observe_ERPDAT.MVPC = [];
+        observe_ERPDAT.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.Count_currentMVPC = 1;
+        observe_DECODE.BEST =  [];
+        observe_DECODE.CURRENTBEST = 1;
+        observe_DECODE.ALLBEST =  [];
+        estudioworkingmemory('BESTArray',1);
+        observe_DECODE.Count_currentbest=1;
+    end
+else
+    if EStudio_gui_erp_totl.clear_alldecode == 1
+        observe_ERPDAT.ALLMVPC = [];
+        observe_ERPDAT.MVPC = [];
+        observe_ERPDAT.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.Count_currentMVPC = 1;
+        
+        observe_DECODE.BEST =  [];
+        observe_DECODE.CURRENTBEST = 1;
+        observe_DECODE.ALLBEST =  [];
+        estudioworkingmemory('BESTArray',1);
+        observe_DECODE.Count_currentbest=1;
+    end
+end
+
+
 end
 
 

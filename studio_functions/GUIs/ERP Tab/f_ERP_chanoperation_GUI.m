@@ -117,7 +117,7 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.run = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
-        set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);  
+        set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);
         set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30]);
         
         estudioworkingmemory('ERPTab_chanop',0);
@@ -292,10 +292,10 @@ varargout{1} = ERP_chan_operation_gui;
             observe_ERPDAT.Process_messg =2;
             return;
         end
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[cd,filesep];
+        %         end
         
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
@@ -715,13 +715,13 @@ varargout{1} = ERP_chan_operation_gui;
         assignin('base','ERPCOM',ERPCOM);
         estudioworkingmemory('f_ERP_bin_opt',1);
         
-         ChanAllNew = [1:observe_ERPDAT.ERP.nchan];
-         chandiff = setdiff(ChanAllNew,ChanAllold);
-         ChanArray =  estudioworkingmemory('ERP_ChanArray');
-         if ~isempty(chandiff) && ~isempty(ChanArray) && numel(ChanArray)==numel(ChanAllold)
-             ChanArray = [ChanArray,chandiff];
-             estudioworkingmemory('ERP_ChanArray',ChanArray);
-         end
+        ChanAllNew = [1:observe_ERPDAT.ERP.nchan];
+        chandiff = setdiff(ChanAllNew,ChanAllold);
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        if ~isempty(chandiff) && ~isempty(ChanArray) && numel(ChanArray)==numel(ChanAllold)
+            ChanArray = [ChanArray,chandiff];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         return;
@@ -740,11 +740,7 @@ varargout{1} = ERP_chan_operation_gui;
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
             Enable_label = 'off';
             for ii = 1:100
-                if ii==1
-                    dsnames{ii,1} = '<html><font color="red">The number of bins and channles should be the same for the selected ERPset!';
-                else
-                    dsnames{ii,1} = '';
-                end
+                dsnames{ii,1} = '';
             end
             gui_erp_chan_operation.edit_bineq.Data = dsnames;
             set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
@@ -756,15 +752,25 @@ varargout{1} = ERP_chan_operation_gui;
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
                 estudioworkingmemory('selectederpstudio',ERPArray);
             end
+            
+            ChaNumAll = [];
+            for Numoferp = 1:numel(ERPArray)
+                ChaNumAll(Numoferp) =observe_ERPDAT.ALLERP(ERPArray(Numoferp)).nchan;
+            end
+            
             Enable_label = 'on';
             chanopDataor =  gui_erp_chan_operation.edit_bineq.Data;
             for ii = 1:100
                 chanopDataorcell = char(chanopDataor{ii,1});
-                aa= '<html><font color="red">The number of bins and channles should be the same for the selected ERPset!';
+                aa= '<html><font color="red">The number of channles should be the same for the selected ERPsets!';
                 if isempty(chanopDataorcell) || strcmpi(aa,chanopDataorcell)
                     dsnames{ii,1} = '';
                 else
                     dsnames{ii,1} = chanopDataorcell;
+                end
+                if numel(unique(ChaNumAll)) >1
+                    dsnames{1,1} = aa;
+                    Enable_label = 'off';
                 end
             end
             gui_erp_chan_operation.edit_bineq.Data = dsnames;

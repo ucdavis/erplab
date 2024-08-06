@@ -55,6 +55,12 @@ catch
     erpname  = '';
     
 end
+try 
+    Datatype = varargin{2};
+    
+catch
+   Datatype=1; 
+end
 
 handles.erpnameor = erpname;
 handles.output = [];
@@ -67,12 +73,23 @@ end
 
 erplab_default_values;
 version = erplabver;
-
-set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix to EEG GUI'])
+if Datatype==1
+set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix to EEG GUI']);
+set(handles.current_erp_label,'String', ['Enter suffix, which will be added onto the name of each selected EEGsets'],...
+    'FontWeight','Bold', 'FontSize', 12);
+elseif Datatype==2
+ set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix to BEST GUI']); 
+ set(handles.current_erp_label,'String', ['Enter suffix, which will be added onto the name of each selected BESTsets'],...
+    'FontWeight','Bold', 'FontSize', 12);
+elseif Datatype==3
+    set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix to MVPC GUI']); 
+ set(handles.current_erp_label,'String', ['Enter suffix, which will be added onto the name of each selected MVPCsets'],...
+    'FontWeight','Bold', 'FontSize', 12); 
+    
+end
 set(handles.edit_erpname, 'String', erpname);
 
-set(handles.current_erp_label,'String', ['Enter suffix, which will be added onto the name of each selected EEGset'],...
-    'FontWeight','Bold', 'FontSize', 16);
+
 
 %
 % % Color GUI

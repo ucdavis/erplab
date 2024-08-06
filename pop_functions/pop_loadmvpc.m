@@ -52,23 +52,23 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [MVPC, ALLMVPC] = pop_loadmvpc(varargin)
+function [MVPC, ALLMVPC,mvpccom] = pop_loadmvpc(varargin)
+mvpccom = '';
+MVPC = preloadMVPC;
 
-MVPC = preloadMVPC; 
-
-try 
+try
     ALLMVPC = evalin('base', 'ALLMVPC');
-    preindex = length(ALLMVPC); 
+    preindex = length(ALLMVPC);
     
-catch 
+catch
     disp('WARNING: ALLMVPC structure was not found. ERPLAB will create an empty one.')
     ALLMVPC = [];
     %ALLERP   = buildERPstruct([]);
     preindex = 0;
-
+    
 end
 
-if nargin <1 
+if nargin <1
     help pop_loadmvpc
     
     return
@@ -76,33 +76,33 @@ if nargin <1
 end
 
 if nargin == 1
-        filename = varargin{1};
-        if strcmpi(filename,'workspace') || strcmpi(filename,'decodingtoolbox')
-                filepath = '';
+    filename = varargin{1};
+    if strcmpi(filename,'workspace') || strcmpi(filename,'decodingtoolbox')
+        filepath = '';
+    else
+        if isempty(filename)
+            [filename, filepath] = uigetfile({'*.mvpc','MVPC (*.mvpc)'},...
+                'Load MVPC','MultiSelect', 'on');
+            if isequal(filename,0)
+                disp('User selected Cancel')
+                return
+            end
+            
+            %
+            % test current directory
+            %
+            %changecd(filepath) % Steve does not like this...
         else
-                if isempty(filename)
-                        [filename, filepath] = uigetfile({'*.mvpc','MVPC (*.mvpc)'},...
-                                'Load MVPC','MultiSelect', 'on');
-                        if isequal(filename,0)
-                                disp('User selected Cancel')
-                                return
-                        end
-                        
-                        %
-                        % test current directory
-                        %
-                        %changecd(filepath) % Steve does not like this...
-                else
-                        filepath = cd;
-                end
+            filepath = cd;
         end
-        
-        %
-        % Somersault
-        %
-        
-        [MVPC, ALLMVPC] = pop_loadmvpc('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on', 'multiload', 'off','History','gui');
-        return
+    end
+    
+    %
+    % Somersault
+    %
+    
+    [MVPC, ALLMVPC] = pop_loadmvpc('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on', 'multiload', 'off','History','gui');
+    return
     
     
     
@@ -121,6 +121,7 @@ p.addParamValue('Warning', 'off', @ischar);
 p.addParamValue('multiload', 'off', @ischar); % ERP stores ALLERP's contain (ERP = ...), otherwise [ERP ALLERP] = ... must to be specified.
 p.addParamValue('UpdateMainGui', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 
 p.parse(varargin{:});
 
@@ -128,54 +129,54 @@ filename = strtrim(p.Results.filename);
 filepath = strtrim(p.Results.filepath);
 
 if strcmpi(filename,'workspace')
-        filepath = '';
-        nfile = 1;
-        loadfrom = 0;  % load from workspace
+    filepath = '';
+    nfile = 1;
+    loadfrom = 0;  % load from workspace
 elseif strcmpi(filename,'decodingtoolbox')
-        filepath = '';
-        ALLMVPC2 = evalin('base', 'ALLMVPC2');
-        nfile = length(ALLMVPC2);
-        preindex = length(ALLMVPC); 
-        loadfrom = 2;  % load from workspace
+    filepath = '';
+    ALLMVPC2 = evalin('base', 'ALLMVPC2');
+    nfile = length(ALLMVPC2);
+    preindex = length(ALLMVPC);
+    loadfrom = 2;  % load from workspace
 else
-        loadfrom = 1; % load from: 1=hard drive; 0=workspace
+    loadfrom = 1; % load from: 1=hard drive; 0=workspace
 end
 
 
 if strcmpi(p.Results.Warning,'on')
-        popupwin = 1;
+    popupwin = 1;
 else
-        popupwin = 0;
+    popupwin = 0;
 end
 if strcmpi(p.Results.UpdateMainGui,'on')
-        updatemaingui = 1;
+    updatemaingui = 1;
 else
-        updatemaingui = 0;
+    updatemaingui = 0;
 end
 if strcmpi(p.Results.multiload,'on')
-        multiload = 1;
+    multiload = 1;
 else
-        multiload = 0;
+    multiload = 0;
 end
 
 if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
+    shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
+    shist = 2; % script
 elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
+    shist = 1; % gui
 else
-        shist = 0; % off
+    shist = 0; % off
 end
 
 if loadfrom==1
-        if iscell(filename)
-                nfile      = length(filename);
-                inputfname = filename;
-        else
-                nfile = 1;
-                inputfname = {filename};
-        end
+    if iscell(filename)
+        nfile      = length(filename);
+        inputfname = filename;
+    else
+        nfile = 1;
+        inputfname = {filename};
+    end
 else
     if strcmpi(filename,'workspace')
         inputfname = {'workspace'};
@@ -202,49 +203,49 @@ if loadfrom == 1 || loadfrom == 0
             %             end
         else
             MVPC = evalin('base', 'MVPC');
-
+            
         end
-
-
+        
+        
         if i == 1 && isempty(ALLMVPC)
             ALLMVPC = MVPC;
-
+            
         else
             ALLMVPC(i+preindex) = MVPC;
-
+            
         end
-
+        
     end
 elseif loadfrom == 2
     % if loaded from GUI decoding toolbox
-
+    
     if isempty(ALLMVPC)
         ALLMVPC = ALLMVPC2;
     else
-
+        
         for i= 1:nfile
             ALLMVPC(i+preindex) = ALLMVPC2(i);
         end
-
+        
     end
-
-
+    
+    
 end
 
 if nargout==1 && multiload==1
-
-        MVPC = ALLMVPC(end);
+    
+    MVPC = ALLMVPC(end);
 end
 
 if nfile==1
-        outv = 'MVPC';
+    outv = 'MVPC';
 else
-        outv = '[MVPC ALLMVPC]';
+    outv = '[MVPC ALLMVPC]';
 end
 
 if exist("ALLMVPC2")
-    %clear from base 
-    evalin('base', 'clear ALLMVPC2'); 
+    %clear from base
+    evalin('base', 'clear ALLMVPC2');
 end
 
 
@@ -290,20 +291,26 @@ for q=1:length(fn)
     end
 end
 mvpccom = sprintf( '%s );', mvpccom);
-eegh(mvpccom);
+Tooltype = p.Results.Tooltype;%%GH, June 2024
+if isempty(Tooltype)%%GH, June 2024
+    Tooltype = 'erplab';
+end
+if strcmpi(Tooltype,'erplab')%%GH, June 2024
+    eegh(mvpccom);
+end
 
 switch shist
-        case 1 % from GUI
-                displayEquiComERP(mvpccom);
-        case 2 % from script
-               % ERP = erphistory(ERP, [], erpcom, 1);
-        case 3
-                % implicit
-                % ERP = erphistory(ERP, [], erpcom, 1);
-                % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
-        otherwise %off or none
-                %erpcom = '';
-                return
+    case 1 % from GUI
+        displayEquiComERP(mvpccom);
+    case 2 % from script
+        % ERP = erphistory(ERP, [], erpcom, 1);
+    case 3
+        % implicit
+        % ERP = erphistory(ERP, [], erpcom, 1);
+        % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+    otherwise %off or none
+        %erpcom = '';
+        return
 end
 
 
@@ -311,7 +318,7 @@ end
 prefunc = dbstack;
 nf = length(unique_bc2({prefunc.name}));
 if nf==1
-        msg2end
+    msg2end
 end
 
 

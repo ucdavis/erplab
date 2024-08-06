@@ -684,10 +684,10 @@ varargout{1} = box_erpset_gui;
         
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Export');
         observe_ERPDAT.Process_messg =1;
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =  cd;
+        %         end
         ERPArray= ERPsetops.butttons_datasets.Value;
         if isempty(ERPArray)
             ERPArray = length(observe_ERPDAT.ALLERP);
@@ -976,10 +976,10 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save');
         observe_ERPDAT.Process_messg =1;
         
-        pathNamedef =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathNamedef)
-            pathNamedef =  cd;
-        end
+        %         pathNamedef =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathNamedef)
+        pathNamedef =  cd;
+        %         end
         ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
@@ -1044,10 +1044,10 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('f_ERP_proces_messg','ERPsets>Save a Copy');
         observe_ERPDAT.Process_messg =1;
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =  [cd,filesep];
+        %         end
         
         ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray(:)>length(observe_ERPDAT.ALLERP))
@@ -1133,10 +1133,10 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =[pwd,filesep];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[pwd,filesep];
+        %         end
         title = 'Select one forlder for saving files in following procedures';
         sel_path1 = uigetdir(pathName,title);
         if isequal(sel_path1,0)

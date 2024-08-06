@@ -100,8 +100,8 @@ else
     end
 end
 
-erpFilename = char(strcat(erppathname,erpfilename,ext));
-delete(erpFilename);
+erpFilename = char(strcat(erppathname,filesep,erpfilename,ext));
+try delete(erpFilename);catch  end;
 
 qERParray = p_Results.ERPArray;
 ERPArray = qERParray;
@@ -180,7 +180,6 @@ for Numoferp = 1:numel(qERParray)
             data1{1,12} = '';
             formatSpec3 =['%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\t','%s\n\n\n\n\n\n'];
             fprintf(fileID,formatSpec3,data1{1,:});
-            
         end
     end
     

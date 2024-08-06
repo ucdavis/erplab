@@ -577,7 +577,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 EEG = observe_EEGDAT.EEG;
                 
                 for jjj = 1:length(EEG.EVENTLIST.eventinfo)
-                    bini=EEG.EVENTLIST.eventinfo(jjj).bini;
+                     bini = EEG.EVENTLIST.eventinfo(jjj).bini;
                     eventbini(jjj,1) = bini(1);
                 end
                 xpos = find(eventbini>0);
@@ -604,7 +604,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ~isempty(observe_EEGDAT.EEG) &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST) && (~isempty(observe_EEGDAT.EEG.EVENTLIST.trialsperbin))
             EEG = observe_EEGDAT.EEG;
             for jjj = 1:length(EEG.EVENTLIST.eventinfo)
-                bini=EEG.EVENTLIST.eventinfo(jjj).bini;
+                bini = EEG.EVENTLIST.eventinfo(jjj).bini;
                 eventbini(jjj,1) = bini(1);
             end
             xpos = find(eventbini>0);

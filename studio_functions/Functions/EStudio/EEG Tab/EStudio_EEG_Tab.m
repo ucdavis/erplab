@@ -88,47 +88,26 @@ EStudio_gui_erp_totl.eegpanel{23} = f_EEG_avg_erp_GUI(EStudio_gui_erp_totl.eegse
 EStudio_gui_erp_totl.eegpanelSizes(23) = 300;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Baseline Correction & Linear Detrend (Epoched EEG), Compute Data Quality Metrics (Epoched EEG), Compute Averaged ERPs (Epoched EEG),...']);
-EStudio_gui_erp_totl.eegpanel{24} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(24) = 190;
-EStudio_gui_erp_totl.eegpanel{25} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanel{24} = f_EEG_extr_best_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(24) = 360;
+EStudio_gui_erp_totl.eegpanel{25} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(25) = 190;
-EStudio_gui_erp_totl.eegpanel{26} = f_EEG_history_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(26) = 300;
+EStudio_gui_erp_totl.eegpanel{26} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(26) = 190;
+EStudio_gui_erp_totl.eegpanel{27} = f_EEG_history_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(27) = 300;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
-    'Convert Voltage to CSD, EEG Utilities, and History panels.']);
-
+    'Extract Bin-Epoched Single Trials (BEST), Convert Voltage to CSD, EEG Utilities, and History panels.']);
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
 
 %% Hook up the minimize callback and IsMinimized
-set( EStudio_gui_erp_totl.eegpanel{1}, 'MinimizeFcn', {@nMinimize, 1} );
-set( EStudio_gui_erp_totl.eegpanel{2}, 'MinimizeFcn', {@nMinimize, 2} );
-set( EStudio_gui_erp_totl.eegpanel{3}, 'MinimizeFcn', {@nMinimize, 3} );
-set( EStudio_gui_erp_totl.eegpanel{4}, 'MinimizeFcn', {@nMinimize, 4} );
-set( EStudio_gui_erp_totl.eegpanel{5}, 'MinimizeFcn', {@nMinimize, 5} );
-set( EStudio_gui_erp_totl.eegpanel{6}, 'MinimizeFcn', {@nMinimize, 6} );
-set( EStudio_gui_erp_totl.eegpanel{7}, 'MinimizeFcn', {@nMinimize, 7} );
-set( EStudio_gui_erp_totl.eegpanel{8}, 'MinimizeFcn', {@nMinimize, 8} );
-set( EStudio_gui_erp_totl.eegpanel{9}, 'MinimizeFcn', {@nMinimize, 9} );
-set( EStudio_gui_erp_totl.eegpanel{10}, 'MinimizeFcn', {@nMinimize, 10} );
-set( EStudio_gui_erp_totl.eegpanel{11}, 'MinimizeFcn', {@nMinimize, 11} );
-set( EStudio_gui_erp_totl.eegpanel{12}, 'MinimizeFcn', {@nMinimize, 12} );
-set( EStudio_gui_erp_totl.eegpanel{13}, 'MinimizeFcn', {@nMinimize, 13} );
-set( EStudio_gui_erp_totl.eegpanel{14}, 'MinimizeFcn', {@nMinimize, 14} );
-set( EStudio_gui_erp_totl.eegpanel{15}, 'MinimizeFcn', {@nMinimize, 15} );
-set( EStudio_gui_erp_totl.eegpanel{16}, 'MinimizeFcn', {@nMinimize, 16} );
-set( EStudio_gui_erp_totl.eegpanel{17}, 'MinimizeFcn', {@nMinimize, 17} );
-set( EStudio_gui_erp_totl.eegpanel{18}, 'MinimizeFcn', {@nMinimize, 18} );
-set( EStudio_gui_erp_totl.eegpanel{19}, 'MinimizeFcn', {@nMinimize, 19} );
-set( EStudio_gui_erp_totl.eegpanel{20}, 'MinimizeFcn', {@nMinimize, 20} );
-set( EStudio_gui_erp_totl.eegpanel{21}, 'MinimizeFcn', {@nMinimize, 21} );
-set( EStudio_gui_erp_totl.eegpanel{22}, 'MinimizeFcn', {@nMinimize, 22} );
-set( EStudio_gui_erp_totl.eegpanel{23}, 'MinimizeFcn', {@nMinimize, 23} );
-set( EStudio_gui_erp_totl.eegpanel{24}, 'MinimizeFcn', {@nMinimize, 24} );
-set( EStudio_gui_erp_totl.eegpanel{25}, 'MinimizeFcn', {@nMinimize, 25} );
-set( EStudio_gui_erp_totl.eegpanel{26}, 'MinimizeFcn', {@nMinimize, 26} );
-%%shrinking Panels 4-26 to just their title-bar
-whichpanel = [4:26];
+for Numofpanel = 1:length(EStudio_gui_erp_totl.eegpanel)
+    set( EStudio_gui_erp_totl.eegpanel{Numofpanel}, 'MinimizeFcn', {@nMinimize, Numofpanel} );
+end
+
+%%shrinking Panels 4-27 to just their title-bar
+whichpanel = [4:length(EStudio_gui_erp_totl.eegpanel)];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes' );
@@ -144,8 +123,71 @@ for Numofpanel = 1:length(whichpanel)
 end %% End for shrinking panels 4-23
 
 %% + Create the view
-peeg = EStudio_gui_erp_totl.eegViewContainer;
-EStudio_gui_erp_totl.eegViewAxes = uiextras.HBox( 'Parent', peeg,'BackgroundColor',ColorB_def);
+FonsizeDefault = f_get_default_fontsize();figbgdColor = [1 1 1];
+EStudio_gui_erp_totl.eegplotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.eegViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
+%%title 
+EStudio_gui_erp_totl.eegpageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.eegpageinfo_text = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.eegpageinfo_minus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.eegpageinfo_edit = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'edit', 'String', '','FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.eegpageinfo_plus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Next','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+%%plot panel
+EStudio_gui_erp_totl.eeg_plot_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.eegViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.eeg_plot_title,'BackgroundColor',figbgdColor);
+%%empty panel
+EStudio_gui_erp_totl.eegxaxis_panel1 = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
+uiextras.Empty('Parent',  EStudio_gui_erp_totl.eegxaxis_panel1,'BackgroundColor',ColorB_def);
+%%plot ops
+EStudio_gui_erp_totl.eeg_plot_button_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
+uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
+EStudio_gui_erp_totl.eeg_zoom_in_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','|<',...
+    'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.eeg_zoom_in_fivesmall = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','-5X',...
+    'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.eeg_zoom_in_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','-X',...
+    'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.eeg_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','edit','String','',...
+    'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.eeg_zoom_out_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','+X',...
+    'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.eeg_zoom_out_fivelarge = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','+5X',...
+    'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
+EStudio_gui_erp_totl.eeg_zoom_out_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>|',...
+    'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
+uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
+EStudio_gui_erp_totl.popmemu_eeg = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','popupmenu','String','Window Size',...
+    'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.eeg_reset = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Reset',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
+set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 150 50 5]);
+%%message
+EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
+EStudio_gui_erp_totl.eegProcess_messg = uicontrol('Parent',EStudio_gui_erp_totl.eegxaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+Startimes = 0;
+pageNum=1;
+pagecurrentNum=1;
+PageStr = 'No EEG was loaded';
+EStudio_gui_erp_totl.eegpageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
+EStudio_gui_erp_totl.eegpageinfo_text.String=EStudio_gui_erp_totl.eegpageinfo_str;
+EStudio_gui_erp_totl.eegpageinfo_edit.String=num2str(pagecurrentNum);
+Enable_minus = 'off';
+Enable_plus = 'off';
+Enable_plus_BackgroundColor = [1 1 1];
+Enable_minus_BackgroundColor = [0 0 0];
+EStudio_gui_erp_totl.eegpageinfo_minus.Enable = Enable_minus;
+EStudio_gui_erp_totl.eegpageinfo_plus.Enable = Enable_plus;
+EStudio_gui_erp_totl.eegpageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
+EStudio_gui_erp_totl.eegpageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
+set(EStudio_gui_erp_totl.eegpageinfo_box, 'Sizes', [-1 70 50 70] );
+EStudio_gui_erp_totl.eeg_zoom_edit.String=num2str(Startimes);
+
+EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','off',...
+    'FontWeight','normal', 'XTick', [], 'YTick', [], 'Color','none','xcolor','none','ycolor','none');
+EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
+EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 5;
+EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.eegplotgrid.Heights(5) = 30; % set the second element (x axis) to 30px high
 end
 
 

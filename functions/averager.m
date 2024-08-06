@@ -462,7 +462,7 @@ function [f, fftepo] = getTrialFFT(datax, fs, NFFT, apodization)
 L      = size(datax,2);
 fnyq   = fs/2;
 f      = fnyq*linspace(0,1,NFFT/2);
-y      = pagetranspose(datax);
+y      = datax';
 tapwin = zeros(L,1);
 if ~isempty(apodization)
     aponame  = strtrim(apodization{1}); % taper function name
@@ -485,7 +485,7 @@ if ~isempty(apodization)
     y  = y.*repmat(tapwin, 1, size(y,2)); % data tapered
 end
 
-Y = pagetranspose(fft(y,NFFT))/L;
+Y = fft(y,NFFT)'/L;
 fftepo = abs(Y(:,1:NFFT/2)).^2; % power
 if rem(NFFT, 2)                 % odd NFFT excludes Nyquist point
     fftepo(:, 2:end) = fftepo(:, 2:end).*2;

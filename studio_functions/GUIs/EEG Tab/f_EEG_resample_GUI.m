@@ -6,7 +6,6 @@
 
 % EEGLAB Studio
 
-
 function varargout = f_EEG_resample_GUI(varargin)
 global observe_EEGDAT;
 

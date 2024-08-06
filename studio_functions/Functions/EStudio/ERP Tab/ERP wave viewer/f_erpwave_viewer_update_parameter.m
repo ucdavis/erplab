@@ -569,7 +569,7 @@ for ii = 1:length(diffStr)
                         ERPwaviewerIN.xaxis.fontcolor =3;
                     elseif Xlabelcolor(1)==0 && Xlabelcolor(2)==1 && Xlabelcolor(3)==0
                         ERPwaviewerIN.xaxis.fontcolor =4;
-                    elseif round(Xlabelcolor(1),2)==0.93 && round(Xlabelcolor(2),2)==0.69 && round(Xlabelcolor(3),2)==0.13
+                    elseif roundn(Xlabelcolor(1),-2)==0.93 && roundn(Xlabelcolor(2),-2)==0.69 && roundn(Xlabelcolor(3),-2)==0.13
                         ERPwaviewerIN.xaxis.fontcolor =5;
                     elseif Xlabelcolor(1)==0 && Xlabelcolor(2)==1 && Xlabelcolor(3)==1
                         ERPwaviewerIN.xaxis.fontcolor =6;
@@ -660,7 +660,7 @@ for ii = 1:length(diffStr)
                         ERPwaviewerIN.yaxis.fontcolor =3;
                     elseif Ylabelcolor(1)==0 && Ylabelcolor(2)==1 && Ylabelcolor(3)==0
                         ERPwaviewerIN.yaxis.fontcolor =4;
-                    elseif round(Ylabelcolor(1),2)==0.93 && round(Ylabelcolor(2),2)==0.69 && round(Ylabelcolor(3),2)==0.13
+                    elseif roundn(Ylabelcolor(1),-2)==0.93 && roundn(Ylabelcolor(2),-2)==0.69 && roundn(Ylabelcolor(3),-2)==0.13
                         ERPwaviewerIN.yaxis.fontcolor =5;
                     elseif Ylabelcolor(1)==0 && Ylabelcolor(2)==1 && Ylabelcolor(3)==1
                         ERPwaviewerIN.yaxis.fontcolor =6;
@@ -738,7 +738,7 @@ for ii = 1:length(diffStr)
                         ERPwaviewerIN.chanbinsetlabel.textcolor =3;
                     elseif Labelcolor(1)==0 && Labelcolor(2)==1 && Labelcolor(3)==0
                         ERPwaviewerIN.chanbinsetlabel.textcolor =4;
-                    elseif round(Labelcolor(1),2)==0.93 && round(Labelcolor(2),2)==0.69 && round(Labelcolor(3),2)==0.13
+                    elseif roundn(Labelcolor(1),-2)==0.93 && roundn(Labelcolor(2),-2)==0.69 && roundn(Labelcolor(3),-2)==0.13
                         ERPwaviewerIN.chanbinsetlabel.textcolor =5;
                     elseif Labelcolor(1)==0 && Labelcolor(2)==1 && Labelcolor(3)==1
                         ERPwaviewerIN.chanbinsetlabel.textcolor =6;

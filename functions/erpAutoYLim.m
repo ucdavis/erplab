@@ -90,32 +90,13 @@ try
             else
                 aux_xxlim(2) = xxlim(2);
             end
-
-        elseif strcmpi(datatype, 'TFFT')
-
-            aux_xxlim(1) = 1;
-            if xxlim(2)>round(ERP.xmax*1000)
-                aux_xxlim(2) = round(ERP.xmax*1000);
-            else
-                aux_xxlim(2) = xxlim(2);
-            end
-
-        elseif strcmpi(datatype, 'EFFT')
-
-            aux_xxlim(1) = 0;
-            if xxlim(2)>round(ERP.xmax*1000)
-                aux_xxlim(2) = round(ERP.xmax*1000);
-            else
-                aux_xxlim(2) = xxlim(2);
-            end
-
         else  % fft
             if xxlim(1)<5
                 aux_xxlim(1) = 5; % to avoid including the spectrum under 5 Hz in calculating Y auto (too big!)
             else
                 aux_xxlim(1) = xxlim(1);
             end
-            if xxlim(2)>round(fs/2)
+            if xxlim(2)>round(fs/2);
                 aux_xxlim(2) = round(fs/2);
             else
                 aux_xxlim(2) = xxlim(2);
@@ -139,7 +120,7 @@ try
             yymax   = max(datresh);
             yymin   = min(datresh);
         end
-
+            
         if abs(yymax)<1 && abs(yymin)<1
             yylim(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
         else

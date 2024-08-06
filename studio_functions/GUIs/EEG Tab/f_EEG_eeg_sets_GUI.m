@@ -296,7 +296,7 @@ estudioworkingmemory('Startimes',0);%%set default value
                 ChanArray = [1:EEG.nbchan];
                 estudioworkingmemory('EEG_ChanArray',ChanArray);
             end
-            [EEG, LASTCOM] = pop_duplicateeg( EEG, 'ChanArray',ChanArray,...
+            [EEG, LASTCOM] = pop_duplicateeg( EEG, 'ChanArray',sort(ChanArray),...
                 'Saveas', 'off', 'History', 'gui');
             if isempty(LASTCOM)
                 return;
@@ -996,10 +996,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         
         estudioworkingmemory('f_EEG_proces_messg','EEGsets > Save');
         observe_EEGDAT.eeg_panel_message =1;
-        pathNamedef =  estudioworkingmemory('EEG_save_folder');%% the forlder to save the data.
-        if isempty(pathNamedef)
-            pathNamedef =  [cd,filesep];
-        end
+        %         pathNamedef =  estudioworkingmemory('EEG_save_folder');%% the forlder to save the data.
+        %         if isempty(pathNamedef)
+        pathNamedef =  [cd,filesep];
+        %         end
         
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
         if isempty(EEGArray) || any(EEGArray>length(observe_EEGDAT.ALLEEG))
@@ -1052,10 +1052,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         estudioworkingmemory('f_EEG_proces_messg','EEGsets>Save a Copy');
         observe_EEGDAT.eeg_panel_message =1;
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =  [cd,filesep];
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =  [pwd,filesep];
+        %         end
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
         if isempty(EEGArray) || any(EEGArray>length(observe_EEGDAT.ALLEEG))
             EEGArray =observe_EEGDAT.CURRENTSET;
@@ -1121,10 +1121,10 @@ estudioworkingmemory('Startimes',0);%%set default value
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        pathName =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName)
-            pathName =cd;
-        end
+        %         pathName =  estudioworkingmemory('EEG_save_folder');
+        %         if isempty(pathName)
+        pathName =[pwd,filesep];
+        %         end
         title = 'Select one forlder for saving files in following procedures';
         select_path = uigetdir(pathName,title);
         
