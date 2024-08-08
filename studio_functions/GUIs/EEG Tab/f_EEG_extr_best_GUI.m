@@ -701,6 +701,7 @@ varargout{1} = Eegtab_box_best;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 3;
         observe_DECODE.BEST = observe_DECODE.ALLBEST(end);
         observe_DECODE.CURRENTBEST = length(observe_DECODE.ALLBEST);
+        estudioworkingmemory('BESTArray',observe_DECODE.CURRENTBEST);
         try observe_DECODE.Count_currentbest=1; catch  end
     end
 
