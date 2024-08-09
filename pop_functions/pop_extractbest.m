@@ -251,6 +251,10 @@ function [BEST, bestcom] = pop_extractbest(ALLEEG, varargin)
         errorfound(msgboxText, title);
     end
 
+    % Prepare info for averager call
+    % Excludes epochs marked with artifacts and that contains boundary events
+    stderror = 1; apod = []; nfft = []; dcompu = 1; avgText =0;
+
     [ERP2, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname, epoch_list] = averager(EEG2, artif, stderror, excbound, dcompu, nfft, apod, avgText);
 
     if ~isempty(freq_transform)
