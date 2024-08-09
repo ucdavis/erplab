@@ -1,10 +1,10 @@
 function BEST = combineBESTbins(BEST,new_bins,new_labels)
 
 
-n_bins = size(new_bins,1);
+n_bins = length(new_bins);
 
 BEST.nbin = n_bins; 
-BEST.bindesc = new_labels'; 
+BEST.bindesc = new_labels; 
 BEST.original_bin = {}; %erase due to new BEST being combined
 
 
