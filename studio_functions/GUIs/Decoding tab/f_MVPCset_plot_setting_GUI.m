@@ -103,7 +103,7 @@ varargout{1} = MVPC_plotset_box;
         
       
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %%------------------------------Amplitude axis---------------------
+        %%------------------------------Vertical Axis---------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%amplitude scale
         try yscale_auto = MVPC_plotset_pars{9}; catch yscale_auto=1;  end
@@ -113,7 +113,7 @@ varargout{1} = MVPC_plotset_box;
         try yscales = MVPC_plotset_pars{10}; catch yscales = []; end
         try yscale_low = yscales(1); catch yscale_low = [];  end
         try  yscale_high = yscales(2);catch yscale_high = []; end
-        uicontrol('Style','text','Parent', MVPC_plotset.plotop,'String','Amplitude Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.plotop,'String','Vertical Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale_auto = uicontrol('Style','checkbox','Parent',MVPC_plotset.yscale,'String','Auto',...
             'callback',@yscale_auto,'Value',yscale_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off');
@@ -139,7 +139,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.ytick_auto = uicontrol('Style','checkbox','Parent', MVPC_plotset.yscaleticks,'String','Auto',...
             'callback',@ytick_auto,'Value',ytick_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         MVPC_plotset.ytick_auto.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','Amp. ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','Vert. ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale_step = uicontrol('Style', 'edit','Parent',MVPC_plotset.yscaleticks,'String',num2str(yscale_step),...
             'callback',@yscale_step,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         MVPC_plotset.yscale_step.KeyPressFcn=  @mvpc_plotsetting_presskey;
@@ -333,7 +333,7 @@ varargout{1} = MVPC_plotset_box;
         xtixlk_max = str2num(MVPC_plotset.timet_high.String);
         if isempty(xtixlk_max) || numel(xtixlk_max)~=1
             src.String = num2str(observe_DECODE.MVPC.times(end));
-            msgboxText =  ['Plot Settings (MVPCsets)> Amplitude Axis- Input of ticks edge must be a single numeric'];
+            msgboxText =  ['Plot Settings (MVPCsets)> Vertical Axis- Input of ticks edge must be a single numeric'];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -451,7 +451,7 @@ varargout{1} = MVPC_plotset_box;
     end
 
 
-%%---------------------------------Auto Amplitude Axis---------------------------------*
+%%---------------------------------Auto Vertical Axis---------------------------------*
     function yscale_auto( src, ~ )
         if isempty(observe_DECODE.MVPC)
             observe_DECODE.Count_currentMVPC=1;
@@ -531,7 +531,7 @@ varargout{1} = MVPC_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             MVPC_plotset.yscale_low.String = num2str(minydef);
             Yscales_low= minydef;
-            msgboxText= ['Plot Settings (MVPCsets)> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one '];
+            msgboxText= ['Plot Settings (MVPCsets)> Vertical Axis: You did set left edge of amplitude scale to be a single number and we used the default one '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -540,7 +540,7 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high = maxydef;
             Yscales_low = minydef;
-            msgboxText = ['Plot Settings (MVPCsets)> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
+            msgboxText = ['Plot Settings (MVPCsets)> Vertical Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -597,7 +597,7 @@ varargout{1} = MVPC_plotset_box;
         if isempty(Yscales_high) || numel(Yscales_high)~=1
             MVPC_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
-            msgboxText = ['Plot Settings (MVPCsets)> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one '];
+            msgboxText = ['Plot Settings (MVPCsets)> Vertical Axis: You did set right edge of amplitude scale to be a single number and we used the default one '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -606,7 +606,7 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.yscale_high.String = num2str(maxydef);
             Yscales_low = minydef;
             Yscales_high = maxydef;
-            msgboxText=['Plot Settings (MVPCsets)> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
+            msgboxText=['Plot Settings (MVPCsets)> Vertical Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -693,7 +693,7 @@ varargout{1} = MVPC_plotset_box;
         end
     end
 
-%%---------------------------------Amplitude Axis change---------------------------------*
+%%---------------------------------Vertical Axis change---------------------------------*
     function yscale_step(src, ~ )
         if isempty(observe_DECODE.MVPC)
             observe_DECODE.Count_currentMVPC=1;
@@ -710,7 +710,7 @@ varargout{1} = MVPC_plotset_box;
         val = str2num(src.String);
         if isempty(val)  || numel(val)~=1 || any(val(:)<=0)
             src.String = '';
-            msgboxText =  ['Plot Settings (MVPCsets)> Amplitude Axis - Input must be a positive value'];
+            msgboxText =  ['Plot Settings (MVPCsets)> Vertical Axis - Input must be a positive value'];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -890,7 +890,7 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.xticks_precision.Value = xticks_precision;
 
         %
-        %%------------------------Amplitude Axis----------------------------------
+        %%------------------------Vertical Axis----------------------------------
         MVPC_plotset.yscale_auto.Value = MVPC_plotset.paras{9};
         MVPC_plotset.ytick_auto.Value = MVPC_plotset.paras{11};
         
@@ -1126,7 +1126,7 @@ varargout{1} = MVPC_plotset_box;
             estudio_warning(msgboxText,titlNamerro);
         end
         %
-        %%Amplitude Axis
+        %%Vertical Axis
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -1150,14 +1150,14 @@ varargout{1} = MVPC_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             MVPC_plotset.yscale_low.String = num2str(minydef);
             Yscales_low= minydef;
-            msgboxText = ['Plot Settings (MVPCsets)> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one '];
+            msgboxText = ['Plot Settings (MVPCsets)> Vertical Axis: You did set left edge of amplitude scale to be a single number and we used the default one '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
         if isempty(Yscales_high) || numel(Yscales_high)~=1
             MVPC_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
-            msgboxText = ['Plot Settings (MVPCsets)> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one '];
+            msgboxText = ['Plot Settings (MVPCsets)> Vertical Axis: You did set right edge of amplitude scale to be a single number and we used the default one '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -1166,7 +1166,7 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
             Yscales_low= minydef;
-            msgboxText=['Plot Settings (MVPCsets)> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
+            msgboxText=['Plot Settings (MVPCsets)> Vertical Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones '];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -1271,7 +1271,7 @@ varargout{1} = MVPC_plotset_box;
             MVPC_plotset.timet_step.String = num2str(xstep);
         end
         %
-        %%Amplitude Axis
+        %%Vertical Axis
         %%Yscale
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
