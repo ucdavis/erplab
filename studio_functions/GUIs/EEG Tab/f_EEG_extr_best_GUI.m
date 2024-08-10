@@ -702,6 +702,11 @@ varargout{1} = Eegtab_box_best;
         observe_DECODE.BEST = observe_DECODE.ALLBEST(end);
         observe_DECODE.CURRENTBEST = length(observe_DECODE.ALLBEST);
         estudioworkingmemory('BESTArray',observe_DECODE.CURRENTBEST);
+        for Numofpanel = 1:length(EStudio_gui_erp_totl.decode_panel)
+            
+        end
+        DecodingTab_close_open_Panels();
+        
         try observe_DECODE.Count_currentbest=1; catch  end
     end
 
@@ -852,3 +857,20 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.tranf_right.Enable = 'off';
     end
 end
+
+
+
+%%----Oct 2023---GH
+%%---automatically close right panels if select continuous/epoched EEG-----
+function DecodingTab_close_open_Panels()
+global EStudio_gui_erp_totl
+
+
+szs = get( EStudio_gui_erp_totl.decode_settingLayout, 'Sizes' );
+set( EStudio_gui_erp_totl.decode_panel{1}, 'IsMinimized', false);
+szs(1) = EStudio_gui_erp_totl.decode_panelSizes(1);
+set( EStudio_gui_erp_totl.decode_settingLayout, 'Sizes', szs );
+EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(szs);
+
+end
+

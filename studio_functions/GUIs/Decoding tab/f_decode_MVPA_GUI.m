@@ -338,7 +338,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.mvpa_ops.ForegroundColor = [1 1 1];
         Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
         Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
-                
+        
         ClassArray = str2num(Docode_do_mvpa.selclass_custom_defined.String);
         if isempty(ClassArray) || numel(ClassArray)<2
             msgboxText =  ['Multivariate Pattern Classification>Class ID:Must have two classes at least to decode',];
@@ -1033,6 +1033,35 @@ varargout{1} = box_bestset_gui;
         estudioworkingmemory('pop_decoding',def);
         ALLMVPC_out = [];
         ALLBEST = observe_DECODE.ALLBEST;
+        for  Numofbest = 1:numel(BESTArray)
+            BEST = observe_DECODE.ALLBEST(BESTArray(Numofbest));
+            DataTimes = BEST.times;
+            equalT = 'classes';
+            classcoding=2;
+            method=1;
+            MVPC = buildMVPCstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,classcoding,method);
+            MVPC.mvpcname = BEST.bestname;
+            MVPC.filename = BEST.filename;
+            MVPC.filepath =BEST.filepath;
+            if isempty(ALLMVPC_out)
+                ALLMVPC_out = MVPC;
+            else
+                ALLMVPC_out(length(ALLMVPC_out)+1) = MVPC;
+            end
+        end
+        
+        
+        Answer = f_mvpc_save_multi_file(ALLMVPC_out,[1:length(ALLMVPC_out)],'');
+        if isempty(Answer)
+            observe_DECODE.Process_messg =2;
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLMVPC_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
+        ALLMVPC = observe_DECODE.ALLMVPC;
         for Numofbest = 1:numel(BESTArray)
             BEST = observe_DECODE.ALLBEST(BESTArray(Numofbest));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -1048,7 +1077,7 @@ varargout{1} = box_bestset_gui;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return;
             end
-            fprintf( [BESTCOM]);
+            fprintf([BESTCOM]);
             
             if ~isempty(BESTCOM) && ~isempty(BEST.EEGhistory)
                 olderpcom = cellstr(BEST.EEGhistory);
@@ -1059,33 +1088,20 @@ varargout{1} = box_bestset_gui;
             end
             
             observe_DECODE.ALLBEST(BESTArray(Numofbest)) = BEST;
-            fprintf( ['\n',repmat('-',1,100) '\n']);
-            if isempty(ALLMVPC_out)
-                ALLMVPC_out = MVPC;
+            
+            if Numofbest==1;
                 mvpch(BESTCOM);
-            else
-                ALLMVPC_out(length(ALLMVPC_out)+1) = MVPC;
             end
-        end
-        
-        Answer = f_mvpc_save_multi_file(ALLMVPC_out,[1:length(ALLMVPC_out)],'');
-        if isempty(Answer)
-            observe_DECODE.Process_messg =2;
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLMVPC_out = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        ALLMVPC = observe_DECODE.ALLMVPC;
-        for Numofmvpc =  1:length(ALLMVPC_out)
-            MVPC = ALLMVPC_out(Numofmvpc);
+            MVPC.mvpcname = ALLMVPC_out(Numofbest).mvpcname;
+            MVPC.filename = ALLMVPC_out(Numofbest).filename;
+            MVPC.filepath =ALLMVPC_out(Numofbest).filepath;
+            
             if Save_file_label==1
                 [pathstr, file_name, ext] = fileparts(MVPC.filename);
                 MVPC.filename = [file_name,'.mvpc'];
                 [MVPC, issave, MVPCCOM] = pop_savemymvpc(MVPC, 'mvpcname', MVPC.mvpcname, 'filename', MVPC.filename,...
-                    'filepath',MVPC.filepath,'Tooltype','estudio');
-                if ~isempty(MVPCCOM) && Numofmvpc==1
+                    'filepath',MVPC.filepath,'Tooltype','estudio','gui' ,'script');
+                if ~isempty(MVPCCOM) && Numofbest==1
                     mvpch(MVPCCOM);
                 end
             else
@@ -1098,7 +1114,9 @@ varargout{1} = box_bestset_gui;
             else
                 ALLMVPC(length(ALLMVPC)+1) = MVPC;
             end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
         end
+        
         MVPCArray = length(ALLMVPC);
         observe_DECODE.ALLMVPC = ALLMVPC;
         observe_DECODE.MVPC = observe_DECODE.ALLMVPC(end);

@@ -1401,7 +1401,7 @@ end
 %%---automatically close right panels if select continuous/epoched EEG-----
 function EEGTab_close_open_Panels(whichpanel)
 global EStudio_gui_erp_totl
-if any(whichpanel(:)>24) || any(whichpanel(:)<1)%%check the labels for the right panels
+if any(whichpanel(:)>27) || any(whichpanel(:)<1)%%check the labels for the right panels
     return;
 end
 
