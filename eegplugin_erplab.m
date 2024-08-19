@@ -626,7 +626,7 @@ uimenu(mBEST,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata'
 uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off;bestset:on;mvpcset:on');
 
 %% Multivariate Pattern Analysis
-MVPCmenu = uimenu( submenu,'Label','Multivariate Pattern Classification (MVPC) Tools (BETA)','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off;bestset:on;mvpcset:on');
+MVPCmenu = uimenu( submenu,'Label','Multivariate Pattern Classification (MVPC) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Average across MVPCsets (Grand Average)','CallBack',comAvgMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Plot MVPC Results','CallBack',comViewMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');

@@ -60,8 +60,14 @@ for k=1:nch
         if length(b)==2
                 lb1     = strtrim(b{1});
                 lb2     = strtrim(b{2});
-                indxch1 = find(strcmpi(lb1, {ERP.chanlocs.labels}),1,'first'); % bug fixed.June 21, 2015. JLC
-                indxch2 = find(strcmpi(lb2, {ERP.chanlocs.labels}),1,'first') ;% bug fixed.June 21, 2015. JLC
+                
+                % Trim spaces from the channel labels in ERP.chanlocs
+                % before comparison David Garrett 08/2024
+                trimmed_labels = cellfun(@strtrim, {ERP.chanlocs.labels}, 'UniformOutput', false);
+        
+                indxch1 = find(strcmpi(lb1, trimmed_labels), 1, 'first'); % Match label 1
+                indxch2 = find(strcmpi(lb2, trimmed_labels), 1, 'first'); % Match label 2
+
                 newERP.chanlocs(indxch1).labels = sprintf('%s/%s',lb1, lb2);                
                 newERP.bindata(indxch1,:,:)     = ERPout.bindata(k,:,:);
                 
