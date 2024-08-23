@@ -571,14 +571,6 @@ varargout{1} = box_bestset_gui;
             end
         end
 
-        Answer = f_BEST_save_multi_file(observe_DECODE.ALLBEST,BESTArray,'_combins',1,[pwd,filesep]);
-        if isempty(Answer)
-            observe_DECODE.Process_messg =2;
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLBEST_out = Answer{1};
-        end
 
         ALLBEST= observe_DECODE.ALLBEST;
         def = estudioworkingmemory('pop_combineBESTbins');
@@ -610,9 +602,20 @@ varargout{1} = box_bestset_gui;
         def = {nbins,nlabels};
         estudioworkingmemory('pop_combineBESTbins',def);
 
+
+        Answer = f_BEST_save_multi_file(observe_DECODE.ALLBEST,BESTArray,'_combins',1,[pwd,filesep]);
+        if isempty(Answer)
+            observe_DECODE.Process_messg =2;
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLBEST_out = Answer{1};
+        end
+
+
         [ALLBESTNew,BESTCOM] = pop_combineBESTbins(ALLBEST,BESTArray, 'bins_to_combine',nbins,'bin_labels',nlabels, ...
             'Saveas','off', 'History','gui','Tooltype','estudio');
-         if isempty(BESTCOM)
+        if isempty(BESTCOM)
             observe_DECODE.Process_messg =1;
             return;
         end
