@@ -1,5 +1,5 @@
 % PURPOSE  : Combine bins within a BEST file. Outputs BEST file with
-%           combined bin appended at the end of BESTset. 
+%           combined bin appended at the end of BESTset.
 %
 % FORMAT   :
 %
@@ -14,13 +14,13 @@
 %        'bins_to_combine' 	   - Cell array of bins to combine where each
 %                                 element is a set of bin indexes from BEST.
 %        'bin_labels'          - Cell array of bin description names for
-%                                   each newly combined bin. 
-%                                   Length of cellarray must equal 'bins_to_combine' 
+%                                   each newly combined bin.
+%                                   Length of cellarray must equal 'bins_to_combine'
 %
 %        'SaveAs'      -  (optional) open GUI for saving BESTset.
 %                           'on'/'off' (Default: off)
 %                           - (if "off", will not update in BESTset menu)
-%                           - if scripting, use "off" and pop_savemybest() 
+%                           - if scripting, use "off" and pop_savemybest()
 %
 % OUTPUTS  :
 %
@@ -29,9 +29,9 @@
 % EXAMPLE  :
 %
 % [BEST] = pop_combineBESTbins(BEST,'bins_to_combine',{[1,2,3],[4,5,6]}, ...
-% 'bin_labels',{'Combined bins 1,2,3','Combined bins 4,5,6'}); 
+% 'bin_labels',{'Combined bins 1,2,3','Combined bins 4,5,6'});
 %
-% See also: pop_savemybest.m 
+% See also: pop_savemybest.m
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons and Steven J Luck.
@@ -61,44 +61,57 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [BEST] = pop_combineBESTbins(ALLBEST,varargin) 
+function [ALLBEST] = pop_combineBESTbins(ALLBEST,BESTArray, varargin);
 com = '';
 
 %preload BEST
-BEST = preloadBEST; 
+BEST = preloadBEST;
 
 if nargin < 1
     help pop_combineBESTbins
     return
 end
-
-
-if nargin == 1 %open GUI
-    currdata = evalin('base','CURRENTBEST'); 
-    
-    if currdata == 0 
+if nargin < 2
+    BESTArray = evalin('base','CURRENTBEST');
+    if BESTArray == 0
         msgboxText =  'pop_combineBESTbins() error: cannot work an empty dataset!!!';
         title      = 'ERPLAB: No data';
         errorfound(msgboxText, title);
         return
-        
     end
-    
-    def = erpworkingmemory('pop_combineBESTbins'); 
-    
+end
+
+if isempty(BESTArray) || any(BESTArray(:)>length(ALLBEST))|| any(BESTArray(:)<1)
+    msgboxText =  ['pop_combineBESTbins() error: The current beset should be between 1 and',32,num2str(length(ALLBEST))];
+    title      = 'ERPLAB: error';
+    errorfound(msgboxText, title);
+    return
+end
+
+if numel(BESTArray)>1
+    msgwrng = f_check_bestsets(ALLBEST,BESTArray);
+    if ~isempty(msgwrng)
+        title      = 'ERPLAB: pop_combineBESTbins() error';
+        errorfound(msgwrng, title);
+        return
+    end
+end
+
+
+if nargin <3 %open GUI
+    def = erpworkingmemory('pop_combineBESTbins');
+
     if isempty(def)
-        def = {{[]},{[]}}; 
+        def = {{[]},{[]}};
         %1 binindex(s) from old BEST that will create new BEST
         %2 binlabel(s) from oldBEST taht will create new BEST
-        
+
     end
-    
-    
-    
-    
-    app = feval('combinebestbinsGUI',ALLBEST,currdata,def); 
-    waitfor(app,'FinishButton',1); 
-    
+
+
+    app = feval('combinebestbinsGUI',ALLBEST,BESTArray,def);
+    waitfor(app,'FinishButton',1);
+
     try
         res = app.output;
         app.delete; %delete app from view
@@ -107,23 +120,23 @@ if nargin == 1 %open GUI
         disp('User selected Cancel')
         return
     end
-    
-    
+
+
     BEST = res{1};
     nbins = res{2}.bini;
-    nlabels = res{2}.labels; 
-    
-    def = {nbins,nlabels}; 
-    erpworkingmemory('pop_combineBESTbins',def); 
-    
-    [BEST] = pop_combineBESTbins(ALLBEST,'BESTindex',currdata, 'bins_to_combine',nbins,'bin_labels',nlabels, ...
-        'Saveas','on', 'History','gui'); 
+    nlabels = res{2}.labels;
+
+    def = {nbins,nlabels};
+    erpworkingmemory('pop_combineBESTbins',def);
+
+    [ALLBEST] = pop_combineBESTbins(ALLBEST,BESTArray, 'bins_to_combine',nbins,'bin_labels',nlabels, ...
+        'Saveas','on', 'History','gui');
 
     pause(0.1);
     return
-    
-end 
-    
+
+end
+
 %
 % Parsing inputs
 %
@@ -131,29 +144,24 @@ p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 p.addRequired('ALLBEST');
-    
+p.addRequired('BESTArray');
 
-p.addParamValue('BESTindex', 1,@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
+% p.addParamValue('BESTArray', 1,@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
 p.addParamValue('bins_to_combine',{}); %array of channel indicies (def: all channels)
-p.addParamValue('bin_labels',{}); 
+p.addParamValue('bin_labels',{});
 p.addParamValue('Saveas','off');
-p.addParamValue('History','script'); 
+p.addParamValue('History','script');
 
 
 % Parsing
-p.parse(ALLBEST, varargin{:});
+p.parse(ALLBEST,BESTArray, varargin{:});
 
-idx_bestset = p.Results.BESTindex;
+idx_bestset = p.Results.BESTArray;
 new_bins = p.Results.bins_to_combine;
 new_labels = p.Results.bin_labels;
 
-%% choose BESTsets
-if ~isempty(idx_bestset)  
-    BEST = ALLBEST(idx_bestset) ; 
-else
-    BEST = ALLBEST(1); %just do the first one 
-end
-    
+
+
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
     issaveas  = 1;
 else
@@ -172,28 +180,29 @@ else
 end
 
 
-%% bin-combiner routine 
-
-BEST = combineBESTbins(BEST, new_bins, new_labels); 
-
+%% bin-combiner routine
+for Numofbest = 1:numel(BESTArray)
+    ALLBEST(BESTArray(Numofbest)) = combineBESTbins(ALLBEST(BESTArray(Numofbest)), new_bins, new_labels);
+end
 %
 % History
 %
-skipfields = {'ALLBEST', 'Saveas','Warning','History'};
+skipfields = {'ALLBEST', 'BESTArray','Saveas','Warning','History'};
 
 
 fn      = fieldnames(p.Results);
 explica = 0;
 if length(idx_bestset)==1 && idx_bestset(1)==1
     inputvari  = 'BEST'; % Thanks to Felix Bacigalupo for this suggestion. Dic 12, 2011
-    skipfields = [skipfields 'ALLBEST' 'BESTindex']; % SL
+    skipfields = [skipfields 'ALLBEST' 'BESTArray']; % SL
 else
     if length(idx_bestset)==1
         explica   = 1;
     end
     inputvari = inputname(1);
 end
-bestcom = sprintf( 'BEST = pop_combineBESTbins( %s ', inputvari);
+bestarraystr = vect2colon(BESTArray);
+bestcom = sprintf( 'ALLBEST = pop_combineBESTbins( %s,%s ', inputvari,bestarraystr);
 
 % Iterate through each field name
 % Loop through each field name
@@ -238,7 +247,12 @@ eegh(bestcom);
 %% save function
 
 if issaveas
-    [BEST, issave] = pop_savemybest(BEST,'gui','erplab');
+    for Numofbest = 1:numel(BESTArray)
+        BEST= ALLBEST(BESTArray(Numofbest));
+        [BEST, issave] = pop_savemybest(BEST,'gui','erplab');ALLBEST(BESTArray(Numofbest)) = BEST;
+    end
+
+
     if issave>0
         if issave==2
             %erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
@@ -258,13 +272,13 @@ switch shist
         displayEquiComERP(bestcom);
         if explica
             try
-                cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove "''BESTindex'',%g"\n',idx_bestset);
+                cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove "''BESTArray'',%g"\n',idx_bestset);
             catch
-                fprintf('%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove ''BESTindex'',%g:\n',idx_bestset);
+                fprintf('%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove ''BESTArray'',%g:\n',idx_bestset);
             end
         end
     case 2 % from script
-       % ERP = erphistory(ERP, [], bestcom, 1);
+        % ERP = erphistory(ERP, [], bestcom, 1);
     case 3
         % implicit
     otherwise % off or none

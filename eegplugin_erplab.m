@@ -381,7 +381,7 @@ comDQQpreavg = ['pop_DQ_preavg(ALLEEG)'];
 
 %% BEST callbacks
 comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);'];
-comCombineBest = ['[BEST] = pop_combineBESTbins(ALLBEST);'];
+comCombineBest = ['[ALLBEST] = pop_combineBESTbins(ALLBEST);'];
 comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'',''History'',''gui'');'];
 comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');'];
 comDelBest = ['[ALLBEST] = pop_deletebestset(ALLBEST);'];
