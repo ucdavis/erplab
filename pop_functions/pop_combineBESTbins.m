@@ -181,8 +181,10 @@ end
 
 
 %% bin-combiner routine
+ALLBEST_old = ALLBEST;
 for Numofbest = 1:numel(BESTArray)
-    ALLBEST(BESTArray(Numofbest)) = combineBESTbins(ALLBEST(BESTArray(Numofbest)), new_bins, new_labels);
+    ALLBEST(length(ALLBEST)+1) = combineBESTbins(ALLBEST_old(BESTArray(Numofbest)), new_bins, new_labels);
+    BESTArray_new(Numofbest)= length(ALLBEST);
 end
 %
 % History
@@ -247,9 +249,10 @@ eegh(bestcom);
 %% save function
 
 if issaveas
-    for Numofbest = 1:numel(BESTArray)
-        BEST= ALLBEST(BESTArray(Numofbest));
-        [BEST, issave] = pop_savemybest(BEST,'gui','erplab');ALLBEST(BESTArray(Numofbest)) = BEST;
+    for Numofbest = 1:numel(BESTArray_new)
+        BEST= ALLBEST(BESTArray_new(Numofbest));
+        [BEST, issave] = pop_savemybest(BEST,'gui','erplab');
+        ALLBEST(BESTArray_new(Numofbest)) = BEST;
     end
 
 
