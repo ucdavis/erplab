@@ -85,7 +85,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.refresh_erpset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
             'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.combinbest = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Combine bins',...
-            'Callback', @combinbest,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @combinbest,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons3,'Sizes',[55 55 55 -1]);
 
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
