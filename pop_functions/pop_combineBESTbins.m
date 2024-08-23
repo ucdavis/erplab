@@ -3,11 +3,12 @@
 %
 % FORMAT   :
 %
-% >>   [BEST] = pop_combineBESTbins(BEST,parameters);
+% >>   [ALLBEST] = pop_combineBESTbins(ALLBEST,parameters);
 %
 % INPUTS   :
 %
-%         BEST       - input BEST dataset
+%         ALLBEST       - input ALLBEST dataset
+%         BESTArray     - index(es) of selected bestsets
 %
 % The available input parameters are as follows:
 %
@@ -24,11 +25,11 @@
 %
 % OUTPUTS  :
 %
-% BEST           -  output BEST structure
+% ALLBEST           -  output ALLBEST structure
 %
 % EXAMPLE  :
 %
-% [BEST] = pop_combineBESTbins(BEST,'bins_to_combine',{[1,2,3],[4,5,6]}, ...
+% [ALLBEST] = pop_combineBESTbins(ALLBEST,[1 2],'bins_to_combine',{[1,2,3],[4,5,6]}, ...
 % 'bin_labels',{'Combined bins 1,2,3','Combined bins 4,5,6'});
 %
 % See also: pop_savemybest.m
@@ -61,8 +62,8 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ALLBEST] = pop_combineBESTbins(ALLBEST,BESTArray, varargin);
-com = '';
+function [ALLBEST,bestcom] = pop_combineBESTbins(ALLBEST,BESTArray, varargin);
+bestcom = '';
 
 %preload BEST
 BEST = preloadBEST;
@@ -120,8 +121,9 @@ if nargin <3 %open GUI
         disp('User selected Cancel')
         return
     end
-
-
+    if isempty(res)
+        retun;
+    end
     BEST = res{1};
     nbins = res{2}.bini;
     nlabels = res{2}.labels;
@@ -151,6 +153,7 @@ p.addParamValue('bins_to_combine',{}); %array of channel indicies (def: all chan
 p.addParamValue('bin_labels',{});
 p.addParamValue('Saveas','off');
 p.addParamValue('History','script');
+p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 
 
 % Parsing
@@ -241,10 +244,16 @@ for q = 1:length(fn)
 end
 
 % Add closing parenthesis and semicolon to the final string
-bestcom = sprintf('%s )', bestcom);
+bestcom = sprintf('%s );', bestcom);
 
 % Execute or display the final command
-eegh(bestcom);
+Tooltype = p.Results.Tooltype;%%GH, Aug 2024
+if isempty(Tooltype)%%GH, Aug 2024
+    Tooltype = 'erplab';
+end
+if strcmpi(Tooltype,'erplab')%%GH, Aug 2024
+    eegh(bestcom);
+end
 
 %% save function
 

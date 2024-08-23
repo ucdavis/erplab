@@ -57,16 +57,16 @@ varargout{1} = box_bestset_gui;
         vBox = uiextras.VBox('Parent', box_bestset_gui, 'Spacing', 5,'BackgroundColor',ColorB_def); % VBox for everything
         panelshbox = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         panelsv2box = uiextras.VBox('Parent',panelshbox,'Spacing',5,'BackgroundColor',ColorB_def);
-        
+
         %%-----------------------ERPset display---------------------------------------
         BESTlistName =  getBESTsets();
         Edit_label = 'off';
-        
+
         Bestsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
             2,'String', BESTlistName,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         try Bestsetops.butttons_datasets.Value=1; catch end;
         set(vBox, 'Sizes', 150);
-        
+
         %%---------------------Options for BESTsets-----------------------------------------------------
         Bestsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Bestsetops.dupeselected = uicontrol('Parent', Bestsetops.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
@@ -75,8 +75,8 @@ varargout{1} = box_bestset_gui;
             'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.suffix = uicontrol('Parent', Bestsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
-        
+
+
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Bestsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -84,16 +84,19 @@ varargout{1} = box_bestset_gui;
             'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.refresh_erpset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
             'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
+        Bestsetops.combinbest = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Combine bins',...
+            'Callback', @combinbest,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        set(buttons3,'Sizes',[55 55 55 -1]);
+
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        
+
         Bestsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
             'Callback', @save_best,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save a Copy', ...
             'Callback', @save_bestas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons4,'Sizes',[70 90 95])
+        set(buttons4,'Sizes',[70 90 95]);
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,24 +109,19 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Count_currentbest=1;
             return;
         end
-        %%first checking if the changes on the other panels have been applied
-        %         [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
-        %         if ~isempty(messgStr)
-        %             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
-        %         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Duplicate');
         observe_DECODE.Process_messg =1;
-        
+
         BESTArray= Bestsetops.butttons_datasets.Value;
         if isempty(BESTArray)
             BESTArray = length(observe_DECODE.ALLBEST);
             estudioworkingmemory('BESTArray',BESTArray);
         end
-        
+
         ALLBEST = observe_DECODE.ALLBEST;
         [ALLBEST, bestcom] = pop_duplicatbest(ALLBEST,'BESTArray', BESTArray,'History','gui');
-        
+
         if isempty(ALLBEST) || isempty(bestcom)
             estudioworkingmemory('f_Decode_proces_messg','BESTsets>Duplicate:user selected cancel');
             observe_DECODE.Process_messg =2;
@@ -131,13 +129,13 @@ varargout{1} = box_bestset_gui;
         end
         mvpch(bestcom);
         observe_DECODE.ALLBEST = ALLBEST;
-        
+
         BESTlistName =  getBESTsets();
         %%Reset the display in ERPset panel
         Bestsetops.butttons_datasets.String = BESTlistName;
         Bestsetops.butttons_datasets.Min = 1;
         Bestsetops.butttons_datasets.Max = length(BESTlistName)+1;
-        
+
         try
             BESTArray =  [length(observe_DECODE.ALLBEST)-numel(BESTArray)+1:length(observe_DECODE.ALLBEST)];
             Bestsetops.butttons_datasets.Value = BESTArray;
@@ -171,7 +169,7 @@ varargout{1} = box_bestset_gui;
         end
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Rename');
         observe_DECODE.Process_messg =1;
-        
+
         BESTArray= Bestsetops.butttons_datasets.Value;
         if isempty(BESTArray) || any(BESTArray>length(observe_DECODE.ALLBEST))
             BESTArray = length(observe_DECODE.ALLBEST);
@@ -189,7 +187,7 @@ varargout{1} = box_bestset_gui;
         if isempty(bestnames)
             return;
         end
-        
+
         ALLBEST_out = [];
         ALLBEST = observe_DECODE.ALLBEST(BESTArray);
         [ALLBEST, BESTCOM] = pop_renambest( ALLBEST, 'bestnames',bestnames,...
@@ -235,21 +233,21 @@ varargout{1} = box_bestset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Add Suffix');
         observe_DECODE.Process_messg =1;
-        
+
         BESTArray= Bestsetops.butttons_datasets.Value;
         if isempty(BESTArray)
             BESTArray = length(observe_DECODE.ALLBEST);
             estudioworkingmemory('BESTArray',BESTArray);
         end
-        
+
         suffixstr = f_EEG_suffix_gui('Suffix',2);
         if isempty(suffixstr)
             return;
         end
-        
+
         ALLBEST_out = [];
         ALLBEST = observe_DECODE.ALLBEST(BESTArray);
         [ALLBEST, BESTCOM] = pop_suffixbest( ALLBEST, 'suffixstr',suffixstr,...
@@ -273,7 +271,7 @@ varargout{1} = box_bestset_gui;
                 ALLBEST_out(length(ALLBEST_out)+1)=BEST;
             end
         end
-        
+
         observe_DECODE.ALLBEST(BESTArray) = ALLBEST_out;
         observe_DECODE.BEST = observe_DECODE.ALLBEST(observe_DECODE.CURRENTBEST);
         BESTlistName =  getBESTsets();
@@ -292,7 +290,7 @@ varargout{1} = box_bestset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Refresh');
         observe_DECODE.Process_messg =1;
         try
@@ -310,7 +308,7 @@ varargout{1} = box_bestset_gui;
         catch
             CURRENTBEST = 1;
         end
-        
+
         if isempty(ALLBEST) && ~isempty(ALLBEST)
             ALLBEST = BEST;
             CURRENTBEST =1;
@@ -327,10 +325,10 @@ varargout{1} = box_bestset_gui;
         end
         observe_DECODE.ALLBEST= ALLBEST;
         try observe_DECODE.ALLBEST(CURRENTBEST) = BEST;catch  end
-        
+
         observe_DECODE.BEST= BEST;
         observe_DECODE.CURRENTBEST= CURRENTBEST;
-        
+
         assignin('base','CURRENTBEST',CURRENTBEST);
         assignin('base','BEST',BEST);
         assignin('base','ALLBEST',ALLBEST);
@@ -355,10 +353,10 @@ varargout{1} = box_bestset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Load');
         observe_DECODE.Process_messg =1;
-        
+
         [filename, filepath] = uigetfile({'*.best'}, ...
             'Load BESTsets', ...
             'MultiSelect', 'on');
@@ -366,7 +364,7 @@ varargout{1} = box_bestset_gui;
             observe_DECODE.Process_messg =1;
             return;
         end
-        
+
         [BEST,ALLBEST,BESTCOM] = pop_loadbest( 'filename', filename, 'filepath', filepath,'History','gui','Tooltype','estudio');
         if isempty(BESTCOM)
             observe_DECODE.Process_messg =1;
@@ -374,7 +372,7 @@ varargout{1} = box_bestset_gui;
         end
         mvpch(BESTCOM);
         observe_DECODE.ALLBEST = ALLBEST;
-        
+
         BESTlistName =  getBESTsets();
         if isempty(observe_DECODE.ALLBEST)
             Edit_label = 'off';
@@ -389,6 +387,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.renameselected.Enable=Edit_label;
         Bestsetops.suffix.Enable= Edit_label;
         Bestsetops.refresh_erpset.Enable= 'on';
+        Bestsetops.combinbest.Enable=Edit_label;
         Bestsetops.clearselected.Enable=Edit_label;
         Bestsetops.savebutton.Enable= Edit_label;
         Bestsetops.saveasbutton.Enable=Edit_label;
@@ -421,6 +420,9 @@ varargout{1} = box_bestset_gui;
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Clear');
         observe_DECODE.Process_messg =1;
         BESTArray = Bestsetops.butttons_datasets.Value;
+        if isempty(BESTArray) || any(BESTArray(:)>length(observe_DECODE.ALLBEST)) || any(BESTArray(:)<1)
+            BESTArray = length(observe_DECODE.ALLBEST);
+        end
         ALLBEST = observe_DECODE.ALLBEST;
         [ALLBEST,BESTCOM] = pop_deletebestset(ALLBEST,'BESTsets', BESTArray, 'Saveas', 'off','History', 'gui' );
         if isempty(BESTCOM)
@@ -455,6 +457,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.suffix.Enable= Edit_label;
         Bestsetops.refresh_erpset.Enable= 'on';
         Bestsetops.clearselected.Enable=Edit_label;
+        Bestsetops.combinbest.Enable=Edit_label;
         Bestsetops.savebutton.Enable= Edit_label;
         Bestsetops.saveasbutton.Enable=Edit_label;
         Bestsetops.curr_folder.Enable='on';
@@ -481,10 +484,10 @@ varargout{1} = box_bestset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Save');
         observe_DECODE.Process_messg =1;
-        
+
         %         pathNamedef =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathNamedef)
         pathNamedef =  [cd,filesep];
@@ -494,10 +497,10 @@ varargout{1} = box_bestset_gui;
             BESTArray = length(observe_DECODE.ALLBEST);
             estudioworkingmemory('BESTArray',BESTArray);
         end
-        
-        
-        for Numoferp = 1:length(BESTArray)
-            BEST = observe_DECODE.ALLBEST(BESTArray(Numoferp));
+
+
+        for Numofbest = 1:length(BESTArray)
+            BEST = observe_DECODE.ALLBEST(BESTArray(Numofbest));
             pathName = BEST.filepath;
             if isempty(pathName)
                 pathName = pathNamedef;
@@ -512,14 +515,14 @@ varargout{1} = box_bestset_gui;
             if checkfileindex==1
                 [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname, 'filename',...
                     filename, 'filepath',pathName,'gui','save','History','gui','Tooltype','estudio');
-                if Numoferp==1
+                if Numofbest==1
                     mvpch(BESTCOM);
                     fprintf( ['\n\n',repmat('-',1,100) '\n']);
                     fprintf(['*BESTsets>Save*',32,32,32,32,datestr(datetime('now')),'\n']);
                     fprintf( [BESTCOM]);
                     fprintf( ['\n',repmat('-',1,100) '\n']);
                 end
-                
+
                 if ~isempty(BESTCOM) && ~isempty(BEST.EEGhistory)
                     olderpcom = cellstr(BEST.EEGhistory);
                     newerpcom = [olderpcom; {[BESTCOM ,'% ', 'GUI: ', datestr(now)]}];
@@ -527,16 +530,159 @@ varargout{1} = box_bestset_gui;
                 elseif ~isempty(BESTCOM) && isempty(BEST.EEGhistory)
                     BEST.EEGhistory = [char(BESTCOM) , '% ', 'GUI: ', datestr(now)];
                 end
-                
+
             end
-            observe_DECODE.ALLBEST(BESTArray(Numoferp)) = BEST;
+            observe_DECODE.ALLBEST(BESTArray(Numofbest)) = BEST;
         end
         observe_DECODE.BEST = observe_DECODE.ALLBEST(observe_DECODE.CURRENTBEST);
-        
+
         observe_DECODE.Count_currentbest = 2;
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC=6;
     end
+
+%%-----------------------coombine bins for bestsets------------------------
+    function combinbest(~,~)
+        if isempty(observe_DECODE.BEST)
+            observe_DECODE.Count_currentbest=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
+        if ~isempty(messgStr)
+            observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
+        end
+
+        estudioworkingmemory('f_Decode_proces_messg','BESTsets>Combine bins');
+        observe_DECODE.Process_messg =1;
+
+        BESTArray= Bestsetops.butttons_datasets.Value;
+        if isempty(BESTArray) || any(BESTArray>length(observe_DECODE.ALLBEST))
+            BESTArray = length(observe_DECODE.ALLBEST);
+            estudioworkingmemory('BESTArray',BESTArray);
+        end
+        if numel(BESTArray)>1
+            msgwrng = f_check_bestsets(observe_DECODE.ALLBEST,BESTArray);
+            if ~isempty(msgwrng)
+                title      = 'ERPLAB: pop_combineBESTbins() error';
+                errorfound(msgwrng, title);
+                observe_DECODE.Process_messg =2;
+                return
+            end
+        end
+
+        Answer = f_BEST_save_multi_file(observe_DECODE.ALLBEST,BESTArray,'_combins',1,[pwd,filesep]);
+        if isempty(Answer)
+            observe_DECODE.Process_messg =2;
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLBEST_out = Answer{1};
+        end
+
+        ALLBEST= observe_DECODE.ALLBEST;
+        def = estudioworkingmemory('pop_combineBESTbins');
+        if isempty(def)
+            def = {{[]},{[]}};
+            %1 binindex(s) from old BEST that will create new BEST
+            %2 binlabel(s) from oldBEST taht will create new BEST
+        end
+        app = feval('combinebestbinsGUI',ALLBEST,BESTArray,def);
+        waitfor(app,'FinishButton',1);
+
+        try
+            res = app.output;
+            app.delete; %delete app from view
+            pause(0.5); %wait for app to leave
+        catch
+            observe_DECODE.Process_messg =2;
+            return
+        end
+        if isempty(res)
+            observe_DECODE.Process_messg =2;
+            return;
+        end
+
+        BEST = res{1};
+        nbins = res{2}.bini;
+        nlabels = res{2}.labels;
+
+        def = {nbins,nlabels};
+        estudioworkingmemory('pop_combineBESTbins',def);
+
+        [ALLBESTNew,BESTCOM] = pop_combineBESTbins(ALLBEST,BESTArray, 'bins_to_combine',nbins,'bin_labels',nlabels, ...
+            'Saveas','off', 'History','gui','Tooltype','estudio');
+         if isempty(BESTCOM)
+            observe_DECODE.Process_messg =1;
+            return;
+        end
+        mvpch(BESTCOM);
+
+        BESTArray_new = setdiff(1:length(ALLBESTNew),[1:length(ALLBEST)]);
+        observe_DECODE.ALLBEST = ALLBESTNew;
+
+
+        for Numofbest = 1:length(BESTArray_new)
+            BESTOLD =  ALLBEST_out(BESTArray(Numofbest));
+            BEST = ALLBESTNew(BESTArray_new(Numofbest));
+            BEST.filename = BESTOLD.filename;
+            BEST.filepath = BESTOLD.filepath;
+            BEST.bestname = BESTOLD.bestname;
+            pathName = BEST.filepath;
+            if isempty(pathName)
+                pathName = pathNamedef;
+            end
+            FileName = BEST.filename;
+            if isempty(FileName)
+                FileName = BEST.bestname;
+            end
+            [pathx, filename, ext] = fileparts(FileName);
+            filename = [filename '.best'];
+            checkfileindex = checkfilexists([pathName,filesep,filename]);
+            if checkfileindex==1
+                [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname, 'filename',...
+                    filename, 'filepath',pathName,'gui','save','History','gui','Tooltype','estudio');
+                if Numofbest==1
+                    mvpch(BESTCOM);
+                    fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                    fprintf(['*BESTsets>Save*',32,32,32,32,datestr(datetime('now')),'\n']);
+                    fprintf( [BESTCOM]);
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
+                end
+
+                if ~isempty(BESTCOM) && ~isempty(BEST.EEGhistory)
+                    olderpcom = cellstr(BEST.EEGhistory);
+                    newerpcom = [olderpcom; {[BESTCOM ,'% ', 'GUI: ', datestr(now)]}];
+                    BEST.EEGhistory = char(newerpcom);
+                elseif ~isempty(BESTCOM) && isempty(BEST.EEGhistory)
+                    BEST.EEGhistory = [char(BESTCOM) , '% ', 'GUI: ', datestr(now)];
+                end
+            end
+            observe_DECODE.ALLBEST(BESTArray_new(Numofbest))= BEST;
+        end
+
+        BESTlistName =  getBESTsets();
+        %%Reset the display in ERPset panel
+        Bestsetops.butttons_datasets.String = BESTlistName;
+        Bestsetops.butttons_datasets.Min = 1;
+        Bestsetops.butttons_datasets.Max = length(BESTlistName)+1;
+        try
+            BESTArray =  BESTArray_new;
+            observe_DECODE.CURRENTBEST = BESTArray(1);
+        catch
+            BESTArray = length(observe_DECODE.ALLBEST);
+            observe_DECODE.CURRENTBEST = length(observe_DECODE.ALLBEST);
+        end
+        observe_DECODE.BEST = observe_DECODE.ALLBEST(observe_DECODE.CURRENTBEST);
+        estudioworkingmemory('BESTArray',BESTArray);
+
+        Bestsetops.butttons_datasets.Value = BESTArray;
+        observe_DECODE.Count_currentbest = 2;
+        observe_DECODE.Process_messg =2;
+        observe_DECODE.Count_currentMVPC=6;
+    end
+
+
 
 %------------------------- Save as-----------------------------------------
     function save_bestas(~,~)
@@ -551,18 +697,15 @@ varargout{1} = box_bestset_gui;
         end
         estudioworkingmemory('f_Decode_proces_messg','BESTsets>Save a Copy');
         observe_DECODE.Process_messg =1;
-        
-        %         pathName =  estudioworkingmemory('EEG_save_folder');
-        %         if isempty(pathName)
+
         pathName =  [cd,filesep];
-        %         end
-        
+
         BESTArray= estudioworkingmemory('BESTArray');
         if isempty(BESTArray) || any(BESTArray(:)>length(observe_DECODE.ALLBEST))
             BESTArray = length(observe_DECODE.ALLBEST);
             estudioworkingmemory('BESTArray',BESTArray);
         end
-        
+
         Answer = f_BEST_save_as_GUI(observe_DECODE.ALLBEST,BESTArray,'_copy',1,pathName);
         if isempty(Answer)
             return;
@@ -571,8 +714,8 @@ varargout{1} = box_bestset_gui;
             ALLBEST_out = Answer{1};
         end
         ALLBEST = observe_DECODE.ALLBEST;
-        for Numoferp = 1:length(BESTArray)
-            BEST = ALLBEST_out(BESTArray(Numoferp));
+        for Numofbest = 1:length(BESTArray)
+            BEST = ALLBEST_out(BESTArray(Numofbest));
             if ~isempty(BEST.filename)
                 filename = BEST.filename;
             else
@@ -581,17 +724,17 @@ varargout{1} = box_bestset_gui;
             [pathstr, erpfilename, ext] = fileparts(filename);
             ext = '.best';
             erpFilename = char(strcat(erpfilename,ext));
-            
+
             [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'bestname', BEST.bestname,...
                 'filename', erpFilename, 'filepath',BEST.filepath,'History','gui','gui','save','Tooltype','estudio');
-            if Numoferp==1
+            if Numofbest==1
                 mvpch(BESTCOM);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 fprintf(['*BESTsets>Save a Copy*',32,32,32,32,datestr(datetime('now')),'\n']);
                 fprintf( [BESTCOM]);
                 fprintf( ['\n',repmat('-',1,100) '\n']);
             end
-            
+
             if ~isempty(BESTCOM) && ~isempty(BEST.EEGhistory)
                 olderpcom = cellstr(BEST.EEGhistory);
                 newerpcom = [olderpcom; {[BESTCOM ,'% ', 'GUI: ', datestr(now)]}];
@@ -609,16 +752,14 @@ varargout{1} = box_bestset_gui;
         Bestsetops.butttons_datasets.Max = length(BESTlistName)+1;
         try
             BESTArray =  [length(observe_DECODE.ALLBEST)-numel(BESTArray)+1:length(observe_DECODE.ALLBEST)];
-            Bestsetops.butttons_datasets.Value = BESTArray;
             observe_DECODE.CURRENTBEST = length(observe_DECODE.ALLBEST)-numel(BESTArray)+1;
         catch
             BESTArray = length(observe_DECODE.ALLBEST);
-            Bestsetops.butttons_datasets.Value =  BESTArray;
             observe_DECODE.CURRENTBEST = length(observe_DECODE.ALLBEST);
         end
         observe_DECODE.BEST = observe_DECODE.ALLBEST(observe_DECODE.CURRENTBEST);
         estudioworkingmemory('BESTArray',BESTArray);
-        
+
         Bestsetops.butttons_datasets.Value = BESTArray;
         observe_DECODE.Count_currentbest = 2;
         observe_DECODE.Process_messg =2;
@@ -628,13 +769,13 @@ varargout{1} = box_bestset_gui;
 
 %---------------- Enable/Disable dot structure-----------------------------
     function curr_folder(~,~)
-        
+
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
         if ~isempty(messgStr)
             observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         %         pathName =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathName)
         pathName =[pwd,filesep];
@@ -644,7 +785,7 @@ varargout{1} = box_bestset_gui;
         if isequal(sel_path1,0)
             sel_path1 = cd;
         end
-        
+
         cd(sel_path1);
         BESTCOM  = sprintf('cd("%s',sel_path1);
         BESTCOM = [BESTCOM,'");'];
@@ -681,7 +822,7 @@ varargout{1} = box_bestset_gui;
         end
         BESTArray = source.Value;
         estudioworkingmemory('BESTArray',BESTArray);
-        
+
         Current_ERP_selected=BESTArray(1);
         observe_DECODE.CURRENTBEST = Current_ERP_selected;
         observe_DECODE.BEST = observe_DECODE.ALLBEST(Current_ERP_selected);
@@ -704,7 +845,7 @@ varargout{1} = box_bestset_gui;
             BESTlistName =  getBESTsets();
             Bestsetops.butttons_datasets.String = BESTlistName;
             Bestsetops.butttons_datasets.Value = BESTArray;
-            
+
             Bestsetops.butttons_datasets.Min=1;
             Bestsetops.butttons_datasets.Max=length(BESTlistName)+1;
             estudioworkingmemory('BESTArray',BESTArray);
@@ -738,6 +879,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.clearselected.Enable=Edit_label;
         Bestsetops.savebutton.Enable= Edit_label;
         Bestsetops.saveasbutton.Enable=Edit_label;
+        Bestsetops.combinbest.Enable=Edit_label;
         Bestsetops.curr_folder.Enable='on';
         Bestsetops.butttons_datasets.Enable = Edit_label;
         Bestsetops.append.Enable = Edit_label;
@@ -766,7 +908,7 @@ varargout{1} = box_bestset_gui;
         if observe_DECODE.Reset_erp_paras_panel~=1
             return;
         end
-        
+
         if ~isempty(observe_DECODE.ALLBEST)
             observe_DECODE.BEST =  observe_DECODE.ALLBEST(end);
             observe_DECODE.CURRENTBEST = length(observe_DECODE.ALLBEST);
