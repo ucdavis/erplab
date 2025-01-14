@@ -88,16 +88,22 @@ EStudio_gui_erp_totl.eegpanel{23} = f_EEG_avg_erp_GUI(EStudio_gui_erp_totl.eegse
 EStudio_gui_erp_totl.eegpanelSizes(23) = 300;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Baseline Correction & Linear Detrend (Epoched EEG), Compute Data Quality Metrics (Epoched EEG), Compute Averaged ERPs (Epoched EEG),...']);
-EStudio_gui_erp_totl.eegpanel{24} = f_EEG_extr_best_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(24) = 360;
-EStudio_gui_erp_totl.eegpanel{25} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(25) = 190;
-EStudio_gui_erp_totl.eegpanel{26} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+
+% Insert Measurement Tool panel as the 24th panel - kpw
+EStudio_gui_erp_totl.eegpanel{24} = f_EEG_measurement_tool_GUI(EStudio_gui_erp_totl.eegsettingLayout, EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(24) = 500; % Adjust size as needed
+
+EStudio_gui_erp_totl.eegpanel{25} = f_EEG_extr_best_GUI(EStudio_gui_erp_totl.eegsettingLayout, EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(25) = 360;
+
+EStudio_gui_erp_totl.eegpanel{26} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(26) = 190;
-EStudio_gui_erp_totl.eegpanel{27} = f_EEG_history_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(27) = 300;
+EStudio_gui_erp_totl.eegpanel{27} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(27) = 190;
+EStudio_gui_erp_totl.eegpanel{28} = f_EEG_history_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(28) = 300;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
-    'Extract Bin-Epoched Single Trials (BEST), Convert Voltage to CSD, EEG Utilities, and History panels.']);
+    'Measurement Tool, Extract Bin-Epoched Single Trials (BEST), Convert Voltage to CSD, EEG Utilities, and History panels.']);
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
 
@@ -106,7 +112,7 @@ for Numofpanel = 1:length(EStudio_gui_erp_totl.eegpanel)
     set( EStudio_gui_erp_totl.eegpanel{Numofpanel}, 'MinimizeFcn', {@nMinimize, Numofpanel} );
 end
 
-%%shrinking Panels 4-27 to just their title-bar
+%%shrinking Panels 4-28 to just their title-bar
 whichpanel = [4:length(EStudio_gui_erp_totl.eegpanel)];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;
@@ -212,3 +218,5 @@ set( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes', szs ,'BackgroundColor',Colo
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(szs);
 set(EStudio_gui_erp_totl.eegpanelscroll,'BackgroundColor',ColorB_def);
 end % nMinimize
+
+
