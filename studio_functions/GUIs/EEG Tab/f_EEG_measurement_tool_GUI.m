@@ -386,7 +386,6 @@ varargout{1} = measurementGUI.mainPanel;
 
 %% Browse/select channels %%
     function browseChannels(measurementGUI, measurementParams)
-        %global observe_EEGDAT;
 
         % Retrieve EEG data for the selected EEG sets
         selectedSets = measurementParams.sets;
@@ -396,315 +395,249 @@ varargout{1} = measurementGUI.mainPanel;
         end
         EEGData = observe_EEGDAT.ALLEEG(selectedSets);
 
-        % Extract channel labels and numbers for each set
-        numSets = length(EEGData);
-        channelLabels = cell(numSets, 1);
-        channelNumbers = cell(numSets, 1);
+        % check that each set has channel info
+        if ~all(arrayfun(@(x) isfield(x, 'chanlocs') && ~isempty(x.chanlocs), EEGData))
+            error('One or more EEG sets are missing valid channel information.');
+        end
 
-        for i = 1:numSets
-            if isfield(EEGData(i), 'chanlocs') && ~isempty(EEGData(i).chanlocs)
-                channelLabels{i} = {EEGData(i).chanlocs.labels};
-                channelNumbers{i} = 1:length(EEGData(i).chanlocs); % Assume sequential numbers
-            else
-                error('EEG Set %d has no valid channel information.', i);
+        %% Make channel selection table
+        % Extract the maximum number of channels across all EEG sets
+        numSets = length(EEGData);
+        maxChannels = max(arrayfun(@(x) length(x.chanlocs), EEGData)); % Get max channels
+        channelNumbers = (1:maxChannels)'; % Column for channel numbers
+        channelLabels = cell(numSets, 1);
+
+        % Initialize the table data
+        channelTableData = cell(maxChannels, numSets + 1); % +1 for the "Channel Number" column
+        channelTableData(:, 1) = num2cell(channelNumbers); % Fill first column with channel numbers
+
+        % Fill in channel labels for each EEG set
+        for setIdx = 1:numSets
+
+            channelLabels{setIdx} = {EEGData(setIdx).chanlocs.labels};
+
+            % Assign labels or '-' for each channel number
+            for chanIdx = 1:maxChannels
+                if chanIdx <= length(channelLabels{setIdx})
+                    channelTableData{chanIdx, setIdx + 1} = channelLabels{setIdx}{chanIdx}; % Label
+                else
+                    channelTableData{chanIdx, setIdx + 1} = '-'; % Missing
+                end
             end
         end
 
-        % Create the Label Summary Table
-        uniqueLabels = unique(horzcat(channelLabels{:})); % All unique channel labels
+        % Determine row status and apply row colors
+
+        isSelectable = false(maxChannels, 1); % Preallocate as false
+        warningFlag = false; % If there should be warning text for orange rows
+        errorFlag = false; % If there should be warning text for red rows
+
+        % Define colors
+        defaultColor = [1, 1, 1]; % White
+        orangeColor = [1, 0.8, 0.6]; % Light orange
+        redColor = [1, 0.6, 0.6]; % Light red
+
+        rowColors = repmat(defaultColor, maxChannels, 1); % Initialize all rows as white
+
+        for chanIdx = 1:maxChannels
+            rowData = channelTableData(chanIdx, 2:end); % Skip channel number column
+
+            % Check if the row has any missing values
+            if any(strcmp(rowData, '-'))
+                % Missing data: Mark row as red and un-selectable
+                rowColors(chanIdx, :) = redColor;
+                isSelectable(chanIdx) = false;
+                errorFlag = true; % At least one row is red
+            else
+                % Check for inconsistent labels
+                uniqueLabels = unique(rowData);
+                if length(uniqueLabels) > 1
+                    % Inconsistent data: Mark row as orange
+                    rowColors(chanIdx, :) = orangeColor;
+                    isSelectable(chanIdx) = true;
+                    warningFlag = true; % At least one row is orange
+                else
+                    % Consistent data: Mark row as white (default)
+                    rowColors(chanIdx, :) = defaultColor;
+                    isSelectable(chanIdx) = true;
+                end
+            end
+        end
+
+        % Create the table
+        setNames = arrayfun(@(x) sprintf('EEG Set %d', x), 1:numSets, 'UniformOutput', false);
+        columnNames = [{'Channel Number'}, setNames];
+        channelTable = cell2table(channelTableData, 'VariableNames', columnNames);
+
+        %% Create the alphabetical label summary table 
+        % (pops up when "Show channels alphabetically by label" button is pressed)
+        uniqueLabels = unique(horzcat(channelLabels{:}), 'stable'); % All unique channel labels
         labelSummaryData = cell(length(uniqueLabels), numSets + 1); % Preallocate table data
         labelSummaryData(:, 1) = uniqueLabels; % First column: unique labels
 
-        for i = 1:numSets
-            for j = 1:length(uniqueLabels)
+        for setIdx = 1:numSets
+            for labelIdx = 1:length(uniqueLabels)
                 % Find the channel number corresponding to this label
-                idx = find(strcmp(channelLabels{i}, uniqueLabels{j}), 1);
+                idx = find(strcmp(channelLabels{setIdx}, uniqueLabels{labelIdx}), 1);
                 if isempty(idx)
-                    labelSummaryData{j, i + 1} = '-'; % Mark as missing (plain text)
+                    labelSummaryData{labelIdx, setIdx + 1} = '-'; % Mark as missing
                 else
-                    labelSummaryData{j, i + 1} = num2str(idx); % Channel number as string
+                    labelSummaryData{labelIdx, setIdx + 1} = num2str(idx); % Channel number as string
                 end
             end
         end
 
-        % Create the Number Summary Table
-        maxChannels = max(cellfun(@length, channelNumbers)); % Maximum channel count
-        uniqueNumbers = (1:maxChannels)'; % All unique channel numbers
-        numberSummaryData = cell(maxChannels, numSets + 1); % Preallocate table data
-        numberSummaryData(:, 1) = num2cell(uniqueNumbers); % First column: unique numbers
+        % Convert to table
+        labelSummaryTable = cell2table(labelSummaryData, 'VariableNames', [{'Channel Label'}, setNames]);
 
-        for i = 1:numSets
-            for j = 1:maxChannels
-                if j > length(channelLabels{i}) % Channel number exceeds available channels
-                    numberSummaryData{j, i + 1} = '-'; % Mark as missing (plain text)
-                else
-                    numberSummaryData{j, i + 1} = channelLabels{i}{j}; % Channel label
-                end
-            end
-        end
-
-        % Convert to tables
-        setNames = arrayfun(@(x) sprintf('EEG Set %d', x), 1:numSets, 'UniformOutput', false);
-        labelSummaryTable = cell2table(labelSummaryData, ...
-                                       'VariableNames', [{'Channel Label'}, setNames]);
-        numberSummaryTable = cell2table(numberSummaryData, ...
-                                        'VariableNames', [{'Channel Number'}, setNames]);
-
-        % Utility functions
-        function labelSummary = summarizeByLabel(tbl)
-            % Initialize summary column
-            labelSummary = cell(size(tbl, 1), 1);
-
-            for row = 1:size(tbl, 1)
-                label = tbl{row, 1}; % Current channel label
-                setChans = tbl{row, 2:numSets}; % Current channel nums per set
-                %countMissing = sum(setChans == '-');  % Count occurrences of "-" in each set
-                countMissing = sum(strcmp(setChans, '-')); % Count occurrences of "-" in each set
-
-                % Format the summary string
-                labelSummary{row} = sprintf('in %d/%d EEG sets', numSets-countMissing, numSets);
-            end
-        end
-
-        function numberSummary = summarizeByNumber(tbl)
-            % Initialize summary column
-            numberSummary = cell(size(tbl, 1), 1);
-
-            for row = 1:size(tbl, 1)
-                % Extract data for the row, ignoring the first column
-                rowData = tbl{row, 2:end};
-
-                % Check if labels are consistent across sets
-                if all(strcmp(rowData, rowData{1})) && ~strcmp(rowData{1}, '-')
-                    numberSummary{row} = rowData{1}; % Uniform label
-                else
-                    numberSummary{row} = 'label varies across EEGsets';
-                end
-            end
-        end
-
-        % Prepare data for the initial view (default: by label)
-        currentView = 'Channel label'; % Default view
-        tableData = [labelSummaryTable.(1), summarizeByLabel(labelSummaryTable)];
-
-        % Create dialog
-        dlg = dialog('Name', 'Select Channels', 'Position', [200, 200, 500, 500]);
+        % Create dialog using uifigure
+        dlg = uifigure('Name', 'Select Channels', 'Position', [200, 200, 500, 600]);
 
         % "Show table of channels" button
-        uicontrol('Style', 'pushbutton', 'Parent', dlg, ...
-                  'String', 'Show table of channels for each EEGset', ...
-                  'Position', [100, 450, 300, 30], ...
-                  'Callback', @(src, event) showChannelTable(labelSummaryTable, numberSummaryTable));
-
-        % "Select by" title
-        uicontrol('Style', 'text', ...
-                  'Parent', dlg, ...
-                  'HorizontalAlignment', 'left', ...
-                  'String', 'Select by:', ...
-                  'Position', [50, 400, 50, 30]);
-
-        % Radio buttons for selection method
-        selectMethodGroup = uibuttongroup('Parent', dlg, ...
-                                          'Units', 'pixels', ...
-                                          'Position', [100, 400, 350, 30], ...
-                                          'SelectionChangedFcn', @(src, event) updateTable());
-
-        uicontrol('Style', 'radiobutton',...
-                  'Parent', selectMethodGroup, ...
-                  'String', 'Channel label', ...
-                  'Position', [20, 5, 120, 20]);
-
-        uicontrol('Style', 'radiobutton', ...
-                  'Parent', selectMethodGroup, ...
-                  'String', 'Channel number', ...
-                  'Position', [150, 5, 130, 20]);
+        uibutton(dlg, ...
+                 'Text', 'Show channels alphabetically by label', ...
+                 'Position', [100, 560, 300, 30], ...
+                 'ButtonPushedFcn', @(btn, event) showChannelTable());
 
         % "Select all" and "Select none" buttons
-        uicontrol('Style', 'pushbutton', 'Parent', dlg, ...
-                  'String', 'Select all', ...
-                  'Position', [140, 360, 100, 30], ...
-                  'Callback', @(src, event) selectAll());
+        uibutton(dlg, ...
+                 'Text', 'Select all', ...
+                 'Position', [140, 510, 100, 30], ...
+                 'ButtonPushedFcn', @(btn, event) selectAll());
 
-        uicontrol('Style', 'pushbutton', 'Parent', dlg, ...
-                  'String', 'Select none', ...
-                  'Position', [290, 360, 100, 30], ...
-                  'Callback', @(src, event) selectNone());
+        uibutton(dlg, ...
+                 'Text', 'Select none', ...
+                 'Position', [290, 510, 100, 30], ...
+                 'ButtonPushedFcn', @(btn, event) selectNone());
 
         % Channel selection table
-        t = uitable('Parent', dlg, ...
-                    'Data', tableData, ...
-                    'ColumnName', {'Channel', 'Info'}, ...
-                    'ColumnEditable', [false, false], ...
-                    'ColumnWidth',{100,130}, ...
-                    'Position', [50, 50, 400, 300], ...
-                    'CellSelectionCallback', @(src, event) selectRows(event));
+        t = uitable(dlg, ...
+            'Data', channelTableData, ...
+            'ColumnName', columnNames, ...
+            'Position', [50, 150, 400, 350], ...
+            'RowStriping', 'on', ...
+            'BackgroundColor', rowColors, ...
+            'CellSelectionCallback', @(src, event) selectRows(event));
 
-        % OK and Cancel buttons
-        uicontrol('Style', 'pushbutton', 'Parent', dlg, ...
-                  'String', 'OK', ...
-                  'Position', [300, 10, 80, 30], ...
-                  'Callback', @(src, event) confirmSelection());
+        % Warning information if needed
+        if warningFlag && errorFlag
+            uilabel(dlg, ...
+                    'Text', 'Warning: Channel numbers in orange indicate inconsistent labels across EEG sets', ...
+                    'FontColor', 'orange', ...
+                    'Position', [30, 110, 470, 20]);
 
-        uicontrol('Style', 'pushbutton', 'Parent', dlg, ...
-                  'String', 'Cancel', ...
-                  'Position', [150, 10, 80, 30], ...
-                  'Callback', @(src, event) close(dlg));
+            uilabel(dlg, ...
+                    'Text', 'Warning: Channel numbers in red indicate at least one EEG set is missing this channel', ...
+                    'FontColor', 'red', ...
+                    'Position', [30, 70, 470, 20]);
 
-        % Callback functions
-        function updateTable()
-            % Get selected view
-            selectedView = selectMethodGroup.SelectedObject.String;
+        elseif warningFlag && ~errorFlag
+            uilabel(dlg, ...
+                    'Text', 'Warning: Channel numbers in orange indicate inconsistent labels across EEG sets', ...
+                    'FontColor', 'orange', ...
+                    'Position', [30, 90, 470, 20]);
 
-            switch selectedView
-                case 'Channel label'
-                    tableData = [labelSummaryTable.(1), summarizeByLabel(labelSummaryTable)];
-                    set(t, 'Data', tableData, 'ColumnName', {'Channel label', 'Info'});
-
-                    selectedRows = []; % No rows selected
-                    set(t, 'UserData', selectedRows); % Store empty selection
-
-                case 'Channel number'
-                    % Convert `numberSummaryTable.(1)` to cells for concatenation
-                    channelNumbers = num2cell(numberSummaryTable.(1)); 
-                    tableData = [channelNumbers, summarizeByNumber(numberSummaryTable)];
-                    set(t, 'Data', tableData, 'ColumnName', {'Channel number', 'Info'});
-
-                    selectedRows = []; % No rows selected
-                    set(t, 'UserData', selectedRows); % Store empty selection
-            end
-
-            % Update the table display
-            currentView = selectedView;
+        elseif ~warningFlag && errorFlag
+            uilabel(dlg, ...
+                    'Text', 'Warning: Channel numbers in red indicate at least one EEG set is missing this channel', ...
+                    'FontColor', 'red', ...
+                    'Position', [30, 90, 470, 20]);
         end
 
+        % OK and Cancel buttons
+        uibutton(dlg, ...
+                 'Text', 'OK', ...
+                 'Position', [300, 10, 80, 30], ...
+                 'ButtonPushedFcn', @(btn, event) confirmSelection());
+
+        uibutton(dlg, ...
+                 'Text', 'Cancel', ...
+                 'Position', [150, 10, 80, 30], ...
+                 'ButtonPushedFcn', @(btn, event) close(dlg));
+
+        % Callback to display channel label summary (sub-dialog)
+        function showChannelTable()
+            % Create a sub-dialog to display the label summary table
+            subDlg = uifigure('Name', 'View table of channels for each EEGset', ...
+                'Position', [300, 300, 500, 600]);
+
+            % Channel table
+            uitable(subDlg, ...
+                    'Data', table2cell(labelSummaryTable), ...
+                    'ColumnName', labelSummaryTable.Properties.VariableNames, ...
+                    'Position', [20, 20, 460, 500]);
+        end
+
+        % Callback to highlight selected rows
         function selectRows(event)
             if isempty(event.Indices)
                 selectedRows = []; % No selection
             else
-                selectedRows = unique(event.Indices(:, 1)); % Store selected row indices
+                % Filter selected rows using isSelectable
+                selectedRows = unique(event.Indices(:, 1)); % Get row indices
+                selectedRows = selectedRows(isSelectable(selectedRows)); % Keep only selectable rows
             end
-            set(t, 'UserData', selectedRows); % Save selected rows in UserData
+
+            set(t, 'UserData', selectedRows); % Save filtered selected rows in UserData
             highlightRows(selectedRows); % Update row highlights
         end
 
+        % Select all selectable rows
         function selectAll()
-            % Select all rows in the table
-            numRows = size(get(t, 'Data'), 1); % Get the number of rows in the table
-            selectedRows = (1:numRows)'; % Create an array of all row indices
+            selectedRows = find(isSelectable); % Rows marked as selectable
             set(t, 'UserData', selectedRows); % Store selected rows in UserData
-            highlightRows(selectedRows); % Highlight all rows
+            highlightRows(selectedRows); % Highlight all valid rows
         end
 
+        % Deselect all rows
         function selectNone()
-            % Deselect all rows in the table
             selectedRows = []; % No rows selected
             set(t, 'UserData', selectedRows); % Store empty selection
             highlightRows(selectedRows); % Clear row highlights
         end
 
+        % Highlight selected rows
         function highlightRows(selectedRows)
-            % Update the background color of the rows to indicate selection
-            data = get(t, 'Data');
-            numRows = size(data, 1);
 
-            % Default background color
-            defaultColor = [1, 1, 1]; % White
+            % Copy the row colors (i.e. orange/red from warnings)
+            updatedColors = rowColors;
+
+            % Highlight valid selected rows
             highlightColor = [0.8, 0.9, 1]; % Light blue for selected rows
 
-            % Set the RowStriping property
-            rowColors = repmat(defaultColor, numRows, 1);
-            rowColors(selectedRows, :) = repmat(highlightColor, length(selectedRows), 1);
+            for idx = selectedRows'
+                if isSelectable(idx) % Only highlight rows that are selectable
+                    updatedColors(idx, :) = highlightColor;
+                end
+            end
 
-            % Update the table background color
-            set(t, 'BackgroundColor', rowColors);
+            % Apply updated colors to the table
+            t.BackgroundColor = updatedColors;
         end
 
+        % Confirm selected channels
         function confirmSelection()
             selectedRows = t.UserData;
 
             if isempty(selectedRows)
-                errordlg('No channels selected. Please select at least one.', 'Error');
+                uialert(dlg, 'No channels selected. Please select at least one.', 'Error', 'Icon', 'warning');
                 return;
             end
 
-            % Store selected channels
-            switch currentView
-                case 'Channel label'
-                    measurementParams.channels = labelSummaryTable.(1)(selectedRows);
-                    set(measurementGUI.subPanel_channel_fillbox, 'String', strjoin(labelSummaryTable.(1)(selectedRows)));
-                case 'Channel number'
-                    measurementParams.channels = numberSummaryTable.(1)(selectedRows);
-                    set(measurementGUI.subPanel_channel_fillbox, 'String', strjoin(labelSummaryTable.(1)(selectedRows)));
-            end
+            % Extract selected channel numbers
+            channelNumbers = cell2mat(channelTableData(selectedRows, 1));
+            measurementParams.channels = channelNumbers;
 
-            disp('Selected channels:');
-            disp(measurementParams.channels);
+            % Update GUI display
+            channelNumbers_str = strjoin(arrayfun(@num2str, channelNumbers, 'UniformOutput', false), ' ');
+            set(measurementGUI.subPanel_channel_fillbox, 'String', channelNumbers_str);
+
+            %disp('Selected channels:');
+            %disp(measurementParams.channels);
 
             % Close the dialog
             close(dlg);
         end
-
-        %% Callback to display channel by set info (sub dialog)
-        function showChannelTable(labelSummaryTable, numberSummaryTable)
-
-            % Extract raw data from tables
-            labelData = table2cell(labelSummaryTable);
-            numberData = table2cell(numberSummaryTable);
-
-            % Initial table data (default view: by label)
-            subTableData = labelData;
-
-            % Create dialog
-            subDlg = dialog('Name', 'View table of channels for each EEGset', 'Position', [300, 300, 500, 600]);
-
-            % "Sort" title
-            uicontrol('Style', 'text', ...
-                      'Parent', subDlg, ...
-                      'HorizontalAlignment', 'left', ...
-                      'String', 'Sort:', ...
-                      'Position', [30, 550, 50, 30]);
-
-            % Radio buttons for selection method
-            subSelectMethodGroup = uibuttongroup('Parent', subDlg, ...
-                                              'Units', 'pixels', ...
-                                              'Position', [80, 560, 350, 30], ...
-                                              'SelectionChangedFcn', @(src, event) subUpdateTable());
-
-            uicontrol('Style', 'radiobutton',...
-                      'Parent', subSelectMethodGroup, ...
-                      'String', 'Alphabetically by label', ...
-                      'Position', [20, 5, 150, 20]);
-
-            uicontrol('Style', 'radiobutton', ...
-                      'Parent', subSelectMethodGroup, ...
-                      'String', 'By channel number', ...
-                      'Position', [190, 5, 150, 20]);
-
-            % Channel selection table
-            subTable = uitable('Parent', subDlg, ...
-                        'Data', subTableData, ...
-                        'ColumnName', [{'Channel Label'}, setNames], ...
-                        'Position', [50, 50, 400, 500]);
-
-            % Callback functions
-            function subUpdateTable()
-                % Get selected view
-                selectedView = subSelectMethodGroup.SelectedObject.String;
-
-                switch selectedView
-                    case 'Alphabetically by label'
-                        set(subTable, 'Data', labelData);
-                        set(subTable, 'ColumnName', [{'Channel Label'}, setNames]);
-
-                    case 'By channel number'
-                        set(subTable, 'Data', numberData);
-                        set(subTable, 'ColumnName', [{'Channel Number'}, setNames]);
-                end
-            end
-        end
-
-
-
 
     end % end browseEEGchannels function
 
