@@ -5,9 +5,9 @@ classdef MeasurementParams_handleClass < handle
 
         sets = []; % indeces
 
-        eventCodes = 'none'; %
+        eventCodes = 'ANY'; %
 
-        binNums = 'none'; % 
+        binNums = 'ANY'; % 
 
         channels = 'all'; %
 

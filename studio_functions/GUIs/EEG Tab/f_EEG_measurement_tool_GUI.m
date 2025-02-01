@@ -413,7 +413,185 @@ function checkByCode()
 end
 
 function browseEventCodes()
+
+    % Retrieve EEG data for the selected EEG sets
+    selectedSets = measurementParams.sets;
+    if isempty(selectedSets)
+        errordlg('No EEG sets selected. Please select EEG sets first.', 'Error');
+        return;
+    end
+    EEGData = observe_EEGDAT.ALLEEG(selectedSets);
+
+    % Check that each EEG set has event information
+    if ~all(arrayfun(@(x) isfield(x, 'event') && ~isempty(x.event) || ...
+                          (isfield(x, 'EVENTLIST') && isfield(x.EVENTLIST, 'eventinfo')), EEGData))
+        error('One or more EEG sets are missing valid event information.');
+    end
+
+    % deactivate button (so no double clicking)
+    set(measurementGUI.subPanel_event_byCode_button, 'String', '...')
+    set(measurementGUI.subPanel_event_byCode_button, 'Enable', 'off')
+
+    %% **Step 1: Extract and Count Event Codes**
+    numSets = length(EEGData);
+    eventCodeLists = cell(numSets, 1);
+    eventCounts = cell(numSets, 1);
+
+    for setIdx = 1:numSets
+        if isfield(EEGData(setIdx), 'EVENTLIST') && isfield(EEGData(setIdx).EVENTLIST, 'eventinfo')
+            % **Binned EEG set** - Use EVENTLIST instead of EEG.event
+            rawEventCodes = {EEGData(setIdx).EVENTLIST.eventinfo.code};  
+        else
+            % **Unbinned EEG set** - Use EEG.event
+            rawEventCodes = {EEGData(setIdx).event.type};
+        end
+
+        % Convert event codes to strings (ensuring consistency)
+        rawEventCodes = cellfun(@num2str, rawEventCodes, 'UniformOutput', false);
+
+        % Handle epoched EEG cases (extract numbers inside parentheses)
+        cleanedEventCodes = regexprep(rawEventCodes, '^B\d+\((\d+)\)$', '$1');
+
+        % Convert event codes to a **unique sorted list**
+        [uniqueCodes, ~, eventIdx] = unique(cleanedEventCodes);
+        eventCodeLists{setIdx} = uniqueCodes; % Store unique event codes
+        eventCounts{setIdx} = accumarray(eventIdx, 1); % Count occurrences
+    end
+
+    % **Create a master list of all unique event codes across EEG sets**
+    allEventCodes = eventCodeLists{1}; % Start with first set
+    for setIdx = 2:numSets
+        allEventCodes = union(allEventCodes, eventCodeLists{setIdx}, 'stable'); % Ensure all codes are included
+    end
+
+    % Initialize table data
+    eventTableData = cell(length(allEventCodes), numSets + 1); % +1 for event code column
+    eventTableData(:, 1) = allEventCodes; % First column: Event codes
+
+    % Fill in event counts for each EEG set
+    for setIdx = 1:numSets
+        [matchedCodes, eventIdx] = ismember(eventCodeLists{setIdx}, allEventCodes);
+        eventCountsForSet = zeros(size(allEventCodes)); % Default to zero occurrences
+        eventCountsForSet(eventIdx(matchedCodes)) = eventCounts{setIdx}(matchedCodes);
+        eventTableData(:, setIdx + 1) = num2cell(eventCountsForSet); % Assign counts
+    end
+
+    setNames = arrayfun(@(x) sprintf('EEG Set %d', x), 1:numSets, 'UniformOutput', false);
+    columnNames = [{'Event code'}, setNames];
+
+    rowColors = repmat(defaultColor, length(allEventCodes), 1); % Initialize all rows as white
+
+    eventTable = cell2table(eventTableData, 'VariableNames', columnNames);
+
+    %% **Step 2: Create GUI**
+    dlg = uifigure('Name', 'Select Event Codes', 'Position', [200, 200, 500, 600]);
+
+    dlg.CloseRequestFcn = @(src, event) closePanel();
+
+    % "Select all" and "Select none" buttons
+    uibutton(dlg, ...
+             'Text', 'Select all', ...
+             'Position', [140, 510, 100, 30], ...
+             'ButtonPushedFcn', @(btn, event) selectAll());
+
+    uibutton(dlg, ...
+             'Text', 'Select none', ...
+             'Position', [290, 510, 100, 30], ...
+             'ButtonPushedFcn', @(btn, event) selectNone());
+
+    % Event selection table
+    t = uitable(dlg, ...
+        'Data', eventTableData, ...
+        'ColumnName', columnNames, ...
+        'Position', [50, 150, 400, 350], ...
+        'RowStriping', 'on', ...
+        'CellSelectionCallback', @(src, event) selectRows(event));
+
+    % OK and Cancel buttons
+    uibutton(dlg, ...
+             'Text', 'OK', ...
+             'Position', [300, 10, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) confirmSelection());
+
+    uibutton(dlg, ...
+             'Text', 'Cancel', ...
+             'Position', [150, 10, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) close(dlg));
+
+    %% **Step 3: Callbacks**
+
+    % Handle row selection
+    function selectRows(event)
+        if isempty(event.Indices)
+            selectedRows = []; % No selection
+        else
+            selectedRows = unique(event.Indices(:, 1)); % Store row indices
+        end
+        set(t, 'UserData', selectedRows); % Save selected rows
+        highlightRows(selectedRows)
+    end
+
+    % Select all event codes
+    function selectAll()
+        numRows = size(get(t, 'Data'), 1); % Get number of rows
+        selectedRows = (1:numRows)'; % Select all rows
+        set(t, 'UserData', selectedRows); % Store selected rows
+        highlightRows(selectedRows)
+    end
+
+    % Deselect all event codes
+    function selectNone()
+        selectedRows = []; % No rows selected
+        set(t, 'UserData', selectedRows); % Store empty selection
+        highlightRows(selectedRows)
+    end
+
+    % Highlight selected rows
+    function highlightRows(selectedRows)
+
+        % Copy the row colors (i.e. orange/red from warnings)
+        updatedColors = rowColors;
+
+        updatedColors(selectedRows, :) = repmat(highlightColor, length(selectedRows), 1);
+
+        % Apply updated colors to the table
+        t.BackgroundColor = updatedColors;
+    end
+
+    % Confirm selected event codes
+    function confirmSelection()
+        selectedRows = t.UserData;
+        if isempty(selectedRows)
+            uialert(dlg, 'No event codes selected. Please select at least one.', 'Error', 'Icon', 'warning');
+            return;
+        end
+
+        % Extract selected event codes
+        selectedEventCodes = eventTableData(selectedRows, 1);
+        measurementParams.eventCodes = selectedEventCodes;
+
+        % Update GUI display
+        eventCodesStr = strjoin(selectedEventCodes, ' ');
+        set(measurementGUI.subPanel_event_byCode_fill, 'String', eventCodesStr);
+
+        close(dlg)
+    end
+
+    % cancel selection
+    function closePanel()
+
+        % reactivate button (so no double clicking)
+        set(measurementGUI.subPanel_event_byCode_button, 'String', 'Browse')
+        set(measurementGUI.subPanel_event_byCode_button, 'Enable', 'on')
+
+        % Close the dialog
+        delete(dlg);
+    end
+
 end
+
+
+
 
 % 3.2 by bin
 function checkByBin()
@@ -431,7 +609,227 @@ function checkByBin()
 end
 
 function browseBins()
+
+    % Retrieve EEG data for the selected EEG sets
+    selectedSets = measurementParams.sets;
+    if isempty(selectedSets)
+        errordlg('No EEG sets selected. Please select EEG sets first.', 'Error');
+        return;
+    end
+    EEGData = observe_EEGDAT.ALLEEG(selectedSets);
+    numSets = length(EEGData);
+
+    % Check if all EEG sets have been binned (must contain EEG.EVENTLIST.bdf)
+    if ~all(arrayfun(@(x) isfield(x, 'EVENTLIST') && isfield(x.EVENTLIST, 'bdf'), EEGData))
+        errordlg('One or more EEG sets do not contain bin definitions (EVENTLIST.bdf). Binning is required.', 'Error');
+        return;
+    end
+
+    % Deactivate the browse button to prevent multiple clicks
+    set(measurementGUI.subPanel_event_byBin_button, 'String', '...')
+    set(measurementGUI.subPanel_event_byBin_button, 'Enable', 'off')
+
+    %% **Extract and Organize Bin Data**
+    
+    % Determine the maximum bin index across all EEG sets
+    maxBins = max(arrayfun(@(x) length(x.EVENTLIST.bdf), EEGData));
+    binIndices = (1:maxBins)'; % Bin numbers
+
+    % Initialize table data
+    binTableData = cell(maxBins, 2); % Columns: Bin index, Bin label
+    binTableData(:, 1) = num2cell(binIndices); % First column: bin numbers
+
+    binLabelsBySet = cell(numSets, 1); % Stores bin labels for each EEG set
+
+    for setIdx = 1:numSets
+        numBinsInSet = length(EEGData(setIdx).EVENTLIST.bdf);
+        binLabelsBySet{setIdx} = cell(maxBins, 1); % Initialize empty bin labels
+        
+        for binIdx = 1:numBinsInSet
+            binLabelsBySet{setIdx}{binIdx} = EEGData(setIdx).EVENTLIST.bdf(binIdx).description;
+        end
+    end
+
+    % Determine consistency of bin labels across sets
+    rowColors = repmat([1, 1, 1], maxBins, 1); % Default white
+    isSelectable = true(maxBins, 1); % Assume all rows are selectable
+    warningFlag = false;
+    errorFlag = false;
+
+    for binIdx = 1:maxBins
+        labels = cellfun(@(x) x{binIdx}, binLabelsBySet, 'UniformOutput', false);
+        uniqueLabels = unique(labels(~cellfun(@isempty, labels))); % Ignore empty entries
+        
+        if any(cellfun(@isempty, labels)) % Check if any EEG set is missing this bin
+            binTableData{binIdx, 2} = 'Bin missing from some EEGsets';
+            rowColors(binIdx, :) = [1, 0.6, 0.6]; % Red for missing bins
+            isSelectable(binIdx) = false; % Make row un-selectable
+            errorFlag = true;
+        elseif length(uniqueLabels) == 1
+            binTableData{binIdx, 2} = uniqueLabels{1}; % Consistent label
+        else
+            binTableData{binIdx, 2} = '(label varies across EEGsets)';
+            rowColors(binIdx, :) = [1, 0.8, 0.6]; % Light orange for inconsistent labels
+            warningFlag = true;
+        end
+    end
+
+    % Create table column names
+    columnNames = {'Bin Index', 'Bin Label'};
+
+    % Create dialog
+    dlg = uifigure('Name', 'Select Bins', 'Position', [200, 200, 500, 600]);
+    dlg.CloseRequestFcn = @(src, event) closePanel();
+
+    % Show table of bin labels button
+    uibutton(dlg, ...
+             'Text', 'Show table of bin labels', ...
+             'Position', [100, 560, 300, 30], ...
+             'ButtonPushedFcn', @(btn, event) showBinTable());
+
+    % Select all / Select none buttons
+    uibutton(dlg, ...
+             'Text', 'Select all', ...
+             'Position', [140, 510, 100, 30], ...
+             'ButtonPushedFcn', @(btn, event) selectAll());
+
+    uibutton(dlg, ...
+             'Text', 'Select none', ...
+             'Position', [290, 510, 100, 30], ...
+             'ButtonPushedFcn', @(btn, event) selectNone());
+
+    % Bin selection table
+    t = uitable(dlg, ...
+        'Data', binTableData, ...
+        'ColumnName', columnNames, ...
+        'Position', [50, 150, 400, 350], ...
+        'RowStriping', 'on', ...
+        'BackgroundColor', rowColors, ...
+        'CellSelectionCallback', @(src, event) selectRows(event));
+
+    % Warning message if needed
+    if warningFlag && errorFlag
+        uilabel(dlg, ...
+                'Text', 'Warning: Rows in orange indicate inconsistent bin labels.', ...
+                'FontColor', '#F80', ...
+                'Position', [30, 110, 470, 20]);
+        uilabel(dlg, ...
+                'Text', 'Warning: Rows in red indicate missing bins from some EEG sets.', ...
+                'FontColor', 'red', ...
+                'Position', [30, 90, 470, 20]);
+    elseif warningFlag
+        uilabel(dlg, ...
+                'Text', 'Warning: Rows in orange indicate inconsistent bin labels.', ...
+                'FontColor', '#F80', ...
+                'Position', [30, 100, 470, 20]);
+    elseif errorFlag
+        uilabel(dlg, ...
+                'Text', 'Warning: Rows in red indicate missing bins from some EEG sets.', ...
+                'FontColor', 'red', ...
+                'Position', [30, 100, 470, 20]);
+    end
+
+    % OK and Cancel buttons
+    uibutton(dlg, ...
+             'Text', 'OK', ...
+             'Position', [300, 10, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) confirmSelection());
+
+    uibutton(dlg, ...
+             'Text', 'Cancel', ...
+             'Position', [150, 10, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) closePanel());
+
+    %% **Callback Functions**
+    
+    function showBinTable()
+        % Create a sub-dialog to display bin labels per EEG set
+        subDlg = uifigure('Name', 'Bin Labels Across EEG Sets', 'Position', [300, 300, 600, 600]);
+
+        % Prepare table data
+        labelTableData = cell(maxBins, numSets + 1);
+        labelTableData(:, 1) = num2cell(binIndices); % Bin indices
+
+        for setIdx = 1:numSets
+            labels = binLabelsBySet{setIdx};
+            labels(cellfun(@isempty, labels)) = {'-'}; % Mark missing labels
+            labelTableData(:, setIdx + 1) = labels;
+        end
+
+        setNames = arrayfun(@(x) sprintf('EEG Set %d', x), 1:numSets, 'UniformOutput', false);
+        columnNames = [{'Bin Index'}, setNames];
+
+        % Display table
+        uitable(subDlg, ...
+                'Data', labelTableData, ...
+                'ColumnName', columnNames, ...
+                'Position', [20, 20, 560, 500]);
+    end
+
+    function selectRows(event)
+        if isempty(event.Indices)
+            selectedRows = [];
+        else
+            selectedRows = unique(event.Indices(:, 1));
+            selectedRows = selectedRows(isSelectable(selectedRows)); % Keep only selectable rows
+        end
+        set(t, 'UserData', selectedRows);
+        highlightRows(selectedRows);
+    end
+
+    function selectAll()
+        selectedRows = find(isSelectable);
+        set(t, 'UserData', selectedRows);
+        highlightRows(selectedRows);
+    end
+
+    function selectNone()
+        set(t, 'UserData', []);
+        highlightRows([]);
+    end
+
+    % Highlight selected rows
+    function highlightRows(selectedRows)
+
+        % Copy the row colors (i.e. orange/red from warnings)
+        updatedColors = rowColors;
+
+        % Highlight valid selected rows
+        for idx = selectedRows'
+            if isSelectable(idx) % Only highlight rows that are selectable
+                updatedColors(idx, :) = highlightColor;
+            end
+        end
+
+        % Apply updated colors to the table
+        t.BackgroundColor = updatedColors;
+    end
+
+    function confirmSelection()
+        selectedRows = t.UserData;
+        if isempty(selectedRows)
+            uialert(dlg, 'No bins selected. Please select at least one.', 'Error', 'Icon', 'warning');
+            return;
+        end
+
+        % Extract selected bin numbers
+        measurementParams.binNums = binIndices(selectedRows);
+
+        % set in GUI
+        binStr = strjoin(arrayfun(@num2str, binIndices(selectedRows), 'UniformOutput', false), ' ');
+        set(measurementGUI.subPanel_event_byBin_fill, 'String', binStr);
+        closePanel();
+    end
+
+    function closePanel()
+        set(measurementGUI.subPanel_event_byBin_button, 'String', 'Browse')
+        set(measurementGUI.subPanel_event_byBin_button, 'Enable', 'on')
+        delete(dlg);
+    end
+
 end
+
+
 
 %% Section 4 - Browse/select channels %%
 function browseChannels()
@@ -571,7 +969,7 @@ function browseChannels()
     if warningFlag && errorFlag
         uilabel(dlg, ...
                 'Text', 'Warning: Channel numbers in orange indicate inconsistent labels across EEG sets', ...
-                'FontColor', 'orange', ...
+                'FontColor', '#F80', ...
                 'Position', [30, 110, 470, 20]);
 
         uilabel(dlg, ...
@@ -582,7 +980,7 @@ function browseChannels()
     elseif warningFlag && ~errorFlag
         uilabel(dlg, ...
                 'Text', 'Warning: Channel numbers in orange indicate inconsistent labels across EEG sets', ...
-                'FontColor', 'orange', ...
+                'FontColor', '#F80', ...
                 'Position', [30, 90, 470, 20]);
 
     elseif ~warningFlag && errorFlag
