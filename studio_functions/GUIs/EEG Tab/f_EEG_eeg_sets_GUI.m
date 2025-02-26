@@ -70,6 +70,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             'Callback', @continuous_eeg,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
         EStduio_eegtab_EEG_set.eeg_epoch = uicontrol('Parent',EStduio_eegtab_EEG_set.datatype_title, 'Style', 'radiobutton', 'String', 'Epoched EEG',...
             'Callback', @epoch_eeg,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
+
+        % added tag to find this element for use in measurement panel - kpw
+        EStduio_eegtab_EEG_set.eeg_epoch.Tag = 'EEGset_select_epoched_element';
         
         %%-----------------------ERPset display---------------------------------------
         panelshbox = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -1401,7 +1404,7 @@ end
 %%---automatically close right panels if select continuous/epoched EEG-----
 function EEGTab_close_open_Panels(whichpanel)
 global EStudio_gui_erp_totl
-if any(whichpanel(:)>27) || any(whichpanel(:)<1)%%check the labels for the right panels
+if any(whichpanel(:)>24) || any(whichpanel(:)<1)%%check the labels for the right panels
     return;
 end
 

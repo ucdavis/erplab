@@ -54,7 +54,7 @@ measurementGUI.mainLayout = uiextras.VBox('Parent', measurementGUI.mainPanel, ..
     'BackgroundColor',ColorB_def, ...
     'Spacing', 5, 'Padding', 5);
 
-rowElement_sizes = [70 -1 80]; % sizes for most rows, [title fillbox/menu button]
+rowElement_sizes = [80 -1 70]; % sizes for most rows, [title fillbox/menu button]
 
 % Section 1: Type
 measurementGUI.subPanel_type = uiextras.HBox('Parent', measurementGUI.mainLayout,'BackgroundColor',ColorB_def);
@@ -104,7 +104,14 @@ measurementGUI.subPanel_sets_button = uicontrol('Style', 'pushbutton', ...
 set(measurementGUI.subPanel_sets,'Sizes',rowElement_sizes);
 
 % Section 3: Event Selection
-measurementGUI.subPanel_eventSelect = uiextras.VBox('Parent', measurementGUI.mainLayout,'BackgroundColor',ColorB_def, 'Spacing', 5);
+
+% Create a uipanel with a border
+eventSelectPanelBorder = uipanel(...
+    'Parent', measurementGUI.mainLayout, ...
+    'BackgroundColor', ColorB_def, ...
+    'BorderType', 'etchedin'); 
+
+measurementGUI.subPanel_eventSelect = uiextras.VBox('Parent', eventSelectPanelBorder,'BackgroundColor',ColorB_def, 'Spacing', 5);
 
 measurementGUI.subPanel_eventSelect_title = uicontrol('Style', 'text', ...
     'Parent', measurementGUI.subPanel_eventSelect, ...
@@ -277,7 +284,8 @@ measurementGUI.subPanel_baseline_fillbox = uicontrol('Style', 'edit', ...
 measurementGUI.subPanel_baseline_button = uicontrol('Style', 'pushbutton', ...
     'Parent', measurementGUI.subPanel_baseline, ...
     'String', 'Details', ...
-    'FontSize', FonsizeDefault);
+    'FontSize', FonsizeDefault, ...
+    'Callback', @(src, event) baselineDetails());
 
 set(measurementGUI.subPanel_baseline,'Sizes',rowElement_sizes);
 
@@ -291,16 +299,17 @@ measurementGUI.subPanel_output_title = uicontrol('Style', 'text', ...
     'FontSize', FonsizeDefault, ...
     'BackgroundColor', ColorB_def);
 
-measurementGUI.subPanel_baseline_fillbox = uicontrol('Style', 'edit', ...
+measurementGUI.subPanel_output_fillbox = uicontrol('Style', 'edit', ...
     'Parent', measurementGUI.subPanel_output, ...
     'String', '', ...
     'FontSize', FonsizeDefault, ...
     'BackgroundColor', 'white');
 
-measurementGUI.subPanel_baseline_button = uicontrol('Style', 'pushbutton', ...
+measurementGUI.subPanel_output_button = uicontrol('Style', 'pushbutton', ...
     'Parent', measurementGUI.subPanel_output, ...
     'String', 'Options', ...
-    'FontSize', FonsizeDefault);
+    'FontSize', FonsizeDefault, ...
+    'Callback', @(src, event) outputOptions() );
 
 set(measurementGUI.subPanel_output,'Sizes',rowElement_sizes);
 
@@ -330,68 +339,211 @@ varargout{1} = measurementGUI.mainPanel;
 %% Section 1 - Measurement type %%
 
 %% Section 2 - Browse/select EEGsets %%
+
 function browseEEGsets()
 
+    % Retrieve EEG data
     EEGData = observe_EEGDAT.ALLEEG;
-
-    % Retrieve EEG data from observe_EEGDAT
     if isempty(EEGData)
         errordlg('No EEG sets are currently loaded.', 'Error');
         return;
     end
 
-    eegSetNames = arrayfun(@(x) {sprintf('EEG Set %d: %s', x, EEGData(x).setname)}, ...
-                       1:length(EEGData))'; % Ensure column vector (Nx1)
+    % deactivate button
+    set(measurementGUI.subPanel_sets_button, 'String', '...')
+    set(measurementGUI.subPanel_sets_button, 'Enable', 'off')
 
-    % Create dialog and table
-    dlg = dialog('Name', 'Select EEG Sets', 'Position', [300, 300, 400, 300]);
+    % get set data
+    numSets = length(EEGData);
+    eegSetNames = {EEGData.setname}';
+    isEpoched = arrayfun(@(x) x.trials > 1, EEGData)';
+    hasEventList = arrayfun(@(x) isfield(x, 'EVENTLIST'), EEGData)';
+    sampleRates = arrayfun(@(x) x.srate, EEGData)';
 
-    uitableWidth = 380;
+    % Preallocate cell array for epoch windows
+    epochWindows = cell(size(EEGData))';
 
-    t = uitable('Parent', dlg, ...
-            'Data', eegSetNames, ...
-            'ColumnName', {'EEG Sets'}, ...
-            'ColumnEditable', false, ...
-            'ColumnWidth', {uitableWidth - 20}, ...
-            'RowStriping', 'on', ...
-            'Position', [10, 50, uitableWidth, 200], ...
-            'CellSelectionCallback', @(src, event) handleSelection(src, event));
-
-    % Store selected rows in the dialog's UserData
-    dlg.UserData = [];
-
-    % Add OK and Cancel buttons
-    uicontrol('Parent', dlg, 'Style', 'pushbutton', 'String', 'OK', ...
-              'Position', [200, 10, 80, 30], ...
-              'Callback', @(src, event) confirmSelection(dlg, t));
-
-    uicontrol('Parent', dlg, 'Style', 'pushbutton', 'String', 'Cancel', ...
-              'Position', [100, 10, 80, 30], ...
-              'Callback', @(src, event) close(dlg));
-
-    % Callback to capture selected rows
-    function handleSelection(src, event)
-        if ~isempty(event.Indices)
-            dlg.UserData = unique(event.Indices(:, 1)); % Store selected row indices
-        end
-    end
-
-    % Callback to confirm selection
-    function confirmSelection(dlg, table)
-        selectedRows = dlg.UserData;
-        if isempty(selectedRows)
-            errordlg('No EEG sets selected. Please select at least one.', 'Error');
+    for i = 1:length(EEGData)
+        if EEGData(i).trials > 1
+            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin, EEGData(i).xmax);
         else
-            % Get selected EEG set indices
-            selectedIndices = cellfun(@(x) sscanf(x, 'EEG Set %d:'), eegSetNames(selectedRows));
-            selectedIndices_str = strjoin(arrayfun(@num2str, selectedIndices, 'UniformOutput', false), ' ');
-            set(measurementGUI.subPanel_sets_fillbox, 'String', selectedIndices_str);
-
-            measurementParams.sets = selectedIndices; % indeces
-
-            close(dlg);
+            epochWindows{i} = 'NA';
         end
     end
+
+    % Convert isEpoched to "Epoched" or "Continuous"
+    epochedStatus = cell(size(isEpoched)); % Preallocate cell array
+    epochedStatus(isEpoched) = {"Epoched"};
+    epochedStatus(~isEpoched) = {"Continuous"};
+
+    % Convert hasEventList to "True" or "False"
+    eventListStatus = cell(size(hasEventList)); % Preallocate cell array
+    eventListStatus(hasEventList) = {"True"};
+    eventListStatus(~hasEventList) = {"False"};
+
+    tableData = table(eegSetNames, epochedStatus, num2cell(sampleRates), eventListStatus, epochWindows,  ...
+        'VariableNames',{'EEG Set Name', 'Type','Sample Rate', 'EventList', 'Epoch Window'});
+
+    % get selection state
+    % get the GUI element from main EEGset selection marking if epoched
+    EEGset_select_epoched_element = findobj('Tag', 'EEGset_select_epoched_element');
+
+    if EEGset_select_epoched_element.Value == 1
+        selectedType = "Epoched";
+        isSelectable = isEpoched;
+        selectionText = "Selection limitted to epoched EEG sets (defined in EEGsets panel)";
+    else
+        selectedType = "Continuous";
+        isSelectable = ~isEpoched;
+        selectionText = "Selection limitted to continuous EEG sets (defined in EEGsets panel)";
+    end
+
+    % table starting colors
+    rowColors = repmat(defaultColor, height(tableData), 1); % Initialize all rows as white
+    for idx = 1:numSets
+        if ~isSelectable(idx) 
+            rowColors(idx, :) = [.8 , .8, .8];
+        end
+    end
+
+    % Create dialog
+    dlg = uifigure('Name', 'Select EEG Sets', 'Position', [300, 200, 600, 500]);
+    dlg.CloseRequestFcn = @(src, event) closePanel();
+
+    % Select all / Unselect all buttons
+    uibutton(dlg, ...
+             'Text', 'Select all', ...
+             'Position', [140, 450, 100, 30], ...
+             'ButtonPushedFcn', @(btn, event) selectAll());
+
+    uibutton(dlg, ...
+             'Text', 'Unselect all', ...
+             'Position', [290, 450, 100, 30], ...
+             'ButtonPushedFcn', @(btn, event) selectNone());
+
+    % Selection by epoched or continuous label...
+    uilabel(dlg, ...
+            'Text', selectionText, ...
+            'Position', [100, 400, 400, 40]);
+
+    % EEG set selection table
+    t = uitable(dlg, ...
+        'Data', tableData, ...
+        'Position', [50, 80, 500, 300], ...
+        'RowStriping', 'on', ...
+        'BackgroundColor', rowColors, ...
+        'CellSelectionCallback', @(src, event) selectRows(event));
+
+    % OK and Cancel buttons
+    uibutton(dlg, ...
+             'Text', 'OK', ...
+             'Position', [350, 20, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) confirmSelection());
+
+    uibutton(dlg, ...
+             'Text', 'Cancel', ...
+             'Position', [200, 20, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) closePanel());
+
+    %% **Callbacks**
+
+    % **Handle row selection**
+    function selectRows(event)
+        if isempty(event.Indices)
+            selectedRows = [];
+        else
+            tempSelection = unique(event.Indices(:, 1));
+            selectedRows = tempSelection(isSelectable(tempSelection)); % Only keep selectable rows
+        end
+        set(t, 'UserData', selectedRows);
+        highlightRows(selectedRows);
+    end
+
+    % **Select all selectable rows**
+    function selectAll()
+        selectedRows = find(isSelectable);
+        set(t, 'UserData', selectedRows);
+        highlightRows(selectedRows);
+    end
+
+    % **Deselect all rows**
+    function selectNone()
+        selectedRows = [];
+        set(t, 'UserData', selectedRows);
+        highlightRows(selectedRows);
+    end
+
+    % Highlight selected rows
+    function highlightRows(selectedRows)
+
+        % Copy the row colors (i.e. orange/red from warnings)
+        updatedColors = rowColors;
+
+        % Highlight valid selected rows
+        for idx = selectedRows'
+            if isSelectable(idx) % Only highlight rows that are selectable
+                updatedColors(idx, :) = highlightColor;
+            end
+        end
+
+        % Apply updated colors to the table
+        t.BackgroundColor = updatedColors;
+    end
+
+    % **Confirm selection & check consistency**
+    function confirmSelection()
+        selectedRows = t.UserData;
+        if isempty(selectedRows)
+            uialert(dlg, 'No EEG sets selected. Please select at least one.', 'Error', 'Icon', 'warning');
+            return;
+        end
+
+        % Extract selected EEG sets
+        selectedEEGData = EEGData(selectedRows); 
+        selectedTypes = isEpoched(selectedRows);
+        selectedEventLists = hasEventList(selectedRows);
+        selectedEpochs = epochWindows(selectedRows);
+        selectedSampleRates = sampleRates(selectedRows);
+
+        % Check for inconsistencies
+        if length(unique(selectedTypes)) > 1
+            uialert(dlg, 'All selected EEG sets must be either "Continuous" or "Epoched".', 'Error', 'Icon', 'warning');
+            return;
+        end
+        if  length(unique(selectedEventLists)) > 1
+            uialert(dlg, 'All selected EEG sets must have the same EventList status.', 'Error', 'Icon', 'warning');
+            return;
+        end
+        if  length(unique(selectedEpochs)) > 1 
+            uialert(dlg, 'All selected EEG sets must have the same epoch window.', 'Error', 'Icon', 'warning');
+            return;
+        end
+        if  length(unique(selectedSampleRates)) > 1
+            uialert(dlg, 'All selected EEG sets must have the same sample rate.', 'Error', 'Icon', 'warning');
+            return;
+        end
+
+        % Store selection in measurementParams
+        measurementParams.sets = selectedRows;
+
+        % Update GUI
+        %selectedNames = eegSetNames(sortIdx(selectedRows));
+        setStr = strjoin(arrayfun(@num2str, selectedRows, 'UniformOutput', false), ' ');
+        set(measurementGUI.subPanel_sets_fillbox, 'String', setStr);
+
+        % Close dialog
+        close(dlg);
+    end
+
+    % **Cancel selection**
+    function closePanel()
+
+        set(measurementGUI.subPanel_sets_button, 'String', 'Browse')
+        set(measurementGUI.subPanel_sets_button, 'Enable', 'on')
+
+        delete(dlg);
+    end
+
 end % end browseEEGsets function
 
 
@@ -516,7 +668,7 @@ function browseEventCodes()
     uibutton(dlg, ...
              'Text', 'Cancel', ...
              'Position', [150, 10, 80, 30], ...
-             'ButtonPushedFcn', @(btn, event) close(dlg));
+             'ButtonPushedFcn', @(btn, event) closePanel())
 
     %% **Step 3: Callbacks**
 
@@ -574,13 +726,13 @@ function browseEventCodes()
         eventCodesStr = strjoin(selectedEventCodes, ' ');
         set(measurementGUI.subPanel_event_byCode_fill, 'String', eventCodesStr);
 
-        close(dlg)
+        closePanel()
     end
 
     % cancel selection
     function closePanel()
 
-        % reactivate button (so no double clicking)
+        % reactivate button
         set(measurementGUI.subPanel_event_byCode_button, 'String', 'Browse')
         set(measurementGUI.subPanel_event_byCode_button, 'Enable', 'on')
 
@@ -829,14 +981,8 @@ function browseBins()
 
 end
 
-
-
 %% Section 4 - Browse/select channels %%
 function browseChannels()
-
-    % deactivate button (so no double clicking)
-    set(measurementGUI.subPanel_channel_button, 'String', '...')
-    set(measurementGUI.subPanel_channel_button, 'Enable', 'off')
 
     % Retrieve EEG data for the selected EEG sets
     selectedSets = measurementParams.sets;
@@ -844,12 +990,17 @@ function browseChannels()
         errordlg('No EEG sets selected. Please select EEG sets first.', 'Error');
         return;
     end
+
     EEGData = observe_EEGDAT.ALLEEG(selectedSets);
 
     % check that each set has channel info
     if ~all(arrayfun(@(x) isfield(x, 'chanlocs') && ~isempty(x.chanlocs), EEGData))
         error('One or more EEG sets are missing valid channel information.');
     end
+
+     % deactivate button
+    set(measurementGUI.subPanel_channel_button, 'String', '...')
+    set(measurementGUI.subPanel_channel_button, 'Enable', 'off')
 
     %% Make channel selection table
     % Extract the maximum number of channels across all EEG sets
@@ -938,6 +1089,7 @@ function browseChannels()
 
     % Create dialog using uifigure
     dlg = uifigure('Name', 'Select Channels', 'Position', [200, 200, 500, 600]);
+    dlg.CloseRequestFcn = @(src, event) closePanel();
 
     % "Show table of channels" button
     uibutton(dlg, ...
@@ -999,7 +1151,7 @@ function browseChannels()
     uibutton(dlg, ...
              'Text', 'Cancel', ...
              'Position', [150, 10, 80, 30], ...
-             'ButtonPushedFcn', @(btn, event) cancelSelection());
+             'ButtonPushedFcn', @(btn, event) closePanel());
 
     % Callback to display channel label summary (sub-dialog)
     function showChannelTable()
@@ -1081,25 +1233,262 @@ function browseChannels()
         set(measurementGUI.subPanel_channel_button, 'Enable', 'on')
 
         % Close the dialog
-        close(dlg);
+        closePanel();
     end
 
     % cancel selection
-    function cancelSelection()
+    function closePanel()
 
         % reactivate button (so no double clicking)
         set(measurementGUI.subPanel_channel_button, 'String', 'Browse')
         set(measurementGUI.subPanel_channel_button, 'Enable', 'on')
 
         % Close the dialog
-        close(dlg);
+        delete(dlg);
     end
 
 end % end browseEEGchannels function
 
+%% Section 6 -  Measurement window(s) %%
+
+% check if user defined windows will work...
+function checkWindows()
+
+end
+
+function detailsWindows()
+
+    % Retrieve EEG data for the selected EEG sets
+    selectedSets = measurementParams.sets;
+    if isempty(selectedSets)
+        errordlg('No EEG sets selected. Please select EEG sets first.', 'Error');
+        return;
+    end
+    EEGData = observe_EEGDAT.ALLEEG(selectedSets);
+    numSets = length(EEGData);
+
+    % Check if all EEG sets have been epoched
+    if all(arrayfun(@(x) isfield(x, 'EVENTLIST'), EEGData))
+        epochFlag = true;
+    else
+        epochFlag = false;
+    end
 
 
+end
 
+%% Section 7 - Measurement point(s) (only instataneous amplitude) %%
+
+%% Section 8 - Set Baseline %%
+function baselineDetails()
+
+    % Retrieve EEG data for the selected EEG sets
+    selectedSets = measurementParams.sets;
+    if isempty(selectedSets)
+        errordlg('No EEG sets selected. Please select EEG sets first.', 'Error');
+        return;
+    end
+
+    EEGData = observe_EEGDAT.ALLEEG(selectedSets);
+
+    % Get all epoch windows, check if all epoched
+    epochFlag = true; % default flag yes epoched
+    epochWindows = cell(size(EEGData))'; % Preallocate cell array for epoch windows
+
+    for i = 1:length(EEGData)
+        if EEGData(i).trials > 1
+            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin, EEGData(i).xmax);
+        else
+            epochWindows{i} = 'NA';
+            epochFlag = false; % if single set is not epoched, set flag
+        end
+    end
+
+    if length(unique(epochWindows)) > 1 % if not all identical epochs error
+        errordlg('All selected EEG sets must have the same epoch window.', 'Error');
+        return;
+    end
+
+    % deactivate button
+    set(measurementGUI.subPanel_baseline_button, 'String', '...')
+    set(measurementGUI.subPanel_baseline_button, 'Enable', 'off')
+
+    % set epoch options
+    if epochFlag
+        epochWindow = [EEGData(1).xmin EEGData(1).xmax];
+        preWindow = [epochWindow(1), 0];
+        postWindow = [0, epochWindow(2)];
+
+        fullWindow_label = sprintf('Full (%.3f %.3f)', epochWindow(1), epochWindow(2));
+        preWindow_label = sprintf('Pre (%.3f %.3f)', epochWindow(1), 0);
+        postWindow_label = sprintf('Post (%.3f %.3f)', 0, epochWindow(2));
+    else
+        fullWindow_label = 'Full (requires epoched data)';
+        preWindow_label = 'Pre (requires epoched data)';
+        postWindow_label = 'Post (requires epoched data)';
+
+    end
+
+    %% Create dialog
+    dlg = uifigure('Name', 'Set baseline (in ms)', 'Position', [200, 200, 270, 300]);
+    dlg.CloseRequestFcn = @(src, event) closePanel();
+
+    optionsGroup = uibuttongroup(dlg, ...
+        "Position",[10 80 250 210], ...
+        "SelectionChangedFcn",@(src, event) changeSelection());
+
+    optPre = uiradiobutton(optionsGroup, ...
+        "Text",preWindow_label, ...
+        "Position",[10 180 200 22]);
+    optPost = uiradiobutton(optionsGroup, ...
+        "Text",postWindow_label, ...
+        "Position",[10 140 200 22]);
+    optWhole = uiradiobutton(optionsGroup, ...
+        "Text",fullWindow_label, ...
+        "Position",[10 100 200 22]);
+    optNone = uiradiobutton(optionsGroup, ...
+        "Text","None", ...
+        "Position",[10 60 200 22]);
+    optCustom = uiradiobutton(optionsGroup, ...
+        "Text","Custom:", ...
+        "Position",[10 20 200 22]);
+
+    % Fillboxes for custom baseline
+    fillbox1 = uicontrol('Style', 'edit', ...
+        'Parent', dlg, ...
+        'String', '', ...
+        'BackgroundColor', 'white', ...
+        'FontSize', 9, ...
+        "Position",[100 100 40 22], ...
+        'Enable', 'off'); % enable defaults to off 
+    label_to = uicontrol('Style', 'text', ...
+        'Parent', dlg, ...
+        'String', 'to', ...
+        'FontSize', 9, ...
+        "Position",[150 100 40 22], ...
+        'Enable', 'off'); % enable defaults to off );
+    fillbox2 = uicontrol('Style', 'edit', ...
+        'Parent', dlg, ...
+        'String', '', ...
+        'BackgroundColor', 'white', ...
+        'FontSize', 9, ...
+        "Position",[200 100 40 22], ...
+        'Enable', 'off'); % enable defaults to off );
+
+    % Set defaults/enables
+    if epochFlag
+        optPre.Value = true;
+    else
+        optCustom.Value = true;
+        set(fillbox1, 'Enable', 'on')
+        set(label_to, 'Enable', 'on')
+        set(fillbox2, 'Enable', 'on')
+
+        set(optPre, 'Enable', 'off')
+        set(optPost, 'Enable', 'off')
+        set(optWhole, 'Enable', 'off')
+    end
+
+    % OK and Cancel buttons
+    uibutton(dlg, ...
+             'Text', 'OK', ...
+             'Position', [140, 10, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) confirmSelection());
+
+    uibutton(dlg, ...
+             'Text', 'Cancel', ...
+             'Position', [40, 10, 80, 30], ...
+             'ButtonPushedFcn', @(btn, event) closePanel());
+
+    % Error text
+    errorText = uilabel(dlg, ...
+                        'Text', '', ...
+                        'FontColor', 'red', ...
+                        'Position', [10, 60, 270, 20]);
+
+    %% Callback functions %%
+    function changeSelection(src,event)
+
+        baselineType = optionsGroup.SelectedObject;
+
+        if baselineType == optCustom
+            set(fillbox1, 'Enable', 'on')
+            set(label_to, 'Enable', 'on')
+            set(fillbox2, 'Enable', 'on')
+        else
+            set(fillbox1, 'Enable', 'off')
+            set(label_to, 'Enable', 'off')
+            set(fillbox2, 'Enable', 'off')
+        end
+    end
+
+    % Confirm selected channels
+    function confirmSelection()
+
+        errorText.Text = '';
+
+        baselineType = optionsGroup.SelectedObject;
+
+        switch baselineType
+            case optPre
+                baselineWindow = preWindow;
+            case optPost
+                baselineWindow = postWindow;
+            case optWhole
+                baselineWindow = epochWindow;
+            case optNone
+                baselineWindow = 'none';
+            case optCustom
+
+                % get values
+                startLatency = str2double(fillbox1.String);
+                stopLatency = str2double(fillbox2.String);
+
+                % checks
+                if isnan(startLatency) || isnan(stopLatency)
+                    errorText.Text = 'Error: Latencies must be numbers';
+                    return;
+                end
+
+                if startLatency < epochWindow(1) || startLatency > epochWindow(2) || stopLatency < epochWindow(1) || stopLatency > epochWindow(2)
+                    errorText.Text = 'Error: Latencies must be within epoch';
+                    return;
+                end
+
+                if startLatency > stopLatency
+                    errorText.Text = 'Error: Start latency must be less than stop latency';
+                    return;
+                end
+
+                baselineWindow = [startLatency, stopLatency];
+
+        end
+
+        % set baseline
+        measurementParams.baseline = baselineWindow;
+
+        % Update GUI display
+        baselineWindow_str = strjoin(arrayfun(@num2str, baselineWindow, 'UniformOutput', false), ' ');
+        set(measurementGUI.subPanel_baseline_fillbox, 'String', baselineWindow_str);
+
+        % Close the dialog
+        closePanel();
+    end
+
+    % cancel selection
+    function closePanel()
+
+        % reactivate button
+        set(measurementGUI.subPanel_baseline_button, 'String', 'Details')
+        set(measurementGUI.subPanel_baseline_button, 'Enable', 'on')
+
+        % Close the dialog
+        delete(dlg);
+    end
+
+end
+
+% use uigridlayout() for measure options?
 
 function saveMeasures(~, ~)
     display(measurementParams)
