@@ -31,7 +31,7 @@ ERPLAB Studio now includes the Pattern Classification tab. This makes use of the
 - The ability to create BESTsets in the EEG tab
 - The ability to plot multiple MVPC sets at the same time
 
-Several bugs have been fixed, and quality of life features included.
+Several bugs have been fixed and quality of life features are now included.
 
 ### ERPLAB v11.04 Release Notes
 
