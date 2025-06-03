@@ -275,7 +275,7 @@ function uitable1_erpset_table_CellEditCallback(hObject, eventdata, handles)
 DataString = handles.uitable1_erpset_table.Data;
 EEGArray = handles.EEGArray;
 if size(DataString,1) < numel(EEGArray)
-    msgboxText =  'BEST name and filename for one of erpsets are empty at least! Please give name to bestname and filename';
+    msgboxText =  'BESTset name and filename is missing for one of or more of the sets! Please name bestset and filename.';
     title = 'EStudio: f_BEST_save_as_GUI empty bestname';
     errorfound(msgboxText, title);
     return
@@ -283,7 +283,7 @@ end
 
 for Numofselected = 1:numel(EEGArray)
     if  isempty(DataString{Numofselected,1})
-        msgboxText =  'BESTname for one of erpsets is empty at least! Please give name to that bestset';
+        msgboxText =  'BESTset name is missing for one for one of or more of the sets! Please name bestset.';
         title = 'EStudio: f_BEST_save_as_GUI empty bestname';
         errorfound(msgboxText, title);
         return
@@ -331,7 +331,7 @@ ALLERP = handles.ALLERP;
 EEGArray = handles.EEGArray;
 
 if size(Data_String,1)< numel(EEGArray)%
-    msgboxText =  'BEST name for one of bestsets is empty at least! Please give a name';
+    msgboxText =  'BESTset name is missing for one for one of or more of the sets! Please name bestset.';
     title = 'EStudio: f_BEST_save_as_GUI empty bestname';
     errorfound(msgboxText, title);
     return
@@ -347,7 +347,7 @@ end
 
 for Numofselected = 1:numel(EEGArray)
     if  isempty(Data_String{Numofselected,1})
-        msgboxText =  'Erpname for one of bestsets is empty at least! Please give name to that bestset';
+        msgboxText =  BESTset name is missing for one for one of or more of the sets! Please name bestset.;
         title = 'EStudio: f_BEST_save_as_GUI empty bestname';
         errorfound(msgboxText, title);
         return
@@ -447,7 +447,7 @@ pathName = handles.edit_path.String;
 if isempty(pathName)
     pathName =cd;
 end
-title = 'Select one forlder for saving files in following procedures';
+title = 'Select one folder to save your files to.';
 select_path = uigetdir(pathName,title);
 
 if isequal(select_path,0)

@@ -29,7 +29,7 @@ if nargin == 0
 elseif nargin == 1
     EStudio_box_EEG_plot_set = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EStudio_box_EEG_plot_set = uiextras.BoxPanel('Parent', varargin{1}, 'Title', ' Plot Settings', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_box_EEG_plot_set = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------

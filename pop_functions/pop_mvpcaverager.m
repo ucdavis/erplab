@@ -74,7 +74,7 @@ if nargin==1  % GUI
             ALLMVPC = [];
             actualnset = 0;
         end
-        
+
         def  = erpworkingmemory('pop_mvpcaverager');
         if isempty(def)
             def = { actualnset 0 '' 1 1};
@@ -88,8 +88,11 @@ if nargin==1  % GUI
             if isempty(def{3})
                 def{3} = 1;
             end
+            if length(def{3}) ~= length(ALLMVPC)
+                def{3} = [1:length(ALLMVPC)];
+            end
         end
-        
+
         % def{2} = 0; %aaron: until I fix lists, always load mvpcmenu
         
         %
@@ -324,8 +327,7 @@ eegh(mvpccom);
 
 
 if issaveas
-    
-    
+        
     [MVPC, issave] = pop_savemymvpc(MVPC,'gui','averager');
     if issave>0
         if issave==2

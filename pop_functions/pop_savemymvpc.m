@@ -301,7 +301,7 @@ if overw==1
         ALLMVPC     = evalin('base', 'ALLMVPC');
         CURRENTMVPC = evalin('base', 'CURRENTMVPC');
         ALLMVPC(CURRENTMVPC) = MVPC;
-        assignin('base','ALLERP',ALLMVPC);  % save to workspace
+        assignin('base','ALLMVPC',ALLMVPC);  % save to workspace
         updatemenumvpc(ALLMVPC,1)            % overwrite erpset at erpsetmenu
     end
     
@@ -313,7 +313,7 @@ else
             pop_loadmvpc('filename', 'decodingtoolbox', 'UpdateMainGui', 'on');
         else
             assignin('base','MVPC',MVPC);
-            pop_loadmvpc('filename', 'workspace', 'UpdateMainGui', 'off');
+            pop_loadmvpc('filename', 'workspace', 'UpdateMainGui', 'on');
         end
     end
     if issave ~= 2

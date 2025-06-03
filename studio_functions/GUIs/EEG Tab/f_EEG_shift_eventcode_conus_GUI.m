@@ -204,10 +204,10 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG = observe_EEGDAT.EEG;
         msgboxText = '';
         if isempty(EEG(1).event)
-            msgboxText =  'Event for current EEG is empty';
+            msgboxText =  'Cannot detect events in this EEGset.';
         end
         if isempty([EEG(1).event.type])
-            msgboxText =  'Event for current EEG is empty';
+            msgboxText =  'Cannot detect events in this EEGset.';
         end
         if ~isempty(msgboxText)
             msgboxText =  ['Shift Event Codes (Continuous EEG) > Browse event codes:',32,msgboxText];
@@ -216,6 +216,8 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             return;
         end
         [eventtypes histo] = squeezevents(EEG.event);
+
+
         titlename = 'Select event codes:';
         
         Eventcodeold =  EEG_shift_eventcode_conus.event_codes_edit.String;

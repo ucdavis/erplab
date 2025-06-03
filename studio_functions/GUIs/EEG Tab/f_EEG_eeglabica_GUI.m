@@ -139,7 +139,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > Decompose data: Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA only works for one selected dataset at a time.'];
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -186,7 +186,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         eegh(LASTCOM);
         
-        fprintf(['\n ICA was done for eeg dataset (No.',num2str(EEGArray),'):',32,EEG.setname,'\n']);
+        fprintf(['\n ICA was completed for EEG dataset (No.',num2str(EEGArray),'):',32,EEG.setname,'\n']);
         fprintf( ['\n',repmat('-',1,100) '\n']);
         
         observe_EEGDAT.ALLEEG = ALLEEG;
@@ -225,7 +225,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > Inspect/label ICs:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > Inspect/label ICs: Only works for one selected dataset at a time.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -240,7 +240,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
             [~,LASTCOM] =  pop_selectcomps(EEG);%
             if isempty(LASTCOM)
-                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs: User selected cancel.');
                 observe_EEGDAT.eeg_panel_message =2;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 estudioworkingmemory('EEGUpdate',0);
@@ -286,7 +286,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > Classify IC by ICLabel: Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > Classify IC by ICLabel: Only works for one selected dataset at a time.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -339,7 +339,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > Remove ICs:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > Remove ICs: Only works for one selected dataset at a time.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -388,7 +388,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         plotag = 0;
         [EEG, LASTCOM] = pop_subcomp( EEG, components, plotag, keepcomp);
         if isempty(LASTCOM)
-            estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
+            estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs: User selected cancel.');
             observe_EEGDAT.eeg_panel_message =2;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             observe_EEGDAT.eeg_panel_message =2;
@@ -428,7 +428,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         eegh(LASTCOM);
-        fprintf(['\n ICs [',32,num2str(components),32, '] have been removed from eeg dataset (No.',num2str(EEGArray),'):',32,EEG.setname,'\n']);
+        fprintf(['\n ICs [',32,num2str(components),32, '] have been removed from EEG dataset (No.',num2str(EEGArray),'):',32,EEG.setname,'\n']);
         fprintf( ['\n',repmat('-',1,100) '\n']);
         
         observe_EEGDAT.ALLEEG = ALLEEG;
@@ -463,7 +463,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: Only works for one selected dataset at a time.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             
@@ -472,21 +472,21 @@ varargout{1} = EStudio_box_eeglab_ica;
         
         TartgetEEG = str2num(Source.String);
         if isempty(TartgetEEG) || numel(TartgetEEG)~=1 || any(TartgetEEG<=0)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The index of the Target EEG must be a single positive value'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The index of the targeted EEGset must be a single positive value'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if any(TartgetEEG>length(observe_EEGDAT.ALLEEG))
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The index of the Target EEG should be smaller than ',32,num2str(length(observe_EEGDAT.ALLEEG))];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The index of the targeted EEGset should be lesser than ',32,num2str(length(observe_EEGDAT.ALLEEG))];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if any(TartgetEEG== observe_EEGDAT.CURRENTSET)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The current EEG cannot be used as target one because the selected set is the same to the target set'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The selected set cannot be the same to the target set!'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -494,14 +494,14 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         
         if isempty(observe_EEGDAT.ALLEEG(EEGArray).icachansind)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: Please run ICA for the current EEG first'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: Please run ICA for the current EEGset first.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if any(observe_EEGDAT.ALLEEG(EEGArray).icachansind> observe_EEGDAT.ALLEEG(TartgetEEG).nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The channels for target set donot match with the current EEG'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The channels for the targeted EEGset do not match with the current EEGset'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -527,7 +527,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: Only works for one selected dataset at a time.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -535,7 +535,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         TartgetEEG = str2num(EStduio_eegtab_eeglab_ica.targetEEG_tras.String);
         if isempty(TartgetEEG) || numel(TartgetEEG)~=1 || any(TartgetEEG<=0)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The index of the Target EEG must be a single positive value'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The index of the targeted EEGset must be a single positive value.'];
             EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -543,7 +543,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         if any(TartgetEEG>length(observe_EEGDAT.ALLEEG))
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The index of the Target EEG should be smaller than ',32,num2str(length(observe_EEGDAT.ALLEEG))];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The index of the targeted EEGset should be lesser than ',32,num2str(length(observe_EEGDAT.ALLEEG))];
             EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -551,7 +551,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         if any(TartgetEEG== observe_EEGDAT.CURRENTSET)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The current EEG cannot be used as target one'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The current EEGset cannot also be used as the target.'];
             EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -559,7 +559,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         if isempty(observe_EEGDAT.EEG.icachansind)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: Please run ICA for the current EEG'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: No ICA weights recorded for this dataset -- first run ICA on it'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -567,7 +567,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         
         if any(observe_EEGDAT.EEG.icachansind(:)> observe_EEGDAT.ALLEEG(TartgetEEG).nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The channels for target set donot match with the current EEG'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The channels for the targeted EEGset do not match with the current EEGset'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -583,7 +583,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         [EEG,LASTCOM]= pop_editset(EEG, 'icaweights', ['ALLEEG(',num2str(EEGArray),').icaweights'],...
             'icasphere', ['ALLEEG(',num2str(EEGArray),').icasphere'], 'icachansind', ['ALLEEG(',num2str(EEGArray),').icachansind']);
         if isempty(LASTCOM)
-            estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
+            estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs: User selected cancel');
             observe_EEGDAT.eeg_panel_message =2;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             observe_EEGDAT.eeg_panel_message =2;
@@ -657,7 +657,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > IC maps in 2-D:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > IC maps in 2-D: Only works for one selected dataset at a time.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             Source.Enable = 'off';
@@ -672,7 +672,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             
             LASTCOM= pop_topoplot(EEG, 0);
             if isempty(LASTCOM)
-                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 2-D:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 2-D: User selected cancel');
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
@@ -709,7 +709,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > IC maps in 3-D:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > IC maps in 3-D: Only works for one selected dataset at a time.'];
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -724,12 +724,12 @@ varargout{1} = EStudio_box_eeglab_ica;
             
             [~, LASTCOM] = pop_headplot( EEG,0);
             if isempty(LASTCOM)
-                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 3-D:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 3-D: User selected cancel.');
                 observe_EEGDAT.eeg_panel_message =2;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
             end
-            set(gcf,'Name',['eegset',32,num2str(EEGArray(Numofeeg)),': IC maps in 3-D for',32,EEG.setname],'NumberTitle', 'off');
+            set(gcf,'Name',['eegset',32,num2str(EEGArray(Numofeeg)),': IC maps in 3-D for ',32,EEG.setname],'NumberTitle', 'off');
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf(LASTCOM,'\n');
             if Numofeeg==1
@@ -762,7 +762,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > IC spectra and maps:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > IC spectra and maps: Only works for one selected dataset at a time'];
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -777,12 +777,12 @@ varargout{1} = EStudio_box_eeglab_ica;
             
             LASTCOM= pop_spectopo(EEG,0);
             if isempty(LASTCOM)
-                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC spectra and maps:User selected cancel');
+                estudioworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC spectra and maps: User selected cancel');
                 observe_EEGDAT.eeg_panel_message =2;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
             end
-            set(gcf,'Name',['eegset',32,num2str(EEGArray(Numofeeg)),': IC spectra and maps for',32,EEG.setname],'NumberTitle', 'off');
+            set(gcf,'Name',['eegset',32,num2str(EEGArray(Numofeeg)),': IC spectra and maps for ',32,EEG.setname],'NumberTitle', 'off');
             LASTCOM = LASTCOM(8:end);
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf(LASTCOM,'\n');
@@ -815,7 +815,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = ['EEGLAB ICA > IC properties:Only works for one selected dataset'];
+            msgboxText = ['EEGLAB ICA > IC properties: Only works for one selected dataset at a time.'];
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -851,7 +851,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         
         spec_opt     = eval( [ '{' result{2} '}' ] );
         if isempty(chanorcomp)
-            msgboxText = 'EEGLAB Tools > IC properties:Please define IC index(ices)';
+            msgboxText = 'EEGLAB Tools > IC properties: Please define IC index(ices)';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -870,7 +870,7 @@ varargout{1} = EStudio_box_eeglab_ica;
                 return;
             end
             if min(chanorcomp(:)) > numel(EEG.icachansind) || max(chanorcomp(:)) > numel(EEG.icachansind)
-                fprintf( ['\n One or more defined IC index(ices) cannot be found, we therefore set it to 1\n']);
+                fprintf( ['\n One or more of the defined IC index(ices) cannot be found, we therefore set it to 1\n']);
                 chanorcomp = 1;
             end
             
@@ -914,7 +914,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         if numel(EEGArray)~=1
-            msgboxText = 'EEGLAB ICA > IC Time-frequency:Only works on one selected dataset';
+            msgboxText = 'EEGLAB ICA > IC Time-frequency: Only works on one selected dataset at a time.';
             Source.Enable = 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -1055,7 +1055,7 @@ checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr,filesep, file_name,'.set'];
 if exist(filenamex, 'file')~=0
-    msgboxText =  ['This EEG Data already exist.\n'...;
+    msgboxText =  ['This EEGset already exists.\n'...;
         'Would you like to overwrite it?'];
     title  = 'Estudio: WARNING!';
     button = askquest(sprintf(msgboxText), title);

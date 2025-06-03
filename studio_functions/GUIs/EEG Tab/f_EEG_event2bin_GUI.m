@@ -132,7 +132,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         
         BDFileName = EStduio_eegtab_EEG_event2bin.BDF_edit.String;
         if ~ischar(BDFileName) || isempty(BDFileName)
-            msgboxText =  ['Assign Events to Bins (BINLISTER) - bdfile should be a string.'];
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - BDF file should be a string.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
@@ -253,7 +253,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             %%check if the specified file exists
             if ~isfile(bdfileName)
                 bdfileName ='';
-                msgboxText = ['Assign Events to Bins (BINLISTER) > Advanced:Such bdfile doesnot exist'];
+                msgboxText = ['Assign Events to Bins (BINLISTER) > Advanced: Cannot find the specified BDF file.'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
             end
@@ -292,14 +292,14 @@ varargout{1} = EStudio_box_EEG_event2bin;
                             return
                         end
                     else
-                        msgboxText =  ['Assign Events to Bins (BINLISTER) > Advanced: EVENTLIST.eventinfo structure was not found, please Create EVENTLIST before BINLISTER'];
+                        msgboxText =  ['Assign Events to Bins (BINLISTER) > Advanced: EVENTLIST.eventinfo structure was not found, please create EVENTLIST before BINLISTER'];
                         titlNamerro = 'Warning for EEG Tab';
                         estudio_warning(msgboxText,titlNamerro);
                         observe_EEGDAT.eeg_panel_message =2;
                         return
                     end
                 else
-                    msgboxText =  ['Assign Events to Bins (BINLISTER) > Advanced: EVENTLIST structure was not found, Please Create EVENTLIST before BINLISTER'];
+                    msgboxText =  ['Assign Events to Bins (BINLISTER) > Advanced: EVENTLIST structure was not found, please create EVENTLIST before BINLISTER'];
                     titlNamerro = 'Warning for EEG Tab';
                     estudio_warning(msgboxText,titlNamerro);
                     observe_EEGDAT.eeg_panel_message =2;
@@ -326,7 +326,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             end
             switch option2do
                 case 0
-                    msgboxText = 'Assign Events to Bins (BINLISTER) > Advanced: Where should I send the update EVENTLIST??? Pick an option.';
+                    msgboxText = 'Assign Events to Bins (BINLISTER) > Advanced: Where should I send the updated EVENTLIST? Pick an option.';
                     titlNamerro = 'Warning for EEG Tab';
                     estudio_warning(msgboxText,titlNamerro);
                     observe_EEGDAT.eeg_panel_message =2;
@@ -443,7 +443,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         bdfileName =  EStduio_eegtab_EEG_event2bin.BDF_edit.String;
         %%check is the file name is a string
         if isempty(bdfileName) || ~ischar(bdfileName)
-            msgboxText =  ['Assign Events to Bins (BINLISTER) - bdfile should be a string'];
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - BDF file should be a string'];
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -452,7 +452,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         end
         %%check if the specified file exists
         if ~isfile(bdfileName)
-            msgboxText =  ['Assign Events to Bins (BINLISTER) - Cannot find the specified bdfile'];
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - Cannot find the specified BDF file.'];
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -466,7 +466,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         end
         eventlistFlag = check_evetlist(observe_EEGDAT.ALLEEG,EEGArray);
         if eventlistFlag==1
-            msgboxText =  ['Assign Events to Bins (BINLISTER) - No Eventlist or it is empty for some eegsets'];
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - Cannot find EVENTLIST, it is missing for one or more EEGsets.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -489,7 +489,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             %% Run pop_ command again with the inputs from the GUI
             [EEG, LASTCOM]   = pop_binlister( EEG , 'BDF',bdfileName, 'IndexEL',  1, 'SendEL2', 'EEG', 'UpdateEEG', 'on', 'Voutput', 'EEG', 'History', 'gui' );
             if isempty(LASTCOM)
-                disp('Process failed. Please check your data or you selected cancel')
+                disp('Process failed. You either selected Cancel, or there is a problem with your data.')
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
@@ -672,7 +672,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 eventlistFlag = 1;
                 if count==1
                     fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                    fprintf('For following eegset(s), we didnot find eventlist or found the eventlist is empty,please create one.\n')
+                    fprintf('For following EEGset(s), we did not find an EVENTLIST or found the EVENTLIST empty, please create one.\n')
                     fprintf(2,['\n',EEG.setname,'\n']);
                 end
             end
@@ -707,7 +707,7 @@ checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr,filesep, file_name,'.set'];
 if exist(filenamex, 'file')~=0
-    msgboxText =  ['This EEG Data already exist.\n'...;
+    msgboxText =  ['This EEGset already exists.\n'...;
         'Would you like to overwrite it?'];
     title  = 'Estudio: WARNING!';
     button = askquest(sprintf(msgboxText), title);

@@ -23,11 +23,11 @@ EStduio_eegtab_EEG_IC_chan = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_eeg_box_ic_chan = uiextras.BoxPanel('Parent', fig, 'Title', ' Channel  and IC Selection', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_eeg_box_ic_chan = uiextras.BoxPanel('Parent', fig, 'Title', 'Channel and IC Selection', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EStudio_eeg_box_ic_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', ' Channel  and IC Selection', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EStudio_eeg_box_ic_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channel and IC Selection', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EStudio_eeg_box_ic_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', ' Channel  and IC Selection', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_eeg_box_ic_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channel and IC Selection', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------

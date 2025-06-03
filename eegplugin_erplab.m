@@ -1,10 +1,10 @@
-% Author: Aaron Matthew Simmons, Guanghui Zhang, Andrew X Stewart,
+% Author: Kurt Winsler, David Garrett, Aaron Matthew Simmons, Guanghui Zhang, Andrew X Stewart,
 % Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2007-2023
-% Version 10.0
+% 2007-2025
+% Version 12.01
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -587,17 +587,17 @@ uimenu( mFI,'Label','Plot amplitude spectrum for ERP data ','CallBack', comPASer
 uimenu( mFI,'Label','Compute Evoked Power Spectrum from current ERPset','CallBack', comEPSerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mFI,'Label','EEG Linear detrend ','CallBack',comTK2,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:on');
 uimenu( mFI,'Label','ERP Linear detrend ','CallBack',comTK3,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-uimenu( mFI,'Label','EEG Polynomial detrend (continuous) (alpha version)','CallBack', comTK1,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:on;erpset:off');
+uimenu( mFI,'Label','EEG Polynomial detrend (continuous)','CallBack', comTK1,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:on;erpset:off');
 
 %% ARTIFACT DETECTION FOR EPOCHED DATA submenus
 %
 mAR = uimenu( submenu,'Label','Artifact detection in epoched data','tag','ART','separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Simple voltage threshold','CallBack', comAR0,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Moving window peak-to-peak threshold','CallBack', comAR1,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
-uimenu( mAR,'Label','Blink rejection (alpha version)','CallBack', comAR3,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
+uimenu( mAR,'Label','Blink rejection','CallBack', comAR3,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Step-like artifacts','CallBack', comAR4,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Sample to sample voltage threshold','CallBack', comAR6,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
-uimenu( mAR,'Label','Rate of change -time derivative- (alpha version)','CallBack', comAR7,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
+uimenu( mAR,'Label','Rate of change -time derivative-','CallBack', comAR7,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Blocking & flat line','CallBack', comAR8,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Clear artifact detection marks on EEG ','CallBack', comRSTAR,'separator','on','ForegroundColor', [0.6 0 0],'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Synchronize artifact info in EEG and EVENTLIST ','CallBack', comARSinc1,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
@@ -663,7 +663,7 @@ uimenu( mERPOP,'Label','ERP Calibration ','CallBack', comCALIERP,'separator','on
 %
 mERPLOT = uimenu( submenu,'Label','Plot ERP','tag','ERPlot','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP waveforms ','CallBack', comPLOT,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-uimenu( mERPLOT,'Label','Advanced ERP Waveform Viewer (Beta Version) ','CallBack', comPLOTV,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+uimenu( mERPLOT,'Label','Advanced ERP Waveform Viewer','CallBack', comPLOTV,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP scalp maps ','CallBack', comSCALP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Print plotted figure(s) to a file','CallBack', comEXPPDF,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Edit ERP channel location table','CallBack', comCHLOCTABLE,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');

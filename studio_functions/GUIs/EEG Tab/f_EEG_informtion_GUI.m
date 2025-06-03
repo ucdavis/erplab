@@ -3,9 +3,10 @@
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
-%Feb. 20234
+%Feb. 2024
 
-
+%Updated by David Garrett
+%June 2025
 
 function varargout = f_EEG_informtion_GUI(varargin)
 global observe_EEGDAT;
@@ -221,13 +222,25 @@ drawui_EEG_info(FonsizeDefault);
         if ~isempty(EEG) && EEG.trials>1 && isfield(EEG,'EVENTLIST') && ~isempty(EEG.EVENTLIST)
             gui_EEG_info.numofepoch.String = ['Number of epochs:',32,num2str(EEG.trials)];
             gui_EEG_info.numofepoch.Enable = 'on';
-            [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],0);
-            ERP.ntrials.accepted = countbinOK;
-            ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
-            ERP.ntrials.invalid = countbinINV;
-            N_trials = ERP.ntrials;
-            N_trial_total = sum(N_trials.accepted(:))+sum(N_trials.rejected(:))+sum(N_trials.invalid(:));
+
+            % Updated by DRG 06/03/2025
+            % [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],0);
+            % ERP.ntrials.accepted = countbinOK;
+            % ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
+            % ERP.ntrials.invalid = countbinINV;
+            % N_trials = ERP.ntrials;
+
+            %[EEG, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],0);
+            %EEG.ntrials.accepted = countbinOK;
+            %EEG.ntrials.rejected = countbiORI-countbinINV-countbinOK;
+            EEG.ntrials.rejected = sum(EEG.reject.rejmanual(EEG.reject.rejmanual ~=0));
+            %EEG.ntrials.invalid = countbinINV;
+            N_trials = EEG.ntrials;
+
+            %N_trial_total = sum(N_trials.accepted(:))+sum(N_trials.rejected(:))+sum(N_trials.invalid(:));
+            N_trial_total = length(EEG.reject.rejmanual);
             N_trial_rejected = sum(N_trials.rejected(:));
+
             if N_trial_total ==0
                 Total_rejected_trials = ['Total rejected trials:',32,'0 (0%)'];
             else

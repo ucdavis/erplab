@@ -2022,7 +2022,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columns =Plot_orgpar.gridlayout.columns;
         catch
             beep;
-            disp('The imported parameters didnot match with those of "Plot Organization".')
+            disp('The imported parameters did not match with those of "Plot Organization".')
             return;
         end
         
@@ -2048,7 +2048,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
         catch
             beep;
-            disp('The imported parameters for rows at "Grid Spacing" didnot match with those of "Plot Organization".')
+            disp('The imported parameters for rows at "Grid Spacing" did not match with those of "Plot Organization".')
             return;
         end
         %%column gap
@@ -2073,7 +2073,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
         catch
             beep;
-            disp('The imported parameters for columns at "Grid Spacing" didnot match with those of "Plot Organization".')
+            disp('The imported parameters for columns at "Grid Spacing" did not match with those of "Plot Organization".')
             return;
         end
         
@@ -2109,7 +2109,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 end
             end
             if ~isempty(EmptyItemStr)
-                MessageViewer= char(strcat('Plot Organization > Load - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
+                MessageViewer= char(strcat('Plot Organization > Load - Undefined items in grid locations:',EmptyItemStr,32,'. Because they  match with the selected labels'));
                 estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
             end
@@ -2529,7 +2529,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 end
             end
             if ~isempty(EmptyItemStr)
-                MessageViewer= char(strcat('Plot Organization > Apply-Undefined item(s) in grid locations:',EmptyItemStr,32,'because they donot match with the selected labels'));
+                MessageViewer= char(strcat('The following channels '));
                 estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
             end
@@ -2539,7 +2539,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                     EmptyItemStr = strcat(EmptyItemStr,32,char(plotArrayFormt(kk)));
                 end
                 if ~isempty(EmptyItemStr)
-                    MessageViewer= char(strcat('Plot Organization > Apply-Undefined item(s) in grid locations:',EmptyItemStr,32,'because they donot match with the selected labels'));
+                    MessageViewer= char(strcat('The following channels do not match with the selected labels, and will therefore be omitted from your grid:',EmptyItemStr,32));
                     estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                     viewer_ERPDAT.Process_messg =4;
                 end
@@ -2726,7 +2726,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
             
             if ~isempty(EmptyItemStr)
-                MessageViewer= char(strcat('Plot Organization > v_currentERP_change() - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
+                MessageViewer= char(strcat('The following channels do not match with the selected labels, and will therefore be omitted from your grid:',EmptyItemStr,32));
                 estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 return;
@@ -2800,7 +2800,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Enable = 'off';
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if PageValue ~=3
-                MessageViewer= char(strcat('Warning: Sampling rate varies across ERPsets. We used the first option'));
+                MessageViewer= char(strcat('Warning: Sampling rate varies across ERPsets. We used the first option.'));
                 estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 GridValue=1; OverlayValue = 2; PageValue =3;
@@ -2999,7 +2999,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data = Datanew;
             if ~isempty(EmptyItemStr)
-                MessageViewer= char(strcat('Plot Organization > loadproper_change() - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
+                MessageViewer= char(strcat('The following channels do not match with the selected labels, and will therefore be omitted from your grid:',EmptyItemStr,32));
                 estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 return;

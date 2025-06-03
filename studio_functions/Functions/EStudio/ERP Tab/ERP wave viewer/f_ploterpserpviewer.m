@@ -1054,12 +1054,12 @@ for Numofrows = 1:Numrows
         catch
             plotdatalabel = 0;
         end
-        if (qPLOTORG(1)==1 && qPLOTORG(2)==2) ||(qPLOTORG(1)==2 && qPLOTORG(2)==1)
-            plotArray1 = sort(plotArray);
-        else
-            plotArray1  = plotArray;
-        end
-        [~,plotdatalabel] = find(plotArray1 == plotdatalabel);
+        %if (qPLOTORG(1)==1 && qPLOTORG(2)==2) ||(qPLOTORG(1)==2 && qPLOTORG(2)==1)
+            %plotArray1 = sort(plotArray);
+        %else
+            %plotArray1  = plotArray;
+        %end
+        [~,plotdatalabel] = find(plotArray == plotdatalabel);
         if isempty(plotdatalabel)
            plotdatalabel = 0; 
         end

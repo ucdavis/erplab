@@ -4,10 +4,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v12.00
+## ERPLAB v12.01
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/12.00/erplab12.00.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
+  <a href="https://github.com/ucdavis/erplab/releases/download/12.01/erplab12.01.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
@@ -25,11 +25,13 @@ We encourage most users to use this latest major version.
 
 ## Release Notes
 
-### ERPLAB v12.00 Release Notes
+### ERPLAB v12.01 Release Notes
 
 ERPLAB Studio now includes the Pattern Classification tab. This makes use of the same underlying Pattern Classification (decoding) tools as in ERPLAB Classic, but with a more user-friendly GUI. Changes also include:
 - The ability to create BESTsets in the EEG tab
 - The ability to plot multiple MVPC sets at the same time
+
+Several bugs have been fixed, and quality of life features included.
 
 ### ERPLAB v11.04 Release Notes
 

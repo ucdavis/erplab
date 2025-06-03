@@ -225,7 +225,7 @@ try
         
     else
         beep;
-        error('f_erpAutoYLim() error: Please check if all of the parameters is correct.');
+        error('f_erpAutoYLim() error: Please check if all of the parameters are correct.');
         return;
     end
     
@@ -233,6 +233,6 @@ try
 catch
     
     beep;
-    error('f_erpAutoYLim() error: Please check if all of the parameters is correct.');
+    error('f_erpAutoYLim() error: Please check if all of the parameters are correct.');
     return;
 end

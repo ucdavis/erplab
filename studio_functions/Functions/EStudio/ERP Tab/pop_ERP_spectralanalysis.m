@@ -220,10 +220,26 @@ ERP.chanlocs = ERP.chanlocs(ChanArray);
 if strcmpi(p.Results.Plotwave,'on')
     fig = figure('Name',figure_name);
     %             set(fig,'outerposition',get(0,'screensize'));
-    
+
     FonsizeDefault = f_get_default_fontsize();
-    FreqTick = default_time_ticks(ERP, freqrange);
-    FreqTick = str2num(FreqTick{1});
+    % added by DRG 01/22/2025:
+    try
+        % Attempt to get FreqTick from the function
+        FreqTick = default_time_ticks(freqrange);
+        FreqTick = str2double(FreqTick{1});
+
+        % Check if FreqTick is empty and assign a fallback if necessary
+        if isempty(FreqTick)
+            error('FreqTick is empty'); % Force catch block execution
+        end
+    catch
+        % If an error occurs or FreqTick is empty, use the fallback method
+        startVal = freqrange(1);
+        endVal = freqrange(end);
+        stepSize = (endVal - startVal) / 5;
+        FreqTick = startVal:stepSize:endVal - stepSize; % Generate the fallback ticks
+    end
+
     pbox = f_getrow_columnautowaveplot(ChanArray);
     try
         RowNum = pbox(1)+1;
