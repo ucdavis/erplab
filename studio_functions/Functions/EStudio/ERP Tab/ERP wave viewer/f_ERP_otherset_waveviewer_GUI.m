@@ -468,21 +468,21 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         TimeRange = gui_erp_waviewer.ERPwaviewer.ERP.times;
         if bacselinePeriod(1)<TimeRange(1)
-            msgboxText =  strcat('Other > Baseline Correction > Custom(): Left edge of baseline period should be larger than',32,num2str(TimeRange(1)),'ms');
+            msgboxText =  strcat('Other > Baseline Correction > Custom(): Left edge of baseline period should be greater than ',32,num2str(TimeRange(1)),'ms');
             estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = '';
             viewer_ERPDAT.Process_messg =4;
             return;
         end
         if bacselinePeriod(2)>TimeRange(end)
-            msgboxText =  strcat('Other > Baseline Correction > Custom(): Right edge of baseline period should be smaller than',32,num2str(TimeRange(end)),'ms');
+            msgboxText =  strcat('Other > Baseline Correction > Custom(): Right edge of baseline period should be lesser than ',32,num2str(TimeRange(end)),'ms');
             estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             viewer_ERPDAT.Process_messg =4;
             Str.String = '';
             return;
         end
         if bacselinePeriod(1)>=bacselinePeriod(end)
-            msgboxText =  strcat('Other > Baseline Correction > Custom(): Right edge of baseline period should be larger than left edge');
+            msgboxText =  strcat('Other > Baseline Correction > Custom(): Right edge of baseline period should be greater than left edge');
             estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             viewer_ERPDAT.Process_messg =4;
             Str.String = '';
@@ -505,7 +505,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         bgColor = str2num(Str.String);
         if isempty(bgColor)
-            msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
+            msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and should be in RGB, e.g., [1 1 1]');
             estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
             viewer_ERPDAT.Process_messg =4;
@@ -513,7 +513,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         end
         
         if max(bgColor)>1 || min(bgColor) <0 ||  numel(bgColor)~=3
-            msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
+            msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and should be in RGB, e.g., [1 1 1]');
             estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
             viewer_ERPDAT.Process_messg =4;
@@ -651,7 +651,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_erp_waviewer.ERPwaviewer.baselinecorr = str2num(char(gui_otherset_waveviewer.bsl_customedit.String));
             %checking the defined time-window for baselne correction
             if isempty(gui_erp_waviewer.ERPwaviewer.baselinecorr)|| numel(gui_erp_waviewer.ERPwaviewer.baselinecorr)==1
-                msgboxText =  strcat('Other > Baseline Period: Inputs must be two numbers! If you donot change it, "none" will be used for baseline correction!');
+                msgboxText =  strcat('Other > Baseline Period: Inputs must be two numbers! If not corrected, "none" will be used for baseline correction.');
                 estudioworkingmemory('ERPViewer_proces_messg',msgboxText);
                 viewer_ERPDAT.Process_messg =4;
                 return;

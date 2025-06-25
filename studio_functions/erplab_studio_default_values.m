@@ -1,6 +1,6 @@
-erplabstudiover = '10.00';                  % current erplab studio version
-erplabstudiorel = '26-April-2022';             % DOB
-erplabstudiodeveloper = 'Simmons&Zhang'; 
+erplabstudiover = '12.01';                  % current erplab studio version
+erplabstudiorel = '03-June-2025';             % DOB
+erplabstudiodeveloper = 'Simmons,Zhang,Garrett,Winsler'; 
 % erplabstudiolabel = 1;%0: using ERPLAB; 1:using ERPLAB Studio
 %ColorB = [170 180 195]/255;          % old background color (until version 3)
 %ColorB = [0.9216 0.8353 0.6078];     % background color for version 4

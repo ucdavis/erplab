@@ -76,7 +76,7 @@
 function [EEG, com] = pop_basicfilter( EEG, chanArray, varargin)
 com = '';
 if exist('filtfilt','file') ~= 2
-        msgboxText =  'cannot find the signal processing toolbox';
+        msgboxText =  'ERROR: You currently do not have the Signal Processing Toolbox installed. Please contact your system administration or MATLAB to install "Signal Processing Toolbox" to your MATLAB version';
         title = 'ERPLAB: pop_basicfilter() error';
         errorfound(msgboxText, title);
         return
@@ -277,13 +277,13 @@ elseif iseegstruct(EEG(1))
                 iserrch = 1;
         end
 else
-        msgboxText =  'Unknow data structure.\npop_basicfilter() only works with EEGLAB and ERPLAB structures.';
+        msgboxText =  'Unknown data structure.\npop_basicfilter() only works with EEGLAB and ERPLAB structures.';
         title = 'ERPLAB: pop_basicfilter() error:';
         errorfound(sprintf(msgboxText), title);
         return
 end
 if iserrch
-        msgboxText =  'You do not have such amount of channels in your data!';
+        msgboxText =  'You do not have this number of channels in your data!';
         title = 'ERPLAB: basicfilter() error:';
         errorfound(msgboxText, title);
         return

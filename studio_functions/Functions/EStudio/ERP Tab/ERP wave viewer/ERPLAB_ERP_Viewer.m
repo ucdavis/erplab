@@ -105,7 +105,7 @@ for Numoferpset = 1:length(ALLERP)
     end
 end
 if ~isempty(datatypeFlag)
-    msgboxText =  ['ERP Wave Viewer donot support to plot the wave for the data that donot belong to "ERP" or "CSD".\n'...
+    msgboxText =  ['ERP Wave Viewer only supports ERPs and CSD.\n'...
         'Please remove the following ERPset with index(es):',32,num2str(datatypeFlag),'.'];
     if strcmpi(ERPtooltype,'ERPLAB')
         title_msg = 'ERPLAB: ERPLAB_ERP_Viewer() datatype error:';
@@ -184,7 +184,7 @@ viewer_ERPDAT.ERP_chan =  chanArray;
 try
     test = uix.HBoxFlex();
 catch
-    disp('The GUI Layout Toolbox might not be included. Please download it from:https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox')
+    disp('The GUI Layout Toolbox might not be included. Please download it from: https://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox')
     return
 end
 
@@ -411,7 +411,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
 %%--------------------Function is to close the toolbox---------------------
     function onExit(~,~)
         BackERPLABcolor1 = [1 0.9 0.3];    % yellow
-        question1 = ['Are you sure to quit "ERP wave viewer"?'];
+        question1 = ['Are you sure you with to quit the "ERP wave viewer"?'];
         title1 = 'My Viewer>Exit';
         oldcolor1 = get(0,'DefaultUicontrolBackgroundColor');
         set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor1)

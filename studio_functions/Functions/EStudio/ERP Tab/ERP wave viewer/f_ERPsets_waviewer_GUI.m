@@ -105,6 +105,11 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         ERPwaveview_erpsetops.erpset_apply = uicontrol('Style','pushbutton','Parent',ERPwaveview_erpsetops.help_apply_title  ,'String','Apply',...
             'callback',@ERPset_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
+
+        %ERPwaveview_erpsetops.erpset_apply = uicontrol('Style','pushbutton','Parent',ERPwaveview_erpsetops.help_apply_title  ,'String','Refresh',...
+            %'callback',@ERPset_resfresh,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+        %uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
+
         set(ERPwaveview_erpsetops.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(ERPwaveview_erpsetops.vBox, 'Sizes', [290 25]);
         ERPwaveview_erpsetops.ERPLABFlag = 0;

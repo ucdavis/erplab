@@ -1,10 +1,10 @@
 % New GUI Layout -ERPLAB Studio
 %
-% Author: Guanghui Zhang & Steve J. Luck & Andrew Stewart
+% Author: Guanghui Zhang, Kurt Winsler, David Garrett, & Steve J. Luck 
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022-2024
+% 2022-2025
 
 % ERPLAB Studio Toolbox
 %

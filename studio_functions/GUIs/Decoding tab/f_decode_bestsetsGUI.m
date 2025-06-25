@@ -1,10 +1,10 @@
 % BESTset selector panel
 %
-% Author: Guanghui ZHANG && Steven Luck
+% Author: Guanghui Zhang, David Garrett && Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2024
+% 2022-2025
 
 % ERPLAB Studio Toolbox
 %
@@ -76,17 +76,13 @@ varargout{1} = box_bestset_gui;
         Bestsetops.suffix = uicontrol('Parent', Bestsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 
-
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Bestsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        Bestsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
-            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        Bestsetops.refresh_erpset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
-            'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.combinbest = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Combine bins',...
             'Callback', @combinbest,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons3,'Sizes',[55 55 55 -1]);
+        Bestsetops.refresh_erpset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
+            'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
 
@@ -96,7 +92,15 @@ varargout{1} = box_bestset_gui;
             'Callback', @save_bestas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Bestsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons4,'Sizes',[70 90 95]);
+
+        buttons5 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+
+        Bestsetops.clearselected = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear Selected', ...
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        Bestsetops.clearall = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear All', ...
+            'Callback', @clearall,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        %set(buttons4,'Sizes',[70 90 95]);
+        set(vBox, 'Sizes', [150 25 25 25 25]);
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -389,6 +393,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.refresh_erpset.Enable= 'on';
         Bestsetops.combinbest.Enable=Edit_label;
         Bestsetops.clearselected.Enable=Edit_label;
+        Bestsetops.clearall.Enable=Edit_label;
         Bestsetops.savebutton.Enable= Edit_label;
         Bestsetops.saveasbutton.Enable=Edit_label;
         Bestsetops.curr_folder.Enable='on';
@@ -457,6 +462,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.suffix.Enable= Edit_label;
         Bestsetops.refresh_erpset.Enable= 'on';
         Bestsetops.clearselected.Enable=Edit_label;
+        Bestsetops.clearall.Enable=Edit_label;
         Bestsetops.combinbest.Enable=Edit_label;
         Bestsetops.savebutton.Enable= Edit_label;
         Bestsetops.saveasbutton.Enable=Edit_label;
@@ -472,6 +478,72 @@ varargout{1} = box_bestset_gui;
         observe_DECODE.Count_currentMVPC=6;
     end
 
+%%----------------------Clear All BESTsets-------------------------
+    function clearall(source,~)
+        if isempty(observe_DECODE.BEST)
+            observe_DECODE.Count_currentbest=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
+        if ~isempty(messgStr)
+            observe_DECODE.Count_currentbest=eegpanelIndex+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('f_Decode_proces_messg','BESTsets>Clear');
+        observe_DECODE.Process_messg =1;
+        ALLBEST = observe_DECODE.ALLBEST;
+        BESTArray = 1:length(ALLBEST);
+        if isempty(BESTArray) || any(BESTArray(:)>length(observe_DECODE.ALLBEST)) || any(BESTArray(:)<1)
+            BESTArray = length(observe_DECODE.ALLBEST);
+        end
+        [ALLBEST,BESTCOM] = pop_deletebestset(ALLBEST,'BESTsets', BESTArray, 'Saveas', 'off','History', 'gui' );
+        if isempty(BESTCOM)
+            observe_DECODE.Process_messg =1;
+            return;
+        end
+        mvpch(BESTCOM);
+        if isempty(ALLBEST)
+            observe_DECODE.ALLBEST = [];
+            observe_DECODE.BEST = [];
+            observe_DECODE.CURRENTBEST  = 0;
+            assignin('base','BEST',observe_DECODE.BEST)
+        else
+            observe_DECODE.ALLBEST = ALLBEST;
+            observe_DECODE.BEST = observe_DECODE.ALLBEST(end);
+            observe_DECODE.CURRENTBEST  = length(observe_DECODE.ALLBEST);
+        end
+        BESTlistName =  getBESTsets();
+        if isempty(observe_DECODE.ALLBEST)
+            Edit_label = 'off';
+        else
+            Edit_label = 'on';
+        end
+        Bestsetops.butttons_datasets.String = BESTlistName;
+        if observe_DECODE.CURRENTBEST>0
+            Bestsetops.butttons_datasets.Value = observe_DECODE.CURRENTBEST;
+        else
+            Bestsetops.butttons_datasets.Value=1;
+        end
+        Bestsetops.dupeselected.Enable=Edit_label;
+        Bestsetops.renameselected.Enable=Edit_label;
+        Bestsetops.suffix.Enable= Edit_label;
+        Bestsetops.refresh_erpset.Enable= 'on';
+        Bestsetops.clearselected.Enable=Edit_label;
+        Bestsetops.clearall.Enable=Edit_label;
+        Bestsetops.combinbest.Enable=Edit_label;
+        Bestsetops.savebutton.Enable= Edit_label;
+        Bestsetops.saveasbutton.Enable=Edit_label;
+        Bestsetops.curr_folder.Enable='on';
+        Bestsetops.butttons_datasets.Min =1;
+        Bestsetops.butttons_datasets.Max =length(BESTlistName)+1;
+        Bestsetops.butttons_datasets.Enable = Edit_label;
+        Bestsetops.append.Enable = Edit_label;
+        BESTArray = observe_DECODE.CURRENTBEST;
+        estudioworkingmemory('BESTArray',BESTArray);
+        observe_DECODE.Process_messg =2;
+        observe_DECODE.Count_currentbest = 2;
+        observe_DECODE.Count_currentMVPC=6;
+    end
 
 %-------------------------- Save selected BESTsets-------------------------------------------
     function save_best(source,~)
@@ -880,6 +952,7 @@ varargout{1} = box_bestset_gui;
         Bestsetops.suffix.Enable= Edit_label;
         Bestsetops.refresh_erpset.Enable= 'on';
         Bestsetops.clearselected.Enable=Edit_label;
+        Bestsetops.clearall.Enable=Edit_label;
         Bestsetops.savebutton.Enable= Edit_label;
         Bestsetops.saveasbutton.Enable=Edit_label;
         Bestsetops.combinbest.Enable=Edit_label;

@@ -441,8 +441,8 @@ pathName = handles.edit_path.String;
 if isempty(pathName)
     pathName =cd;
 end
-title = 'Select one forlder for saving files in following procedures';
-select_path = uigetdir(pathName,title);
+title = 'Select one folder for saving files in following procedures';
+select_path = uiputfile(pathName,title);
 
 if isequal(select_path,0)
     select_path = cd;

@@ -25,9 +25,9 @@ for t=1:nformulas
                 if isempty(pleft) &&  ~isempty(plcom) && strcmpi(whocall,'norecu')
                         if ask4fix
                                 BackERPLABcolor = [1 0.9 0.3];    % yellow
-                                question = ['For non recursive mode, left side of equation\nmust be define as a new channel.\n'...
+                                question = ['For non recursive mode, left side of equation\nmust be defined as a new channel.\n'...
                                             'For instance, nchan1 = ...\n\n'...
-                                            'Do you want that EStudio corrects the syntax for you?'];
+                                            'Do you want to have EStudio correct the syntax for you?'];
                                 title = 'WARNING: Syntax is not proper for non recursive mode';
                                 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
                                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
@@ -50,9 +50,9 @@ for t=1:nformulas
                 elseif ~isempty(pleft) && strcmpi(whocall,'recu')
                         if ask4fix
                                 BackERPLABcolor = [1 0.9 0.3];    % yellow
-                                question = ['For recursive mode, left side of equation cannot\nbe define as a new channel.\n'...
+                                question = ['For recursive mode, left side of equation cannot\nbe defined as a new channel.\n'...
                                             'For instance, you must write chan1 = ...\n\n'...
-                                            'Do you want that EStudio corrects the syntax for you?'];
+                                            'Do you to have EStudio correct the syntax for you?'];
                                 title = 'WARNING: Syntax is not proper for recursive mode';
                                 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
                                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)

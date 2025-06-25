@@ -81,8 +81,7 @@ varargout{1} = box_mvpcset_gui;
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Mvpcsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        Mvpcsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
-            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+      
         Mvpcsetops.mvpc_Export = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Export', ...
             'Callback', @mvpc_Export,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.refresh_mvpcset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
@@ -96,7 +95,17 @@ varargout{1} = box_mvpcset_gui;
             'Callback', @save_mvpcas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons4,'Sizes',[70 90 95])
+
+        buttons5 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+
+        Mvpcsetops.clearselected = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear Selected', ...
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        Mvpcsetops.clearall = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear All', ...
+            'Callback', @clearall,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+
+        %set(buttons4,'Sizes',[70 90 95])
+
+        set(vBox, 'Sizes', [150 25 25 25 25]);
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -447,6 +456,7 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.suffix.Enable= Edit_label;
         Mvpcsetops.refresh_mvpcset.Enable= 'on';
         Mvpcsetops.clearselected.Enable=Edit_label;
+        Mvpcsetops.clearall.Enable=Edit_label;
         Mvpcsetops.savebutton.Enable= Edit_label;
         Mvpcsetops.saveasbutton.Enable=Edit_label;
         Mvpcsetops.curr_folder.Enable='on';
@@ -520,6 +530,7 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.suffix.Enable= Edit_label;
         Mvpcsetops.refresh_mvpcset.Enable= 'on';
         Mvpcsetops.clearselected.Enable=Edit_label;
+        Mvpcsetops.clearall.Enable=Edit_label;
         Mvpcsetops.savebutton.Enable= Edit_label;
         Mvpcsetops.saveasbutton.Enable=Edit_label;
         Mvpcsetops.curr_folder.Enable='on';
@@ -532,6 +543,73 @@ varargout{1} = box_mvpcset_gui;
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 1;
     end
+
+
+%%----------------------Clear ALL MVPCsets-------------------------
+    function clearall(source,~)
+        if isempty(observe_DECODE.MVPC)
+            observe_DECODE.Count_currentMVPC=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_decodetab_panelchanges();
+        if ~isempty(messgStr)
+            observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Clear');
+        observe_DECODE.Process_messg =1;
+        %MVPCArray = Mvpcsetops.butttons_datasets.Value;
+        
+        ALLMVPC = observe_DECODE.ALLMVPC;
+        MVPCArray = 1:length(ALLMVPC);
+        [ALLMVPC,LASTCOM] = pop_deletemvpcset(ALLMVPC,'MVPCsets', MVPCArray, 'Saveas', 'off','History', 'gui' );
+        if isempty(LASTCOM)
+            observe_DECODE.Process_messg =2;
+            return;
+        end
+        mvpch(LASTCOM);
+        
+        if isempty(ALLMVPC)
+            observe_DECODE.ALLMVPC = [];
+            observe_DECODE.MVPC = [];
+            observe_DECODE.CURRENTMVPC  = 0;
+            assignin('base','MVPC',observe_DECODE.MVPC)
+        else
+            observe_DECODE.ALLMVPC = ALLMVPC;
+            observe_DECODE.MVPC = observe_DECODE.ALLMVPC(end);
+            observe_DECODE.CURRENTMVPC  = length(observe_DECODE.ALLMVPC);
+        end
+        MVPClistName =  getMVPCsets();
+        if isempty(observe_DECODE.ALLMVPC)
+            Edit_label = 'off';
+        else
+            Edit_label = 'on';
+        end
+        Mvpcsetops.butttons_datasets.String = MVPClistName;
+        if observe_DECODE.CURRENTMVPC>0
+            Mvpcsetops.butttons_datasets.Value = observe_DECODE.CURRENTMVPC;
+        else
+            Mvpcsetops.butttons_datasets.Value=1;
+        end
+        Mvpcsetops.dupeselected.Enable=Edit_label;
+        Mvpcsetops.renameselected.Enable=Edit_label;
+        Mvpcsetops.suffix.Enable= Edit_label;
+        Mvpcsetops.refresh_mvpcset.Enable= 'on';
+        Mvpcsetops.clearselected.Enable=Edit_label;
+        Mvpcsetops.clearall.Enable=Edit_label;
+        Mvpcsetops.savebutton.Enable= Edit_label;
+        Mvpcsetops.saveasbutton.Enable=Edit_label;
+        Mvpcsetops.curr_folder.Enable='on';
+        Mvpcsetops.butttons_datasets.Min =1;
+        Mvpcsetops.butttons_datasets.Max =length(MVPClistName)+1;
+        Mvpcsetops.butttons_datasets.Enable = Edit_label;
+        Mvpcsetops.append.Enable = Edit_label;
+        MVPCArray = observe_DECODE.CURRENTMVPC;
+        estudioworkingmemory('MVPCArray',MVPCArray);
+        observe_DECODE.Process_messg =2;
+        observe_DECODE.Count_currentMVPC = 1;
+    end
+
 
 
 %-------------------------- Save selected MVPCsets-------------------------------------------

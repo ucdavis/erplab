@@ -264,7 +264,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         Newchan = round(str2num(Source.String));
         if isempty(Newchan) || any(Newchan(:) <=0)
-            msgboxText = ['Interpolate Channels > Indexes of interpolated chans should be positive values'];
+            msgboxText = ['Interpolate Channels: Indexes of Interpolated Channels should be positive values'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -273,7 +273,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         ChanNum = observe_EEGDAT.EEG.nbchan;
         if any(Newchan(:) > ChanNum)
-            msgboxText =['Interpolate Channels > Any indexes of interpolated chans should be between 1 and ',32,num2str(ChanNum)];
+            msgboxText =['Interpolate Channels: Any indexes of Interpolated Channels should be between 1 and ',32,num2str(ChanNum)];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -282,7 +282,7 @@ varargout{1} = box_interpolate_chan_epoch;
         ChanignoreArray = str2num(Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String);
         overlap_elec = intersect(Newchan,ChanignoreArray);
         if ~isempty(overlap_elec)
-            msgboxText = ['Interpolate Channels: There is overlap between the interpolated chans and the ignore chans'];
+            msgboxText = ['Interpolate Channels: There is an overlap between the Interpolated Channels and the Ignored Channels'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -429,7 +429,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         ChanArrayNew = str2num(Source.String);
         if isempty(ChanArrayNew) || any(ChanArrayNew(:)<=0)
-            msgboxText = ['Interpolate Channels: Any index(es) of the ignored channels should be positive value'];
+            msgboxText = ['Interpolate Channels: Index(es) of the ignored channels should be a positive value'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -437,7 +437,7 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         
         if any(ChanArrayNew(:) > observe_EEGDAT.EEG.nbchan)
-            msgboxText = ['Interpolate Channels: Any index(es) of the ignored channels should be below ',32,num2str(observe_EEGDAT.EEG.nbchan)];
+            msgboxText = ['Interpolate Channels: Index(es) of the ignored channels should be lesser than ',32,num2str(observe_EEGDAT.EEG.nbchan)];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -445,7 +445,7 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         overlap_elec = intersect(ChanArray, ChanArrayNew);
         if ~isempty(overlap_elec)
-            msgboxText = ['Interpolate Channels: There is overlap in the replace electrodes and the ignore electrodes'];
+            msgboxText = ['Interpolate Channels: There is an overlap in the Interpolated Channels and the Ignored Channels'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -503,7 +503,7 @@ varargout{1} = box_interpolate_chan_epoch;
         ChanArrayNew =  str2num(Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String);
         overlap_elec = intersect(ChanArray, ChanArrayNew);
         if ~isempty(overlap_elec)
-            msgboxText = ['Interpolate Channels > There is overlap in the replace electrodes and the ignore electrodes'];
+            msgboxText = ['Interpolate Channels: There is an overlap in the Interpolated Channels and the Ignored Channels'];
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -862,7 +862,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         ChanArray =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         if isempty(ChanArray) || any(ChanArray(:)<=0)
-            msgboxText = ['Interpolate Channels >  Run: The index(es) of the interpolated chans should be positive numbers'];
+            msgboxText = ['Interpolate Channels: Index(es) of the Interpolated Channels should be positive values'];
             Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -877,7 +877,7 @@ varargout{1} = box_interpolate_chan_epoch;
         if ~isempty(ChanArrayig)
             overlap_elec = intersect(ChanArray, ChanArrayig);
             if ~isempty(overlap_elec)
-                msgboxText = ['Interpolate Channels >  Run: There is overlap in the replace electrodes and the ignore electrodes'];
+                msgboxText = ['Interpolate Channels: There is an overlap in the Interpolated Channels and the Ignored Channels'];
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -885,7 +885,7 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             
             if  any(ChanArrayig(:)<=0)
-                msgboxText = ['Interpolate Channels > Run: Index(es) of the ignored channels should be positive values'];
+                msgboxText = ['Interpolate Channels: Index(es) of the ignored channels should be positive values'];
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -893,7 +893,7 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             
             if any(ChanArrayig(:) > observe_EEGDAT.EEG.nbchan)
-                msgboxText = ['Interpolate Channels >  Run: Index(es) of the ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)];
+                msgboxText = ['Interpolate Channels: Index(es) of the ignored channels should be lesser than ',32,num2str(observe_EEGDAT.EEG.nbchan)];
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -901,7 +901,7 @@ varargout{1} = box_interpolate_chan_epoch;
             end
         end
         if numel(ChanArrayig) + numel(ChanArray) ==observe_EEGDAT.EEG.nbchan
-            msgboxText = ['Interpolate Channels >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others'];
+            msgboxText = ['Interpolate Channels: Too many channels will be interpolated or ignored, please leave enough channels perform the interpolation!'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -918,7 +918,7 @@ varargout{1} = box_interpolate_chan_epoch;
             
             %%check the selected chans
             if any(ChanArray(:) > EEG.nbchan)
-                msgboxText = ['Interpolate Channels >  Run: Selected channel should be between 1 and ',32, num2str(EEG.nbchan)];
+                msgboxText = ['Interpolate Channels: Selected channel should be between 1 and ',32, num2str(EEG.nbchan)];
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -926,7 +926,7 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             
             if numel(ChanArray) == EEG.nbchan
-                msgboxText = ['Interpolate Channels >  Run: We strongly recommend you donot need to interpolate all channels'];
+                msgboxText = ['Interpolate Channels: We strongly recommend you do not interpolate all channels'];
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -1016,7 +1016,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         replaceChannelIndes =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         if isempty(replaceChannelIndes) || min(replaceChannelIndes(:))<=0
-            msgboxText = ['Interpolate Channels >  Run: Index(es) of interpolated chans should be positive numbers'];
+            msgboxText = ['Interpolate Channels: Index(es) of Interpolated Channels should be positive values'];
             Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -1050,7 +1050,7 @@ varargout{1} = box_interpolate_chan_epoch;
         if ~isempty(ignoreChannels)
             overlap_elec = intersect(replaceChannelIndes, ignoreChannels);
             if ~isempty(overlap_elec)
-                msgboxText = ['Interpolate Channels >  Run: There is overlap in the replace electrodes and the ignore electrodes'];
+                msgboxText = ['Interpolate Channels: There is an overlap in the Interpolated Channels and the Ignored Channels'];
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -1059,7 +1059,7 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             
             if  any(ignoreChannels(:)<=0)
-                msgboxText = ['Interpolate Channels > Run: Index(es) of the ignored channels should be positive values'];
+                msgboxText = ['Interpolate Channels: Index(es) of the ignored channels should be positive values'];
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -1068,7 +1068,7 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             
             if any(ignoreChannels(:) > observe_EEGDAT.EEG.nbchan)
-                msgboxText = ['Interpolate Channels >  Run: Index(es) of the ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)];
+                msgboxText = ['Interpolate Channels: Index(es) of the ignored channels should be lesser than ',32,num2str(observe_EEGDAT.EEG.nbchan)];
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -1099,7 +1099,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.mflag8.Value];
         [~,active_flags] = find(Eegtab_EEG_interpolate_chan_epoch.mflag==1);
         if isempty(active_flags)
-            msgboxText = ['Interpolate Channels >  Run: No epochs were actually flagged, so no epochswere needed  to interpolate'];
+            msgboxText = ['Interpolate Channels: No epochs were flagged, so no epochs were interpolated.'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =2;
@@ -1119,7 +1119,7 @@ varargout{1} = box_interpolate_chan_epoch;
             
             %%check interpolated chans and ignored chans
             if any(replaceChannelIndes(:) > EEG.nbchan )
-                msgboxText = ['Interpolate Channels >  Run: Interpolated chans should be smaller than',32,num2str( EEG.nbchan)];
+                msgboxText = ['Interpolate Channels: Interpolated channels should be lesser than ',32,num2str( EEG.nbchan)];
                 estudioworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
@@ -1130,7 +1130,7 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             
             if any(ignoreChannels(:) > EEG.nbchan)
-                msgboxText = ['Interpolate Channels >  Run: Ignored chans should be smaller than',32,num2str( EEG.nbchan)];
+                msgboxText = ['Interpolate Channels: Ignored channels should be lesser than ',32,num2str( EEG.nbchan)];
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);

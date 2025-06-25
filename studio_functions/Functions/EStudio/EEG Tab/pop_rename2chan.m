@@ -62,13 +62,13 @@ if nargin< 3
     EEG = ALLEEG(CURRENTSET);
     if ~isfield(EEG,'chanlocs')
         beep;
-        disp('The current dataset donot have chanlocs field');
+        disp('The current dataset does not have channel location info.');
         return;
     end
     chanlocs = EEG.chanlocs;
     if ~isfield(chanlocs,'labels')
         beep;
-        disp('There is no labels for chanlocs for the current dataset');
+        disp('There are no labels for the channel location info in the current dataset');
         return;
     end
     
@@ -148,13 +148,13 @@ end
 EEG = ALLEEG(CURRENTSET);
 if ~isfield(EEG,'chanlocs')
     beep;
-    disp('The current dataset donot have chanlocs field');
+    disp('The current dataset does not have channel location info.');
     return;
 end
 chanlocs = EEG.chanlocs;
 if ~isfield(chanlocs,'labels')
     beep;
-    disp('There is no labels for chanlocs for the current dataset');
+    disp('There are no labels for the channel location info in the current dataset');
     return;
 end
 
@@ -181,13 +181,13 @@ for Numofchan = 1:numel(qchanArray)
     try
         if isempty(char(qChanlabelsnew{Numofchan}))
             qChanlabelsnew{Numofchan,1}  = EEG.chanlocs(qchanArray(Numofchan)).labels;
-            fprintf(2,['\n Warning: name for channel ',32,num2str(qchanArray(Numofchan)),32,' was empty, we threfore used its original name',32,qChanlabelsnew{Numofchan,1},'.\n']);
+            fprintf(2,['\n Warning: name for channel ',32,num2str(qchanArray(Numofchan)),32,' was empty, we therefore used its original name',32,qChanlabelsnew{Numofchan,1},'.\n']);
         else
             qChanlabelsnew{Numofchan,1}  = char(qChanlabelsnew{Numofchan});
         end
     catch
         qChanlabelsnew{Numofchan,1}  = EEG.chanlocs(qchanArray(Numofchan)).labels;
-        fprintf(2,['\n Warning: name for channel ',32,num2str(qchanArray(Numofchan)),32,'was not defined, we threfore used its original name',32,qChanlabelsnew{Numofchan,1},'.\n']);
+        fprintf(2,['\n Warning: name for channel ',32,num2str(qchanArray(Numofchan)),32,'was not defined, we therefore used its original name',32,qChanlabelsnew{Numofchan,1},'.\n']);
     end
 end
 

@@ -111,10 +111,8 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.appendbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Append', ...
-            'Callback', @append_eeg,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
-        
-        EStduio_eegtab_EEG_set.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
-            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @append_eeg,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);      
+
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
             'String', 'Save', 'Callback', @eegset_save,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -122,8 +120,16 @@ estudioworkingmemory('Startimes',0);%%set default value
             'String', 'Save a Copy', 'Callback', @eegset_saveas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons4,'Sizes',[70 90 95]);
-        set(vBox, 'Sizes', [20 150 25 25 25]);
+        
+
+        buttons5 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_set.clearselected = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear Selected', ...
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        EStduio_eegtab_EEG_set.clearall= uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear All', ...
+            'Callback', @clearall,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+
+        %set(buttons4,'Sizes',[70 90 95]);
+        set(vBox, 'Sizes', [20 150 25 25 25 25]);
         estudioworkingmemory('EEGTab_eegset',0);
         EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
     end
@@ -554,6 +560,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.renameselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.suffix.Enable= Edit_label;
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.clearall.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
         EStduio_eegtab_EEG_set.curr_folder.Enable='on';
@@ -640,6 +647,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.renameselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.suffix.Enable= Edit_label;
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.clearall.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
         EStduio_eegtab_EEG_set.curr_folder.Enable='on';
@@ -766,6 +774,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.renameselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.suffix.Enable= Edit_label;
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.clearall.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
         EStduio_eegtab_EEG_set.curr_folder.Enable='on';
@@ -966,6 +975,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.renameselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.suffix.Enable= Edit_label;
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.clearall.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
         EStduio_eegtab_EEG_set.curr_folder.Enable='on';
@@ -984,6 +994,114 @@ estudioworkingmemory('Startimes',0);%%set default value
         observe_EEGDAT.eeg_panel_message=2;
     end
 
+%%----------------------Clear ALL selected EEGsets-------------------------
+    function clearall(source,~)
+        if isempty(observe_EEGDAT.EEG)
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('f_EEG_proces_messg','EEGsets>Clear');
+        observe_EEGDAT.eeg_panel_message =1;
+        EEGArray = 1:length(observe_EEGDAT.ALLEEG);
+        if length(observe_EEGDAT.ALLEEG)==1 && numel(EEGArray) == length(observe_EEGDAT.ALLEEG)
+            ALLEEG = [];
+            LASTCOM = 'ALLEEG = []; EEG=[]; CURRENTSET=[];';
+        else
+            [ALLEEG,LASTCOM] = pop_delset( observe_EEGDAT.ALLEEG , EEGArray);
+            if  isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            end
+            ERPset_remained = setdiff([1:length(observe_EEGDAT.ALLEEG)],EEGArray);
+            if isempty(ERPset_remained)
+                ALLEEG = [];
+            end
+        end
+        eegh(LASTCOM);
+        if isempty(ALLEEG)
+            observe_EEGDAT.ALLEEG = [];
+            observe_EEGDAT.EEG = [];
+            observe_EEGDAT.CURRENTSET  = 0;
+            Edit_label = 'off';
+            CURRENTSET=1;
+            EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
+            EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
+            EStduio_eegtab_EEG_set.butttons_datasets.Enable = 'off';
+        else
+            observe_EEGDAT.ALLEEG = observe_EEGDAT.ALLEEG(ERPset_remained);
+            [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();%%all EEGset
+            %%Only continuous EEG
+            if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
+                EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
+                EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
+                if EStduio_eegtab_EEG_set.eeg_contns.Value==0
+                    EStudio_gui_erp_totl.EEG_transf=1;
+                end
+                EStduio_eegtab_EEG_set.eeg_contns.Value=1;
+                EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
+            end
+            %%Only epoched EEG
+            if EEGConts_epoch_Flag(1)==0 && EEGConts_epoch_Flag(2)==1
+                EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
+                EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
+                if EStduio_eegtab_EEG_set.eeg_contns.Value==1
+                    EStudio_gui_erp_totl.EEG_transf=1;
+                end
+                EStduio_eegtab_EEG_set.eeg_contns.Value=0;
+                EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
+            end
+            EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+            CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            
+            %%contains the both continuous and epoched EEG
+            if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
+                EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
+                EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
+                if  EStduio_eegtab_EEG_set.eeg_contns.Value==1%%continuous EEG
+                    [~, ypos] =  find(EEGtypeFlag==1);
+                else
+                    [~, ypos] =  find(EEGtypeFlag==0);
+                end
+                CURRENTSET = ypos(end);
+            end
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
+            observe_EEGDAT.CURRENTSET  = CURRENTSET;
+            Edit_label = 'on';
+            EStduio_eegtab_EEG_set.butttons_datasets.Enable = 'on';
+        end
+        [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        
+        EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+        EStduio_eegtab_EEG_set.butttons_datasets.Value =CURRENTSET;
+        EStduio_eegtab_EEG_set.dupeselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.renameselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.suffix.Enable= Edit_label;
+        EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.clearall.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
+        EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.curr_folder.Enable='on';
+        EStduio_eegtab_EEG_set.butttons_datasets.Min =1;
+        EStduio_eegtab_EEG_set.butttons_datasets.Max =length(EEGlistName)+1;
+        EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
+        EStduio_eegtab_EEG_set.appendbutton.Enable = Edit_label;
+        EStduio_eegtab_EEG_set.refresh_eegset.Enable= 'on';
+        EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
+        estudioworkingmemory('EEGArray',EEGArray);
+        observe_EEGDAT.count_current_eeg =2;
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
+        estudioworkingmemory('f_EEG_proces_messg','EEGsets > Clear EEG');
+        observe_EEGDAT.eeg_panel_message=2;
+    end
 
 %-------------------------- Save selected EEGsets-------------------------------------------
     function eegset_save(Source,~)
@@ -1128,7 +1246,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         %         if isempty(pathName)
         pathName =[pwd,filesep];
         %         end
-        title = 'Select one forlder for saving files in following procedures';
+        title = 'Select one folder for saving files in following procedures';
         select_path = uigetdir(pathName,title);
         
         if isequal(select_path,0)
@@ -1312,6 +1430,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.renameselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.suffix.Enable= Edit_label;
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.clearall.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
         EStduio_eegtab_EEG_set.curr_folder.Enable='on';

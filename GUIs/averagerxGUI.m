@@ -511,6 +511,8 @@ if iswindowed
                         ' will be taken as the default taper function)'];
                 title = 'ERPLAB: invalid taper function''s parameters';
                 errorfound(msgboxText, title);
+
+                
                 return
         end
     end
@@ -529,6 +531,19 @@ elseif Tspectrum==1 && Espectrum==1
 else
     error('algo salio mal...')
 end
+
+if Tspectrum==1 || Espectrum==1
+    msgboxText =  ['Warning: Creating file with power spectra will overwrite your ERP with FFT data.',...
+        ' This data is only accessible using scripts, as it is not readable through ERPLAB. For an easier option, you can export EFFT to .csv via EStudio''s ERP panel.',...
+        ' Would you like to continue anyway?'];
+    title = 'ERPLAB: Power Spectra Incompatability';
+    button = askquest(msgboxText, title);
+    if strcmpi(button,'no')
+        disp('User canceled')
+        return
+    end
+end
+
 
 %compu2do = answer{6}; % 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
 %wintype  = answer{7}; % taper data with window: 0:no; 1:yes
@@ -550,7 +565,7 @@ elseif ~incALL && ~excart && ~incart && incIndx
         return
     end
     if  ~get(handles.radiobutton_useindices, 'Value') && ~get(handles.radiobutton_usefilename, 'Value')
-        msgboxText =  'You have to specify wheter you will use epoch''s index values\n or a text file containing them.';
+        msgboxText =  'You have to specify whether you will use epoch''s index values\n or a text file containing them.';
         title = 'ERPLAB: averagerxGUI unspecified input';
         errorfound(sprintf(msgboxText), title);
         return

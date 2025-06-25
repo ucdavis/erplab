@@ -532,13 +532,13 @@ varargout{1} = Eegtab_box_best;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-        if numel(binselec)<2
-            msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run:  Must have at least two classes for decoding! '];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            observe_EEGDAT.eeg_panel_message =2;
-            return;
-        end
+        % if numel(binselec)<2
+        %     msgboxText=['Extract Bin-Epoched Single Trials (BEST) > Run:  Must have at least two classes for decoding! '];
+        %     titlNamerro = 'Warning for EEG Tab';
+        %     estudio_warning(msgboxText,titlNamerro);
+        %     observe_EEGDAT.eeg_panel_message =2;
+        %     return;
+        % end
         EEG_extr_best.binsel = binselec;
         
         def =  estudioworkingmemory('pop_extractBEST');

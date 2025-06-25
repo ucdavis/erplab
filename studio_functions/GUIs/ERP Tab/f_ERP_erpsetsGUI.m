@@ -1,10 +1,10 @@
 % ERPset selector panel
 %
-% Author: Guanghui ZHANG && Steven Luck
+% Author: Guanghui Zhang, David Garrett, & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022 & 2023
+% 2022-2025
 
 % ERPLAB Toolbox
 %
@@ -67,7 +67,7 @@ varargout{1} = box_erpset_gui;
             2,'String', ERPlistName,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         try ERPsetops.butttons_datasets.Value=1; catch end;
         set(vBox, 'Sizes', 150);
-        
+
         %%---------------------Options for ERPsets-----------------------------------------------------
         ERPsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.dupeselected = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
@@ -78,18 +78,16 @@ varargout{1} = box_erpset_gui;
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.refresh_erpset = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Refresh',...
             'Callback', @refresh_erpset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
-        
+
+
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
-            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import',...
             'Callback', @imp_erp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export',...
             'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
+
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
             'Callback', @save_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -97,7 +95,14 @@ varargout{1} = box_erpset_gui;
             'Callback', @save_erpas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set(buttons4,'Sizes',[70 90 95])
+
+        buttons5 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        ERPsetops.clearselected = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear Selected', ...
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        ERPsetops.clearall = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear All', ...
+            'Callback', @clearall,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        %set(buttons4,'Sizes',[70 90 95])
+        set(vBox, 'Sizes', [170 25 25 25 25]);
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -656,6 +661,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.suffix.Enable= Edit_label;
         ERPsetops.refresh_erpset.Enable= 'on';
         ERPsetops.clearselected.Enable=Edit_label;
+        ERPsetops.clearall.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
         ERPsetops.curr_folder.Enable='on';
@@ -877,6 +883,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.suffix.Enable= Edit_label;
         ERPsetops.refresh_erpset.Enable= 'on';
         ERPsetops.clearselected.Enable=Edit_label;
+        ERPsetops.clearall.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
         ERPsetops.curr_folder.Enable='on';
@@ -944,6 +951,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.suffix.Enable= Edit_label;
         ERPsetops.refresh_erpset.Enable= 'on';
         ERPsetops.clearselected.Enable=Edit_label;
+        ERPsetops.clearall.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
         ERPsetops.curr_folder.Enable='on';
@@ -960,6 +968,73 @@ varargout{1} = box_erpset_gui;
         end
     end
 
+%%----------------------Clear ALL ERPsets-------------------------
+function clearall(source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr)
+            observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('f_ERP_proces_messg','ERPsets>Clear');
+        observe_ERPDAT.Process_messg =1;   
+        ALLERP = observe_ERPDAT.ALLERP;
+        SelectedERP = 1:length(ALLERP);
+        [ALLERP,LASTCOM] = pop_deleterpset(ALLERP,'Erpsets', SelectedERP, 'Saveas', 'off','History', 'gui' );
+        if isempty(LASTCOM)
+            return;
+        end
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
+        ERP1 =  observe_ERPDAT.ERP;
+        [ERP1, ALLERPCOM] = erphistory(ERP1, ALLERPCOM, LASTCOM,2);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',LASTCOM);
+        if isempty(ALLERP)
+            observe_ERPDAT.ALLERP = [];
+            observe_ERPDAT.ERP = [];
+            observe_ERPDAT.CURRENTERP  = 0;
+            assignin('base','ERP',observe_ERPDAT.ERP)
+        else
+            observe_ERPDAT.ALLERP = ALLERP;
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP  = length(observe_ERPDAT.ALLERP);
+        end
+        ERPlistName =  getERPsets();
+        if isempty(observe_ERPDAT.ALLERP)
+            Edit_label = 'off';
+        else
+            Edit_label = 'on';
+        end
+        ERPsetops.butttons_datasets.String = ERPlistName;
+        if observe_ERPDAT.CURRENTERP>0
+            ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
+        else
+            ERPsetops.butttons_datasets.Value=1;
+        end
+        ERPsetops.dupeselected.Enable=Edit_label;
+        ERPsetops.renameselected.Enable=Edit_label;
+        ERPsetops.suffix.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= 'on';
+        ERPsetops.clearselected.Enable=Edit_label;
+        ERPsetops.clearall.Enable=Edit_label;
+        ERPsetops.savebutton.Enable= Edit_label;
+        ERPsetops.saveasbutton.Enable=Edit_label;
+        ERPsetops.curr_folder.Enable='on';
+        ERPsetops.butttons_datasets.Min =1;
+        ERPsetops.butttons_datasets.Max =length(ERPlistName)+1;
+        ERPsetops.butttons_datasets.Enable = Edit_label;
+        ERPsetops.export.Enable = Edit_label;
+        SelectedERP = observe_ERPDAT.CURRENTERP;
+        estudioworkingmemory('selectederpstudio',SelectedERP);
+        observe_ERPDAT.Process_messg =2;
+        observe_ERPDAT.Count_currentERP = 2;
+        if EStudio_gui_erp_totl.ERP_autoplot==1
+            f_redrawERP();
+        end
+    end
 
 %-------------------------- Save selected ERPsets-------------------------------------------
     function save_erp(source,~)

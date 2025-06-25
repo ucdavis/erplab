@@ -140,7 +140,7 @@ if ~isempty(ALLERP)
     checkindex = checkerpsets(ALLERP);
     if ~isempty(checkindex)
         handles.checkbox_erp.Enable='off';
-        handles.text_warningmessage.String  = [checkindex,', and you therfore donot allow to select all for ERPsets'];
+        handles.text_warningmessage.String  = [checkindex,', so therefore you cannot select all ERPsets'];
     end
 end
 handles.ALLERP = ALLERP;
@@ -205,22 +205,22 @@ end
 timeRange  = str2num(handles.edit1_time_range.String);
 if isempty(timeRange) || numel(timeRange)~=2
     handles.edit1_time_range.String = num2str([handles.timeStart,handles.timEnd]);
-    handles.text_warningmessage.String  = ['Time range must have two values'];
+    handles.text_warningmessage.String  = ['Time range must have two values.'];
     return;
 end
 if timeRange(1)>=ERP.times(end)
     handles.edit1_time_range.String = num2str([handles.timeStart,handles.timEnd]);
-    handles.text_warningmessage.String  = ['Left edge of Time range must be smaller than',32,num2str(ERP.times(end))];
+    handles.text_warningmessage.String  = ['Minimum time range must be lesser than ',32,num2str(ERP.times(end))];
     return;
 end
 if timeRange(2)<=ERP.times(1)
     handles.edit1_time_range.String = num2str([handles.timeStart,handles.timEnd]);
-    handles.text_warningmessage.String  = ['Right edge of Time range must be lager than',32,num2str(ERP.times(1))];
+    handles.text_warningmessage.String  = ['Maximum time range must be greater than ',32,num2str(ERP.times(1))];
     return;
 end
 if timeRange(1) > timeRange(2)
     handles.edit1_time_range.String = num2str([handles.timeStart,handles.timEnd]);
-    handles.text_warningmessage.String  = ['Right edge of Time range must be lager than the left one'];
+    handles.text_warningmessage.String  = ['Maximum time range must be greater than the minimum.'];
     return;
 end
 handles.timeStart= timeRange(1);
@@ -250,7 +250,7 @@ if isempty(ALLERP) || isempty(ERP)
 end
 yScale = str2num(handles.edit2_yrange.String);
 if isempty(yScale) || numel(yScale)~=2
-    handles.text_warningmessage.String  = ['Inputs for  Y range are invalid'];
+    handles.text_warningmessage.String  = ['Inputs for the Y range are invalid'];
     handles.edit2_yrange.String = num2str(handles.Yscale);
     return;
 end
@@ -591,7 +591,7 @@ if isempty(ALLERP) || isempty(ERP)
 end
 ChanArray = str2num(handles.edit_chans.String);
 if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>ERP.nchan)
-    handles.text_warningmessage.String  = ['Inputs for channels must be between 1 and',32,num2str(ERP.nchan)];
+    handles.text_warningmessage.String  = ['Inputs for channels must be between 1 and ',32,num2str(ERP.nchan)];
     
     ChanArray11 = vect2colon(handles.ChanArray,'Sort', 'off');
     ChanArray11 = erase(ChanArray11,{'[',']'});
@@ -742,7 +742,7 @@ if isempty(ALLERP)
 end
 ERPArray = str2num(handles.edit5_erpset.String);
 if isempty(ERPArray) || any(ERPArray(:)>length(ALLERP)) || any(ERPArray(:)<1)
-    handles.text_warningmessage.String  = ['Index of ERPset must be single value and not more than',32,num2str(length(ALLERP))];
+    handles.text_warningmessage.String  = ['Index of ERPset must be a single value and not more than ',32,num2str(length(ALLERP))];
     handles.edit5_erpset.String = num2str(handles.CurrentERP);
     return;
 end

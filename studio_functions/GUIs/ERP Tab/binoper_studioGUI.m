@@ -294,7 +294,7 @@ if strcmp(formulalist,'')
         return
 end
 if size(formulalist,2)>256
-        msgboxText = ['Formulas length exceed 256 characters.\n'...
+        msgboxText = ['Formulas length exceeds 256 characters.\n'...
                 'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
         errorfound(sprintf(msgboxText), title);
@@ -320,7 +320,7 @@ if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
         title = 'WARNING: Save List of edited bins';
         oldcolor = get(0,'DefaultUicontrolBackgroundColor');
         set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
+        button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel', 'Run without saving');
         set(0,'DefaultUicontrolBackgroundColor',oldcolor)
         
         if strcmpi(button,'Save and run')
@@ -387,7 +387,7 @@ compacteditor(hObject, eventdata, handles);
 fulltext = strtrim(get(handles.editor,'String'));
 
 if size(fulltext,2)>256
-        msgboxText =  ['Formulas length exceed 256 characters.\n'...
+        msgboxText =  ['Formulas length exceeds 256 characters.\n'...
                 'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
         errorfound(sprintf(msgboxText), title);
@@ -438,7 +438,7 @@ catch
         return
 end
 if size(formulas,2)>256
-        msgboxText = ['Formulas length exceed 256 characters.\n'...
+        msgboxText = ['Formulas length exceeds 256 characters.\n'...
                 'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
         errorfound(sprintf(msgboxText), title);
@@ -574,7 +574,7 @@ function button_savelist_Callback(hObject, eventdata, handles)
 compacteditor(hObject, eventdata, handles);
 fulltext = strtrim(get(handles.editor,'String'));
 if size(fulltext,2)>256
-        msgboxText = ['Formulas length exceed 256 characters.\n'...
+        msgboxText = ['Formulas length exceeds 256 characters.\n'...
                 'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
         errorfound(sprintf(msgboxText), title);
@@ -700,7 +700,7 @@ for t=1:nformulas
                                 BackERPLABcolor = [1 0.9 0.3];    % yellow
                                 question = ['For non recursive mode, left side of equation\nmust be define as a new bin.\n'...
                                             'For instance, nbin1 = ...\n\n'...
-                                            'Do you want that ERPLAB corrects the syntax for you?'];
+                                            'Do you want ERPLAB to correct the syntax for you?'];
                                 title = 'WARNING: Syntax is not proper for non recursive mode';
                                 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
                                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
@@ -725,7 +725,7 @@ for t=1:nformulas
                                 BackERPLABcolor = [1 0.9 0.3];    % yellow
                                 question = ['For recursive mode, left side of equation cannot\nbe define as a new bin.\n'...
                                             'For instance, you must write bin1 = ...\n\n'...
-                                            'Do you want that ERPLAB corrects the syntax for you?'];
+                                            'Do you want ERPLAB to correct the syntax for you?'];
                                 title = 'WARNING: Syntax is not proper for recursive mode';
                                 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
                                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)

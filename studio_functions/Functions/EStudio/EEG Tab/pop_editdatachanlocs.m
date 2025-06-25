@@ -62,13 +62,13 @@ if nargin< 3
     EEG = ALLEEG(CURRENTSET);
     if ~isfield(EEG,'chanlocs')
         beep;
-        disp('The current dataset donot have chanlocs field');
+        disp('The current dataset does not have Channel Location information. (see EEG -> chanlocs)');
         return;
     end
     chanlocs = EEG.chanlocs;
     if ~isfield(chanlocs,'labels')
         beep;
-        disp('There is no labels for chanlocs for the current dataset');
+        disp('There are no labels for Channel Locations in the current dataset. (see EEG -> chanlocs)');
         return;
     end
     
@@ -153,13 +153,13 @@ end
 EEG = ALLEEG(CURRENTSET);
 if ~isfield(EEG,'chanlocs')
     beep;
-    disp('The current dataset donot have chanlocs field');
+    disp('The current dataset does not have Channel Location information. (see EEG -> chanlocs)');
     return;
 end
 chanlocs = EEG.chanlocs;
 if ~isfield(chanlocs,'labels')
     beep;
-    disp('There is no labels for chanlocs for the current dataset');
+    disp('There are no labels for Channel Locations in the current dataset. (see EEG -> chanlocs)');
     return;
 end
 
@@ -187,14 +187,14 @@ for Numofchan = 1:numel(qchanArray)
         qChanlocsnew(Numofchan)  = qChanlocsnew(Numofchan);
     catch
         qChanlocsnew(Numofchan)  = EEG.chanlocs(qchanArray(Numofchan));
-        fprintf(2,['\n Warning: Location for channel ',32,num2str(qchanArray(Numofchan)),32,'was not defined, we threfore used its original one.\n']);
+        fprintf(2,['\n Warning: Location for channel ',32,num2str(qchanArray(Numofchan)),32,'was not defined, we therefore used its original information.\n']);
     end
 end
 
 
 %%--------------change the channel names-----------------------------------
 for Numofchan = 1:numel(qchanArray)
-    fprintf(['Chan',32,num2str(qchanArray(Numofchan)),': Location was edited.\n']);
+    fprintf(['Channel ',32,num2str(qchanArray(Numofchan)),': Location was edited.\n']);
     EEG.chanlocs(qchanArray(Numofchan)) = qChanlocsnew(Numofchan);
 end
 

@@ -1,11 +1,11 @@
 %%This function is to create ERP Tab
 
 
-% Author: Guanghui Zhang & Steve J. Luck
+% Author: Guanghui Zhang, David Garrett & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis
 % Davis, CA
-% 2022 & 2023
+% 2022-2025
 
 
 
@@ -30,7 +30,7 @@ EStudio_gui_erp_totl.settingLayout = uiextras.VBox('Parent', EStudio_gui_erp_tot
 
 % + Create the settings window panels for ERP panel
 EStudio_gui_erp_totl.panel{1} = f_ERP_erpsetsGUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(1) = 290;
+EStudio_gui_erp_totl.panelSizes(1) = 330;
 EStudio_gui_erp_totl.panel{2} = f_ERP_bin_channel_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(2) = 320;
 EStudio_gui_erp_totl.panel{3} = f_ERP_plot_setting_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);

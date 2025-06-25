@@ -408,6 +408,18 @@ varargout{1} = box_erp_resample;
             Freq2resamp = [];
         end
         
+        %%----------------------------check if grandaverage----------------
+        if length(observe_ERPDAT.ERP.EVENTLIST) > 1
+            msgboxText=['Looks like you are attempting to resample a grand average. This is not possible.'...
+                ' Please resample an individual ERP instead.'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_ERPDAT.Process_messg =2;
+            return;
+        else
+        end
+
+
         %%----------------------------check new time window----------------
         if gui_erp_resample.nwtimewindow_checkbox.Value==1
             NewStart = str2num(gui_erp_resample.nwtimewindow_editleft.String);
