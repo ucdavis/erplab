@@ -1,7 +1,12 @@
 classdef MeasurementParams_handleClass < handle
     properties
-        type = 'meanabl';
-        type_p1 = [];
+        mType = 'meanabl'; % type of measurement -> instabl, meanbl, peakampbl, peaklatbl, area, areaz,
+        mIntFactor = 1; % interpolation factor -> int 1-10
+        mPrecision = 3; % number of decimals in measure -> int 1-6
+        mPeakPol ;% local peak polarity -> "positive" or "negative"
+        mPeakSamples ; %
+        mReplace ; % if no peak or area, replace -> 'abs' or 'NaN'
+        % will add more meaure options as needed...
 
         sets = []; % indeces
 

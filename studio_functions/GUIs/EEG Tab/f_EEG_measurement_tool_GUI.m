@@ -68,14 +68,19 @@ measurementGUI.subPanel_type_title = uicontrol('Style','text', ...
 
 measurementGUI.subPanel_type_menu = uicontrol('Style', 'popupmenu', ...
     'Parent', measurementGUI.subPanel_type, ...
-    'String', {'Mean Amplitude', 'Peak Amplitude'}, ...
+    'String', {'Instantaneous Amplitude (points)', ...
+               'Mean Amplitude', ...
+               'Peak Amplitude'}, ...
+    'Value', 2, ... % Set "Mean Amplitude" as the default (2nd item)
     'FontSize', FonsizeDefault, ...
-    'BackgroundColor', 'white');
+    'BackgroundColor', 'white', ...
+    'Callback', @(src, event) updateMeasurementType());
 
 measurementGUI.subPanel_type_button =uicontrol('Style', 'pushbutton', ...
     'Parent', measurementGUI.subPanel_type, ...
     'String', 'Options', ...
-    'FontSize', FonsizeDefault);
+    'FontSize', FonsizeDefault, ...
+    'Callback', @(src, event) measurementOptions());
 
 set(measurementGUI.subPanel_type,'Sizes',rowElement_sizes);
 
@@ -220,6 +225,7 @@ measurementGUI.subPanel_window_button = uicontrol('Style', 'pushbutton', ...
     'Parent', measurementGUI.subPanel_window, ...
     'String', 'Details', ...
     'FontSize', FonsizeDefault, ...
+    'Callback', @(src, event) detailsWindows(), ...
     'Enable', 'on'); % Enabled by default, since mean amp is default measurement type
 
 set(measurementGUI.subPanel_window,'Sizes',rowElement_sizes);
@@ -261,6 +267,7 @@ measurementGUI.subPanel_points_button = uicontrol('Style', 'pushbutton', ...
     'Parent', measurementGUI.subPanel_points, ...
     'String', 'Details', ...
     'FontSize', FonsizeDefault, ...
+    'Callback', @(src, event) detailsTimes(), ...
     'Enable', 'off'); % Disabled by default, since mean amp is default measurement type
 
 set(measurementGUI.subPanel_points,'Sizes',[rowElement_sizes(1) -1 30 -1 rowElement_sizes(3)]);
@@ -337,6 +344,92 @@ varargout{1} = measurementGUI.mainPanel;
 %%%%%%%%%%%%%%%%%%%%%% Call back functions %%%%%%%%%%%%%%%%%%%%%%
 
 %% Section 1 - Measurement type %%
+function updateMeasurementType()
+    selectedIdx = measurementGUI.subPanel_type_menu.Value;
+    selectedType = measurementGUI.subPanel_type_menu.String{selectedIdx};
+
+    % Update measurementParams
+    measurementParams.mType = selectedType;
+
+    % Enable/Disable window/points fields depending on selection
+    switch selectedType
+        case 'Instantaneous Amplitude (points)'
+            set(measurementGUI.subPanel_window_title, 'Enable', 'off')
+            set(measurementGUI.subPanel_window_fillbox, 'Enable', 'off')
+            set(measurementGUI.subPanel_window_button, 'Enable', 'off')
+
+            set(measurementGUI.subPanel_points_title, 'Enable', 'on')
+            set(measurementGUI.subPanel_points_fillbox1, 'Enable', 'on')
+            set(measurementGUI.subPanel_points_to, 'Enable', 'on')
+            set(measurementGUI.subPanel_points_fillbox2, 'Enable', 'on')
+            set(measurementGUI.subPanel_points_button, 'Enable', 'on')
+        otherwise
+            set(measurementGUI.subPanel_window_title, 'Enable', 'on')
+            set(measurementGUI.subPanel_window_fillbox, 'Enable', 'on')
+            set(measurementGUI.subPanel_window_button, 'Enable', 'on')
+            
+            set(measurementGUI.subPanel_points_title, 'Enable', 'off')
+            set(measurementGUI.subPanel_points_fillbox1, 'Enable', 'off')
+            set(measurementGUI.subPanel_points_to, 'Enable', 'off')
+            set(measurementGUI.subPanel_points_fillbox2, 'Enable', 'off')
+            set(measurementGUI.subPanel_points_button, 'Enable', 'off')
+    end
+
+end
+
+function measurementOptions()
+    selectedIdx = measurementGUI.subPanel_type_menu.Value;
+    selectedType = measurementGUI.subPanel_type_menu.String{selectedIdx};
+
+    switch selectedType
+        case {'Instantaneous Amplitude (points)', 'Mean Amplitude'}
+
+            % Create a modal dialog for options
+            dlg = uifigure('Name', 'Measurement Options', 'Position', [300, 300, 300, 200]);
+
+            % Display measurement type
+            uilabel(dlg, 'Text', 'Measurement type:', 'Position', [20, 160, 120, 20]);
+            uilabel(dlg, 'Text', selectedType, 'FontWeight', 'bold', 'Position', [150, 160, 150, 20]);
+
+            % Interpolation Factor dropdown
+            uilabel(dlg, 'Text', 'Interpolation Factor:', 'Position', [20, 120, 150, 20]);
+            interpMenu = uidropdown(dlg, ...
+                'Items', arrayfun(@num2str, 1:10, 'UniformOutput', false), ...
+                'Value', '1', ...
+                'Position', [180, 120, 80, 22]);
+
+            % Precision dropdown
+            uilabel(dlg, 'Text', 'Precision (number of decimals):', 'Position', [20, 80, 180, 20]);
+            precisionMenu = uidropdown(dlg, ...
+                'Items', arrayfun(@num2str, 1:6, 'UniformOutput', false), ...
+                'Value', '3', ...
+                'Position', [180, 80, 80, 22]);
+
+            % OK and Cancel buttons
+            uibutton(dlg, 'Text', 'OK', ...
+                'Position', [180, 20, 80, 30], ...
+                'ButtonPushedFcn', @(btn, event) confirmOptions());
+
+            uibutton(dlg, 'Text', 'Cancel', ...
+                'Position', [80, 20, 80, 30], ...
+                'ButtonPushedFcn', @(btn, event) close(dlg));
+
+
+        otherwise
+            errordlg('Not supported yet...', 'Error');
+            return;
+        end %end switch
+
+    %% **Confirm Selection**
+    function confirmOptions()
+        % Store selected values in measurementParams
+        measurementParams.mIntFactor = str2double(interpMenu.Value);
+        measurementParams.mPrecision = str2double(precisionMenu.Value);
+                
+        % Close the dialog
+        close(dlg);
+    end
+end
 
 %% Section 2 - Browse/select EEGsets %%
 
@@ -365,7 +458,7 @@ function browseEEGsets()
 
     for i = 1:length(EEGData)
         if EEGData(i).trials > 1
-            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin, EEGData(i).xmax);
+            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin*1000, EEGData(i).xmax*1000); % *1000 ms -> s
         else
             epochWindows{i} = 'NA';
         end
@@ -1264,20 +1357,483 @@ function detailsWindows()
         errordlg('No EEG sets selected. Please select EEG sets first.', 'Error');
         return;
     end
-    EEGData = observe_EEGDAT.ALLEEG(selectedSets);
-    numSets = length(EEGData);
 
-    % Check if all EEG sets have been epoched
-    if all(arrayfun(@(x) isfield(x, 'EVENTLIST'), EEGData))
-        epochFlag = true;
-    else
-        epochFlag = false;
+    EEGData = observe_EEGDAT.ALLEEG(selectedSets);
+
+    % Get all epoch windows, check if all epoched
+    epochFlag = true; % default flag yes epoched
+    epochWindows = cell(size(EEGData))'; % Preallocate cell array for epoch windows
+
+    for i = 1:length(EEGData)
+        if EEGData(i).trials > 1
+            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin*1000, EEGData(i).xmax*1000); % *1000 s -> ms
+        else
+            epochWindows{i} = 'NA';
+            epochFlag = false; % if single set is not epoched, set flag
+        end
     end
 
+    if length(unique(epochWindows)) > 1 % if not all identical epochs error
+        errordlg('All selected EEG sets must have the same epoch window.', 'Error');
+        return;
+    end
 
+    % check sample rates
+    sampleRates = arrayfun(@(x) x.srate, EEGData)'; % get
+    if length(unique(sampleRates)) > 1 % if not all identical sample rates error
+        errordlg('All selected EEG sets must have the same sample rate.', 'Error');
+        return;
+    end
+
+    sampleRate = sampleRates(1);
+
+    % deactivate button
+    set(measurementGUI.subPanel_window_button, 'String', '...')
+    set(measurementGUI.subPanel_window_button, 'Enable', 'off')
+
+    if epochFlag
+        epochWindow = [EEGData(1).xmin*1000 EEGData(1).xmax*1000];
+        modeLabel = sprintf('Epoched EEG (Epoch: %.3f - %.3f ms)', epochWindow(1), epochWindow(2));
+    else
+        modeLabel = 'Continuous EEG';
+    end
+
+    % Create dialog window
+    dlg = uifigure('Name', 'Select Measurement Window (ms)', 'Position', [300, 300, 400, 300]);
+    dlg.CloseRequestFcn = @(src, event) closePanel();
+
+    % Radio button group
+    btnGroup = uibuttongroup(dlg, ...
+        'Position', [20, 150, 360, 140], ...
+        'SelectionChangedFcn', @(src, event) toggleWindowType());
+
+    % label to tell if epoched or continuous mode
+    modeLabel = uilabel(dlg, 'Text', modeLabel, 'FontWeight', 'bold', 'Position', [30, 270, 370, 20]);
+
+    % Radio buttons for selection
+    singleWindowBtn = uiradiobutton(btnGroup, ...
+        'Text', 'Single window', ...
+        'Position', [10, 60, 100, 20]);
+
+    listWindowBtn = uiradiobutton(btnGroup, ...
+        'Text', 'List of windows', ...
+        'Position', [10, 10, 150, 20]);
+
+     % Single window input fields
+    singleStartLabel = uilabel(dlg, 'Text', 'Start:', 'Position', [155, 230, 50, 20]);
+    singleStartBox = uieditfield(dlg, 'numeric', ...
+        'Position', [150, 210, 50, 22], ...
+        'ValueChangedFcn', @(src, event) updatePreview());
+
+    singleStopLabel = uilabel(dlg, 'Text', 'Stop:', 'Position', [215, 230, 40, 20]);
+    singleStopBox = uieditfield(dlg, 'numeric', ...
+        'Position', [210, 210, 50, 22], ...
+        'ValueChangedFcn', @(src, event) updatePreview());
+
+    % Multi-window input field
+    listWindowLabel = uilabel(dlg, 'Text', '(e.g. [100 200] [200 300])', 'Position', [155, 180, 200, 20]);
+    listWindowBox = uieditfield(dlg, 'text', ...
+        'Position', [150, 160, 200, 22], ...
+        'ValueChangedFcn', @(src, event) updatePreview());
+
+    % Error text
+    errorText = uilabel(dlg, 'Text', '','FontColor', 'red','Position', [20, 120, 380, 20]);
+
+    % Preview field
+    previewLabel = uilabel(dlg, 'Text', 'Selected windows:', 'Position', [50, 90, 120, 20]);
+    previewBox = uieditfield(dlg, 'text', 'Position', [50, 70, 300, 22], 'Editable', 'off');
+
+    % OK and Cancel buttons
+    uibutton(dlg, 'Text', 'OK', ...
+        'Position', [230, 20, 80, 30], ...
+        'ButtonPushedFcn', @(btn, event) confirmSelection());
+
+    uibutton(dlg, 'Text', 'Cancel', ...
+        'Position', [130, 20, 80, 30], ...
+        'ButtonPushedFcn', @(btn, event) closePanel());
+
+    % Initialize default selection (Single window enabled)
+    singleWindowBtn.Value = true;
+    toggleWindowType();
+
+    % Callback: Toggle enabled fields based on selected window type
+    function toggleWindowType()
+        isSingle = singleWindowBtn.Value;
+
+        % Enable/Disable input fields accordingly
+        singleStartBox.Enable = isSingle;
+        singleStopBox.Enable = isSingle;
+        listWindowBox.Enable = ~isSingle;
+
+        updatePreview(); % Update preview field dynamically
+    end
+
+    % Callback: Update preview field dynamically
+    function updatePreview()
+        if singleWindowBtn.Value
+            startVal = singleStartBox.Value;
+            stopVal = singleStopBox.Value;
+            if isnan(startVal) || isnan(stopVal)
+                previewBox.Value = 'Invalid entry';
+            else
+                previewBox.Value = sprintf('[%.2f %.2f]', startVal, stopVal);
+            end
+        else
+            listVal = strtrim(listWindowBox.Value);
+            previewBox.Value = sprintf('{%s}', listVal);
+        end
+    end
+
+    % Callback: Confirm selection
+    function confirmSelection()
+
+        errorText.Text = '';
+
+        % single window validation
+        if singleWindowBtn.Value
+
+         % get values
+            startLatency = singleStartBox.Value;
+            stopLatency = singleStopBox.Value;
+
+            % checks
+            if isnan(startLatency) || isnan(stopLatency)
+                errorText.Text = 'Error: Latencies must be numbers';
+                return;
+            end
+
+
+            if startLatency >= stopLatency
+                errorText.Text = 'Error: Start latency must be smaller than stop latency';
+                return;
+            end
+
+            if epochFlag
+
+                if startLatency < epochWindow(1) || startLatency > epochWindow(2) || stopLatency < epochWindow(1) || stopLatency > epochWindow(2)
+                    errorText.Text = 'Error: Latencies must be within epoch';
+                    return;
+                end
+            end
+
+        % update parameters and GUI
+        measurementParams.windows = [startLatency, stopLatency];
+        set(measurementGUI.subPanel_window_fillbox, 'String', sprintf('[%.2f %.2f]', measurementParams.windows));
+
+        else % window list selected, do validation
+            
+            % try formatting...
+            try
+                % get pairs from string using regular expressions
+                pairs = regexp(listWindowBox.Value, '\[(\d+)\s+(\d+)\]', 'tokens');
+
+                % Convert to numeric arrays
+                numPairs = cellfun(@(x) str2double(x), pairs, 'UniformOutput', false);
+
+                if isempty(numPairs) 
+                    errorText.Text = 'Error: Missing list of windows or invalid format';
+                    return
+                end
+
+                if numel(numPairs) < 2
+                    errorText.Text = 'Error: List of windows must have at least 2 windows';
+                    return
+                end
+
+                catch
+                    errorText.Text = 'Error: Invalid format for window list. Use format: [start stop] [start stop] ...';
+                    return;
+            end
+
+            % more checks...
+            for i = 1:length(numPairs)
+                pair = numPairs{i};
+
+                if numel(pair) ~= 2
+                    errorText.Text = 'Error: Each window in list must contain only 2 values';
+                    return
+                end
+
+                startLatency = pair(1);
+                stopLatency = pair(2);
+
+                if isnan(startLatency) || isnan(stopLatency)
+                    errorText.Text = 'Error: Latencies must be numbers';
+                    return;
+                end
+
+                if startLatency >= stopLatency
+                    errorText.Text = 'Error: Start latencies must be smaller than stop latencies';
+                    return;
+                end
+
+                if epochFlag
+
+                    if startLatency < epochWindow(1) || startLatency > epochWindow(2) || stopLatency < epochWindow(1) || stopLatency > epochWindow(2)
+                        errorText.Text = 'Error: Latencies must be within epoch';
+                        return;
+                    end
+                end
+            end % end checking loop over windows
+
+        % update parameters and GUI
+        measurementParams.windows = numPairs;
+        set(measurementGUI.subPanel_window_fillbox, 'String', listWindowBox.Value);
+
+        end % end single vs list if/else
+
+        closePanel();
+    end % end confirm selection func
+
+    % cancel selection
+    function closePanel()
+
+        % reactivate button
+        set(measurementGUI.subPanel_window_button, 'String', 'Details')
+        set(measurementGUI.subPanel_window_button, 'Enable', 'on')
+
+        % Close the dialog
+        delete(dlg);
+    end
 end
 
 %% Section 7 - Measurement point(s) (only instataneous amplitude) %%
+
+function detailsTimes()
+
+    % Retrieve EEG data for the selected EEG sets
+    selectedSets = measurementParams.sets;
+    if isempty(selectedSets)
+        errordlg('No EEG sets selected. Please select EEG sets first.', 'Error');
+        return;
+    end
+
+    EEGData = observe_EEGDAT.ALLEEG(selectedSets);
+
+    % Get all epoch windows, check if all epoched
+    epochFlag = true; % default flag yes epoched
+    epochWindows = cell(size(EEGData))'; % Preallocate cell array for epoch windows
+
+    for i = 1:length(EEGData)
+        if EEGData(i).trials > 1
+            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin*1000, EEGData(i).xmax*1000); % *1000 s -> ms
+        else
+            epochWindows{i} = 'NA';
+            epochFlag = false; % if single set is not epoched, set flag
+        end
+    end
+
+    if length(unique(epochWindows)) > 1 % if not all identical epochs error
+        errordlg('All selected EEG sets must have the same epoch window.', 'Error');
+        return;
+    end
+
+    % check sample rates
+    sampleRates = arrayfun(@(x) x.srate, EEGData)'; % get
+    if length(unique(sampleRates)) > 1 % if not all identical sample rates error
+        errordlg('All selected EEG sets must have the same sample rate.', 'Error');
+        return;
+    end
+
+    sampleRate = sampleRates(1);
+
+    % deactivate button
+    set(measurementGUI.subPanel_points_button, 'String', '...')
+    set(measurementGUI.subPanel_points_button, 'Enable', 'off')
+
+    if epochFlag
+        epochWindow = [EEGData(1).xmin*1000 EEGData(1).xmax*1000];
+        modeLabel = sprintf('Epoched EEG (Epoch: %.3f - %.3f ms)', epochWindow(1), epochWindow(2));
+    else
+        modeLabel = 'Continuous EEG';
+    end
+
+    % Create dialog window
+    dlg = uifigure('Name', 'Select measurement time points (ms)', 'Position', [300, 300, 400, 300]);
+    dlg.CloseRequestFcn = @(src, event) closePanel();
+
+    % Radio button group
+    btnGroup = uibuttongroup(dlg, ...
+        'Position', [20, 150, 360, 140], ...
+        'SelectionChangedFcn', @(src, event) toggleWindowType());
+
+    % label to tell if epoched or continuous mode
+    modeLabel = uilabel(dlg, 'Text', modeLabel, 'FontWeight', 'bold', 'Position', [30, 270, 370, 20]);
+
+    % Radio buttons for selection
+    singlePointBtn = uiradiobutton(btnGroup, ...
+        'Text', 'Single time point', ...
+        'Position', [10, 60, 150, 20]);
+
+    listPointBtn = uiradiobutton(btnGroup, ...
+        'Text', 'All points between', ...
+        'Position', [10, 10, 150, 20]);
+
+    % Single point input 
+    singlepointBox = uieditfield(dlg, 'numeric', ...
+        'Position', [150, 210, 50, 22], ...
+        'ValueChangedFcn', @(src, event) updatePreview());
+
+    % Multi-window input field
+    listStartLabel = uilabel(dlg, 'Text', 'Start:', 'Position', [155, 180, 50, 20]);
+    listStartBox = uieditfield(dlg, 'numeric', ...
+        'Position', [150, 160, 50, 22], ...
+        'ValueChangedFcn', @(src, event) updatePreview());
+
+    listStopLabel = uilabel(dlg, 'Text', 'Stop:', 'Position', [215, 180, 40, 20]);
+    listStopBox = uieditfield(dlg, 'numeric', ...
+        'Position', [210, 160, 50, 22], ...
+        'ValueChangedFcn', @(src, event) updatePreview());
+
+    % Error text
+    errorText = uilabel(dlg, 'Text', '','FontColor', 'red','Position', [20, 120, 380, 20]);
+
+    % Preview field
+    previewLabel = uilabel(dlg, 'Text', 'Selected point', 'Position', [50, 90, 200, 20]);
+    previewBox = uieditfield(dlg, 'text', 'Position', [50, 70, 300, 22], 'Editable', 'off');
+
+    % OK and Cancel buttons
+    uibutton(dlg, 'Text', 'OK', ...
+        'Position', [230, 20, 80, 30], ...
+        'ButtonPushedFcn', @(btn, event) confirmSelection());
+
+    uibutton(dlg, 'Text', 'Cancel', ...
+        'Position', [130, 20, 80, 30], ...
+        'ButtonPushedFcn', @(btn, event) closePanel());
+
+    % Initialize default selection (Single window enabled)
+    singlePointBtn.Value = true;
+    toggleWindowType();
+
+    % Callback: Toggle enabled fields based on selected window type
+    function toggleWindowType()
+
+        if singlePointBtn.Value
+            previewLabel.Text = 'Selected point';
+            % Enable/Disable input fields accordingly
+            singlepointBox.Enable = 1;
+            listStartBox.Enable = 0;
+            listStopBox.Enable = 0;
+        else
+            previewLabel.Text = 'Selected points: (start:by:stop)';
+            % Enable/Disable input fields accordingly
+            singlepointBox.Enable = 0;
+            listStartBox.Enable = 1;
+            listStopBox.Enable = 1;
+        end
+
+        updatePreview(); % Update preview field dynamically
+    end
+
+    % Callback: Update preview field dynamically
+    function updatePreview()
+        if ~singlePointBtn.Value
+            startVal = listStartBox.Value;
+            stopVal = listStopBox.Value;
+            byVal = 1000/sampleRate;
+
+            if isnan(startVal) || isnan(stopVal)
+                previewBox.Value = 'Invalid entry';
+            else
+                pointsArray = startVal:byVal:stopVal;
+                pointsArray_str = strjoin(arrayfun(@num2str, pointsArray, 'UniformOutput', false), ' ');
+                previewBox.Value = pointsArray_str;
+            end
+        else
+            pointLatency = singlepointBox.Value;
+            previewBox.Value = sprintf('%.2f', pointLatency);
+        end
+    end
+
+    % Callback: Confirm selection
+    function confirmSelection()
+
+        errorText.Text = '';
+
+        % single point validation
+        if singlePointBtn.Value
+
+         % get value
+            pointLatency = singlepointBox.Value;
+
+            % checks
+            if isnan(pointLatency)
+                errorText.Text = 'Error: Latencies must be numbers';
+                return;
+            end
+
+            if epochFlag
+
+                if pointLatency < epochWindow(1) || pointLatency > epochWindow(2)
+                    errorText.Text = 'Error: Latencies must be within epoch';
+                    return;
+                end
+            end
+
+            % update parameters and GUI
+            measurementParams.windows = pointLatency;
+            set(measurementGUI.subPanel_points_fillbox1, 'String', string(measurementParams.windows));
+            set(measurementGUI.subPanel_points_fillbox2, 'String', '');
+
+
+        else % point array selected, do validation
+
+            startVal = listStartBox.Value;
+            stopVal = listStopBox.Value;
+            byVal = 1000/sampleRate;
+
+            if isnan(startVal) || isnan(stopVal) || isnan(byVal)
+                errorText.Text = 'Error: Latencies must be numbers';
+                return;
+            end
+
+            if startVal >= stopVal
+                errorText.Text = 'Error: Start latencies must be smaller than stop latencies';
+                return;
+            end
+
+            if epochFlag
+
+                if startVal < epochWindow(1) || startVal > epochWindow(2) || stopVal < epochWindow(1) || stopVal > epochWindow(2)
+                    errorText.Text = 'Error: Latencies must be within epoch';
+                    return;
+                end
+            end
+
+            pointsArray = startVal:byVal:stopVal;
+
+            % do further checks....
+            if ~isnumeric(pointsArray)
+                errorText.Text = 'Error: Latencies must be numbers';
+                return;
+            end
+
+            %pointsArray_str = strjoin(arrayfun(@num2str, pointsArray, 'UniformOutput', false), ' ');
+            %previewBox.Value = pointsArray_str;
+
+            % update parameters and GUI
+            measurementParams.windows = pointsArray;
+            set(measurementGUI.subPanel_points_fillbox1, 'String', string(startVal));
+            set(measurementGUI.subPanel_points_fillbox2, 'String', string(stopVal));
+
+        end % end single vs list if/else
+
+        closePanel();
+    end % end confirm selection func
+
+    % cancel selection
+    function closePanel()
+
+        % reactivate button
+        set(measurementGUI.subPanel_points_button, 'String', 'Details')
+        set(measurementGUI.subPanel_points_button, 'Enable', 'on')
+
+        % Close the dialog
+        delete(dlg);
+    end
+
+end % end detailsTimes()
+
 
 %% Section 8 - Set Baseline %%
 function baselineDetails()
@@ -1297,7 +1853,7 @@ function baselineDetails()
 
     for i = 1:length(EEGData)
         if EEGData(i).trials > 1
-            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin, EEGData(i).xmax);
+            epochWindows{i} = sprintf('[%.3f %.3f]', EEGData(i).xmin*1000, EEGData(i).xmax*1000); % *1000 s -> ms
         else
             epochWindows{i} = 'NA';
             epochFlag = false; % if single set is not epoched, set flag
