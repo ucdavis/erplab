@@ -320,23 +320,38 @@ measurementGUI.subPanel_output_button = uicontrol('Style', 'pushbutton', ...
 
 set(measurementGUI.subPanel_output,'Sizes',rowElement_sizes);
 
-% Section 9: Save Measures Button
-measurementGUI.subPanel_save = uiextras.HBox('Parent', measurementGUI.mainLayout,'BackgroundColor',ColorB_def);
+% Section 9: Save/load measure parameters
+measurementGUI.subPanel_saveParams = uiextras.HBox('Parent', measurementGUI.mainLayout,'BackgroundColor',ColorB_def);
 
-measurementGUI.subPanel_save_cancelButton = uicontrol('Style', 'pushbutton', ...
-    'Parent', measurementGUI.subPanel_save, ...
-    'String', 'Cancel', ...
+measurementGUI.subPanel_loadParamsButton = uicontrol('Style', 'pushbutton', ...
+    'Parent', measurementGUI.subPanel_saveParams, ...
+    'String', 'Load parameters', ...
+    'FontSize', FonsizeDefault + 1, ...
+    'Callback', @(src, event) loadParameters(src, event));
+
+measurementGUI.subPanel_saveParamsButton = uicontrol('Style', 'pushbutton', ...
+    'Parent', measurementGUI.subPanel_saveParams, ...
+    'String', 'Save parameters', ...
+    'FontSize', FonsizeDefault + 1, ...
+    'Callback', @(src, event) saveParameters(src, event));
+
+% Section 10: Cancel/Run measurement
+measurementGUI.subPanel_run = uiextras.HBox('Parent', measurementGUI.mainLayout,'BackgroundColor',ColorB_def);
+
+measurementGUI.subPanel_run_clearButton = uicontrol('Style', 'pushbutton', ...
+    'Parent', measurementGUI.subPanel_run, ...
+    'String', 'Clear parameters', ...
     'FontSize', FonsizeDefault + 1);
 
-measurementGUI.subPanel_save_saveButton = uicontrol('Style', 'pushbutton', ...
-    'Parent', measurementGUI.subPanel_save, ...
-    'String', 'Save measures', ...
+measurementGUI.subPanel_run_Button = uicontrol('Style', 'pushbutton', ...
+    'Parent', measurementGUI.subPanel_run, ...
+    'String', 'Run measurement', ...
     'FontSize', FonsizeDefault + 1, ...
     'FontWeight', 'bold', ...
     'Callback', @(src, event) saveMeasures(src, event));
 
 % Set overall heights of subpanels
-set(measurementGUI.mainLayout,'Sizes',[30 30 90 30 30 30 30 30 40]);
+set(measurementGUI.mainLayout,'Sizes',[30 30 90 30 30 30 30 30 40 40]);
 
 %% Return the handle to the Measurement Tool panel
 varargout{1} = measurementGUI.mainPanel;
@@ -1342,7 +1357,7 @@ function browseChannels()
 
 end % end browseEEGchannels function
 
-%% Section 6 -  Measurement window(s) %%
+%% Section 5 -  Measurement window(s) %%
 
 % check if user defined windows will work...
 function checkWindows()
@@ -1597,7 +1612,7 @@ function detailsWindows()
     end
 end
 
-%% Section 7 - Measurement point(s) (only instataneous amplitude) %%
+%% Section 6 - Measurement point(s) (only instataneous amplitude) %%
 
 function detailsTimes()
 
@@ -1835,7 +1850,7 @@ function detailsTimes()
 end % end detailsTimes()
 
 
-%% Section 8 - Set Baseline %%
+%% Section 7 - Set Baseline %%
 function baselineDetails()
 
     % Retrieve EEG data for the selected EEG sets
@@ -2044,7 +2059,192 @@ function baselineDetails()
 
 end
 
+%% Section 8 - Output options %%
 % use uigridlayout() for measure options?
+function outputOptions()
+
+    dlg = uifigure('Name', 'Output Options', 'Position', [200, 200, 700, 600]);
+
+    % map for all checkbox options 
+    checkboxMap = containers.Map();
+
+    mainGrid = uigridlayout(dlg, [5, 2]);
+    mainGrid.RowHeight = {'fit', 'fit', 'fit', 'fit', 'fit'};
+    mainGrid.Padding = [10 10 10 10];
+
+    %% --- Section 1: Output Path ---
+    pathPanel = uipanel(mainGrid, 'Title', 'Output file information');
+    pathPanel.Layout.Column = [1,2];
+    pathLayout = uigridlayout(pathPanel, [2, 4]);
+    pathLayout.ColumnWidth = {'1x', '2x', '2x', '1x'};
+
+    % path row
+    uilabel(pathLayout, 'Text', 'File path:');
+    pathField = uieditfield(pathLayout, 'text', ...
+        'Value', measurementParams.oPath);
+    pathField.Layout.Column = [2,3];
+    uibutton(pathLayout, 'Text', 'Browse', ...
+        'ButtonPushedFcn', @(btn, event) browsePath());
+
+    % file name and extension row
+    uilabel(pathLayout, 'Text', 'File name:');
+    fnameField = uieditfield(pathLayout, 'text', ...
+        'Value', measurementParams.oFilename);
+
+    uilabel(pathLayout, 'Text', 'File type:', 'HorizontalAlignment', 'right');
+    formatDropdown = uidropdown(pathLayout, ...
+        'Items', {'csv', 'tsv', 'xls', 'mat'}, ...
+        'Value', measurementParams.oFile_type);
+
+    %% --- Section 2: File Format + Wide Options + Info + Preview ---
+    formatPanel = uipanel(mainGrid, 'Title', 'Column formatting');
+    formatPanel.Layout.Column = [1,2];
+    formatLayout = uigridlayout(formatPanel, [1, 2]);
+    formatLayout.ColumnWidth = {'1x', '1x'};
+
+    %% Channel/Times format
+    chanTimesPanel = uipanel(formatLayout);
+    chanTimesLayout = uigridlayout(chanTimesPanel, [3, 1]);
+
+    checkboxMap('oChannels_asWide') = uicheckbox(chanTimesLayout, 'Text', 'Pivot measured channels to separate columns', 'Value', measurementParams.oChannels_asWide);
+    checkboxMap('oTimes_asWide') = uicheckbox(chanTimesLayout, 'Text', 'Pivot measured time windows to separate columns', 'Value', measurementParams.oTimes_asWide);
+    uilabel(chanTimesLayout, 'Text', 'EEGsets always output as separate rows');
+
+    labelPanel = uipanel(formatLayout, 'Title', 'Replace indices with labels for:');
+    labelLayout = uigridlayout(labelPanel, [3, 1]);
+    checkboxMap('oSet_labels') = uicheckbox(labelLayout, 'Text', 'EEG Sets', 'Value', measurementParams.oSet_labels);
+    checkboxMap('oChannel_labels') = uicheckbox(labelLayout, 'Text', 'Channels', 'Value', measurementParams.oChannel_labels);
+    checkboxMap('oBin_labels') = uicheckbox(labelLayout, 'Text', 'Bins', 'Value', measurementParams.oBin_labels);
+
+
+    %% --- Section 3: Additional Columns ---
+    additionalPanel = uipanel(mainGrid, 'Title', 'Include additional column for');
+    additionalPanel.Layout.Column = 1;
+    additionalPanel.Layout.Row = [3,4];
+    additionalLayout = uigridlayout(additionalPanel, [7, 1]);
+    %additionalLayout.RowHeight = repmat({'fit'}, 1, 5);
+    checkboxMap('oChannelLocs') = uicheckbox(additionalLayout, 'Text', 'Channel Locations [X,Y,Z]', 'Value', measurementParams.oChannelLocs);
+    checkboxMap('oEventOnsetTime') = uicheckbox(additionalLayout, 'Text', 'Event Onset Time (ms)', 'Value', measurementParams.oEventOnsetTime);
+    checkboxMap('oEventInstance_perSet') = uicheckbox(additionalLayout, 'Text', 'Event # per EEG set', 'Value', measurementParams.oEventInstance_perSet);
+    checkboxMap('oEventInstance_perSet_perEventcode') = uicheckbox(additionalLayout, 'Text', 'Event # per EEGset per event code', 'Value', measurementParams.oEventInstance_perSet_perEventcode);
+    checkboxMap('oEventBins') = uicheckbox(additionalLayout, 'Text', 'Bin indices for event', 'Value', measurementParams.oEventBins);
+    checkboxMap('oBinRT') = uicheckbox(additionalLayout, 'Text', 'Bin RT', 'Value', measurementParams.oBinRT);
+    checkboxMap('oFlags_user') = uicheckbox(additionalLayout, 'Text', 'User Flags', 'Value', measurementParams.oFlags_user);
+
+    %% --- Section 4: Artifact Handling ---
+    artifactPanel = uipanel(mainGrid, 'Title', 'Artifact handling:');
+    artifactPanel.Layout.Column = 2;
+    artifactPanel.Layout.Row = 3;
+    artifactLayout = uigridlayout(artifactPanel, [3, 1]);
+    checkboxMap('oReject_artifacts') = uicheckbox(artifactLayout, 'Text', 'Exclude trials with artifacts (recommended)', 'Value', measurementParams.oReject_artifacts,'ValueChangedFcn', @(btn, event) artifactSelectionOpt());
+    checkboxMap('oFlags_artifacts') = uicheckbox(artifactLayout, 'Text', 'Output column with artifact flags', 'Value', measurementParams.oFlags_artifacts);
+
+    % selection deactivation logic
+    artifactSelectionOpt()
+
+    % Info panel
+    infoPanel = uipanel(mainGrid, 'Title', 'Output file info');
+    infoPanel.Layout.Column = 2;
+    infoPanel.Layout.Row = 4;
+    infoGrid = uigridlayout(infoPanel, [3, 1]);
+
+    fdimension_info = uilabel(infoGrid, 'Text', 'Current output dimensions: TBD');
+    fsize_info = uilabel(infoGrid, 'Text', 'Estimated file size: TBD');
+
+    %% --- Footer Buttons ---
+    footerGrid = uigridlayout(mainGrid, [1, 3]);
+    footerGrid.Layout.Column = [1,2];
+
+    footerGrid.ColumnWidth = {'1x', '1x', '1x'};
+
+    uibutton(footerGrid, 'Text', 'Cancel', 'ButtonPushedFcn', @(btn, event) close(dlg));
+    uibutton(footerGrid, 'Text', 'Preview', 'ButtonPushedFcn', @(btn, event) previewFile());
+    uibutton(footerGrid, 'Text', 'OK', 'ButtonPushedFcn', @(btn, event) applyChanges());
+
+    %% --- Callback Logic ---
+
+    function browsePath()
+        path = uigetdir(measurementParams.oPath, 'Select Output Folder');
+        if ischar(path)
+            pathField.Value = path;
+        end
+    end
+
+    function previewFile()
+        % Stub preview logic
+        uialert(dlg, 'Preview feature not yet implemented.', 'Preview');
+    end
+
+    function applyChanges()
+        % Save basic path and format
+        measurementParams.oPath = pathField.Value;
+        measurementParams.oFile_format = formatDropdown.Value;
+        measurementParams.oChannels_asWide = strcmp(channelFormat.SelectedObject.Text, 'Wide');
+        measurementParams.oTimes_asWide = strcmp(timeFormat.SelectedObject.Text, 'Wide');
+
+        % Save checkbox fields
+        keys = checkboxMap.keys;
+        for i = 1:numel(keys)
+            key = keys{i};
+            measurementParams.(key) = checkboxMap(key).Value;
+        end
+
+        close(dlg);
+    end
+
+    function artifactSelectionOpt()
+        if checkboxMap('oReject_artifacts').Value == true
+            set(checkboxMap('oFlags_artifacts'), 'Enable', 'off')
+            set(checkboxMap('oFlags_artifacts'), 'Value', false)
+        else
+            set(checkboxMap('oFlags_artifacts'), 'Enable', 'on')
+            set(checkboxMap('oFlags_artifacts'), 'Value', true)
+        end
+    end
+
+end
+
+%% Section 9 - load/save parameter buttons %%
+function saveParameters(~, ~)
+    % Prompt user to choose location and filename
+    [filename, pathname] = uiputfile('*.mat', 'Save Measurement Parameters');
+    if isequal(filename, 0) || isequal(pathname, 0)
+        return; % User canceled
+    end
+
+    % Full path to save file
+    fullpath = fullfile(pathname, filename);
+
+    % Call method to save
+    try
+        measurementParams.saveToFile(fullpath);
+        msgbox('Parameters saved successfully.', 'Success');
+    catch ME
+        errordlg(['Failed to save parameters: ' ME.message], 'Save Error');
+    end
+end
+
+function loadParameters(~, ~)
+    % Prompt user to choose .mat file
+    [filename, pathname] = uigetfile('*.mat', 'Load Measurement Parameters');
+    if isequal(filename, 0) || isequal(pathname, 0)
+        return; % User canceled
+    end
+
+    % Full path to load file
+    fullpath = fullfile(pathname, filename);
+
+    % Load parameters into handle class
+    try
+        measurementParams.loadFromFile(fullpath);
+        msgbox('Parameters loaded successfully.', 'Success');
+        % TODO: Refresh GUI fields with new values
+    catch ME
+        errordlg(['Failed to load parameters: ' ME.message], 'Load Error');
+    end
+end
+
+%% Section 10 - Run/Cancel measurement buttons %%
 
 function saveMeasures(~, ~)
     display(measurementParams)
