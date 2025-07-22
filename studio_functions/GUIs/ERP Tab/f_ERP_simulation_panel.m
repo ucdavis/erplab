@@ -2331,6 +2331,7 @@ varargout{1} = ERP_simulation_box;
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
+            Tau  =Tau/1000; % s->ms, added to be consistent with pop_ERP_simulation
             
             SD = str2num(gui_erp_simulation.exgua_sd.String);
             if isempty(SD) || numel(SD)~=1
