@@ -8,7 +8,7 @@ global EStudio_gui_erp_totl;
 
 % Add listeners for data synchronization
 addlistener(observe_EEGDAT, 'eeg_two_panels_change', @eeg_two_panels_change);
-addlistener(observe_EEGDAT, 'count_current_eeg_change', @count_current_eeg_change);
+%addlistener(observe_EEGDAT, 'count_current_eeg_change', @count_current_eeg_change);
 addlistener(observe_EEGDAT, 'Reset_eeg_panel_change', @Reset_eeg_panel_change);
 
 % Initialize panel parameters
@@ -341,7 +341,8 @@ measurementGUI.subPanel_run = uiextras.HBox('Parent', measurementGUI.mainLayout,
 measurementGUI.subPanel_run_clearButton = uicontrol('Style', 'pushbutton', ...
     'Parent', measurementGUI.subPanel_run, ...
     'String', 'Clear parameters', ...
-    'FontSize', FonsizeDefault + 1);
+    'FontSize', FonsizeDefault + 1, ...
+    'Callback', @(src, event) clearParameters());
 
 measurementGUI.subPanel_run_Button = uicontrol('Style', 'pushbutton', ...
     'Parent', measurementGUI.subPanel_run, ...
@@ -364,30 +365,47 @@ function updateMeasurementType()
     selectedType = measurementGUI.subPanel_type_menu.String{selectedIdx};
 
     % Update measurementParams
-    measurementParams.mType = selectedType;
+    switch selectedType
+        case 'Instantaneous Amplitude (points)'
+            measurementParams.mType = "instabl";
+        case 'Mean Amplitude'
+            measurementParams.mType = "meanbl";
+        otherwise
+            errordlg('Not supported yet...', 'Error');
+            return;
+        end
 
     % Enable/Disable window/points fields depending on selection
     switch selectedType
         case 'Instantaneous Amplitude (points)'
+            % deactivate window
             set(measurementGUI.subPanel_window_title, 'Enable', 'off')
             set(measurementGUI.subPanel_window_fillbox, 'Enable', 'off')
             set(measurementGUI.subPanel_window_button, 'Enable', 'off')
 
+            set(measurementGUI.subPanel_window_fillbox, 'String', '')
+
+            % activate points
             set(measurementGUI.subPanel_points_title, 'Enable', 'on')
             set(measurementGUI.subPanel_points_fillbox1, 'Enable', 'on')
             set(measurementGUI.subPanel_points_to, 'Enable', 'on')
             set(measurementGUI.subPanel_points_fillbox2, 'Enable', 'on')
             set(measurementGUI.subPanel_points_button, 'Enable', 'on')
         otherwise
+            % activate window
             set(measurementGUI.subPanel_window_title, 'Enable', 'on')
             set(measurementGUI.subPanel_window_fillbox, 'Enable', 'on')
             set(measurementGUI.subPanel_window_button, 'Enable', 'on')
             
+            % deactivate points
             set(measurementGUI.subPanel_points_title, 'Enable', 'off')
             set(measurementGUI.subPanel_points_fillbox1, 'Enable', 'off')
             set(measurementGUI.subPanel_points_to, 'Enable', 'off')
             set(measurementGUI.subPanel_points_fillbox2, 'Enable', 'off')
             set(measurementGUI.subPanel_points_button, 'Enable', 'off')
+
+            set(measurementGUI.subPanel_points_fillbox1, 'String', '')
+            set(measurementGUI.subPanel_points_fillbox2, 'String', '')
     end
 
 end
@@ -411,14 +429,14 @@ function measurementOptions()
             interpMenu = uidropdown(dlg, ...
                 'Items', arrayfun(@num2str, 1:10, 'UniformOutput', false), ...
                 'Value', '1', ...
-                'Position', [180, 120, 80, 22]);
+                'Position', [200, 120, 60, 22]);
 
             % Precision dropdown
             uilabel(dlg, 'Text', 'Precision (number of decimals):', 'Position', [20, 80, 180, 20]);
             precisionMenu = uidropdown(dlg, ...
                 'Items', arrayfun(@num2str, 1:6, 'UniformOutput', false), ...
                 'Value', '3', ...
-                'Position', [180, 80, 80, 22]);
+                'Position', [200, 80, 60, 22]);
 
             % OK and Cancel buttons
             uibutton(dlg, 'Text', 'OK', ...
@@ -666,7 +684,7 @@ function checkByCode()
         set(measurementGUI.subPanel_event_byCode_button, 'Enable', 'on')
     else 
         set(measurementGUI.subPanel_event_byCode_fill, 'Enable', 'off')
-        set(measurementGUI.subPanel_event_byCode_fill, 'String', '(ANY)')
+        set(measurementGUI.subPanel_event_byCode_fill, 'String', 'ANY')
         set(measurementGUI.subPanel_event_byCode_button, 'Enable', 'off')
     end
 
@@ -862,7 +880,7 @@ function checkByBin()
         set(measurementGUI.subPanel_event_byBin_button, 'Enable', 'on')
     else 
         set(measurementGUI.subPanel_event_byBin_fill, 'Enable', 'off')
-        set(measurementGUI.subPanel_event_byBin_fill, 'String', '(ANY)')
+        set(measurementGUI.subPanel_event_byBin_fill, 'String', 'ANY')
         set(measurementGUI.subPanel_event_byBin_button, 'Enable', 'off')
     end
     
@@ -1787,7 +1805,7 @@ function detailsTimes()
 
             % update parameters and GUI
             measurementParams.windows = pointLatency;
-            set(measurementGUI.subPanel_points_fillbox1, 'String', string(measurementParams.windows));
+            set(measurementGUI.subPanel_points_fillbox1, 'String', string(measurementParams.points));
             set(measurementGUI.subPanel_points_fillbox2, 'String', '');
 
 
@@ -1827,7 +1845,7 @@ function detailsTimes()
             %previewBox.Value = pointsArray_str;
 
             % update parameters and GUI
-            measurementParams.windows = pointsArray;
+            measurementParams.points = pointsArray;
             set(measurementGUI.subPanel_points_fillbox1, 'String', string(startVal));
             set(measurementGUI.subPanel_points_fillbox2, 'String', string(stopVal));
 
@@ -1886,7 +1904,7 @@ function baselineDetails()
 
     % set epoch options
     if epochFlag
-        epochWindow = [EEGData(1).xmin EEGData(1).xmax];
+        epochWindow = [EEGData(1).xmin*1000 EEGData(1).xmax*1000]; % *1000 s -> ms
         preWindow = [epochWindow(1), 0];
         postWindow = [0, epochWindow(2)];
 
@@ -2021,14 +2039,17 @@ function baselineDetails()
                     return;
                 end
 
-                if startLatency < epochWindow(1) || startLatency > epochWindow(2) || stopLatency < epochWindow(1) || stopLatency > epochWindow(2)
-                    errorText.Text = 'Error: Latencies must be within epoch';
-                    return;
-                end
-
                 if startLatency > stopLatency
                     errorText.Text = 'Error: Start latency must be less than stop latency';
                     return;
+                end
+
+                % only check against epoch if data epoched
+                if epochFlag
+                    if startLatency < epochWindow(1) || startLatency > epochWindow(2) || stopLatency < epochWindow(1) || stopLatency > epochWindow(2)
+                        errorText.Text = 'Error: Latencies must be within epoch';
+                        return;
+                    end
                 end
 
                 baselineWindow = [startLatency, stopLatency];
@@ -2094,7 +2115,7 @@ function outputOptions()
     uilabel(pathLayout, 'Text', 'File type:', 'HorizontalAlignment', 'right');
     formatDropdown = uidropdown(pathLayout, ...
         'Items', {'csv', 'tsv', 'xls', 'mat'}, ...
-        'Value', measurementParams.oFile_type);
+        'Value', measurementParams.oFile_format);
 
     %% --- Section 2: File Format + Wide Options + Info + Preview ---
     formatPanel = uipanel(mainGrid, 'Title', 'Column formatting');
@@ -2224,7 +2245,76 @@ function saveParameters(~, ~)
     end
 end
 
-function loadParameters(~, ~)
+function fillParameters()
+    % used by loadParameters to fill in GUI, and clearParameters to go to default
+
+    mType = measurementParams.mType;
+    switch mType
+        case "instabl"
+            measurementGUI.subPanel_type_menu.Value = 1;
+        case "meanabl"
+            measurementGUI.subPanel_type_menu.Value = 2;
+        otherwise
+            errordlg('Unrecognized measurement type', 'Error');
+    end
+
+    %set(measurementGUI.subPanel_sets_fillbox, 'String', strjoin(arrayfun(@num2str, measurementParams.sets, 'UniformOutput', false)));
+    set(measurementGUI.subPanel_sets_fillbox, 'String', string(measurementParams.sets));
+
+    if measurementParams.eventCodes == "ANY"
+        set(measurementGUI.subPanel_event_byCode_check, 'Value', 0);
+        set(measurementGUI.subPanel_event_byCode_fill, 'String', "ANY");
+        set(measurementGUI.subPanel_event_byCode_fill, 'Enable', 'off');
+        set(measurementGUI.subPanel_event_byCode_button, 'Enable', 'off');
+    else 
+        set(measurementGUI.subPanel_event_byCode_check, 'Value', 1);
+        set(measurementGUI.subPanel_event_byCode_fill, 'String', string(measurementParams.eventCodes));
+        set(measurementGUI.subPanel_event_byCode_fill, 'Enable', 'on');
+        set(measurementGUI.subPanel_event_byCode_button, 'Enable', 'on');
+    end
+
+    if measurementParams.binNums == "ANY"
+        set(measurementGUI.subPanel_event_byBin_check, 'Value', 0);
+        set(measurementGUI.subPanel_event_byBin_fill, 'String', "ANY");
+        set(measurementGUI.subPanel_event_byBin_fill, 'Enable', 'off');
+        set(measurementGUI.subPanel_event_byBin_button, 'Enable', 'off');
+    else 
+        set(measurementGUI.subPanel_event_byBin_check, 'Value', 1);
+        set(measurementGUI.subPanel_event_byBin_fill, 'String', string(measurementParams.binNums));
+        set(measurementGUI.subPanel_event_byBin_fill, 'Enable', 'on');
+        set(measurementGUI.subPanel_event_byBin_button, 'Enable', 'on');
+    end
+
+
+    set(measurementGUI.subPanel_channel_fillbox, 'String', string(measurementParams.channels));
+
+    set(measurementGUI.subPanel_window_fillbox, 'String', string(measurementParams.windows));
+
+    tPoints = measurementParams.points;
+    if isempty(tPoints)
+        set(measurementGUI.subPanel_points_fillbox1, 'String', '');
+        set(measurementGUI.subPanel_points_fillbox2, 'String', '');
+    elseif numel(tPoints) == 1
+        set(measurementGUI.subPanel_points_fillbox1, 'String', tPoints);
+        set(measurementGUI.subPanel_points_fillbox2, 'String', '');
+    elseif numel(tPoints) == 2
+        set(measurementGUI.subPanel_points_fillbox1, 'String', tPoints(1));
+        set(measurementGUI.subPanel_points_fillbox2, 'String', tPoints(2));
+    else
+        errordlg('Only up to two values allowed for range of points', 'Error');
+    end
+
+    set(measurementGUI.subPanel_baseline_fillbox, 'String', string(measurementParams.baseline));
+
+    % update based on measure type
+    updateMeasurementType()
+
+    % other checks?...
+
+end
+
+
+function loadParameters(~,~)
     % Prompt user to choose .mat file
     [filename, pathname] = uigetfile('*.mat', 'Load Measurement Parameters');
     if isequal(filename, 0) || isequal(pathname, 0)
@@ -2237,14 +2327,19 @@ function loadParameters(~, ~)
     % Load parameters into handle class
     try
         measurementParams.loadFromFile(fullpath);
+        fillParameters();
         msgbox('Parameters loaded successfully.', 'Success');
-        % TODO: Refresh GUI fields with new values
     catch ME
         errordlg(['Failed to load parameters: ' ME.message], 'Load Error');
     end
 end
 
 %% Section 10 - Run/Cancel measurement buttons %%
+function clearParameters()
+    % reload defaults
+    measurementParams = MeasurementParams_handleClass();
+    fillParameters();
+end
 
 function saveMeasures(~, ~)
     display(measurementParams)

@@ -1,7 +1,7 @@
 classdef MeasurementParams_handleClass < handle
     properties
         %measurement parameters
-        mType = 'meanabl'; % type of measurement -> instabl, meanbl, peakampbl, peaklatbl, area, areaz,
+        mType = "meanabl"; % type of measurement -> instabl, meanbl, peakampbl, peaklatbl, area, areaz,
         mIntFactor = 1; % interpolation factor -> int 1-10
         mPrecision = 3; % number of decimals in measure -> int 1-6
         mPeakPol ;% local peak polarity -> "positive" or "negative"
@@ -12,23 +12,23 @@ classdef MeasurementParams_handleClass < handle
         % other measurement options
         sets = []; % indeces
 
-        eventCodes = 'ANY'; % 'ANY' or an array of codes
+        eventCodes = "ANY"; % 'ANY' or an array of codes
 
-        binNums = 'ANY'; % 'ANY' or an array of bin numbers
+        binNums = "ANY"; % 'ANY' or an array of bin numbers
 
-        channels = 'all'; % 'all' or an array of channel numbers
+        channels = []; % 'all' or an array of channel numbers
 
         windows = []; % a single range (e.g. [100 200]) or a list of ranges (e.g. [[100 200] [200 300]])
 
         points = []; % a single point (e.g. 100) or a range of points (e.g. 100:4:200)
 
-        baseline = 'pre'; % 'pre' 'post' 'full' or a custom range (e.g. [-100 0]), custom required for non-epoched data
+        baseline = []; % 'pre' 'post' 'full' or a custom range (e.g. [-100 0]), custom required for non-epoched data
 
         %output options
         oPath = cd; % directory as string
-        oFilename = 'item_measures' %placeholder
+        oFilename = "item_measures" %placeholder
 
-        oFile_type = 'csv'; % or 'tsv' 'xls' 'mat'
+        oFile_format = 'csv'; % or 'tsv' 'xls' 'mat'
         oChannels_asWide = false; %output channels as separate columns (wide format)
         oTimes_asWide = false; %output times as separate columns (wide format)
 
