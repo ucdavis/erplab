@@ -1189,11 +1189,17 @@ for Numofrows = 1:rowNums
                 props.YTickLabel(Numofytick) = {num2str(props.YTick(Numofytick))};
             end
             
-            [x,y_0] = find(Xtimerange==0);
-            if isempty(y_0)
-                y_0 = 1;
+            %[x,y_0] = find(Xtimerange==0); % bugfix kpw 7/29/25
+            %if isempty(y_0)
+            %    y_0 = 1;
+            %end
+            [x,y_0] =  closest(Xtimerange, 0)
+            if x>max(Xtimerange) || x<min(Xtimerange)
+                y0 = 1;
             end
+
             myY_Crossing = Xtimerangetrasf(y_0);
+
             tick_top = 0;
             
             if countPlot ==1
