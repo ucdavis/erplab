@@ -50,6 +50,15 @@ if ~strcmpi(datatype, 'ERP')
     return
 end
 
+% error if done on grand average ERP
+erp_eventlist_num = size(ERP.EVENTLIST);
+if erp_eventlist_num(2) > 1
+    msgboxText =  'Cannot resample grand averaged ERPs';
+    title = 'ERPLAB: pop_resamplerp() error';
+    errorfound(msgboxText, title);
+    return
+end
+
 if nargin==1
     
     Freq2resamp = ERP.srate;
@@ -197,6 +206,25 @@ end
 
 ERP.EVENTLIST.eventinfo = [];
 ERP.binerror = [];
+
+%% Check 0 point (kpw added 7/31/25)
+% threshold to round point to 0 (sometimes resampling returns a 0 point of 2.8422e-14)
+[time0, time0_samp] = closest(ERP.times,0);
+time0_thresh = 0.00000001; 
+if ~isequal(time0,0) & abs(time0)<time0_thresh
+    ERP.times(time0_samp) = 0; % set to exactly 0
+end
+
+% warning if still not 0 (if closest point to 0 not lower than threshold)
+[time0, time0_samp] = closest(ERP.times,0);
+if ~isequal(time0,0)
+    warning(sprintf(['Resampling resulted in epochs with no sample at 0 ms (event onset)\n' ...
+        'Closest sample to event onset time is now %s ms\n', ...
+        'This may cause problems for some ERPLAB processing and plotting steps\n' ...
+        'You might be able to solve this by choosing a different resampling rate or epoch size'], ...
+         num2str(round(time0,3))))
+end
+
 
 if strcmpi(p.Results.Saveas,'on')
     issaveas = 1;
