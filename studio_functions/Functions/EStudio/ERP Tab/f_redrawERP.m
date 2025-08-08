@@ -1193,7 +1193,7 @@ for Numofrows = 1:rowNums
             %if isempty(y_0)
             %    y_0 = 1;
             %end
-            [x,y_0] =  closest(Xtimerange, 0)
+            [x,y_0] =  closest(Xtimerange, 0);
             if x>max(Xtimerange) || x<min(Xtimerange)
                 y0 = 1;
             end
