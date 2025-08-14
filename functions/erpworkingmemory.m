@@ -91,8 +91,8 @@ if nargin==1 % read
             p = p(1:findstr(p,'eegplugin_erplab.m')-1);
             v = load(fullfile(p,'memoryerp.erpm'), '-mat');
         catch
-            msgboxText = ['ERPLAB Studio (erpworkingmemory.m) could not find "memoryerpstudio.erpm" or does not have permission for reading it.\n'...
-                'Please, run EEGLAB Studio once again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
+            msgboxText = ['ERPLAB (erpworkingmemory.m) could not find "memoryerp.erpm" or does not have permission for reading it.\n'...
+                'Please, run EEGLAB once again or go to ERPLAB''s Setting menu and specify/create a new memory file.\n'];
             try
                 cprintf([0.45 0.45 0.45], msgboxText');
             catch

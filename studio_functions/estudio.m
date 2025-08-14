@@ -46,6 +46,7 @@ SignalProcessingToolboxCheck;
 
 disp('Initializing Parameters...');
 
+% check estudio memory file
 if exist('memoryerpstudio.erpm','file')==2
     iserpmem = 1; % file for memory exists
 else
@@ -56,6 +57,28 @@ if iserpmem==0
     p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
     save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion');
 end
+
+% check if erplab memory file exists
+if exist('memoryerp.erpm','file')==0
+    % does not exist, launch eeglab/erplab to resolve
+    fprintf('\nNo memoryerp.erpm file found; relaunching ERPLAB to attempt to resolve issue\n\n');
+
+    % launch eeglab
+    eeglab
+
+    % check if success
+    if exist('memoryerp.erpm','file')==0
+        % still does not exist, launch eeglab/erplab to resolve
+        fprintf('\nUnable to create memoryerp.erpm. You may need to manually launch EEGLAB or go to ERPLAB''s Setting menu and specify/create a new memory file.\n\n');
+    end
+
+    disp('Estudio is relaunching. Please be patient...');
+    erplabver1 = geterplabeversion;
+    EStudioversion = erplabver1;
+    SignalProcessingToolboxCheck;
+
+end
+
 
 %%close EEGLAB
 try
