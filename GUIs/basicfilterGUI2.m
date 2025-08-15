@@ -98,7 +98,7 @@ handles.maxsliders = fnyq-1;
 handles.def = def;
 handles.minboundarysamdist = inf;
 handles.xmaxfreqr   = [0 round(ERPLAB.srate/4)]; %100
-handles.xmaxpimpz   = [0 100];
+handles.xmaxpimpz   = [0 50];
 handles.valhp   = '0';
 handles.vallp   = '0';
 handles.iswarngain = 0;
@@ -1771,11 +1771,12 @@ if get(handles.radiobutton_freqr,'Value')
     
 elseif get(handles.radiobutton_impr,'Value')
     h = hir;  % impulse
-    f = f3;   %1:length(h);
+    %f = f3;   %1:length(h); % commented out 8/14/25-kpw
+    t = (0:length(h)-1) * (1000 / fs)*2; % using time in ms now
     ymax  = max(h)*1.2;
     ymin  = min(h)*1.2;
     color = [0.78 0 0.1];
-    stem(f, h, 'linewidth', 2, 'Color', color);
+    stem(t, h, 'linewidth', 2, 'Color', color);
     xlabel('time (msec)')
     ylabel('amplitude')
 else
