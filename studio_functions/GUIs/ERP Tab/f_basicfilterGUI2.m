@@ -1810,7 +1810,7 @@ if get(handles.radiobutton_freqr,'Value')
 elseif get(handles.radiobutton_impr,'Value')
     h = hir;  % impulse
     %f = f3;   %1:length(h); % commented out 8/14/25-kpw
-    t = (0:length(h)-1) * (1000 / fs)*2; % using time in ms now
+    t = (0:length(h)-1) * (1000 / fs); % using time in ms now
     ymax  = max(h)*1.2;
     ymin  = min(h)*1.2;
     color = [0.78 0 0.1];
