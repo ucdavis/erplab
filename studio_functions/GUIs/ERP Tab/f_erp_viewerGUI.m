@@ -83,6 +83,12 @@ if ~isempty(ALLERP)
         bindata(:,:,:,Numoferp) = ERP.bindata(ChanArray,:,BinArray);
     end
     y_scale_def = [floor(1.1*min(bindata(:))),ceil(1.1*max(bindata(:)))];
+    if y_scale_def(1) == 0
+        y_scale_def(1) = -0.1;
+    end
+    if y_scale_def(2) == 0
+        y_scale_def(2) = 0.1;
+    end
     
     handles.Yscale = y_scale_def;
     handles.Min_vspacing = OutputViewerparerp{7};
@@ -1121,6 +1127,13 @@ for Numoferp = 1:numel(ERPArray)
     bindata(:,:,:,Numoferp) = ERP.bindata(ChanArray,:,BinArray);
 end
 y_scale_def = [floor(1.1*min(bindata(:))),ceil(1.1*max(bindata(:)))];
+if y_scale_def(1) == 0
+    y_scale_def(1) = -0.1;
+end
+if y_scale_def(2) == 0
+    y_scale_def(2) = 0.1;
+end
+
 if isempty(Yscale) || numel(Yscale)~=2
     Yscale= y_scale_def;
     handles.Yscale=Yscale;
@@ -1219,6 +1232,12 @@ if tmax > numel(timex)
     tmax = numel(timex);
 end
 Plot_erp_data_TRAN = [];
+
+% preallocate data
+ERP1 = ALLERP(ERPArray(1));
+Bindata = nan(size(ERP1.bindata,1), size(ERP1.bindata,2), size(ERP1.bindata,3), numel(ERPArray));
+
+
 for Numofsub = 1:numel(ERPArray)
     ERP1 = ALLERP(ERPArray(Numofsub));
     if intfactor~=1
@@ -1387,11 +1406,19 @@ qtimeRange = [timeStart timEnd];
 qPLOTORG = [1 2 3];
 [~, qplotArrayStr, ~, ~, ~]  = readlocs(ERP.chanlocs(ChanArray));
 qLegendName= ERP.bindescr(BinArray);
+
+
+% preallocate
+ERP1 = ALLERP(ERPArray(1));
+ERPdatadef = nan(size(ERP1.bindata,1), size(ERP1.bindata,2), size(ERP1.bindata,3), numel(ERPArray));
+
 for Numoferp = 1:numel(ERPArray)
     ERP1 = ALLERP(ERPArray(Numoferp));
     [ERPdatadef1,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ERP1,1,qPLOTORG,1);
     ERPdatadef(:,:,:,Numoferp) = ERPdatadef1;
+
 end
+
 bindata = ERPdatadef(ChanArray,:,BinArray,:);
 [Numchan,Numsamp,Numbin,Numerp] = size(bindata);
 
@@ -1400,6 +1427,7 @@ if chanOverlay==1
     bindata = permute(bindata,[2 1 3 4]);
     bindata = reshape(bindata,1,Numsamp,Numchan*Numbin*Numerp);
     qplotArrayStr{1,1} = 'No label';
+
 else
     plotArray = ChanArray;
     bindata = reshape(bindata,Numchan,Numsamp,Numbin*Numerp);
@@ -1422,6 +1450,13 @@ fs= ERP.srate;
 Ypert =20;
 %%get y axis
 y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
+if y_scale_def(1) == 0
+    y_scale_def(1) = -0.1;
+end
+if y_scale_def(2) == 0
+    y_scale_def(2) = 0.1;
+end
+
 if numel(qYScales)==2 && qYScales(1) <qYScales(2)
     yscaleall = qYScales(end)-qYScales(1);
 else
@@ -1536,12 +1571,13 @@ for Numofrows = 1:rowNums
         
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
+
             if qPolarityWave==1
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1));
             else
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1))*(-1);
             end
-            
+
             data4plot = reshape(data4plot,numel(timeRangedef),NumOverlay);
             for Numofoverlay = 1:NumOverlay
                 [Xtimerange, bindatatrs] = f_adjustbindtabasedtimedefd(squeeze(data4plot(:,Numofoverlay)), timeRangedef,qtimeRange,fs);
@@ -1961,6 +1997,13 @@ xtickstep=handles.xtickstep;
 Yscale = handles.Yscale;
 bindata = ERP.bindata(ChanArray,:,BinArray);
 y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
+if y_scale_def(1) == 0
+    y_scale_def(1) = -0.1;
+end
+if y_scale_def(2) == 0
+    y_scale_def(2) = 0.1;
+end
+
 if isempty(Yscale) || numel(Yscale)~=2
     Yscale= y_scale_def;
     handles.Yscale=Yscale;
@@ -2012,6 +2055,11 @@ if tmax > numel(timex)
     tmax = numel(timex);
 end
 Plot_erp_data_TRAN = [];
+% preallocate data
+ERP1 = ALLERP(ERPArray(1));
+Bindata = nan(size(ERP1.bindata,1), size(ERP1.bindata,2), size(ERP1.bindata,3), numel(ERPArray));
+
+
 for Numofsub = 1:numel(ERPArray)
     ERP1 = ALLERP(ERPArray(Numofsub));
     if intfactor~=1
