@@ -4,7 +4,7 @@
 % University of California, Davis,
 % Davis, CA
 % 2007-2025
-% Version 12.01
+% Version 12.1
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -109,6 +109,17 @@ try
     
 catch
     fprintf('\nERPLAB''s folder does not show the current version number.\n')
+end
+
+
+%
+% CHECK Matlab Version
+%
+
+matlabRelease;
+if ans.Release == 'R2025a'
+     warndlg(sprintf('Matlab version 2025a currently does not work with some functions in ERPLAB. We recommend using an earlier version.'),'!! Warning !!', 'modal')
+     clear ans;
 end
 
 
