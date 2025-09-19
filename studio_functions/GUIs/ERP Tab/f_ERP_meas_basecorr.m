@@ -32,9 +32,18 @@ gui_State = struct('gui_Name',       mfilename, ...
     'gui_OutputFcn',  @f_ERP_meas_basecorr_OutputFcn, ...
     'gui_LayoutFcn',  [] , ...
     'gui_Callback',   []);
-if nargin && ischar(varargin{1})
+
+% old version, fails with custom baseline
+%if nargin && ischar(varargin{1})
+%    gui_State.gui_Callback = str2func(varargin{1});
+%end
+
+% new, -kpw
+if nargin && ischar(varargin{1}) && exist(varargin{1}, 'file') == 2
+    % It's a valid function callback
     gui_State.gui_Callback = str2func(varargin{1});
 end
+
 
 if nargout
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
@@ -71,42 +80,63 @@ set(handles.gui_chassis,'Name', ['EStudio ' version '   -   ERP Measurement Tool
 
 set(handles.current_erp_label,'String', ['ERP Measurement Tool: Baseline Period in ms'],...
     'FontWeight','Bold', 'FontSize', 16);
-if length(Baseline_method)==2
+
+% Determine whether the input is a custom baseline
+isCustomBaseline = false;
+
+if isnumeric(Baseline_method) && length(Baseline_method) == 2
+    isCustomBaseline = true;
+elseif ischar(Baseline_method)
+    vals = str2num(Baseline_method); %#ok<ST2NM>
+    if isnumeric(vals) && length(vals) == 2
+        isCustomBaseline = true;
+    end
+end
+
+if isCustomBaseline
+    % custom baseline 
+    set(handles.radiobutton_pre, 'Value', 0);
+    set(handles.radiobutton_post, 'Value', 0);
+    set(handles.radiobutton_whole, 'Value', 0);
+    set(handles.radiobutton_none, 'Value', 0);
+    set(handles.radiobutton_custom, 'Value', 1);
+    set(handles.edit_custom, 'Enable', 'on');
     set(handles.edit_custom, 'String', num2str(Baseline_method));
     
 else
+    % not custom
     
     if strcmpi(Baseline_method,'pre')
         set(handles.radiobutton_pre, 'Value', 1);
-        set(handles.radiobutton_post, 'Value', 0);%radiobutton_whole
+        set(handles.radiobutton_post, 'Value', 0);%
         set(handles.radiobutton_whole, 'Value', 0);
         set(handles.radiobutton_custom, 'Value', 0);
         set(handles.edit_custom, 'Enable', 'off');
         set(handles.radiobutton_none, 'Value', 0);
     elseif strcmpi(Baseline_method,'post')
         set(handles.radiobutton_pre, 'Value', 0);
-        set(handles.radiobutton_post, 'Value', 1);%radiobutton_whole
+        set(handles.radiobutton_post, 'Value', 1);%
         set(handles.radiobutton_whole, 'Value', 0);
         set(handles.radiobutton_custom, 'Value', 0);
         set(handles.edit_custom, 'Enable', 'off');
         set(handles.radiobutton_none, 'Value', 0);
     elseif strcmpi(Baseline_method,'whole')
         set(handles.radiobutton_pre, 'Value', 0);
-        set(handles.radiobutton_post, 'Value', 0);%radiobutton_whole
+        set(handles.radiobutton_post, 'Value', 0);%
         set(handles.radiobutton_whole, 'Value', 1);
         set(handles.radiobutton_custom, 'Value', 0);
         set(handles.edit_custom, 'Enable', 'off');
         set(handles.radiobutton_none, 'Value', 0);
     elseif strcmpi(Baseline_method,'none')
          set(handles.radiobutton_pre, 'Value', 0);
-        set(handles.radiobutton_post, 'Value', 0);%radiobutton_whole
+        set(handles.radiobutton_post, 'Value', 0);%
         set(handles.radiobutton_whole, 'Value', 0);
         set(handles.radiobutton_custom, 'Value', 0);
         set(handles.edit_custom, 'Enable', 'off');
         set(handles.radiobutton_none, 'Value', 1);
     else
         set(handles.radiobutton_pre, 'Value', 0);
-        set(handles.radiobutton_post, 'Value', 0);%radiobutton_whole
+        set(handles.radiobutton_post, 'Value', 0);%
         set(handles.radiobutton_whole, 'Value', 0);
         set(handles.radiobutton_custom, 'Value', 0);
         set(handles.edit_custom, 'Enable', 'off');
@@ -143,7 +173,10 @@ pause(0.1)
 
 function edit_custom_Callback(hObject, eventdata, handles)
 
-Baseline = str2num(handles.String);
+%Baseline = str2num(handles.String); % old
+
+Baseline = str2num(handles.edit_custom.String); % fix attempt
+
 if isempty(Baseline) || length(Baseline) ==1
     msgboxText =  {'Invalid Baseline range!';'Please enter two numeric values'};
     title = 'EStudio: f_ERP_meas_basecorr()  error: Baseline Period setting';

@@ -78,10 +78,27 @@ if ~isempty(ALLERP)
     handles.timEnd =OutputViewerparerp{4};
     handles.xtickstep=OutputViewerparerp{5};
     bindata = [];
+    %for Numoferp = 1:numel(CurrentERP)
+    %    ERP = ALLERP(CurrentERP);
+    %    bindata(:,:,:,Numoferp) = ERP.bindata(ChanArray,:,BinArray);
+    %end
+    blc = OutputViewerparerp{14};
     for Numoferp = 1:numel(CurrentERP)
         ERP = ALLERP(CurrentERP);
-        bindata(:,:,:,Numoferp) = ERP.bindata(ChanArray,:,BinArray);
+        ERP_bindata = ERP.bindata;
+
+        % add baseline correction...
+        for b = 1:size(ERP_bindata,3)
+            for ch = 1:size(ERP_bindata,1)
+                data = squeeze(ERP_bindata(ch,:,b));
+                blv = blvalue2(data, ERP.times, blc);  % 
+                ERP_bindata(ch,:,b) = data - blv;
+            end
+        end
+
+        bindata(:,:,:,Numoferp) = ERP_bindata(ChanArray,:,BinArray);
     end
+
     y_scale_def = [floor(1.1*min(bindata(:))),ceil(1.1*max(bindata(:)))];
     if y_scale_def(1) == 0
         y_scale_def(1) = -0.1;
@@ -1119,13 +1136,27 @@ handles.edit1_time_range.String = num2str([timeStart,timEnd]);
 xtickstep=handles.xtickstep;
 [~, chanLabels, ~, ~, ~] = readlocs(ERP.chanlocs);
 Yscale = handles.Yscale;
+
+blc = handles.blc;
 bindata = [];
 ChanArray = str2num(handles.edit_chans.String);
 BinArray = str2num(handles.edit_bin.String);
 for Numoferp = 1:numel(ERPArray)
     ERP = ALLERP(ERPArray(Numoferp));
-    bindata(:,:,:,Numoferp) = ERP.bindata(ChanArray,:,BinArray);
+    ERP_bindata = ERP.bindata;
+
+    % add baseline correction...
+    for b = 1:size(ERP_bindata,3)
+        for ch = 1:size(ERP_bindata,1)
+            data = squeeze(ERP_bindata(ch,:,b));
+            blv = blvalue2(data, ERP.times, blc);  % 
+            ERP_bindata(ch,:,b) = data - blv;
+        end
+    end
+
+    bindata(:,:,:,Numoferp) = ERP_bindata(ChanArray,:,BinArray);
 end
+
 y_scale_def = [floor(1.1*min(bindata(:))),ceil(1.1*max(bindata(:)))];
 if y_scale_def(1) == 0
     y_scale_def(1) = -0.1;
@@ -1146,7 +1177,7 @@ moption= handles.moption;
 latency= handles.latency;
 Min_time = ERP.times(1);
 Max_time = ERP.times(end);
-blc = handles.blc;
+%blc = handles.blc; %moved up
 intfactor =  handles.intfactor;
 Resolution =handles.Resolution;
 BinchanOverlay = 0;
@@ -1162,8 +1193,6 @@ for ii = 1:rowNums
     handles.GridposArray(ii,1) =   ChanArray(ii);
 end
 GridposArray = handles.GridposArray;
-
-
 
 %%----------------------measurement name-----------------------------------
 measurearray = {'Instantaneous amplitude',...
@@ -1202,7 +1231,7 @@ mls = sprintf('%s\n%s',measurearray{meamenu},['Measurement Window:',32,num2str(h
 
 set(handles.text_measure_type, 'String', mls);
 offset = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
-    positive_up,chanOverlay,rowNums,GridposArray,handles.erptabwaveiwer,handles.erptabwaveiwer_legend);
+    positive_up,chanOverlay,rowNums,GridposArray,handles.erptabwaveiwer,handles.erptabwaveiwer_legend,blc);
 % set(handles.erptabwaveiwer,'BackgroundColor',[1 1 1]);
 Res = handles.ViewContainer.Position;
 handles.Res = Res;
@@ -1231,6 +1260,7 @@ end
 if tmax > numel(timex)
     tmax = numel(timex);
 end
+
 Plot_erp_data_TRAN = [];
 
 % preallocate data
@@ -1252,7 +1282,17 @@ for Numofsub = 1:numel(ERPArray)
         end
         Bindata(:,:,:,Numofsub) = Plot_erp_data_TRAN;
     else
-        Bindata(:,:,:,Numofsub) = ERP1.bindata;
+        % added fix to still baseline if intfactor not 1
+        data_corrected = ERP1.bindata;
+        for Numoftwo = 1:size(data_corrected,3)
+            for Numofone = 1:size(data_corrected,1)
+                data = squeeze(data_corrected(Numofone,:,Numoftwo));
+                blv = blvalue2(data, ERP1.times, blc);  % blc = baseline window
+                data = data - blv;
+                data_corrected(Numofone,:,Numoftwo) = data; % 
+            end
+        end
+        Bindata(:,:,:,Numofsub) = data_corrected;
     end
 end
 
@@ -1394,7 +1434,7 @@ guidata(hObject, handles);
 
 
 function OffSetY = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,qYScales,columNum,...
-    positive_up,chanOverlay,rowNums,GridposArray,waveview,legendview)
+    positive_up,chanOverlay,rowNums,GridposArray,waveview,legendview, blc)
 OffSetY = [];
 FonsizeDefault = f_get_default_fontsize();
 %%matlab version
@@ -1415,6 +1455,16 @@ ERPdatadef = nan(size(ERP1.bindata,1), size(ERP1.bindata,2), size(ERP1.bindata,3
 for Numoferp = 1:numel(ERPArray)
     ERP1 = ALLERP(ERPArray(Numoferp));
     [ERPdatadef1,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ERP1,1,qPLOTORG,1);
+
+    % add baseline correction...
+    for b = 1:size(ERPdatadef1,3)
+        for ch = 1:size(ERPdatadef1,1)
+            data = squeeze(ERPdatadef1(ch,:,b));
+            blv = blvalue2(data, ERP1.times, blc);  % 
+            ERPdatadef1(ch,:,b) = data - blv;
+        end
+    end
+
     ERPdatadef(:,:,:,Numoferp) = ERPdatadef1;
 
 end
@@ -1813,6 +1863,7 @@ end
 % guidata(hObject, handles);
 
 function f_plot_wave_viewer_popup(hObject,handles)
+
 ALLERP = handles.ALLERP;
 
 if isempty(ALLERP)
@@ -2031,7 +2082,7 @@ GridposArray = handles.GridposArray;
 
 %%----------------------measurement name-----------------------------------
 offset = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
-    positive_up,chanOverlay,rowNums,GridposArray,hbig,erptabwaveiwer_legend);
+    positive_up,chanOverlay,rowNums,GridposArray,hbig,erptabwaveiwer_legend,blc);
 
 splot_n = numel(ChanArray);
 
@@ -2074,7 +2125,17 @@ for Numofsub = 1:numel(ERPArray)
         end
         Bindata(:,:,:,Numofsub) = Plot_erp_data_TRAN;
     else
-        Bindata(:,:,:,Numofsub) = ERP1.bindata;
+        % added fix to still baseline if intfactor not 1
+        data_corrected = ERP1.bindata;
+        for Numoftwo = 1:size(data_corrected,3)
+            for Numofone = 1:size(data_corrected,1)
+                data = squeeze(data_corrected(Numofone,:,Numoftwo));
+                blv = blvalue2(data, ERP1.times, blc);  % blc = baseline window
+                data = data - blv;
+                data_corrected(Numofone,:,Numoftwo) = data; % 
+            end
+        end
+        Bindata(:,:,:,Numofsub) = data_corrected;
     end
 end
 

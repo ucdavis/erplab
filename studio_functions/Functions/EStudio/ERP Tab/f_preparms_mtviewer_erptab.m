@@ -215,11 +215,22 @@ try moption = geterpvaluesparas{7}; catch moption = 'meanbl'; end
 try latency = geterpvaluesparas{4};catch latency = []; end
 
 try  blc = geterpvaluesparas{10}; catch  blc = 'none'; end
-if numel(blc)~=2
-    if ~ismember_bc2(blc, {'none','pre','post','all','whole'})
-        blc = 'none';
+% check for custom baseline
+if isnumeric(blc) && length(blc) == 2
+    %custom baseline, pass
+elseif ischar(blc)
+    vals = str2num(blc); %#ok<ST2NM>
+    if isnumeric(vals) && length(vals) == 2
+        %custom baseline, pass
+    else
+        if ~ismember_bc2(blc, {'none','pre','post','all','whole'})
+            blc = 'none'; %invalid baseline string, default to none
+        end
     end
+else
+    blc = 'none'; %invalid baseline format, default to none
 end
+
 try intfactor = geterpvaluesparas{21}; catch intfactor=1; end
 
 if isempty(intfactor) || numel(intfactor)~=1 || any(intfactor<=0 ) || any(intfactor>10)

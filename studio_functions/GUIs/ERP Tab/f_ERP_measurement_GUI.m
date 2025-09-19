@@ -905,6 +905,9 @@ varargout{1} = erp_measurement_box;
                 return;
             end
         end
+
+        ERPMTops.def_erpvalue{10} = Answer; % actually set new baseline -kpw fix
+        
     end
 
 %%------------------File name setting for the output file.----------------
