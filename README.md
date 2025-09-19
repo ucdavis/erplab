@@ -1,3 +1,5 @@
+## Note: We recommend against using Matlab 2025A with ERPLAB at this time. It is very buggy!
+
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data. It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis. We have two versions: [ERPLAB Studio](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual) is a standalone package that provides an intuitive and easy-to-use graphical user interface. [ERPLAB Classic](https://github.com/ucdavis/erplab/wiki/Manual) is a plugin that runs inside the EEGLAB graphical user interface.
 </p>
 Click the Wiki icon at the top of the page for documentation, tutorials, and FAQs.
@@ -104,3 +106,4 @@ Various fixes to the GUI layouts for many routines (e.g. "Delete Time Segments" 
 ## ERPLAB Help
 
 ERPLAB tutorial, manual, and other documentation can be found on the [ERPLAB wiki, here](https://github.com/lucklab/erplab/wiki).
+
