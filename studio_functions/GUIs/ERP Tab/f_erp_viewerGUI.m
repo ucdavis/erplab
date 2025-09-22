@@ -1227,7 +1227,7 @@ elseif ismember_bc2(indxmeaX,5)%'fpeaklat'
 else
     meamenu = 1; % 'Instantaneous amplitude',...%'instabl',
 end
-mls = sprintf('%s\n%s',measurearray{meamenu},['Measurement Window:',32,num2str(handles.latency)]);
+mls = sprintf('%s\n%s\n%s',measurearray{meamenu},['Measurement Window:',32,num2str(handles.latency)], ['Baseline Window:',32,blc]);
 
 set(handles.text_measure_type, 'String', mls);
 offset = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
