@@ -133,11 +133,13 @@ varargout{1} = MVPC_grdavg_box_gui;
         MVPC_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_mvpc_grdavg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_mvpc_grdavg.cancel.ForegroundColor = [1 1 1];
-        for Numofbin = 1:length(observe_DECODE.ALLMVPC)
+
+        % get MVPC set names
+        for setNum = 1:length(observe_DECODE.ALLMVPC)
             try
-                listb{Numofbin} = observe_DECODE.ALLMVPC.mvpcname;
+                listb{setNum} = observe_DECODE.ALLMVPC(setNum).mvpcname;
             catch
-                listb{Numofbin} = char(['MVPC',32,num2str(Numofbin)]);
+                listb{setNum} = char(['MVPC',32,num2str(setNum)]);
             end
         end
         try
@@ -145,7 +147,7 @@ varargout{1} = MVPC_grdavg_box_gui;
         catch
             return;
         end
-        titlename = 'Select MVPC(es):';
+        titlename = 'Select MVPC sets:';
         if ~isempty(listb)
             MVPCselect = browsechanbinGUI(listb, indxlistb, titlename);
             if ~isempty(MVPCselect) || numel(MVPCselect)>1
