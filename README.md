@@ -6,10 +6,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v12.01
+## ERPLAB v12.10
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/12.00/erplab12.01.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
+  <a href="https://github.com/ucdavis/erplab/releases/download/12.10/erplab12.10.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
@@ -26,6 +26,10 @@ This download contains both [ERPLAB Studio](https://github.com/ucdavis/erplab/wi
 We encourage most users to use this latest major version.
 
 ## Release Notes
+
+### ERPLAB v12.10 Release Notes
+
+This release includes several important bug fixes and GUI improvements.
 
 ### ERPLAB v12.01 Release Notes
 
