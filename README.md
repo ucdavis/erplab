@@ -29,7 +29,15 @@ We encourage most users to use this latest major version.
 
 ### ERPLAB v12.10 Release Notes
 
-This release includes several important bug fixes and GUI improvements.
+This release includes several important bug fixes and GUI improvements to ERPLAB Studio including:
+
+- A critical bug fix for using custom and post-stimulus baselines during ERP measurement
+- Fixes and updates to ERP measurement preview visualization
+- Fixes to plotting filter impulse response functions and artificial ERP waveforms
+- Fixed set name selection issue during averaging of MVPC sets
+- Updated behavior for when resampling ERPs result in no time point at 0
+- Automatic initialization of ERPLAB Studio memory file during first launch (rather than requiring users to launch ERPLAB first)
+- Various updates to GUI button labels
 
 ### ERPLAB v12.01 Release Notes
 
