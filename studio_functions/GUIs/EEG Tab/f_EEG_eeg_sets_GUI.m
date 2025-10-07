@@ -193,6 +193,10 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
         end
         estudioworkingmemory('Startimes',0);
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_EEGDAT.count_current_eeg =2;
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
@@ -258,6 +262,10 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
         end
         estudioworkingmemory('Startimes',1);
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_EEGDAT.count_current_eeg=2;
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
@@ -651,6 +659,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.refresh_eegset.Enable= 'on';
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_EEGDAT.count_current_eeg =2;
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
@@ -778,6 +790,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.refresh_eegset.Enable= 'on';
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_EEGDAT.count_current_eeg =2;
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
@@ -789,6 +805,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             whichpanel = [13:18];
         end
         EEGTab_close_open_Panels(whichpanel);
+        
     end
 
 %%----------------------------Append two or more files---------------------
@@ -873,6 +890,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             EStduio_eegtab_EEG_set.butttons_datasets.Max =length(EEGlistName)+1;
             EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
             estudioworkingmemory('EEGArray',EEGArray);
+
+            % add set selection to history
+            logSelectedSets()
             
             observe_EEGDAT.count_current_eeg =2;
             if EStudio_gui_erp_totl.EEG_autoplot==1
@@ -983,6 +1003,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.refresh_eegset.Enable= 'on';
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
         estudioworkingmemory('EEGArray',EEGArray);
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_EEGDAT.count_current_eeg =2;
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
@@ -1310,10 +1334,16 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('Startimes',0);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',CURRENTSET);
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_EEGDAT.count_current_eeg =2;
+
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer(1);
         end
+
     end
 
 
@@ -1434,8 +1464,13 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.refresh_eegset.Enable= 'on';
+        
+        % add set selection to history
+        logSelectedSets()
+
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer(1);
+
     end
 
 %----------------------Get the information of the updated EEGsets----------
@@ -1513,6 +1548,44 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         observe_EEGDAT.Reset_eeg_paras_panel=2;
     end
+
+%%------------------get the names of eegsets-------------------------------
+    function logSelectedSets()
+
+        %% Display/history
+        % Get sets with names
+        EEGArray =  estudioworkingmemory('EEGArray');
+        [EEGSetNames,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
+
+        selectedSetNames = EEGSetNames(EEGArray);
+        selectedTypeFlags = EEGtypeFlag(EEGArray);
+
+        % Communication to display in command window
+        joinedNames_newline = strjoin(selectedSetNames, newline);
+        if any(selectedTypeFlags == 1)
+            displaycom = sprintf('Selected continuous EEG sets:\n%s', joinedNames_newline);
+        else
+            displaycom = sprintf('Selected epoched EEG sets:\n%s', joinedNames_newline);
+        end
+
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf( [displaycom]);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+
+        % Communication to history
+        joinedNames_commaSep = strjoin(selectedSetNames, ', ');
+
+        if any(selectedTypeFlags == 1)
+            eegcom = sprintf('Selected continuous EEG sets: [%s]', joinedNames_commaSep);
+        else
+            eegcom = sprintf('Selected epoched EEG sets: [%s]', joinedNames_commaSep);
+        end
+
+
+        eegh(eegcom)
+
+    end
+
 
 end
 

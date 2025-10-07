@@ -212,6 +212,7 @@ varargout{1} = box_erpset_gui;
         assignin('base','ALLERP',ALLERP);
         assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
         estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+
         observe_ERPDAT.Process_messg =2;
         
         ChanAllNew = [1:observe_ERPDAT.ERP.nchan];
@@ -434,6 +435,10 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Min = 1;
         ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
         ERPsetops.butttons_datasets.Value = CURRENTERP;
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -672,6 +677,10 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('selectederpstudio',ERPArray);
         ERPsetops.butttons_datasets.Min=1;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
@@ -849,7 +858,7 @@ varargout{1} = box_erpset_gui;
                 if numoferp ==length(filename)
                     [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 else
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 end
                 if isempty(observe_ERPDAT.ALLERP)
                     observe_ERPDAT.ALLERP = ERP;
@@ -893,8 +902,13 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         ERPsetops.butttons_datasets.Min=1;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
+
         if EStudio_gui_erp_totl.ERP_autoplot==1
             f_redrawERP();
         end
@@ -961,6 +975,10 @@ varargout{1} = box_erpset_gui;
         ERPsetops.export.Enable = Edit_label;
         SelectedERP = observe_ERPDAT.CURRENTERP;
         estudioworkingmemory('selectederpstudio',SelectedERP);
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
         if EStudio_gui_erp_totl.ERP_autoplot==1
@@ -1257,12 +1275,18 @@ function clearall(source,~)
         estudioworkingmemory('selectederpstudio',ERPArray);
         
         Current_ERP_selected=ERPArray(1);
+
+        % add set selection to history
+        logSelectedSets()
+
         observe_ERPDAT.CURRENTERP = Current_ERP_selected;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_ERP_selected);
         observe_ERPDAT.Count_currentERP = 2;
+
         if EStudio_gui_erp_totl.ERP_autoplot==1
             f_redrawERP();
         end
+
     end
 
 %%%--------------Up this panel--------------------------------------
@@ -1325,10 +1349,14 @@ function clearall(source,~)
         assignin('base','ALLERP',observe_ERPDAT.ALLERP);
         assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
         
+        % add set selection to history
+        logSelectedSets()
+
         observe_ERPDAT.Count_currentERP = 2;
         if EStudio_gui_erp_totl.ERP_autoplot==1
             f_redrawERP();
         end
+
     end
 
 %%------------------get the names of erpsets-------------------------------
@@ -1382,9 +1410,43 @@ function clearall(source,~)
         observe_ERPDAT.Reset_erp_paras_panel=2;
     end
 
+
+%%------------------get the names of erpsets-------------------------------
+    function logSelectedSets()
+
+        %% Display/history
+        % Get sets with names
+        ERPArray = estudioworkingmemory('selectederpstudio');
+        allSetNames =  getERPsets();
+        selectedSetNames = allSetNames(ERPArray);
+
+        % Communication to display in command window
+        joinedNames_newline = strjoin(selectedSetNames, newline);
+        displaycom = sprintf('Selected ERP sets:\n%s', joinedNames_newline);
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf( [displaycom]);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+
+        % Communication to history
+        joinedNames_commaSep = strjoin(selectedSetNames, ', ');
+        erpcom = sprintf('Selected ERP sets: [%s]', joinedNames_commaSep);
+
+        %ERP = observe_ERPDAT.ERP;
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
+
+        %[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom,2);
+
+        if isempty(ALLERPCOM)
+            ALLERPCOM{1} = erpcom;
+        else
+            ALLERPCOM{length(ALLERPCOM)+1} = erpcom;
+        end
+    
+        assignin('base','ALLERPCOM',ALLERPCOM);
+
+    end
+
 end
-
-
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%% 2024
 checkfileindex=1;
