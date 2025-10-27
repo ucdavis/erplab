@@ -1563,22 +1563,25 @@ estudioworkingmemory('Startimes',0);%%set default value
         % Communication to display in command window
         joinedNames_newline = strjoin(selectedSetNames, newline);
         if any(selectedTypeFlags == 1)
-            displaycom = sprintf('Selected continuous EEG sets:\n%s', joinedNames_newline);
+            displaycom = sprintf('%% Selected continuous EEGsets:\n%s', joinedNames_newline);
         else
-            displaycom = sprintf('Selected epoched EEG sets:\n%s', joinedNames_newline);
+            displaycom = sprintf('%% Selected epoched EEGsets:\n%s', joinedNames_newline);
         end
 
-        fprintf( ['\n\n',repmat('-',1,100) '\n']);
-        fprintf( [displaycom]);
-        fprintf( ['\n',repmat('-',1,100) '\n']);
+        %fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        %fprintf( [displaycom]);
+        %fprintf( ['\n',repmat('-',1,100) '\n']);
+
+        separator = repmat('-',1,100);
+        fprintf('\n%s\n%s\n%s\n', separator, displaycom, separator);
 
         % Communication to history
         joinedNames_commaSep = strjoin(selectedSetNames, ', ');
 
         if any(selectedTypeFlags == 1)
-            eegcom = sprintf('Selected continuous EEG sets: [%s]', joinedNames_commaSep);
+            eegcom = sprintf('%% Selected continuous EEGsets: [%s]', joinedNames_commaSep);
         else
-            eegcom = sprintf('Selected epoched EEG sets: [%s]', joinedNames_commaSep);
+            eegcom = sprintf('%% Selected epoched EEGsets: [%s]', joinedNames_commaSep);
         end
 
 

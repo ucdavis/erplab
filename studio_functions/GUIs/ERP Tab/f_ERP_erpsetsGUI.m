@@ -1422,14 +1422,18 @@ function clearall(source,~)
 
         % Communication to display in command window
         joinedNames_newline = strjoin(selectedSetNames, newline);
-        displaycom = sprintf('Selected ERP sets:\n%s', joinedNames_newline);
-        fprintf( ['\n\n',repmat('-',1,100) '\n']);
-        fprintf( [displaycom]);
-        fprintf( ['\n',repmat('-',1,100) '\n']);
+        displaycom = sprintf('%% Selected ERPsets:\n%s', joinedNames_newline);
+
+        separator = repmat('-',1,100);
+        fprintf('\n%s\n%s\n%s\n', separator, displaycom, separator);
+
+        %fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        %fprintf( [displaycom]);
+        %fprintf( ['\n',repmat('-',1,100) '\n']);
 
         % Communication to history
         joinedNames_commaSep = strjoin(selectedSetNames, ', ');
-        erpcom = sprintf('Selected ERP sets: [%s]', joinedNames_commaSep);
+        erpcom = sprintf('%% Selected ERPsets: [%s]', joinedNames_commaSep);
 
         %ERP = observe_ERPDAT.ERP;
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
