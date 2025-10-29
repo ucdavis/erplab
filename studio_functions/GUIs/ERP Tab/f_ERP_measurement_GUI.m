@@ -454,9 +454,11 @@ varargout{1} = erp_measurement_box;
         %%Change the modified parameters after the subfucntion was called
         def = { op ,dig,binlabop,polpeak,sampeak,locpeakrep,frac,...
             fracmearep,send2ws,inclate,intfactor,peakonset};
+
         ERP= observe_ERPDAT.ERP;
+
         Answer = geterpvaluesparasGUI2(def,ERP);
-        
+
         if isempty(Answer)
             return;
         end

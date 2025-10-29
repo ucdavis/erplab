@@ -210,6 +210,7 @@ end
 
 %%----------------------------Measurement tool-----------------------------
 geterpvaluesparas = estudioworkingmemory('pop_geterpvalues');
+
 try moption = geterpvaluesparas{7}; catch moption = 'meanbl'; end
 
 try latency = geterpvaluesparas{4};catch latency = []; end
@@ -304,7 +305,8 @@ else
     OutputViewerparerp{21} =PeakOnset;
     OutputViewerparerp{22} =Matlab_ver;
     OutputViewerparerp{23} =sampeak;
-     OutputViewerparerp{24} =GridposArraydef;
+    OutputViewerparerp{24} =GridposArraydef;
+
 end
 
 end

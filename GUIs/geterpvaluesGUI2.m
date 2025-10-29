@@ -236,7 +236,7 @@ set(handles.text_fa4, 'Enable', 'on')
 set(handles.popupmenu_fraca, 'Enable', 'on')
 set(handles.popupmenu_rise, 'Enable', 'on')
 
-fracarray = 0:100;
+fracarray = 1:100;
 set(handles.popupmenu_fraca,'String', cellstr(num2str(fracarray')))
 frac = handles.frac;
 if isempty(frac)

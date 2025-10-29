@@ -164,7 +164,7 @@ else
     end
 end
 
-if isempty(Afraction) || any(Afraction<=0) || any(Afraction>=0)
+if isempty(Afraction) || any(Afraction<=0) || numel(Afraction)~=1
     Afraction  =0.5;
 end
 
@@ -187,7 +187,6 @@ end
 if isempty(Neighborhood) ||numel(Neighborhood)~=1 || any(Neighborhood<1)
     Neighborhood=1;
 end
-
 
 [Amp, Lat]  = geterpvalues(ERPIN, latency, binArray, chanArray, ...
     MeasureName{IA}, Baseline, Component,...
