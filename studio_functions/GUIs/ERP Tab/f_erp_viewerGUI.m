@@ -2793,8 +2793,8 @@ elseif length(latency)==2
                     Amp_all = squeeze(bindata(Numofchan,:,Numofbin))*positive_up +offset(Numofchan);
                     if ~isnan(Amp_out(Numofbin,Numofchan))
                         if ismember_bc2(moption,  {'fpeaklat'})
-                            [xxx, latsamp, latdiffms] = closest(timex,Lat{Numofbin,Numofchan});
-                            line(r_ax, [Lat{Numofbin,Numofchan} Lat{Numofbin,Numofchan}],sort([offset(Numofchan),Amp_all(latsamp)]),'Color',line_colors(countcolor,:,:),'LineWidth',1,'LineStyle','-.');
+                            [xxx, latsamp, latdiffms] = closest(timex,Amp_out(Numofbin,Numofchan));
+                            line(r_ax, [Amp_out(Numofbin,Numofchan) Amp_out(Numofbin,Numofchan)],sort([offset(Numofchan),Amp_all(latsamp)]),'Color',line_colors(countcolor,:,:),'LineWidth',1,'LineStyle','-.');
                         elseif ismember_bc2(moption,  {'peaklatbl'})
                             [xxx, latsamp, latdiffms] = closest(timex,Amp_out(Numofbin,Numofchan));
                             line(r_ax, [Amp_out(Numofbin,Numofchan) Amp_out(Numofbin,Numofchan)],sort([offset(Numofchan),Amp_all(latsamp)]),'Color',line_colors(countcolor,:,:),'LineWidth',1,'LineStyle','-.');
