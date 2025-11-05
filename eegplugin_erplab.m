@@ -126,11 +126,13 @@ end
 %
 % CHECK EEGLAB Version
 %
-if exist('memoryerp.erpm','file')==2
+fullMemFile = fullfile(p, 'memoryerp.erpm');
+if isfile(fullMemFile)
     iserpmem = 1; % file for memory exists
 else
     iserpmem = 0; % does not exist file for memory
 end
+
 egv = regexp(eeg_getversion,'^(\d+)\.+','tokens','ignorecase');
 eegversion = str2num(char(egv{:}));
 check_matlab_version;
