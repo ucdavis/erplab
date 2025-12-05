@@ -342,4 +342,17 @@ function [BEST, bestcom] = pop_extractbest(ALLEEG, varargin)
         freq_msg = sprintf('Frequency transformation applied with cutoff frequencies: %0.2f-%0.2f Hz.', freq_transform(1), freq_transform(2));
         fprintf('%s\n', freq_msg);
     end
+
+    % Saving GUI (ERPLAB Classic only)
+    if issaveas && strcmpi(p.Results.Tooltype, 'erplab')
+        try
+            [BEST, issave, BESTCOM] = pop_savemybest(BEST, 'gui', 'erplab');
+            if issave
+                bestcom = sprintf('%s\n%s', bestcom, BESTCOM);
+            end
+        catch ME
+            fprintf('\n[pop_extractbest] SaveAs aborted or failed:\n%s\n', ME.message);
+        end
+    end
+
 end
