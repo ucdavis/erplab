@@ -16,18 +16,18 @@
 %
 % OPTIONAL INPUT:
 % - Use Key-Value pair
-% 
+%
 % 'Warning'         - ('off'/'on') 'On' to show warnings if they exist (Default:'off')
-% 'Saveas'          - ('off'/'on') If on, saves new .set after applying
-%                       formulas, and if using GUI  will update it via eeglab redraw
-%                       (Default: 'on') 
-% 'ErrorMsg'        - ('cw'/'popup') If 'cw', will show error message on the command line in red, 
-%                       If 'popup', will show error message in pop-up
-%                       window. (Default: 'popup')
+% 'Saveas'          - ('off'/'on') If on, adds new dataset to ALLEEG and redraws EEGLAB GUI.
+%                       Only needed when calling from EEGLAB GUI. For scripting, use 'off'.
+%                       (Default: 'off' for scripting; GUI automatically sets 'on')
+% 'ErrorMsg'        - ('popup' or anything else) If 'popup', will show error message in pop-up window.
+%                       Any other value (e.g., 'cw' or 'command') will show error message
+%                       on the command line in red. (Default: 'popup')
 % 'History'         - ('gui'/'script') Option on how to view equivalent script command:
-%                           'gui': writes equivalent script command to command window, 
+%                           'gui': writes equivalent script command to command window,
 %                           'script': logs into EEG.history only
-%                           (Default: 'gui')
+%                           (Default: 'script' for command-line; GUI automatically sets 'gui')
 % 'KeepChLoc'       - ('on'/'off') Keeps existing channel location information attached to EEG
 %                       structure after applying formulas (Default: 'on')
 %
@@ -45,8 +45,8 @@
 % EEG = pop_eegchanoperator( EEG, 'C:\Steve\Tutorial\testlistch.txt' ); % load text file containing formulas.
 %
 % or
-% 
-% pop_eegchanoperator(EEG, formulas, 'Warning', 'off, 'Saveas', 'on','ErrorMsg', 'popup', 'History', 'gui', 'KeepChLoc', 'on');
+%
+% pop_eegchanoperator(EEG, formulas, 'Warning', 'off', 'Saveas', 'on', 'ErrorMsg', 'popup', 'History', 'gui', 'KeepChLoc', 'on');
 %
 % See also eegchanoperator.m chanoperGUI.m
 %
@@ -109,17 +109,17 @@ if nargin==1
                 errorfound(msgboxText, title);
                 return
         end
-        
+
         def  = erpworkingmemory('pop_eegchanoperator');
         if isempty(def)
                 def = { [], 1};
         end
-        
+
         %
         % Call Gui
         %
         answer   = chanoperGUI(EEG, def);
-        
+
         if isempty(answer)
                 disp('User selected Cancel')
                 return
@@ -136,28 +136,28 @@ if nargin==1
                         return
                 end
         end
-        
+
         wchmsgon = answer{2};
         def      = {formulas, wchmsgon};
         erpworkingmemory('pop_eegchanoperator', def);
-        
+
         if wchmsgon==1
                 wchmsgonstr = 'on';
         else
                 wchmsgonstr = 'off';
-                
+
         end
-        
+
         EEG.setname = [EEG.setname '_chop'];
-        
-        keepchlocs = answer{3}; 
-        
+
+        keepchlocs = answer{3};
+
         if keepchlocs ==1
             keepchlocstr = 'on';
         else
             keepchlocstr= 'off';
         end
-        
+
         %
         % Somersault
         %
@@ -181,9 +181,9 @@ p.addRequired('EEG');
 p.addRequired('formulas');
 % option(s)
 p.addParamValue('Warning', 'off', @ischar);
-p.addParamValue('Saveas', 'on', @ischar); % 'on', 'off'
-p.addParamValue('ErrorMsg', 'popup', @ischar); % cw = command window
-p.addParamValue('History', 'gui', @ischar); % history from scripting
+p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off' (default 'off' for scripting; GUI explicitly sets 'on')
+p.addParamValue('ErrorMsg', 'popup', @ischar); % 'popup' = popup window, anything else (e.g., 'cw', 'command') = command window
+p.addParamValue('History', 'script', @ischar); % history from scripting (default 'script'; GUI explicitly sets 'gui')
 p.addParamValue('KeepChLoc', 'on', @ischar); %'on','off'
 
 p.parse(EEG, formulas, varargin{:});
@@ -230,14 +230,14 @@ else
         if strcmp(formulas,'')
                 error('ERPLAB says:  Error, formulas were not found.')
         end
-        
+
         disp(['For list of formulas, user selected  <a href="matlab: open(''' formulas ''')">' formulas '</a>'])
-        
+
         fid_formulas = fopen( formulas );
         formulaArray = textscan(fid_formulas, '%[^\n]', 'CommentStyle','#', 'whitespace', '');
         formulaArray = strtrim(cellstr(formulaArray{:})');
         fclose(fid_formulas);
-        
+
         if isempty(formulaArray)
                 error('ERPLAB says:  Error, file was empty. No formulas were found.')
         end
@@ -263,6 +263,12 @@ if modeoption==1 % non-recursive
         EEGout.nbchan   = [];
         EEGout.chanlocs = [];
         EEGout.reject   = [];
+        % Clear ICA fields
+        if isfield(EEGout, 'icaweights'), EEGout.icaweights = []; end
+        if isfield(EEGout, 'icasphere'), EEGout.icasphere = []; end
+        if isfield(EEGout, 'icawinv'), EEGout.icawinv = []; end
+        if isfield(EEGout, 'icachansind'), EEGout.icachansind = []; end
+        if isfield(EEGout, 'icaact'), EEGout.icaact = []; end
 elseif modeoption==0 % recursive
         disp('User selected recursive mode for channel operations')
         EEGin = EEG;
@@ -271,12 +277,12 @@ end
 h=1;
 while h<=nformulas && conti
         expr = formulaArray{h};
-        tokcommentb  = regexpi(formulaArray{h}, '^#', 'match');  % comment symbol     
-        if isempty(tokcommentb) % skip comment symbol 
-                
+        tokcommentb  = regexpi(formulaArray{h}, '^#', 'match');  % comment symbol
+        if isempty(tokcommentb) % skip comment symbol
+
                 %
                 % subroutine
-                %  
+                %
                 [EEGout conti] = eegchanoperator(EEGin, EEGout, expr, wchmsgon, errormsgtype);
                 if conti==0
                         recall = 1;
@@ -312,7 +318,7 @@ EEG = EEGout;
 %
 % History
 %
-skipfields = {'EEG', 'formulas', 'Saveas','History'};
+skipfields = {'EEG', 'formulas', 'Warning', 'History'};
 fn     = fieldnames(p.Results);
 if opcom==1
         com = sprintf('%s = pop_eegchanoperator( %s, { ', inputname(1), inputname(1));
@@ -331,9 +337,7 @@ for q=1:length(fn)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)
-                                if ~strcmpi(fn2res,'off')
-                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
-                                end
+                                com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
                         else
                                 if iscell(fn2res)
                                         if ischar([fn2res{:}])
@@ -375,8 +379,8 @@ end
 if modeoption==1 && issaveas
         [ALLEEG, EEG, CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
 end
-if issaveas==1
-        eeglab  redraw % only when using GUI
+if issaveas==1 && shist==1
+        eeglab  redraw % only when using GUI (shist==1 means History mode is 'gui')
 end
 
 %
@@ -384,5 +388,3 @@ end
 %
 msg2end
 return
-
-

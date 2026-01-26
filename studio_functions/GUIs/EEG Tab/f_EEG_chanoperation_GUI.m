@@ -86,7 +86,7 @@ varargout{1} = EEG_chan_operation_gui;
             'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_clear = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
             'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        
+
         gui_eegtab_chan_optn.asst_locaInfo = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.ref_asst = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
             'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
@@ -113,7 +113,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.mode_create.KeyPressFcn=  @eeg_chanop_presskey;
         gui_eegtab_chan_optn.mode_create.String =  '<html>Create New dataset<br />(independent transformations)</html>';
         set(gui_eegtab_chan_optn.mode_2,'Sizes',[55 -1]);
-        
+
         %%-----------------Run---------------------------------------------
         gui_eegtab_chan_optn.run_title = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
@@ -124,7 +124,7 @@ varargout{1} = EEG_chan_operation_gui;
             'String','Run','callback',@chanop_eeg_apply,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         set(gui_eegtab_chan_optn.run_title,'Sizes',[15 105  30 105 15]);
-        
+
         set(gui_eegtab_chan_optn.DataSelBox,'Sizes',[130,30,35,35,35,30]);
     end
 
@@ -138,7 +138,7 @@ varargout{1} = EEG_chan_operation_gui;
             Source_editor.Enable = 'off';
             return;
         end
-        
+
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=4
@@ -150,7 +150,7 @@ varargout{1} = EEG_chan_operation_gui;
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
-        
+
         def  = estudioworkingmemory('pop_eegchanoperator');
         if isempty(def)
             def = { [], 1};
@@ -183,7 +183,7 @@ varargout{1} = EEG_chan_operation_gui;
         localInfor = gui_eegtab_chan_optn.locaInfor.Value;
         chanopGUI.keeplocs = localInfor;
         estudioworkingmemory('chanopGUI',chanopGUI);
-        
+
         EEG = observe_EEGDAT.EEG;
         answer = chanoperGUI(EEG, def);
         if isempty(answer)
@@ -204,7 +204,7 @@ varargout{1} = EEG_chan_operation_gui;
         else
             gui_eegtab_chan_optn.locaInfor.Value=0;
         end
-        
+
         formulas = answer{1};
         wbmsgon  = answer{2};
         keeplocs = answer{3};
@@ -213,13 +213,38 @@ varargout{1} = EEG_chan_operation_gui;
         else
             gui_eegtab_chan_optn.locaInfor.Value = 0;
         end
-        
+
+        % Check if formulas is a filename string or cell array of formulas
+        if ischar(formulas)
+            % It's a filename - need to read the file
+            fid_formula = fopen(formulas);
+            if fid_formula == -1
+                msgboxText = ['Channel Operations - Cannot open file: ', formulas];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message = 2;
+                return;
+            end
+            try
+                formcell = textscan(fid_formula, '%s', 'delimiter', '\r');
+                fclose(fid_formula);
+                formulas = formcell{1}; % Convert to cell array
+            catch
+                fclose(fid_formula);
+                msgboxText = ['Channel Operations - Error reading file: ', formulas];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message = 2;
+                return;
+            end
+        end
+
         def = {formulas, wbmsgon};
         estudioworkingmemory('pop_eegchanoperator', def);
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
-        
+
         if ~isempty(def{1,1})
             Eqs = def{1,1};
             for ii = 1:length(def{1,1})
@@ -246,7 +271,7 @@ varargout{1} = EEG_chan_operation_gui;
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
-        
+
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
             observe_EEGDAT.eeg_panel_message =2;
@@ -255,7 +280,7 @@ varargout{1} = EEG_chan_operation_gui;
             fullname = fullfile(filepath, filename);
             disp(['f_EEG_chanoperation_GUI(): For formulas-file, user selected ', fullname])
         end
-        
+
         fid_formula = fopen( fullname );
         try
             formcell    = textscan(fid_formula, '%s','delimiter', '\r');
@@ -287,12 +312,12 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(observe_EEGDAT.EEG)
             return;
         end
-        
+
         %         pathName =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathName)
         pathName =  [pwd,filesep];
         %         end
-        
+
         Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
         Formula_str = {};
         count = 0;
@@ -325,7 +350,7 @@ varargout{1} = EEG_chan_operation_gui;
             for i=1:length(Formula_str)
                 fprintf(fid_list,'%s\n', Formula_str{i});
             end
-            
+
             fclose(fid_list);
             disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
         end
@@ -334,7 +359,7 @@ varargout{1} = EEG_chan_operation_gui;
 
 %%-------------------Equation Clear---------------------------------------
     function eq_clear(~,~)
-        
+
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
@@ -358,10 +383,10 @@ varargout{1} = EEG_chan_operation_gui;
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
-        
+
         gui_eegtab_chan_optn.mode_modify.Value = 0;
         gui_eegtab_chan_optn.mode_create.Value = 1;
-        
+
         try
             EEG =  observe_EEGDAT.EEG;
             nchan = EEG.nbchan;
@@ -379,7 +404,7 @@ varargout{1} = EEG_chan_operation_gui;
         for ch =1:nchan
             listch{ch} = [num2str(ch) ' = ' EEG.chanlocs(ch).labels ];
         end
-        
+
         % open reference wizard
         formulalist = f_rerefassistantGUI(nchan, listch);
         if isempty(formulalist)
@@ -389,7 +414,7 @@ varargout{1} = EEG_chan_operation_gui;
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
-        
+
         if gui_eegtab_chan_optn.mode_create.Value
             formulalist = cellstr([formulalist{:}]);
             for t=1:length(formulalist)
@@ -411,7 +436,7 @@ varargout{1} = EEG_chan_operation_gui;
                     dsnames{count,1}  = formulas{ii};
                 end
             end
-            
+
             for ii = 1:length(formulalist)
                 dsnames{count+ii,1}  = formulalist{ii};
             end
@@ -437,7 +462,7 @@ varargout{1} = EEG_chan_operation_gui;
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
-        
+
         Value = source.Value;
         gui_eegtab_chan_optn.locaInfor.Value = Value;
     end
@@ -460,7 +485,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         gui_eegtab_chan_optn.mode_modify.Value = 1;
         gui_eegtab_chan_optn.mode_create.Value = 0;
-        
+
         FormulaArrayIn = gui_eegtab_chan_optn.edit_bineq.Data;
         if isempty(FormulaArrayIn)
             val = 0;
@@ -509,7 +534,7 @@ varargout{1} = EEG_chan_operation_gui;
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
-        
+
         gui_eegtab_chan_optn.mode_modify.Value = 0;
         gui_eegtab_chan_optn.mode_create.Value = 1;
         FormulaArrayIn = char(gui_eegtab_chan_optn.edit_bineq.Data);
@@ -602,7 +627,7 @@ varargout{1} = EEG_chan_operation_gui;
         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
-        
+
         %         pathName_def =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathName_def)
         pathName_def =[pwd,filesep];
@@ -612,7 +637,7 @@ varargout{1} = EEG_chan_operation_gui;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        
+
         Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
         Formula_str = {};
         count = 0;
@@ -622,7 +647,7 @@ varargout{1} = EEG_chan_operation_gui;
                 Formula_str{count} = Eq_Data{ii};
             end
         end
-        
+
         if isempty(Formula_str)
             msgboxText =  ['Channel Operations - You have not yet written a formula'];
             estudioworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -631,7 +656,7 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-        
+
         %%check the format of equations
         if gui_eegtab_chan_optn.mode_modify.Value
             editormode = 0;
@@ -647,7 +672,7 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-        
+
         %%%Create a new ERPset for the bin-operated ERPsets
         if gui_eegtab_chan_optn.locaInfor.Value==1
             keeplocs ='on';
@@ -662,6 +687,10 @@ varargout{1} = EEG_chan_operation_gui;
         for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
             EEG = ALLEEG(EEGArray(Numofeeg));
             [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
+            if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message = 2;
+                return;
+            end
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -670,7 +699,7 @@ varargout{1} = EEG_chan_operation_gui;
             ALLEEG_out(end).filename = EEG.filename;
             ALLEEG_out(end).filepath = EEG.filepath;
         end
-        
+
         Save_file_label = [];
         if gui_eegtab_chan_optn.mode_create.Value
             Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_chop');
@@ -682,7 +711,7 @@ varargout{1} = EEG_chan_operation_gui;
                 Save_file_label = Answer{2};
             end
         end
-        
+
         if gui_eegtab_chan_optn.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
             ALLEEG(EEGArray)=ALLEEG_out;
         elseif gui_eegtab_chan_optn.mode_create.Value==1 %% If select "Create New EEGset (independent transformations)"
@@ -706,7 +735,7 @@ varargout{1} = EEG_chan_operation_gui;
                     EEG.filepath = '';
                 end
                 [ALLEEG EEG,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-                
+
             end
         end
         observe_EEGDAT.ALLEEG = ALLEEG;
@@ -751,7 +780,7 @@ varargout{1} = EEG_chan_operation_gui;
             for Numofeeg = 1:numel(EEGArray)
                 ChaNumAll(Numofeeg) = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)).nbchan;
             end
-            
+
             if numel(EEGArray)>1 && numel(unique(ChaNumAll)) >1
                 Enable_label = 'off';
                 for ii = 1:100

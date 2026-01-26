@@ -70,7 +70,7 @@ varargout{1} = ERP_chan_operation_gui;
         set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
         gui_erp_chan_operation.edit_bineq.KeyPressFcn= @erp_chanop_presskey;
         gui_erp_chan_operation.Paras{1} = gui_erp_chan_operation.edit_bineq.Data;
-        
+
         gui_erp_chan_operation.equation_selection = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
             'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
@@ -80,7 +80,7 @@ varargout{1} = ERP_chan_operation_gui;
             'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.eq_clear = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
             'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        
+
         gui_erp_chan_operation.asst_locaInfo = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.ref_asst = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.asst_locaInfo,...
             'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
@@ -119,7 +119,7 @@ varargout{1} = ERP_chan_operation_gui;
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);
         set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30]);
-        
+
         estudioworkingmemory('ERPTab_chanop',0);
     end
 
@@ -144,7 +144,7 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_chanop',1);
-        
+
         def  = estudioworkingmemory('pop_erpchanoperator');
         if isempty(def)
             def = { [], 1};
@@ -177,7 +177,7 @@ varargout{1} = ERP_chan_operation_gui;
         localInfor = gui_erp_chan_operation.locaInfor.Value;
         chanopGUI.keeplocs = localInfor;
         estudioworkingmemory('chanopGUI',chanopGUI);
-        
+
         ERP = observe_ERPDAT.ERP;
         answer = chanoperGUI(ERP, def);
         if isempty(answer)
@@ -198,7 +198,7 @@ varargout{1} = ERP_chan_operation_gui;
         else
             gui_erp_chan_operation.locaInfor.Value=0;
         end
-        
+
         formulas = answer{1};
         wbmsgon  = answer{2};
         keeplocs = answer{3};
@@ -207,13 +207,38 @@ varargout{1} = ERP_chan_operation_gui;
         else
             gui_erp_chan_operation.locaInfor.Value = 0;
         end
-        
+
+        % Check if formulas is a filename string or cell array of formulas
+        if ischar(formulas)
+            % It's a filename - need to read the file
+            fid_formula = fopen(formulas);
+            if fid_formula == -1
+                msgboxText = ['Channel Operations - Cannot open file: ', formulas];
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg = 2;
+                return;
+            end
+            try
+                formcell = textscan(fid_formula, '%s', 'delimiter', '\r');
+                fclose(fid_formula);
+                formulas = formcell{1}; % Convert to cell array
+            catch
+                fclose(fid_formula);
+                msgboxText = ['Channel Operations - Error reading file: ', formulas];
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg = 2;
+                return;
+            end
+        end
+
         def = {formulas, wbmsgon};
         estudioworkingmemory('pop_erpchanoperator', def);
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
-        
+
         if ~isempty(def{1,1})
             Eqs = def{1,1};
             for ii = 1:length(def{1,1})
@@ -222,7 +247,7 @@ varargout{1} = ERP_chan_operation_gui;
             gui_erp_chan_operation.edit_bineq.Data = dsnames;
             set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         end
-        
+
     end
 
 %%-------------------Equation Load---------------------------------------
@@ -242,8 +267,8 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_chanop',1);
-        
-        
+
+
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
             return
@@ -254,7 +279,7 @@ varargout{1} = ERP_chan_operation_gui;
         fid_formula = fopen( fullname );
         formcell    = textscan(fid_formula, '%s','delimiter', '\r');
         formulas    = char(formcell{:});
-        
+
         if size(formulas,2)>256
             msgboxText =  ['Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
@@ -296,7 +321,7 @@ varargout{1} = ERP_chan_operation_gui;
         %         if isempty(pathName)
         pathName =[cd,filesep];
         %         end
-        
+
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
             observe_ERPDAT.Process_messg =2;
@@ -334,7 +359,7 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_chanop',1);
-        
+
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
@@ -361,7 +386,7 @@ varargout{1} = ERP_chan_operation_gui;
         estudioworkingmemory('ERPTab_chanop',1);
         gui_erp_chan_operation.mode_modify.Value = 0;
         gui_erp_chan_operation.mode_create.Value = 1;
-        
+
         ERPLAB =  observe_ERPDAT.ERP;
         nchan = ERPLAB.nchan;
         listch=[];
@@ -374,7 +399,7 @@ varargout{1} = ERP_chan_operation_gui;
         for ch =1:nchan
             listch{ch} = [num2str(ch) ' = ' ERPLAB.chanlocs(ch).labels ];
         end
-        
+
         % open reference wizard
         formulalist = f_rerefassistantGUI(nchan, listch);
         if isempty(formulalist)
@@ -385,7 +410,7 @@ varargout{1} = ERP_chan_operation_gui;
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
-        
+
         if gui_erp_chan_operation.mode_create.Value
             formulalist = cellstr([formulalist{:}]);
             for t=1:length(formulalist)
@@ -393,7 +418,7 @@ varargout{1} = ERP_chan_operation_gui;
                 formulalist{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '[^n]*ch','nch','ignorecase')), strtrim(parts{t}{2}));
             end
         end
-        
+
         if isempty(formulas)
             for ii = 1:length(formulalist)
                 dsnames{ii,1}  = formulalist{ii};
@@ -456,10 +481,10 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_chanop',1);
-        
+
         gui_erp_chan_operation.mode_modify.Value = 1;
         gui_erp_chan_operation.mode_create.Value = 0;
-        
+
         FormulaArrayIn = gui_erp_chan_operation.edit_bineq.Data;
         if isempty(FormulaArrayIn)
             val = 0;
@@ -476,7 +501,7 @@ varargout{1} = ERP_chan_operation_gui;
         else
             [val, formulaArray]= f_chan_testsyntaxtype(FormulaArrayIn, 'recu');
         end
-        
+
         if val ==1
             for ii = 1:100
                 try
@@ -513,8 +538,8 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_chanop',1);
-        
-        
+
+
         gui_erp_chan_operation.mode_modify.Value = 0;
         gui_erp_chan_operation.mode_create.Value = 1;
         FormulaArrayIn = char(gui_erp_chan_operation.edit_bineq.Data);
@@ -569,7 +594,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
         gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
-        
+
         gui_erp_chan_operation.edit_bineq.Data= gui_erp_chan_operation.Paras{1};
         gui_erp_chan_operation.locaInfor.Value=gui_erp_chan_operation.Paras{2};
         mode_modify = gui_erp_chan_operation.Paras{3};
@@ -589,7 +614,7 @@ varargout{1} = ERP_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=6
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray)
             ERPArray =  length(observe_ERPDAT.ALLERP);
@@ -597,7 +622,7 @@ varargout{1} = ERP_chan_operation_gui;
             observe_ERPDAT.CURRENTERP = ERPArray;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        
+
         Eq_Data =  gui_erp_chan_operation.edit_bineq.Data;
         Formula_str = {};
         count = 0;
@@ -620,7 +645,7 @@ varargout{1} = ERP_chan_operation_gui;
         ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
         gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
-        
+
         %%check the format of equations
         if gui_erp_chan_operation.mode_modify.Value
             editormode = 0;
@@ -676,7 +701,7 @@ varargout{1} = ERP_chan_operation_gui;
                 Save_file_label = Answer{2};
             end
         end
-        
+
         if gui_erp_chan_operation.mode_modify.Value%% If select "Modify Existing ERPset (recursive updating)"
             ALLERP(ERPArray) = ALLERP_out;
         elseif gui_erp_chan_operation.mode_create.Value %% If select "Create New ERPset (independent transformations)"
@@ -714,7 +739,7 @@ varargout{1} = ERP_chan_operation_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         estudioworkingmemory('f_ERP_bin_opt',1);
-        
+
         ChanAllNew = [1:observe_ERPDAT.ERP.nchan];
         chandiff = setdiff(ChanAllNew,ChanAllold);
         ChanArray =  estudioworkingmemory('ERP_ChanArray');
@@ -752,12 +777,12 @@ varargout{1} = ERP_chan_operation_gui;
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
                 estudioworkingmemory('selectederpstudio',ERPArray);
             end
-            
+
             ChaNumAll = [];
             for Numoferp = 1:numel(ERPArray)
                 ChaNumAll(Numoferp) =observe_ERPDAT.ALLERP(ERPArray(Numoferp)).nchan;
             end
-            
+
             Enable_label = 'on';
             chanopDataor =  gui_erp_chan_operation.edit_bineq.Data;
             for ii = 1:100

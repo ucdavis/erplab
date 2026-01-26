@@ -88,17 +88,17 @@ if nargin==1
         errorfound(msgboxText, title_msg);
         return
     end
-    
+
     def  = erpworkingmemory('pop_erpchanoperator');
     if isempty(def)
         def = { [], 1};
     end
-    
+
     %
     % Call GUI
     %
     answer = chanoperGUI(ERP, def);
-    
+
     if isempty(answer)
         disp('User selected Cancel')
         return
@@ -108,15 +108,15 @@ if nargin==1
     keeplocs = answer{3};
     def      = {formulas, wchmsgon};
     erpworkingmemory('pop_erpchanoperator', def);
-    
+
     if wchmsgon==1
         wchmsgonstr = 'on';
     else
         wchmsgonstr = 'off';
     end
-    
+
     ERP.erpname = [ERP.erpname '_chop'];
-    
+
     %
     % Somersault
     %
@@ -135,7 +135,7 @@ p.addRequired('formulas');
 % option(s)
 p.addParamValue('Warning', 'off', @ischar);
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
-p.addParamValue('ErrorMsg', 'cw', @ischar); % cw = command window
+p.addParamValue('ErrorMsg', 'cw', @ischar); % 'popup' = popup window, anything else (e.g., 'cw', 'command') = command window
 p.addParamValue('KeepLocations',0, @isnumeric);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
@@ -187,7 +187,7 @@ else
     formulaArray = textscan(fid_formulas, '%[^\n]', 'CommentStyle','#', 'whitespace', '');
     formulaArray = strtrim(cellstr(formulaArray{:})');
     fclose(fid_formulas);
-    
+
     if isempty(formulaArray)
         error('ERPLAB says:  Error, file was empty. No formulas were found.')
     end
@@ -221,12 +221,12 @@ while h<=nformulas && conti
     expr = formulaArray{h};
     tokcommentb  = regexpi(formulaArray{h}, '^#', 'match');  % comment
     if isempty(tokcommentb)
-        
+
         %
         % subroutine
         %
         [ERPout, conti] = erpchanoperator(ERPin, ERPout, expr, wchmsgon,keeplocs);
-        
+
         if conti==0
             recall = 1;
             break
@@ -271,7 +271,7 @@ ERP.datatype = datatype;
 %
 % History
 %
-skipfields = {'ERP', 'formulas', 'Saveas', 'History'};
+skipfields = {'ERP', 'formulas', 'Warning', 'History'};
 fn     = fieldnames(p.Results);
 if opcom==1
     erpcom = sprintf('%s = pop_erpchanoperator( %s, { ', inputname(1), inputname(1));
@@ -290,9 +290,7 @@ for q=1:length(fn)
         fn2res = p.Results.(fn2com);
         if ~isempty(fn2res)
             if ischar(fn2res)
-                if ~strcmpi(fn2res,'off')
-                    erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
-                end
+                erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
             else
                 if iscell(fn2res)
                     if ischar([fn2res{:}])
@@ -356,5 +354,3 @@ end
 %
 msg2end
 return
-
-
