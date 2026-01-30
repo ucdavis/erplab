@@ -250,7 +250,11 @@ if recall  && issaveas
 elseif recall && ~issaveas
     msgboxText =  'Error at formula(s).';
     title = sprintf('ERPLAB: %s() error:', mfilename);
-    errorfound(msgboxText, title);
+    if errormsgtype == 1
+        errorfound(msgboxText, title);
+    else
+        fprintf(2, '\n%s\n%s\n\n', title, msgboxText);
+    end
     return
 end
 

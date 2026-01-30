@@ -304,7 +304,11 @@ if recall  && issaveas
 elseif recall && ~issaveas
         msgboxText =  'Error: Error at formula(s).';
         title = sprintf('ERPLAB: %s() error:', mfilename);
-        errorfound(msgboxText, title);
+        if errormsgtype == 1
+            errorfound(msgboxText, title);
+        else
+            fprintf(2, '\n%s\n%s\n\n', title, msgboxText);
+        end
         return
 end
 
@@ -376,12 +380,14 @@ switch shist
         otherwise %off or none
                 com = '';
 end
-if modeoption==1 && issaveas
-        [ALLEEG, EEG, CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
-end
-if issaveas==1 && shist==1
-        eeglab  redraw % only when using GUI (shist==1 means History mode is 'gui')
-end
+% Note: When called from EEGLAB menu, catchstrs.store_and_hist handles dataset storage
+% So we should NOT call pop_newset here as it creates duplicate datasets
+% if modeoption==1 && issaveas
+%         [ALLEEG, EEG, CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
+%         if shist==1
+%                 eeglab('redraw'); % only when using GUI (shist==1 means History mode is 'gui')
+%         end
+% end
 
 %
 % Completion statement

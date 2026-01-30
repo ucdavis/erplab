@@ -34,7 +34,7 @@ example{8}  = 'ch@ = abs(ch110) label E110 rectified ';
 
 try
     ERPLAB = varargin{1};
-    
+
     if iserpstruct(ERPLAB)
         nchan      = ERPLAB.nchan; % Total number of channels
         typedata   = 'ERP';
@@ -155,7 +155,7 @@ if isempty(chanopGUI)
     set(handles.button_recursive,'Value', 1); % default is Modify existing ERPset (recursive updating)
     set(handles.button_savelist, 'Enable','off')
     set(handles.chkeeplocs,'Value', 1) %default is Preserve Channel locations
-    
+
     %
     % File List
     %
@@ -302,7 +302,7 @@ if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
     set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
     button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
     set(0,'DefaultUicontrolBackgroundColor',oldcolor)
-    
+
     if strcmpi(button,'Save and run')
         fullname = savelist(hObject, eventdata, handles);
         listname = fullname;
@@ -318,10 +318,10 @@ if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
     end
 elseif isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==0
     handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
-    
+
 elseif ~isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
     handles.output = {listname, wchmsgon}; % sent filename string
-    
+
 elseif ~isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==0
     handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
 end
@@ -338,7 +338,6 @@ chanopGUI.hmode = get(handles.checkbox_sendfile2history,'Value');
 chanopGUI.listname  = listname;
 chanopGUI.keeplocs = keeplocs;
 chanopGUI.chanlocs = handles.locs;
-disp(chanopGUI.chanlocs)
 if handles.Toolabel==0
     erpworkingmemory('chanopGUI', chanopGUI);
 else
@@ -556,7 +555,7 @@ if isequal(filename,0)
     return
 else
     [px, fname, ext] = fileparts(filename);
-    
+
     if strcmp(ext,'')
         if filterindex==1 || filterindex==3
             ext   = '.txt';
@@ -564,16 +563,16 @@ else
             ext   = '.dat';
         end
     end
-    
+
     fname = [ fname ext];
     fullname = fullfile(filepath, fname);
-    
+
     fid_list   = fopen( fullname , 'w');
-    
+
     for i=1:size(fulltext,1)
         fprintf(fid_list,'%s\n', fulltext(i,:));
     end
-    
+
     fclose(fid_list);
     set(handles.button_savelist, 'Enable','on')
 end
@@ -639,16 +638,16 @@ if size(fulltext,2)>256
     return
 end
 if ~isempty(fulltext)
-    
+
     fullname = get(handles.edit_filelist, 'String');
-    
+
     if ~strcmp(fullname,'')
         fid_list   = fopen( fullname , 'w');
-        
+
         for i=1:size(fulltext,1)
             fprintf(fid_list,'%s\n', fulltext(i,:));
         end
-        
+
         fclose(fid_list);
         handles.listname = fullname;
         % Update handles structure
@@ -690,12 +689,12 @@ function button_recursive_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
     set(handles.button_no_recu,'Value',0)
     val = testsyntaxtype(hObject, eventdata, handles, 'recu');
-    
+
     if val==0;
         set(handles.button_recursive, 'Value', 0)
         set(handles.button_no_recu, 'Value', 1)
     end
-    
+
     %%%       handles = editorbackup(hObject, eventdata, handles);
     %%% Update handles structure
     %%guidata(hObject, handles);
@@ -739,11 +738,11 @@ newnumchan = 1;
 for t=1:nformulas
     fcomm = formulaArray{t};
     tokcommentb  = regexpi(fcomm, '^#', 'match');  % comment symbol (June 3, 2013)
-    
+
     if isempty(tokcommentb) % skip comment symbol
         pleft  = regexpi(parts{t}{1}, '(\s*nch[an]*\d+)', 'tokens');
         plcom  = regexpi(parts{t}{1}, '(\s*ch[an]*\d+)', 'tokens');
-        
+
         if isempty(pleft) &&  ~isempty(plcom) && strcmpi(whocall,'norecu')
             if ask4fix
                 BackERPLABcolor = [1 0.9 0.3];    % yellow
@@ -755,7 +754,7 @@ for t=1:nformulas
                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
                 button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
                 set(0,'DefaultUicontrolBackgroundColor',oldcolor)
-                
+
                 if strcmpi(button,'Yes')
                     ask4fix = 0;
                     wantfix = 1;
@@ -780,7 +779,7 @@ for t=1:nformulas
                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
                 button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
                 set(0,'DefaultUicontrolBackgroundColor',oldcolor)
-                
+
                 if strcmpi(button,'Yes')
                     ask4fix = 0;
                     wantfix =1;
@@ -872,7 +871,7 @@ if ~isempty(chan2del)
     else
         eqtn = sprintf('delerpchan(%s)', vect2colon(chan2del, 'Delimiter','off'));
     end
-    
+
     wchmsgon    = get(handles.chwarning,'Value');
     handles.output = {{eqtn}, wchmsgon}; % sent like a cell string (with formulas)
     try
