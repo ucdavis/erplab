@@ -122,17 +122,17 @@ if nargin==1
         catch
                 ERPX = [];
         end
-        
+
         %
         % Call a GUI
         %
         packarray = menuBinListGUI(EEG, ERPX, def);
-        
+
         if isempty(packarray)
                 disp('User selected Cancel')
                 return
         end
-        
+
         file1      = packarray{1};         % bin descriptor file
         file2      = packarray{2};         % external eventlist (read event list from)
         file3      = packarray{3};         % text file containing the updated EVENTLIST (Write resulting eventlist to)
@@ -145,7 +145,7 @@ if nargin==1
         iswarning  = packarray{10};        % 1 means create a report about binlister work.
         getfromerp = packarray{11};
         indexEL    = packarray{12};
-        
+
         if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
                 if getfromerp
                         if isempty(ERPX)
@@ -172,7 +172,7 @@ if nargin==1
                         %else
                         %        indexEL = 1;
                         %end
-                        
+
                         if isfield(EEG.EVENTLIST, 'eventinfo')
                                 if isempty(EEG.EVENTLIST(indexEL).eventinfo)
                                         msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
@@ -200,10 +200,10 @@ if nargin==1
                 file2 = [logpathname logfilename];
                 disp('For LOGFILE, user selected INTERNAL')
         end
-        
+
         erpworkingmemory('pop_binlister', {file1, file2, file3, flagrst, forbiddenCodeArray, ignoreCodeArray,...
                 updevent, option2do, reportable, iswarning, getfromerp, indexEL});
-        
+
         if flagrst==1
                 strflagrst = 'on';
         else
@@ -248,7 +248,7 @@ if nargin==1
         if ~getfromerp
                 EEG.setname = [EEG.setname '_bins']; %suggest a new name
         end
-        
+
         %
         % Somersault
         %
@@ -347,7 +347,7 @@ if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
         if ~isempty(EEG.EVENTLIST(indexEL)) && iswarning==1
                 binaux    = [EEG.EVENTLIST(indexEL).eventinfo.bini];
                 binhunter = binaux(binaux>0); %8/19/2009
-                
+
                 if ~isempty(binhunter) && ismember_bc2(option2do, [2 3 6 7])
                         msgboxText =  ['This dataset already has assigned bins.\n'...;
                                 'Would you like to overwrite these bins?'];
@@ -359,7 +359,7 @@ if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
                         end
                 end
         end
-        
+
         %
         % Check for alphanumeric event codes
         %
@@ -375,7 +375,7 @@ if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
         end
         % save original EVENTLIST
         %ELaux = EEG.EVENTLIST(indexEL); % store original EVENTLIST
-        
+
         %
         %  Reset Flags?
         %
@@ -466,7 +466,7 @@ if nnz(binofbins)>=1
                 if ismember_bc2(option2do, [1 3 5 7]) && ~isempty(file2) && ~strcmpi(file2,'no') && ~strcmpi(file2,'none')
                         disp('A text file version of your EVENTLIST was created.')
                 end
-                
+
                 %
                 % Generate equivalent command (for history)
                 %
@@ -532,13 +532,14 @@ end
 %
 msg2end
 
-if issaveas && ismember_bc2(option2do, [2 3 6 7]) && iseegstruct(EEG)
-        [ALLEEG, EEG, CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
-end
+% Note: When called from EEGLAB menu, catchstrs.store_and_hist handles dataset storage
+% So we should NOT call pop_newset here as it creates duplicate datasets
+% if issaveas && ismember_bc2(option2do, [2 3 6 7]) && iseegstruct(EEG)
+%         [ALLEEG, EEG, CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
+% end
 if exist('ALLEEG', 'var')
         if ~isfield(ALLEEG,'data')
                 [ALLEEG(1:length(ALLEEG)).data] = deal([]);
         end
 end
 return
-
