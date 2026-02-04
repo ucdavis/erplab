@@ -477,10 +477,7 @@ end
 
 [x2,y2]  = find(roundn(Times,-3)==roundn(EpochStop,-3));
 if isempty(y1) || isempty(y2)
-    msgboxText = 'Warning: The exact time periods you have specified cannot be exactly created with the specified sampling rate. We will round to the nearest possible time values when the ERPset is created.';
-    title = 'ERPLAB: pop_ERP_simulation() error';
-    errorfound(msgboxText, title);
-    %     return;
+    fprintf('\nWarning: The exact time periods you have specified cannot be exactly created with the specified sampling rate. We will round to the nearest possible time values when the ERPset is created.\n');
 end
 
 %%Amplitude for basic function
