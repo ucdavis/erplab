@@ -48,7 +48,7 @@ if nargin==1
         dlg_title = 'Step Function';
         defx = {[EEG.xmin*1000 EEG.xmax*1000] 100 200 50 [1:EEG.nbchan] 0};
         def = erpworkingmemory('pop_artsacc');
-        
+
         if isempty(def)
                 def = defx;
         else
@@ -58,7 +58,7 @@ if nargin==1
                 if def{1}(2)>EEG.xmax*1000
                         def{1}(2) = single(EEG.xmax*1000);
                 end
-                
+
                 def{5} = def{5}(ismember_bc2(def{5},1:EEG.nbchan));
         end
         try
@@ -66,24 +66,24 @@ if nargin==1
         catch
                 chanlabels = [];
         end
-        
+
         %
         % Call GUI
         %
         answer = artifactmenuGUI(prompt, dlg_title, def, defx, chanlabels);
-        
+
         if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
-        
+
         testwindow =  answer{1};
         ampth      =  answer{2};
         durartifact=  answer{3};
         chanArray  =  unique_bc2(answer{4}); % avoids repeted channels
         flag       =  answer{5};
         viewer     =  answer{end};
-        
+
         if viewer
                 viewstr = 'on';
         else
@@ -97,7 +97,7 @@ if nargin==1
         end
         erpworkingmemory('pop_artsacc', {answer{1} answer{2} answer{3} answer{4} answer{5}});
         EEG.setname = [EEG.setname '_ar']; %suggest a new name
-        
+
         %
         % Somersault
         %
@@ -173,6 +173,8 @@ if checkw==1
         error('pop_artsacc() error: time window cannot be larger than epoch.')
 elseif checkw==2
         error('pop_artsacc() error: too narrow time window')
+elseif checkw==3
+        error('pop_artsacc() error: time window is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', EEG.xmin*1000, EEG.xmax*1000)
 end
 
 epochwidth = p2-p1+1; % choosen epoch width in number of samples
@@ -214,16 +216,16 @@ for ch=1:nch
         fprintf('%g ',chanArray(ch));
         for i=1:ntrial;
                 for j=p1:p2-1
-                        
+
                         w1  = EEG.data(chanArray(ch), j,i);
                         w2  = EEG.data(chanArray(ch), j+1 ,i);
                         vs  = w1- w2;
-                        
+
                         if abs(vs)>=ampth && j>p1
                                 if sign(vs)==signpre
                                         if countsam>=durartsam
                                                 interARcounter(i) = 1;      % internal counter, for statistics
-                                                
+
                                                 %
                                                 % subroutine
                                                 %
@@ -234,7 +236,7 @@ for ch=1:nch
                                                 elseif errorm==2
                                                         error('ERPLAB says: invalid flag (0<=flag<=16)')
                                                 end
-                                                
+
                                                 break
                                         else
                                                 countsam =countsam + 1;

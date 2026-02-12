@@ -221,7 +221,7 @@ else
     cepoch  = size(epoch,2); % columns for epoch
     blc     = handles.blc;
     cusbutt = get(handles.radiobutton_custom,'Value');
-    
+
     %
     % Checks updated custom blc values
     %
@@ -253,14 +253,30 @@ else
         else
             rblc = size(blctest,1);
             cblc = size(blctest,2);
-            extvalcond = max(epoch)>=max(blctest) && min(epoch)<=min(blctest);
-            custupdated = rblc==1 && cblc==2 && extvalcond;
+            % Validate using window2sample (allows ~2 sample tolerance)
+            if rblc==1 && cblc==2
+                ERP = handles.ERP;
+                [~, ~, checkw] = window2sample(ERP, blctest, ERP.srate);
+                if checkw==3
+                    % Out of tolerance (>2 samples from epoch boundaries)
+                    msgboxText = sprintf('Baseline period is too far outside epoch boundaries.\nEpoch range: [%.1f  %.1f] ms', ERP.xmin*1000, ERP.xmax*1000);
+                    title = 'ERPLAB: Baseline range error';
+                    errorfound(msgboxText, title);
+                    return;
+                elseif checkw > 0
+                    custupdated = 0; % Invalid window (too large or too narrow)
+                else
+                    custupdated = 1; % Valid
+                end
+            else
+                custupdated = 0;
+            end
             blc = blctest;
         end
     else
         custupdated = 1;
     end
-    
+
     if repoch==1 && cepoch==2 && custupdated
         if isnumeric(blc) && blc(1)>=blc(2)
             msgboxText = ['For time range, lower limit must be on the left.\n'...
@@ -299,7 +315,7 @@ else
         if isempty(chanArray) || any(chanArray(:)>nchan) || any(chanArray(:)<1)
             chanArray = chanArraydef;
         end
-        
+
         if  iserpstruct(ERP)
             binArray = str2num( handles.edit_bins.String);
             if isempty(binArray) || any(binArray(:)>ERP.nbin) || any(binArray(:)<1)
@@ -309,7 +325,7 @@ else
             binArray = [];
         end
         handles.output = {blc,chanArray,binArray};
-        
+
         % Update handles structure
         guidata(hObject, handles);
         uiresume(handles.gui_chassis);
@@ -492,7 +508,7 @@ if ~isempty(ERP)
     if isempty(chanArray) || any(chanArray(:)>bchan) || any(chanArray(:)<1)
         chanArray = 1:bchan;
     end
-    
+
     for Numofchan = 1:bchan
         try
             listb{Numofchan}= strcat(num2str(Numofchan),'.',ERP.chanlocs(Numofchan).labels);
@@ -557,7 +573,7 @@ if  ~isempty(ERP) && iserpstruct(ERP)
     if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<1)
         BinArray = 1:ERP.nbin;
     end
-    
+
     for Numofbin = 1:length(ERP.bindescr)
         listb{Numofbin} = char(strcat(num2str(Numofbin),'.',ERP.bindescr{Numofbin}));
     end

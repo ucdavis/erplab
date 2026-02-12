@@ -38,10 +38,10 @@ varargout{1} = ERP_basecorr_detrend_box;
 %%********************Draw the GUI for ERP measurement tool*****************
     function erp_blc_dt_gui(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
-        
+
         Enable_label = 'off';
         gui_erp_blc_dt.blc_dt = uiextras.VBox('Parent',ERP_basecorr_detrend_box,'Spacing',1,'BackgroundColor',ColorB_def);
-        
+
         %%Measurement type
         gui_erp_blc_dt.blc_dt_type_title = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_blc_dt.blc_dt_type_title,...
@@ -54,12 +54,12 @@ varargout{1} = ERP_basecorr_detrend_box;
             'String','Linear detrend','callback',@detrend_erp,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_blc_dt.dt.KeyPressFcn= @erp_blcorrdetrend_presskey;
         gui_erp_blc_dt.ERPTab_baseline_detrend{1} = gui_erp_blc_dt.blc.Value;
-        
+
         %%Baseline period: Pre, post whole custom
         gui_erp_blc_dt.blc_dt_baseline_period_title = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_blc_dt.blc_dt_title = uicontrol('Style', 'text','Parent', gui_erp_blc_dt.blc_dt_baseline_period_title,...
             'String','Baseline Period:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
+
         gui_erp_blc_dt.blc_dt_bp_option = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_blc_dt.pre = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_dt_bp_option,...
             'String','Pre','callback',@pre_erp,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
@@ -112,9 +112,9 @@ varargout{1} = ERP_basecorr_detrend_box;
             'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_blc_dt.other_option);
         set(gui_erp_blc_dt.other_option, 'Sizes',[15 105  30 105 15]);
-        
+
         set(gui_erp_blc_dt.blc_dt,'Sizes',[18 25 15 25 25 15 25 30]);
-        
+
         estudioworkingmemory('ERPTab_baseline_detrend',0);
     end
 %%*************************************************************************
@@ -293,7 +293,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         gui_erp_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_blc_dt.Cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_baseline_detrend',1);
-        
+
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
             msgboxText =  ['Baseline Correction & Linear Detrend - Invalid input for "baseline range"'];
@@ -313,19 +313,26 @@ varargout{1} = ERP_basecorr_detrend_box;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        if lat_osci(2) > observe_ERPDAT.ERP.times(end)
-            msgboxText =  ['Baseline Correction & Linear Detrend - Second value must be smaller than',32,num2str(observe_ERPDAT.ERP.times(end))];
+        % Use window2sample to validate (allows ~2 sample tolerance for rounding)
+        [~, ~, checkw] = window2sample(observe_ERPDAT.ERP, lat_osci, observe_ERPDAT.ERP.srate);
+        if checkw==1
+            msgboxText =  ['Baseline Correction & Linear Detrend - Baseline period cannot be larger than epoch'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        elseif checkw==2
+            msgboxText =  ['Baseline Correction & Linear Detrend - Too narrow baseline window'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        elseif checkw==3
+            % Out of tolerance (>2 samples from epoch boundaries)
+            msgboxText = sprintf('Baseline Correction & Linear Detrend - Baseline period is too far outside epoch boundaries.\nEpoch range: [%.1f  %.1f] ms', observe_ERPDAT.ERP.xmin*1000, observe_ERPDAT.ERP.xmax*1000);
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        if lat_osci(1) < observe_ERPDAT.ERP.times(1)
-            msgboxText =  ['Baseline Correction & Linear Detrend - First value must be larger than',32,num2str(observe_ERPDAT.ERP.times(1))];
-            titlNamerro = 'Warning for ERP Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            return;
-        end
-        
+
     end
 
 %%---------------------Setting for all chan and bin------------------------
@@ -420,31 +427,38 @@ varargout{1} = ERP_basecorr_detrend_box;
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            if round(BaselineMethod(2),3) > round(observe_ERPDAT.ERP.times(end),3)
-                msgboxText =  ['Baseline Correction & Linear Detrend - Second value must be smaller than',32,num2str(observe_ERPDAT.ERP.times(end))];
+            % Use window2sample to validate (allows ~2 sample tolerance for rounding)
+            [p1_blc, p2_blc, checkw_blc] = window2sample(observe_ERPDAT.ERP, BaselineMethod, observe_ERPDAT.ERP.srate);
+            if checkw_blc==1
+                msgboxText =  ['Baseline Correction & Linear Detrend - Baseline period cannot be larger than epoch'];
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
-            end
-            if round(BaselineMethod(1),3) < round(observe_ERPDAT.ERP.times(1),3)
-                msgboxText =  ['Baseline Correction & Linear Detrend - First value must be larger than',32,num2str(observe_ERPDAT.ERP.times(1))];
+            elseif checkw_blc==2
+                msgboxText =  ['Baseline Correction & Linear Detrend - Too narrow baseline window'];
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            elseif checkw_blc==3
+                % Out of tolerance (>2 samples from epoch boundaries)
+                msgboxText = sprintf('Baseline Correction & Linear Detrend - Baseline period is too far outside epoch boundaries.\nEpoch range: [%.1f  %.1f] ms', observe_ERPDAT.ERP.xmin*1000, observe_ERPDAT.ERP.xmax*1000);
                 titlNamerro = 'Warning for ERP Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
-        
+
         %%--------------Loop start for removeing baseline for the selected ERPsets------------
         if gui_erp_blc_dt.dt.Value ==1
             Suffix_str = char(strcat('_detrend'));
         else
             Suffix_str = char(strcat('_baselinecorr'));
         end
-        
+
         %%%%-------------------Loop fpor baseline correction---------------
         estudioworkingmemory('f_ERP_proces_messg','Baseline correction & Linear detrend');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        
+
         ALLERPCOM = evalin('base','ALLERPCOM');
         gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_erp_blc_dt.apply.ForegroundColor = [0 0 0];
@@ -452,7 +466,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         gui_erp_blc_dt.Cancel.BackgroundColor =  [1 1 1];
         gui_erp_blc_dt.Cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_baseline_detrend',0);
-        
+
         gui_erp_blc_dt.ERPTab_baseline_detrend{1} = gui_erp_blc_dt.blc.Value;
         if gui_erp_blc_dt.pre.Value==1
             gui_erp_blc_dt.ERPTab_baseline_detrend{2} = 1;
@@ -473,14 +487,14 @@ varargout{1} = ERP_basecorr_detrend_box;
             BinArray =  estudioworkingmemory('ERP_BinArray');
             ChanArray = estudioworkingmemory('ERP_ChanArray');
         end
-        
+
         ALLERP = observe_ERPDAT.ALLERP;
         BinArray = [];
         ChanArray = [];
         ALLERP_out = [];
         for Numoferp = 1:numel(Selected_erpset)
             ERP = ALLERP(Selected_erpset(Numoferp));
-            
+
             if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
                 ChanArray = [1:ERP.nchan];
             end
@@ -503,7 +517,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            
+
             if isempty(ALLERP_out)
                 ALLERP_out = ERP;
             else
@@ -547,7 +561,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
-        
+
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Count_currentERP = 1;
@@ -594,7 +608,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             bsperiod=1;
             gui_erp_blc_dt.ERPTab_baseline_detrend{2}=1;
         end
-        
+
         if numel(bsperiod)==1
             if bsperiod~=1 && bsperiod~=2 && bsperiod~=3
                 bsperiod=1;
@@ -628,7 +642,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             end
             gui_erp_blc_dt.custom_edit.String = num2str(bsperiod);
         end
-        
+
         %%bin & chan selection
         try
             all_bin_chan = gui_erp_blc_dt.ERPTab_baseline_detrend{3};
@@ -641,7 +655,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
         gui_erp_blc_dt.all_bin_chan.Value = all_bin_chan;
         gui_erp_blc_dt.Selected_bin_chan.Value = ~all_bin_chan;
-        
+
         estudioworkingmemory('ERPTab_baseline_detrend',0);
         gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_erp_blc_dt.apply.ForegroundColor = [0 0 0];

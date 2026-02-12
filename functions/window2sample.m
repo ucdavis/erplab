@@ -59,7 +59,7 @@ if strcmpi(datatype, 'ERP')
     try
           toffsa = abs(round(ERPLAB.xmin*fs))+1;
     catch
-          ERPLAB.xmin = ERPLAB.times(1)/Ktime; 
+          ERPLAB.xmin = ERPLAB.times(1)/Ktime;
           ERPLAB.xmax = ERPLAB.times(end)/Ktime;
           toffsa = abs(round(ERPLAB.xmin*fs))+1;
     end
@@ -69,9 +69,9 @@ else % FFT
     fs     = pnts/ERPLAB.xmax;
 end
 checkw   = 0; % no error by default
-if ischar(testwindow)      
-        if ~strcmpi(testwindow,'all') && ~strcmpi(testwindow,'pre') && ~strcmpi(testwindow,'post')                
-                internum = str2double(testwindow)/Ktime;  %ms to sec                
+if ischar(testwindow)
+        if ~strcmpi(testwindow,'all') && ~strcmpi(testwindow,'pre') && ~strcmpi(testwindow,'post')
+                internum = str2double(testwindow)/Ktime;  %ms to sec
                 if length(internum)~=2
                         disp('Error:  window2sample will not be performed. Check your parameters.')
                         checkw = 1;
@@ -79,7 +79,7 @@ if ischar(testwindow)
                 end
                 p1 = round(internum(1)*fs) + toffsa;     %sec to samples
                 p2 = round(internum(2)*fs) + toffsa;     %sec to samples
-        end        
+        end
         if strcmpi(testwindow,'pre')
                 p2 = find(ERPLAB.times==0);    % zero-time locked
                 p1 = 1;
@@ -89,13 +89,13 @@ if ischar(testwindow)
         elseif strcmpi(testwindow,'all')
                 p2 = pnts;  % full epoch
                 p1 = 1;
-        end        
+        end
 else
         if length(testwindow)~=2
                 disp('Error:  window2sample will not be performed. Check your parameters.')
                 checkw = 1;
                 return
-        end        
+        end
         if strcmpi(criteria,'relaxed') || strcmpi(criteria,'relax')
               if testwindow(1) < ERPLAB.xmin*Ktime
                     testwindow(1) = ERPLAB.xmin*Ktime;
@@ -107,18 +107,12 @@ else
         testwindow = testwindow/Ktime;  %ms to sec
         p1 = round(testwindow(1)*fs) + toffsa;    %sec to samples or Hz to sample
         p2 = round(testwindow(2)*fs) + toffsa;    %sec to samples or Hz to sample
-        
+
 end
-if p1<-1
-        msgboxText =  'ERROR: The onset of your Test Period is more than 2 samples of difference with the real onset';
-        tittle = 'ERPLAB: window2sample()';
-        errorfound(msgboxText, tittle);
-        return
-end
-if p2>pnts+2
-        msgboxText =  'ERROR: The offset of your Test Period is more than 2 samples of difference with the real offset';
-        tittle = 'ERPLAB: window2sample()';
-        errorfound(msgboxText, tittle);
+if p1<-1 || p2>pnts+2
+        % Out of tolerance (>2 samples from valid range)
+        % Let calling function handle error display
+        checkw = 3;
         return
 end
 if p1<1
@@ -136,4 +130,3 @@ elseif epochwidth<2
     return
 end
 xlimc = round((([p1 p2]-toffsa)/fs)*Ktime);
-

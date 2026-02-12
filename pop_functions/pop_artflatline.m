@@ -15,7 +15,7 @@
 %        'Duration'     - duration of the artifact in ms.
 %        'Channel' 	- channel(s) to search artifacts.
 %        'LowPass' - Apply low pass filter at provided half-amplitude
-%                           cutoff (FIR @ 26 filter order). 
+%                           cutoff (FIR @ 26 filter order).
 %                           Default: -1/Do Not Apply
 %        'Flag'         - flag value between 1 to 8 to be marked when an artifact is found.(1 value)
 %        'Review'       - open a popup window for scrolling marked epochs.
@@ -78,7 +78,7 @@ if nargin==1
         dur1      = round(1000*(EEG(1).xmax-EEG(1).xmin)/2); % a half epoch default
         defx      = {1000*[EEG(1).xmin EEG(1).xmax] 2 dur1 1:EEG(1).nbchan 30 0 0};
         def       = erpworkingmemory('pop_artflatline');
-        
+
         if isempty(def)
                 def = defx;
         else
@@ -88,11 +88,11 @@ if nargin==1
                 if def{1}(2)>EEG(1).xmax*1000
                         def{1}(2) = single(EEG(1).xmax*1000);
                 end
-                
+
                 if def{3}>(def{1}(2) - def{1}(1)) % ms
                         def{3}= single(1000*EEG(1).pnts/EEG(1).srate);
                 end
-                
+
                 def{4} = def{4}(ismember_bc2(def{4},1:EEG(1).nbchan));
         end
         try
@@ -100,26 +100,26 @@ if nargin==1
         catch
                 chanlabels = [];
         end
-        
+
         %
         % Call GUI
         %
         answer = artifactmenuGUI(prompt, dlg_title, def, defx, chanlabels);
-        
+
         if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
-        
+
         testwindow = answer{1};
         ampth      = answer{2};
         dur        = answer{3}; % in ms
         chanArray  = unique_bc2(answer{4}); % avoids repeated channels
         lpfilt     = answer{5};
-        lpopt      = answer{6}; 
+        lpopt      = answer{6};
         flag       = answer{7};
         viewer     =  answer{end};
-        
+
         if viewer
                 viewstr = 'on';
         else
@@ -160,11 +160,11 @@ if nargin==1
                 errorfound(msgboxText, title);
                 return
         end
-        erpworkingmemory('pop_artflatline', {answer{1} answer{2} answer{3} answer{4} answer{5} answer{6} answer{7}});        
+        erpworkingmemory('pop_artflatline', {answer{1} answer{2} answer{3} answer{4} answer{5} answer{6} answer{7}});
         if length(EEG)==1
                 EEG.setname = [EEG.setname '_ar']; %suggest a new name
         end
-        
+
         %
         % Somersault
         %
@@ -187,7 +187,7 @@ p.addParamValue('Twindow', [t1 t2], @isnumeric);
 p.addParamValue('Threshold', 100, @isnumeric);
 p.addParamValue('Duration', 1000, @isnumeric);
 p.addParamValue('Channel', 1:EEG(1).nbchan, @isnumeric);
-p.addParamValue('LowPass', -1, @isnumeric); 
+p.addParamValue('LowPass', -1, @isnumeric);
 p.addParamValue('Flag', 1, @isnumeric);
 p.addParamValue('Review', 'off', @ischar); % to open a window with the marked epochs
 p.addParamValue('History', 'script', @ischar); % history from scripting
@@ -198,7 +198,7 @@ testwindow =  p.Results.Twindow;
 ampth      =  p.Results.Threshold;
 dur        =  p.Results.Duration;
 chanArray  =  p.Results.Channel; % avoids repeated channels
-lpval      =  p.Results.LowPass; 
+lpval      =  p.Results.LowPass;
 flag       =  p.Results.Flag;
 
 if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
@@ -244,6 +244,8 @@ if checkw==1
         error('ERPLAB says: error at pop_artflatline(), time window cannot be larger than epoch.')
 elseif checkw==2
         error('ERPLAB says: error at pop_artflatline(), too narrow time window')
+elseif checkw==3
+        error('ERPLAB says: error at pop_artflatline(), time window is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', EEG.xmin*1000, EEG.xmax*1000)
 end
 if nch>EEG.nbchan
         error('ERPLAB says: error at pop_artflatline(), number of tested channels cannot be greater than total.')
@@ -273,21 +275,21 @@ end
 if lpval > 1
     %if user elects to low pass data prior to AD, create EEG_lowfilt copy
     EEG_lowfilt = basicfilter(EEG, chanArray ,0, lpval, 26, 1, 0,[]);
-    
+
 end
 
 for ch=1:nch
         fprintf('%g ',chanArray(ch));
         for i=1:ntrial
-                if lpval >1 
-                    dataline = EEG_lowfilt.data(chanArray(ch), p1:p2 ,i);    
+                if lpval >1
+                    dataline = EEG_lowfilt.data(chanArray(ch), p1:p2 ,i);
                 else
                     dataline = EEG.data(chanArray(ch), p1:p2 ,i);
                 end
                 captured = flatline(dataline, ampth, dursam);
                 if captured
                         interARcounter(i) = 1;      % internal counter, for statistics
-                        
+
                         %
                         % subroutine
                         %

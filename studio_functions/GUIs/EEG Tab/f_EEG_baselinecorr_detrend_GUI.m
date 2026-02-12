@@ -40,10 +40,10 @@ varargout{1} = EEG_basecorr_detrend_box;
 
     function EEG_blc_dt_gui(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
-        
+
         Enable_label = 'off';
         gui_eeg_blc_dt.blc_dt = uiextras.VBox('Parent',EEG_basecorr_detrend_box,'Spacing',1,'BackgroundColor',ColorB_def);
-        
+
         %%Measurement type
         gui_eeg_blc_dt.blc_dt_type_title = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_eeg_blc_dt.blc_dt_type_title,...
@@ -56,12 +56,12 @@ varargout{1} = EEG_basecorr_detrend_box;
             'String','Linear detrend','callback',@detrend_EEG,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.dt.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.EEGTab_baseline_detrend{1} = gui_eeg_blc_dt.blc.Value;
-        
+
         %%Baseline period: Pre, post whole custom
         gui_eeg_blc_dt.blc_dt_baseline_period_title = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.blc_dt_title = uicontrol('Style', 'text','Parent', gui_eeg_blc_dt.blc_dt_baseline_period_title,...
             'String','Baseline Period:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
+
         gui_eeg_blc_dt.blc_dt_bp_option = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.pre = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_dt_bp_option,...
             'String','Pre','callback',@pre_EEG,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
@@ -114,9 +114,9 @@ varargout{1} = EEG_basecorr_detrend_box;
             'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_blc_dt.other_option);
         set(gui_eeg_blc_dt.other_option, 'Sizes',[15 105  30 105 15]);
-        
+
         set(gui_eeg_blc_dt.blc_dt,'Sizes',[18 25 15 25 25 15 25 30]);
-        
+
         estudioworkingmemory('EEGTab_baseline_detrend',0);
     end
 %%*************************************************************************
@@ -132,7 +132,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -154,7 +154,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -176,7 +176,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -207,7 +207,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -237,7 +237,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -263,7 +263,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -287,7 +287,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -295,7 +295,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_baseline_detrend',1);
-        
+
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
             msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Invalid input for "baseline range"'];
@@ -315,19 +315,26 @@ varargout{1} = EEG_basecorr_detrend_box;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        if lat_osci(2) > observe_EEGDAT.EEG.times(end)
-            msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
+        % Use window2sample to validate (allows ~2 sample tolerance for rounding)
+        [~, ~, checkw] = window2sample(observe_EEGDAT.EEG, lat_osci, observe_EEGDAT.EEG.srate);
+        if checkw==1
+            msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Baseline period cannot be larger than epoch'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        elseif checkw==2
+            msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Too narrow baseline window'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        elseif checkw==3
+            % Out of tolerance (>2 samples from epoch boundaries)
+            msgboxText = sprintf('Baseline Correction & Linear Detrend (Epoched EEG) - Baseline period is too far outside epoch boundaries.\nEpoch range: [%.1f  %.1f] ms', observe_EEGDAT.EEG.xmin*1000, observe_EEGDAT.EEG.xmax*1000);
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        if lat_osci(1) < observe_EEGDAT.EEG.times(1)
-            msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            return;
-        end
-        
+
     end
 
 %%---------------------Setting for all chan and bin------------------------
@@ -339,7 +346,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -360,7 +367,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_blc_dt.apply.ForegroundColor = [1 1 1];
@@ -380,7 +387,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray)
@@ -425,15 +432,23 @@ varargout{1} = EEG_basecorr_detrend_box;
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-            if round(BaselineMethod(2),3) > round(observe_EEGDAT.EEG.times(end),3)
-                msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
+            % Use window2sample to validate (allows ~2 sample tolerance for rounding)
+            [p1_blc, p2_blc, checkw_blc] = window2sample(observe_EEGDAT.EEG, BaselineMethod, observe_EEGDAT.EEG.srate);
+            if checkw_blc==1
+                msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Baseline period cannot be larger than epoch'];
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
-            end
-            if round(BaselineMethod(1),3) < round(observe_EEGDAT.EEG.times(1),3)
-                msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
+            elseif checkw_blc==2
+                msgboxText =  ['Baseline Correction & Linear Detrend (Epoched EEG) - Too narrow baseline window'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            elseif checkw_blc==3
+                % Out of tolerance (>2 samples from epoch boundaries)
+                msgboxText = sprintf('Baseline Correction & Linear Detrend (Epoched EEG) - Baseline period is too far outside epoch boundaries.\nEpoch range: [%.1f  %.1f] ms', observe_EEGDAT.EEG.xmin*1000, observe_EEGDAT.EEG.xmax*1000);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =2;
@@ -447,18 +462,18 @@ varargout{1} = EEG_basecorr_detrend_box;
         else
             Suffix_str = '_baselinecorr';
         end
-        
+
         %%%%-------------------Loop fpor baseline correction---------------
         estudioworkingmemory('f_EEG_proces_messg','Baseline Correction & Linear Detrend (Epoched EEG)');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
+
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_eeg_blc_dt.apply.ForegroundColor = [0 0 0];
         EEG_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_eeg_blc_dt.Cancel.BackgroundColor =  [1 1 1];
         gui_eeg_blc_dt.Cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_baseline_detrend',0);
-        
+
         gui_eeg_blc_dt.EEGTab_baseline_detrend{1} = gui_eeg_blc_dt.blc.Value;
         if gui_eeg_blc_dt.pre.Value==1
             gui_eeg_blc_dt.EEGTab_baseline_detrend{2} = 1;
@@ -472,13 +487,13 @@ varargout{1} = EEG_basecorr_detrend_box;
             gui_eeg_blc_dt.EEGTab_baseline_detrend{2} =1;
         end
         gui_eeg_blc_dt.EEGTab_baseline_detrend{3} = gui_eeg_blc_dt.all_bin_chan.Value;
-        
+
         ALLEEG = observe_EEGDAT.ALLEEG;
         ChanArray = estudioworkingmemory('EEG_ChanArray');
         if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:)>observe_EEGDAT.EEG.nbchan)
             ChanArray = [1:observe_EEGDAT.EEG.nbchan];
         end
-        
+
         ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
@@ -496,7 +511,7 @@ varargout{1} = EEG_basecorr_detrend_box;
                     ChanArray = [1:EEG.nbchan];
                 end
             end
-            
+
             if gui_eeg_blc_dt.dt.Value ==1
                 [EEG LASTCOM] = pop_eeglindetrend( EEG, 'Baseline', BaselineMethod,'ChanArray',ChanArray, 'History','gui' );
             else
@@ -513,13 +528,13 @@ varargout{1} = EEG_basecorr_detrend_box;
             end
             [ALLEEG_out,~,~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
         end%%Loop end for the selected ERset
-        
+
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),Suffix_str);
         if isempty(Answer)
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-        
+
         if ~isempty(Answer{1})
             ALLEEG_out = Answer{1};
             Save_file_label = Answer{2};
@@ -555,7 +570,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
+
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -570,7 +585,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=15
-            observe_EEGDAT.EEG_two_panels = observe_EEGDAT.EEG_two_panels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         try
             methodtype =   gui_eeg_blc_dt.EEGTab_baseline_detrend{1};
@@ -600,7 +615,7 @@ varargout{1} = EEG_basecorr_detrend_box;
             bsperiod=1;
             gui_eeg_blc_dt.EEGTab_baseline_detrend{2}=1;
         end
-        
+
         if numel(bsperiod)==1
             if bsperiod~=1 && bsperiod~=2 && bsperiod~=3
                 bsperiod=1;
@@ -634,7 +649,7 @@ varargout{1} = EEG_basecorr_detrend_box;
             end
             gui_eeg_blc_dt.custom_edit.String = num2str(bsperiod);
         end
-        
+
         %%bin & chan selection
         try
             all_bin_chan = gui_eeg_blc_dt.EEGTab_baseline_detrend{3};
@@ -647,7 +662,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         end
         gui_eeg_blc_dt.all_bin_chan.Value = all_bin_chan;
         gui_eeg_blc_dt.Selected_bin_chan.Value = ~all_bin_chan;
-        
+
         estudioworkingmemory('EEGTab_baseline_detrend',0);
         gui_eeg_blc_dt.apply.BackgroundColor =  [ 1 1 1];
         gui_eeg_blc_dt.apply.ForegroundColor = [0 0 0];
@@ -689,7 +704,7 @@ varargout{1} = EEG_basecorr_detrend_box;
         else
             EEG_basecorr_detrend_box.TitleColor= [0.0500    0.2500    0.5000];
         end
-        
+
         if gui_eeg_blc_dt.custom.Value==1
             gui_eeg_blc_dt.custom_edit.Enable = 'on';
         else
@@ -706,7 +721,7 @@ varargout{1} = EEG_basecorr_detrend_box;
             estudioworkingmemory('EEGArray',EEGArray);
             observe_EEGDAT.CURRENTSET = EEGArray;
         end
-        
+
         if gui_eeg_blc_dt.custom.Value==1
             baseline = str2num(gui_eeg_blc_dt.custom_edit.String);
             if ~isempty(baseline)

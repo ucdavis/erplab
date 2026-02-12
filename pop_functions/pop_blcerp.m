@@ -81,16 +81,16 @@ if nargin==1
         errorfound(msgboxText, title_msg);
         return
     end
-    
+
     titlegui = 'Baseline Correction';
     answer = blcerpGUI(ERP, titlegui );  % open GUI
-    
+
     if isempty(answer)
         disp('User selected Cancel')
         return
     end
     blcorr = answer{1};
-    
+
     ChanArray = answer{2};
     BinArray = answer{3};
     %
@@ -167,7 +167,7 @@ if ischar(blcorr)
             errorfound(sprintf(msgboxText), title);
             return
         end
-        
+
         BLC  = internum; % msecs
         blcorrcomm = ['[' blcorr ']'];
     else
@@ -203,6 +203,13 @@ else
     BLC  = blcorr;
     blcorrcomm = ['[' num2str(blcorr) ']']; % msecs
     [BLCp1, BLCp2, checkw] = window2sample(ERP, BLC, ERP.srate);
+    if checkw==1
+        error('pop_blcerp() error: baseline period cannot be larger than epoch.')
+    elseif checkw==2
+        error('pop_blcerp() error: too narrow baseline window')
+    elseif checkw==3
+        error('pop_blcerp() error: baseline period is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', ERP.xmin*1000, ERP.xmax*1000)
+    end
 end
 
 ERPaux = ERP; % original ERP
@@ -214,7 +221,7 @@ nbin = ERP.nbin;
 % baseline correction  01-14-2009
 %
 if ~isempty(BLC)
-    
+
     %
     % Baseline correction
     %
@@ -283,8 +290,8 @@ for q=1:length(fn)
 end
 erpcom = sprintf( '%s );', erpcom);
 if issaveas
-    
-    
+
+
     [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
     if issave>0
         % generate text command
@@ -301,11 +308,8 @@ if issaveas
         msgwrng = 'ERPLAB Warning: Your changes were not saved';
         try cprintf([1 0.52 0.2], '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
     end
-    
-    
-    
-    
-    
+
+
 end
 % get history from script. ERP
 switch shist

@@ -16,7 +16,7 @@
 %        'Windowstep'   - moving window step in ms.
 %        'Channel' 	- channel(s) to search artifacts.
 %        'LowPass' - Apply low pass filter at provided half-amplitude
-%                           cutoff (FIR @ 26 filter order). 
+%                           cutoff (FIR @ 26 filter order).
 %                           Default: -1/Do Not Apply
 %        'Flag'         - flag value between 1 to 8 to be marked when an artifact is found.(1 value)
 %        'Review'       - open a popup window for scrolling marked epochs.
@@ -73,14 +73,14 @@ if nargin==1
         if serror
                 return
         end
-        
+
         prompt = {'Test period (start end) [ms]', 'Voltage Threshold [uV]', 'Moving Windows Full Width [ms]',...
                 'Window Step (ms)','Channel(s)'};
-        
+
         dlg_title = 'Moving Window Peak-to-Peak';
         defx = {[EEG(1).xmin*1000 EEG(1).xmax*1000] 100 200 100  1:EEG(1).nbchan 30 0 0};
         def  = erpworkingmemory('pop_artmwppth');
-        
+
         if isempty(def)
                 def = defx;
         else
@@ -90,7 +90,7 @@ if nargin==1
                 if def{1}(2)>EEG(1).xmax*1000
                         def{1}(2) = single(EEG(1).xmax*1000);
                 end
-                
+
                 def{5} = def{5}(ismember_bc2(def{5},1:EEG(1).nbchan));
         end
         try
@@ -98,17 +98,17 @@ if nargin==1
         catch
                 chanlabels = [];
         end
-        
+
         %
         % Call GUI
         %
         answer = artifactmenuGUI(prompt, dlg_title, def, defx, chanlabels);
-        
+
         if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
-        
+
         testwindow =  answer{1};
         ampth      =  answer{2};
         winms      =  answer{3};
@@ -118,7 +118,7 @@ if nargin==1
         lppot      =  answer{7}
         flag       =  answer{8};
         viewer     =  answer{end};
-        
+
         if viewer
                 viewstr = 'on';
         else
@@ -134,7 +134,7 @@ if nargin==1
         if length(EEG)==1
                 EEG.setname = [EEG.setname '_ar']; %suggest a new name
         end
-        
+
         %
         % Somersault
         %
@@ -157,7 +157,7 @@ p.addParamValue('Threshold', 100, @isnumeric);
 p.addParamValue('Windowsize', 1000, @isnumeric);
 p.addParamValue('Windowstep', 500, @isnumeric);
 p.addParamValue('Channel', 1:EEG(1).nbchan, @isnumeric);
-p.addParamValue('LowPass', -1, @isnumeric); 
+p.addParamValue('LowPass', -1, @isnumeric);
 p.addParamValue('Flag', 1, @isnumeric);
 p.addParamValue('Review', 'off', @ischar); % to open a window with the marked epochs
 p.addParamValue('History', 'script', @ischar); % history from scripting
@@ -169,7 +169,7 @@ ampth      =  p.Results.Threshold;
 winms      =  p.Results.Windowsize;
 stepms     =  p.Results.Windowstep;
 chanArray  =  p.Results.Channel; % avoids repeated channels
-lpval      =  p.Results.LowPass; 
+lpval      =  p.Results.LowPass;
 flag       =  p.Results.Flag;
 
 if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
@@ -222,6 +222,8 @@ if checkw==1
         error('ERPLAB says: error at pop_artmwppth(). Time window cannot be larger than epoch.')
 elseif checkw==2
         error('ERPLAB says: error at pop_artmwppth(). Too narrow time window')
+elseif checkw==3
+        error('ERPLAB says: error at pop_artmwppth(). Time window is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', EEG.xmin*1000, EEG.xmax*1000)
 end
 epochwidth = p2 - p1 + 1; % choosen epoch width in number of samples
 if nch>EEG.nbchan
@@ -257,7 +259,7 @@ end
 if lpval > 1
     %if user elects to low pass data prior to AD, create EEG_lowfilt copy
     EEG_lowfilt = basicfilter(EEG, chanArray ,0, lpval, 26, 1, 0,[]);
-    
+
 end
 
 
@@ -274,13 +276,13 @@ for ch=1:nch
                         vs  = abs(max(w1)- min(w1));
                         if vs>ampth
                                 interARcounter(i) = 1;      % internal counter, for statistics
-                                
+
                                 %
                                 % subroutine
                                 %
                                 % flaf 1 is obligatory
                                 [EEG, errorm]= markartifacts(EEG, flag, chanArray, ch, i, isRT);
-                                
+
                                 if errorm==1
                                         error(['ERPLAB says: error at pop_artmwppth(). There was no latency at the epoch ' num2str(i)])
                                 elseif errorm==2

@@ -83,7 +83,7 @@ if nargin==1
         dlg_title = 'Barb Function';
         defx = {[EEG(1).xmin*1000 EEG(1).xmax*1000] 0.7 [1:EEG(1).nbchan] 0};
         def  = erpworkingmemory('pop_artbarb');
-        
+
         if isempty(def)
                 def = defx;
         else
@@ -93,7 +93,7 @@ if nargin==1
                 if def{1}(2)>EEG(1).xmax*1000
                         def{1}(2) = single(EEG(1).xmax*1000);
                 end
-                
+
                 def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
         end
         try
@@ -101,23 +101,23 @@ if nargin==1
         catch
                 chanlabels = [];
         end
-        
+
         %
         % Call GUI
         %
         answer = artifactmenuGUI(prompt, dlg_title, def, defx, chanlabels);
-        
+
         if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
-        
+
         testwindow = answer{1};
         ccovth     = answer{2};
         chanArray  = unique_bc2(answer{3});
         flag       = answer{4};
         viewer     = answer{end};
-        
+
         if viewer
                 viewstr = 'on';
         else
@@ -133,7 +133,7 @@ if nargin==1
         if length(EEG)==1
                 EEG.setname = [EEG.setname '_ar']; %suggest a new name
         end
-        
+
         %
         % Somersault
         %
@@ -206,6 +206,8 @@ if checkw==1
         error('pop_artbarb() error: time window cannot be larger than epoch.')
 elseif checkw==2
         error('pop_artbarb() error: too narrow time window')
+elseif checkw==3
+        error('pop_artbarb() error: time window is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', EEG.xmin*1000, EEG.xmax*1000)
 end
 
 epochwidth = p2-p1+1; % choosen epoch width in number of samples
@@ -250,10 +252,10 @@ for ch=1:nch
                 x  = filtfilt(b,a, x);               % band pass
                 [cov_trial] = xcov(x,y0,'coeff');
                 xv = max(abs(cov_trial));
-                
+
                 if xv>ccovth
                         interARcounter(i) = 1;      % internal counter, for statistics
-                        
+
                         %
                         % subroutine
                         %

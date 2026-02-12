@@ -101,13 +101,13 @@ if nargin==1
                 end
         else
                 % continuous
-                
+
         end
         prompt = {'Test period (start end) [ms]', 'Blink Width [ms]', 'Normalized Cross-Covariance Threshold:', 'Channel(s)'};
         dlg_title = 'Blink Detection';
         defx   = {[EEG.xmin*1000 EEG.xmax*1000] 400 0.7 EEG.nbchan 0};
         def    = erpworkingmemory('pop_artblink2');
-        
+
         if isempty(def)
                 def = defx;
         else
@@ -117,7 +117,7 @@ if nargin==1
                 if def{1}(2)>EEG.xmax*1000
                         def{1}(2) = single(EEG.xmax*1000);
                 end
-                
+
                 def{4} = def{4}(ismember_bc2(def{4},1:EEG.nbchan));
         end
         try
@@ -125,24 +125,24 @@ if nargin==1
         catch
                 chanlabels = [];
         end
-        
+
         %
         % Call GUI
         %
         answer = artifactmenuGUI(prompt, dlg_title, def, defx, chanlabels);
-        
+
         if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
-        
+
         testwindow =  answer{1};
         blinkwidth =  answer{2}; % in msec
         ccovth     =  answer{3};
         chanArray  =  unique_bc2(answer{4}); % avoids repeated channels
         flag       =  answer{5};
         viewer     =  answer{end};
-        
+
         if viewer
                 viewstr = 'on';
         else
@@ -156,7 +156,7 @@ if nargin==1
         end
         erpworkingmemory('pop_artblink2', {answer{1} answer{2} answer{3} answer{4} answer{5}});
         EEG.setname = [EEG.setname '_ar']; %suggest a new name
-        
+
         %
         % Somersault
         %
@@ -225,12 +225,14 @@ ntrial   = EEG.trials;
 % end
 if ~isempty(EEG.epoch)
         eindex = epoch4bin( EEG, evcode);
-        
+
         [p1, p2, checkw] = window2sample(EEG, testwindow, fs);
         if checkw==1
                 error('pop_artblink2() error: time window cannot be larger than epoch.')
         elseif checkw==2
                 error('pop_artblink2() error: too narrow time window')
+        elseif checkw==3
+                error('pop_artblink2() error: time window is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', EEG.xmin*1000, EEG.xmax*1000)
         end
         if isempty(EEG.reject.rejmanual)
                 EEG.reject.rejmanual  = zeros(1,ntrial);
@@ -242,12 +244,12 @@ else
         % Continuous
         mwindowsam  = round((testwindow*fs)/1000);  % mwindowms in samples
         indxevcode = geteventcontlat(EEG, evcode);
-        
+
         if isempty(indxevcode)
                 fprintf('\nWARNING: Event codes %s were not found. pop_artblink2() was not performed.\n\n', vect2colon(evcode))
                 return
         end
-        
+
         neegevent = length(EEG.event);
         if isfield(EEG.event,'enable')
                 % In case there are empty values at EEG.enable
@@ -281,7 +283,7 @@ else
                 flag = num2cell(ones(1,neegevent));
                 %durationbckup = duration;
         end
-        
+
         [EEG.event(1:neegevent).duration] = duration{:};
         [EEG.event(1:neegevent).durationbckup] = duration{:};
         [EEG.event(1:neegevent).flag] = flag{:};
@@ -346,7 +348,7 @@ if blinkpnts<=epochwidth
         [xxx, fp] = max(y0); % find y0 peak
         offsetw = round(epochwidth/2)-fp;
         y0 = circshift(y0',offsetw)';
-        
+
         w1 = 0.6*chebwin(blinkpnts)';
         y1 = [w1 zeros(1,epochwidth-length(w1))];
         %fp = find(y0==max(y0)); % find y0 peak
@@ -358,7 +360,7 @@ if blinkpnts<=epochwidth
         pky0 = max(y0);
         rateblk = 50/pky0;
         y0 = y0*rateblk; % 50uv fake blink
-        
+
         midp = round((2*epochwidth-1)/2) ;  % 2N-1  length of xcov
         latp = round(blinkpnts/4);
 else
@@ -379,13 +381,13 @@ for i=1:ntrial
                         end
                         [cov_trial] = xcov(datax,y0,'coeff');
                         xvm = max(abs(cov_trial)); % around zero lag
-                        
+
                         if xvm>ccovth
                                 interARcounter(i) = 1  ;   % internal counter, for statistics
                                 %hk = figure;plot(datax); hold on ; plot(dataxxx,'r');hold off
                                 %hk2 = figure;plot(cov_trial);
                                 %                   close(hk)
-                                
+
                                 % flaf 1 is obligatory
                                 [EEG, errorm]= markartifacts(EEG, xflag, chanArray, ch, i, isRT);
                                 if errorm==1
@@ -414,26 +416,26 @@ for i=1:ntrial
                                         datax = single(sgolayfilt(double(datax),3,31));
                                 end
                                 [cov_trial] = xcov(datax,y0,'coeff');
-                                
+
                                 aa = cov_trial(midp-latp:midp+latp); % ~around zero lag
                                 bb = cov_trial(1:midp-latp);         % left
                                 cc = cov_trial(midp+latp:end);       % right
-                                
+
                                 xvm = norm(aa)/sqrt(length(aa)); %rms ~ zero lag
                                 xvL = norm(bb)/sqrt(length(bb)); %rms at left
                                 xvR = norm(cc)/sqrt(length(cc)); %rms at righ
-                                
+
                                 if xvm>ccovth && xvL<xvm && xvR<xvm
                                         %ccovth
                                         %xvm
                                         %xvL
                                         %xvR
                                         interARcounter(i) = 1  ;   % internal counter, for statistics
-                                        
+
                                         %hk = figure;plot(datax); hold on ; plot(dataxxx,'r');hold off
                                         %hk2 = figure;plot(cov_trial);
                                         %                   close(hk)
-                                        
+
                                         % continuos
                                         if ~isempty(xenable)
                                                 EEG.event(indxevcode(i)).enable = xenable;
