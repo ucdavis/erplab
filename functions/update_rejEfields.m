@@ -15,7 +15,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -39,7 +39,7 @@ if length(realchanpos)<=1
         return
 end
 
-fprintf('Updating artifact rejection fields...')
+fprintf('Updating artifact rejection fields...\n')
 
 lsch = realchanpos(1); %left side channel
 rsch = realchanpos(2:end); %right side channel(s)
@@ -62,11 +62,13 @@ for pp =1:nF
         
         if ismember_bc2({fieldname}, sfields2)      % it's an "E" field
                 sch = size(EEGin.reject.(fieldname),1);   % get row length
-                if sch~=0
+                if sch~=0 && max(rsch) <= sch
                         % the artifact detection info for the channel at the left side of the equation is equal to a "bit-wise OR"
                         % of the artifact detection info from the channels at the right side of the equation.
                         EEGout.reject.(fieldname)(lsch,:) = ~ismember_bc2(sum(EEGin.reject.(fieldname)(rsch, :),1), 0);
                         %fprintf('EEG.reject.%s was updated.\n', fieldname)
+                elseif sch~=0 && max(rsch) > sch
+                        fprintf('Warning: EEG.reject.%s has %d channel(s) but formula references channel %d. Skipping update for this field.\n', fieldname, sch, max(rsch));
                 end
                 
         else
