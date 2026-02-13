@@ -18,7 +18,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 %   rounding          - 'earlier'   - (default) Round to earlier timestamp
 %                     - 'later'     - Round to later timestamp
-%                     - 'nearest'   - Round to nearest timestamp   
+%                     - 'nearest'   - Round to nearest timestamp
 %   displayFeedback   - 'summary'   - (default) Print summarized info to Command Window
 %                     - 'detailed'  - Print event table with sample_num differences
 %                                     to Command Window
@@ -36,7 +36,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 %    eventcodes = {22, 19};   % Shift numeric event codes 22 & 19
 %    timeshift  = 15;      % Shift event codes by 15-milliseconds
-%    rounding   = 'later'     % Round result shift event codes to later timestamp 
+%    rounding   = 'later'     % Round result shift event codes to later timestamp
 %    outEEG     = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, rounding);
 %
 %
@@ -118,17 +118,17 @@ timeshift = timeshift/1000;
 switch sample_rounding
     case 'earlier'
         % Round to nearest integer earlier, towards negative infinity
-        sample_shift = floor(timeshift * inEEG.srate);  
+        sample_shift = floor(timeshift * inEEG.srate);
     case 'later'
         % Round to nearest integer later, towards positive infinity
-        sample_shift = ceil(timeshift * inEEG.srate);   
+        sample_shift = ceil(timeshift * inEEG.srate);
     case 'nearest'
         % Round to the nearest integer
-        sample_shift = round(timeshift * inEEG.srate);  
+        sample_shift = round(timeshift * inEEG.srate);
     otherwise
         error('Unrecognized rounding input. Valid options are: "earlier", "later", or "nearest".');
 end
-            
+
 
 %% Convert EEG.data structure to a Matlab table
 % in order to select the user-specified event code sample_num
@@ -171,8 +171,8 @@ if(iscell(table_events.order_num))
 end
 
 
-%% Save the original `order_num` 
-% This is to a separate variable for later use when displaying the 
+%% Save the original `order_num`
+% This is to a separate variable for later use when displaying the
 % "Detailed Feedback" table
 table_events.original_order_num  = table_events.order_num;
 table_events.original_sample_num = table_events.sample_num;
@@ -183,8 +183,8 @@ table_events.original_sample_num = table_events.sample_num;
 
 %% Convert event codes to a categorical variable type for selection
 table_events.type       = categorical(table_events.type);
-% eventcodes = cellfun(@eval, eventcodes,'UniformOutput',false); 
-eventcodes = cellfun(@num2str,eventcodes,'UniformOutput',false); 
+% eventcodes = cellfun(@eval, eventcodes,'UniformOutput',false);
+eventcodes = cellfun(@num2str,eventcodes,'UniformOutput',false);
 
 if(ischar(eventcodes))
     eventcodes         = categorical(cellstr(eventcodes));
@@ -238,7 +238,7 @@ else
     if(tableBoundary.sample_num(1) ~= 0)
         tableBoundary = [tableBoundaryEdges(1,:); tableBoundary];
     end
-    
+
     % If no boundary-code exists at the end (i.e. sample_num inEEG.pnts), then
     % add in a boundary code at the end
     if(tableBoundary.sample_num(end) ~= inEEG.pnts)
@@ -256,11 +256,11 @@ numBoundaryEvents = height(tableBoundary);
 deleteOriginalorder_numArray = {};
 
 for iRow_shifteventcode = 1:nRows_total
-    
+
     sample_num_original = tableShiftedEvents{iRow_shifteventcode, 'original_sample_num'};
     sample_num_shifted  = tableShiftedEvents{iRow_shifteventcode, 'sample_num'};
-    
-    
+
+
     % Find nearest boundary code in the direction of the shift
     if(sign(sample_shift) > 0)
         % positive shift => find nearest boundary code GREATER than the
@@ -273,16 +273,16 @@ for iRow_shifteventcode = 1:nRows_total
         sample_num_boundary = tableBoundary{tableBoundary.sample_num < sample_num_original, 'sample_num'};
         sample_num_boundary = sample_num_boundary(1);
     end
-    
-    
-    
+
+
+
     if((sample_num_boundary > min([sample_num_original, sample_num_shifted])) && ...
             (sample_num_boundary < max([sample_num_original, sample_num_shifted])) )
-        
+
         % Get the order_num code in order to later delete them
         deleteOriginalorder_num      = tableShiftedEvents{iRow_shifteventcode, 'original_order_num'};
         deleteOriginalorder_numArray = [deleteOriginalorder_numArray; num2str(deleteOriginalorder_num)]; %#ok<AGROW>
-        
+
     end
 end
 
@@ -307,7 +307,7 @@ elseif(iscell(table_events.original_order_num))
     order_nums_original = cellfun(@num2str, table_events.original_order_num, ...
         'UniformOutput', false);
 end
-    
+
 
 % Find events to delete (i.e. that crossed a boundary) and then delete them
 filter_events2delete = ismember(order_nums_original, deleteOriginalorder_numArray);
@@ -328,14 +328,14 @@ numEventsDeleted = size(deleteOriginalorder_numArray, 1);
 
 if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
 
-    
+
     % Extract both the input events and output events into tables
     table_events_display          = table_events;
-        
-    
+
+
     % Rename variables
     table_events_display.Properties.VariableNames{'type'} = 'event_code';
-    
+
     % Delete `duration` variable (since it is unused)
     try
         table_events_display.duration           = [];
@@ -348,18 +348,18 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     % Convert and rename (shifted) sample number to time position
     table_events_display.Properties.VariableNames{'sample_num'} = 'shifted_time_position';
     table_events_display.shifted_time_position = table_events_display.shifted_time_position * (1000/inEEG.srate);
-    
+
     % Convert and rename original sample number to original time position
     table_events_display.Properties.VariableNames{'original_sample_num'} = 'original_time_position';
     table_events_display.original_time_position = table_events_display.original_time_position * (1000/inEEG.srate);
-    
-            
+
+
     % Calculate the sample_num differences between the input and output
     time_difference_ms         = table_events_display.shifted_time_position - table_events_display.original_time_position;
 
     table_events_display = [ table_events_display ...
         table(time_difference_ms)  ];
-    
+
     %% Setup table for printing to command window
     % Filter & Reposition the variable columns for display
     Display_vars = {...
@@ -367,47 +367,28 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
         'original_time_position'    , ...
         'shifted_time_position' , ...
         'time_difference_ms'    };
-    
+
     Display_table = table( ...
         table_events_display{:, Display_vars{1}}, ...
         table_events_display{:, Display_vars{2}}, ...
         table_events_display{:, Display_vars{3}}, ...
         table_events_display{:, Display_vars{4}}, ...
         'VariableNames', Display_vars);
-    
-    %% Write to File
-    [path_erplab, ~, ~] = fileparts(which('eegplugin_erplab'));
-    path_temp          = fullfile(path_erplab, 'erplab_Box');
-    
-    % If erplab's temp directory does not exist then create it
-    if ~exist(path_temp, 'dir'); mkdir(path_temp); end;
-    
-    output_filename     = ['erplab-shift_event_codes-' datestr(now, 30) '.csv'];
-    output_filespec     = fullfile(path_temp, output_filename);
-    
-    try
-        writetable(Display_table, output_filespec, ...
-            'Delimiter',   ',', ...
-            'QuoteStrings', true);
-    catch
-        writetable(Display_table, output_filespec, ...
-            'Delimiter',   ',');
-    end
-    
-    %% Display to command line    
-    fprintf('A CSV-file containing all shift information was created at <a href="matlab: open( ''%s'' )">%s </a>\n\n', output_filespec, output_filespec)
+
+    %% Display to command line
+    % No longer writing CSV reports to erplab_Box
     fprintf('For your information, here is a table of the first 10 events in your eventlist:\n');
     display(Display_table(1:10,:));
-    
+
 end
-    
+
 
 
 %% Print Summarized Feedback
 
 if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
     numEventCodes        = size(inEEG.event, 2);
-    
+
     fprintf('\n\n\t%9d event codes shifted %+2.3f milliseconds\n', ...
         numEventsShifted, ...
         timeshift*1000);
@@ -426,7 +407,7 @@ end
 
 %% Save the shifted events/latencies back into the EEGLAB EEG dataset
 
-% Convert order_num from numeric back to cell 
+% Convert order_num from numeric back to cell
 table_events.order_num = num2cell(table_events.order_num);
 
 % Replace boundary order_num (i.e. NaNs) with {[]}
@@ -458,14 +439,14 @@ outEEG                 = eeg_checkset(outEEG, 'eventconsistency', 'checkur');
 if(isfield(outEEG, 'EVENTLIST') && ~isempty(outEEG.EVENTLIST))
     warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected & Deleted \n _________________________________________________________________________\n\n\tThis function changes the timing of your event codes, thus your prior eventlist is now obsolete and WILL BE DELETED. \n\n\tRemember to re-create a new ERPLAB EVENTLIST\n _________________________________________________________________________\n');
     warning(warning_txt); %#ok<SPWRN>
-    
+
     % DELETE PRIOR EVENTLIST
     outEEG.EVENTLIST = [];
 end
 
 %% Display input EEG plot to user with rejection windows marked
 if displayEEG
-   
+
     eegplotoptions = {               ...
         'events'   , outEEG.event,   ...
         'srate'    , outEEG.srate,   ...
@@ -475,9 +456,8 @@ if displayEEG
     if ~isempty(outEEG.chanlocs)
         eegplotoptions = [ eegplotoptions {'eloc_file', outEEG.chanlocs}];
     end
-    
-    % Run EEGPLOT
-    eegplot(outEEG.data, eegplotoptions{:});   
-    
-end
 
+    % Run EEGPLOT
+    eegplot(outEEG.data, eegplotoptions{:});
+
+end

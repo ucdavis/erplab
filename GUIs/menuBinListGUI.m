@@ -66,7 +66,7 @@ end
 try
         def = varargin{3};
 catch
-        def = {'' '' '' 0 [] [] 1 0 0 1 0};
+        def = {'' '' 'none' 0 [] [] 1 0 0 1 0};
 end
 
 handles.ERPLAB1 = ERPLAB1;
@@ -141,7 +141,7 @@ function pushbutton_browse_BDF_Callback(hObject, eventdata, handles)
 try
         pre_patha = get(handles.edit_load_BDF, 'String');
         [pre_pathb, nameq, extq] = fileparts(pre_patha);
-        
+
         [bdfilename,bdfpathname] = uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)', pre_pathb);
 catch
         [bdfilename,bdfpathname] = uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)');
@@ -154,10 +154,10 @@ else
         handle.bdfilename  = bdfilename;
         handle.bdfpathname = bdfpathname;
         set(handles.edit_load_BDF, 'String', fullfile(bdfpathname, bdfilename));
-        
+
         % Update handles structure
         guidata(hObject, handles);
-        
+
         flinkname = fullfile(bdfpathname, bdfilename);
         disp(['For Bin Descriptor file (BDF), user selected <a href="matlab: open(''' flinkname ''')">' flinkname '</a>'])
 end
@@ -182,7 +182,7 @@ function pushbutton_browse_EL_Callback(hObject, eventdata, handles)
 try
         pre_patha = get(handles.edit_load_EL, 'String');
         [pre_pathb, nameq, extq] = fileparts(pre_patha);
-        
+
         [logfilename,logpathname] = uigetfile({'*.txt';'*.*'},'Select a EVENTLIST text file (ex LOG file)', pre_pathb);
 catch
         [logfilename,logpathname] = uigetfile({'*.txt';'*.*'},'Select a EVENTLIST text file (ex LOG file)');
@@ -195,10 +195,10 @@ else
         handle.logfilename  = logfilename;
         handle.logpathname  = logpathname;
         set(handles.edit_load_EL,'String', fullfile(logpathname, logfilename));
-        
+
         % Update handles structure
         guidata(hObject, handles);
-        
+
         flinkname = fullfile(logpathname, logfilename);
         disp(['For input EventList file, user selected <a href="matlab: open(''' flinkname ''')">' flinkname '</a>'])
 end
@@ -237,7 +237,7 @@ else
         handle.blpathname  = blpathname;
         set(handles.edit_save_BL,'String', fullfile(blpathname, blfilename));
         handles.owfp     = 1;  % over write file permission
-        
+
         % Update handles structure
         guidata(hObject, handles);
         disp(['For BINLIST, user selected ', fullfile(blpathname, blfilename)])
@@ -339,14 +339,19 @@ else
 end
 if ~isempty(blfile)
         [blfilepath, blfile, extbf] = fileparts(blfile);
-        
+
         if ~strcmp(extbf,'.txt')
                 extbf   = '.txt';
         end
-        
+
         blfile = fullfile(blfilepath,[blfile extbf]);
 else
-        blfile = '';
+        % If no filename specified and text output not selected, use 'none'
+        if ~button_totext
+                blfile = 'none';
+        else
+                blfile = '';
+        end
 end
 
 owfp = handles.owfp;  % over write file permission
@@ -356,7 +361,7 @@ if exist(blfile, 'file')~=0 && owfp==0 && get(handles.radiobutton_totext,'Value'
                 'Do you want to replace it?'];
         title    = 'ERPLAB: Overwriting Confirmation';
         button   = askquest(sprintf(question), title);
-        
+
         if ~strcmpi(button, 'yes')
                 return
         end
@@ -474,7 +479,7 @@ if get(hObject,'Value')
         set(handles.pushbutton_browse_EL, 'Enable','off')
         set(handles.popupmenu_indexEL, 'Enable','off')
         set(handles.pushbutton_tal_EL, 'Enable','off')
-        
+
 else
         set(hObject,'Value',1)
 end
@@ -489,7 +494,7 @@ if get(hObject,'Value')
         set(handles.pushbutton_browse_EL, 'Enable','off')
         set(handles.popupmenu_indexEL, 'Enable','on')
         set(handles.pushbutton_tal_EL, 'Enable','off')
-        
+
 else
         set(hObject,'Value',1)
 end
@@ -502,7 +507,7 @@ if get(hObject,'Value')
         set(handles.edit_load_EL, 'Enable','on')
         set(handles.pushbutton_browse_EL, 'Enable','on')
         set(handles.popupmenu_indexEL, 'Enable','off')
-        
+
         if isempty(get(handles.edit_load_EL, 'String'))
                 set(handles.pushbutton_tal_EL, 'Enable','off')
         else
@@ -678,18 +683,18 @@ if isempty(file2) || strcmpi(file2, 'no') || strcmpi(file2, 'none')  % Read EVEN
                 set(handles.radiobutton_fromtext, 'Value', 0)
                 set(handles.pushbutton_browse_EL, 'Enable','off')
                 set(handles.edit_load_EL, 'Enable','off')
-                
+
                 set(handles.pushbutton_tal_EL, 'Enable','off')
-                
-                
-                
+
+
+
                 set(handles.popupmenu_indexEL, 'Enable','off')
         elseif datatype==2
                 set(handles.radiobutton_fromcurrentdata, 'Value', 1)
                 set(handles.pushbutton_browse_EL, 'Enable','off')
                 set(handles.edit_load_EL, 'Enable','off')
                 set(handles.pushbutton_tal_EL, 'Enable','off')
-                
+
                 set(handles.popupmenu_indexEL, 'Enable','off')
         else
                 if erpok==0
@@ -697,7 +702,7 @@ if isempty(file2) || strcmpi(file2, 'no') || strcmpi(file2, 'none')  % Read EVEN
                         set(handles.pushbutton_browse_EL, 'Enable','on')
                         set(handles.edit_load_EL, 'Enable','on')
                         set(handles.pushbutton_tal_EL, 'Enable','off')
-                        
+
                         set(handles.popupmenu_indexEL, 'Enable','off')
                 else
                         set(handles.radiobutton_fromcurrentERP, 'Value', 1 )

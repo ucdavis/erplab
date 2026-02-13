@@ -52,7 +52,7 @@ if nargin==1
     wf =0;
     evefilepath = '';
     evefilename = '';
-    
+
     if isfield(EEG, 'EVENTLIST')
         if isfield(EEG.EVENTLIST, 'eventinfo')
             if isempty(EEG.EVENTLIST.eventinfo)
@@ -71,14 +71,9 @@ if nargin==1
         EVENTLIST.bdf = [];
     end
 elseif nargin==2
-    wf = 1;
-    p = which('eegplugin_erplab');
-    path_temp = p(1:findstr(p,'eegplugin_erplab.m')-1);
-    evefilepath = fullfile(path_temp, 'erplab_Box');
-    if exist(evefilepath, 'dir')~=7
-        mkdir(evefilepath);  % Thanks to Johanna Kreither. Jan 31, 2013
-    end
-    evefilename = ['eventlist_backup_' num2str((datenum(datestr(now))*1e10))];
+    wf = 0;  % Don't write backup file
+    evefilepath = '';
+    evefilename = '';
 else
     if nargin>4
         error('ERPLAB says: error at f_creaeventlist_excel(). Too many arguments!!!!\n')
@@ -86,13 +81,13 @@ else
     if nargin<4
         wf=1;
     end
-    
+
     [evefilepath, evefilename, ext] = fileparts(lfname);
-    
+
     if (~strcmp(ext,'.xls') || ~strcmp(ext,'.xlsx')) && ~strcmp(evefilename,'') && ~strcmp(evefilename,'no') && ~strcmp(evefilename,'none')
         ext = '.xls';
     end
-    if ~strcmp(evefilename,'')
+    if ~strcmp(evefilename,'') && ~strcmp(evefilename,'no') && ~strcmp(evefilename,'none')
         evefilename = [evefilename ext];
     else
         wf=0;
@@ -102,7 +97,7 @@ else
     end
     if isempty(EVENTLIST)
         EVENTLIST = creaeventinfo(EEG);
-        
+
     end
     if ~isfield(EVENTLIST, 'bdf')
         EVENTLIST.bdf = [];
@@ -178,7 +173,7 @@ EVENTLIST.eldate   = datestr(now);
 eegnbchan = 0;
 if wf ==1
     fprintf('Creating an EventList .xsl file...\n');
-    
+
     %
     % Header
     %
@@ -237,7 +232,7 @@ if wf ==1
     columName2 = {'item','bepoch','ecode','label','onset','diff','dura','b_flags','a_flags','enable','bin'};
     sheet_label_T = table(columName2);
     writetable(sheet_label_T,flinkname,'Range','A1','WriteVariableNames',false,"AutoFitWidth",false);
-    
+
     %
     % Prepares diffe field
     %
@@ -251,7 +246,7 @@ if wf ==1
         else
             sbepoch = '0';
         end
-        
+
         scode = num2str(EVENTLIST.eventinfo(k).code);
         sclab = num2str(EVENTLIST.eventinfo(k).codelabel);
         stime = sprintf('%.4f', EVENTLIST.eventinfo(k).time);
@@ -260,11 +255,11 @@ if wf ==1
         sflag = dec2bin(EVENTLIST.eventinfo(k).flag,16);
         senbl = num2str(EVENTLIST.eventinfo(k).enable);
         sbini = num2str(EVENTLIST.eventinfo(k).bini);
-        
+
         if strcmp(sbini,'-1')
             sbini = '';
         end
-        
+
         sitem   = [sitem blanks(6-length(sitem))];
         sbepoch = [sbepoch blanks(6-length(sbepoch))];
         scode   = [blanks(7-length(scode)) scode];
@@ -290,9 +285,9 @@ if wf ==1
     end
     xls_d = table(data);
     writetable(xls_d,flinkname,'Range','A2','WriteVariableNames',false,"AutoFitWidth",false);  % write data
-    
-    
-    
+
+
+
     disp(['A new EventList file was created at <a href="matlab: open(''' flinkname ''')">' flinkname '</a>'])
 end
 if isfield(EEG, 'chanlocs')
@@ -304,4 +299,3 @@ if isfield(EEG, 'chanlocs')
         disp('f_creaeventlist_excel() added basic labels to your channels.')
     end
 end
-

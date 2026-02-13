@@ -106,7 +106,7 @@ try
     if any(ver_match==0)  % if there is any mismatch
         fprintf('\nERPLAB''s folder does not show the current version number.\n')
     end
-    
+
 catch
     fprintf('\nERPLAB''s folder does not show the current version number.\n')
 end
@@ -145,23 +145,6 @@ if eegversion==11
 end
 
 %
-% TEMPORARY ERPLAB's Files
-%
-dirBox    = fullfile(p,'erplab_Box');
-filst     = dir(dirBox);
-filenames = {filst.name};
-
-if length(filenames)>3    % '.'    '..'    'erplab_box_readme.md'
-    recycle on;
-    delete(fullfile(dirBox,'*'))
-    fprintf('\nERPLAB WARNING: Temporary files (from your last session) within erplab_Box folder were sent to recycle bin.\n\n')
-    
-    file_id = fopen(fullfile(dirBox, 'erplab_box_readme.md'), 'w');
-    fprintf(file_id, 'This is a placeholder file, so that git does not delete the `erplab_Box` folder.');
-    fclose(file_id);
-end
-
-%
 % ERPLAB's WORKING MEMORY
 %
 
@@ -190,14 +173,14 @@ if iserpmem==0
         msgboxText = ['\nERPLAB could not find a file for storing its GUI memory or \n'...
             'does not have permission for writting on it.\n\n'...
             'Therefore, ERPLAB''s memory will be stored at Matlab''s workspace and will last 1 session.\n\n'];
-        
+
         % message on command window
         fprintf('%s\n', repmat('*',1,50));
         fprintf('"Houston, we''ve had a problem here": \n %s\n', sprintf(msgboxText));
         bottomline = 'If you think this is a bug, please report the error to erplabtoolbox@gmail.com and not to the EEGLAB developers.';
         disp(bottomline)
         fprintf('%s\n', repmat('*',1,50));
-        
+
         %
         % IMPORTANT: If this strucure (vmemoryerp) is modified then also must be modified the same line at erplabamnesia.m
         %
@@ -242,10 +225,10 @@ global ALLMVPC
 try
     ALLERP   = evalin('base', 'ALLERP');
     ALLERP = [];
-    
+
     ALLBEST   = evalin('base', 'ALLBEST');
     ALLBEST = [];
-    
+
     ALLMVPC   = evalin('base', 'ALLMVPC');
     ALLMVPC = [];
 catch
@@ -819,9 +802,3 @@ uimenu( mhelp,'Label','Submit an issue report on the ERPLAB GitHub page','CallBa
 erpmenu = uimenu( menuERPLAB,'Label','ERPsets','separator','on','tag','erpsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 %set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
 set(erpmenu,'enable','off');
-
-
-
-
-
-

@@ -1,1 +1,0 @@
-This is a placeholder file, so that git does not delete the `erplab_Box` folder.

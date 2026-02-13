@@ -326,6 +326,12 @@ switch p.Results.SendEL2
                 %option2do = 0;
                 error('ERPLAB says: You must specify what to do with the updated EVENTLIST.')
 end
+
+% Check if Text output is requested but no ExportEL file specified
+if ismember_bc2(option2do, [1 3 5 7]) && (isempty(file3) || strcmpi(file3,'no') || strcmpi(file3,'none'))
+        error('ERPLAB says: You selected to send EVENTLIST to a text file, but did not specify an output filename (ExportEL parameter).');
+end
+
 if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
         if isfield(EEG, 'EVENTLIST')
                 if isfield(EEG.EVENTLIST, 'eventinfo')
@@ -463,7 +469,7 @@ if nnz(binofbins)>=1
                         assignin('base','EVENTLIST',EVENTLIST);  % send EVENTLIST structure to WORKSPACE, August 22, 2008
                         disp('EVENTLIST structure was sent to WORKSPACE.')
                 end
-                if ismember_bc2(option2do, [1 3 5 7]) && ~isempty(file2) && ~strcmpi(file2,'no') && ~strcmpi(file2,'none')
+                if ismember_bc2(option2do, [1 3 5 7]) && ~isempty(file3) && ~strcmpi(file3,'no') && ~strcmpi(file3,'none')
                         disp('A text file version of your EVENTLIST was created.')
                 end
 

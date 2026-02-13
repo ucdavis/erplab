@@ -78,29 +78,29 @@ if nargin==1
                 errorfound(msgboxText, title_msg);
                 return
         end
-        
+
         def = erpworkingmemory('sendemailGUI');
         if isempty(def)
                 def = {'','You got an ERPmail!', 1};
         end
-        
+
         %
         % Call GUI
         %
         answer  = sendemailGUI(def);
-        
+
         if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
-        
+
         mailto   = answer{1};
         subject  = answer{2};
         msg      = answer{3};
         erpindex = answer{4}; % numeric
-        
+
         erpworkingmemory('sendemailGUI', {mailto, subject, erpindex});
-        
+
         %
         % Somersault
         %
@@ -141,20 +141,11 @@ if isempty(getpref('Internet','SMTP_Username')) || isempty(getpref('Internet','S
         error('prog:input','ERPLAB says: You have not set neither your gmail nor your yahoo email account to use this tool.\n\nPlease, go to Utilities menu, Set Gmail or Yahoo email account');
 end
 if ~isempty(erpindex)
-        p = which('eegplugin_erplab', '-all');
-        if length(p)>1
-                fprintf('\nERPLAB WARNING: More than one ERPLAB folder was found.\n\n');
-        end
-        p = p{1};
-        p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-        pathname = fullfile(p,'erplab_Box'); % path for temporary storage
-        
-        if exist(pathname, 'dir')~=7
-                mkdir(pathname);  % Thanks to Johanna Kreither. Jan 31, 2013
-        end
+        % Use MATLAB's temporary directory instead of erplab_Box
+        pathname = tempdir; % path for temporary storage
         erpindex = unique_bc2(erpindex);
         nerpset  = length(erpindex);
-        
+
         for i=1:nerpset
                 erpname  = ALLERP(erpindex(i)).erpname;
                 filename = ALLERP(erpindex(i)).filename;
@@ -276,7 +267,3 @@ switch shist
                 return
 end
 return
-
-
-
-

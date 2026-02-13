@@ -1,5 +1,5 @@
 %  neobinlister2_fast
-%  
+%
 %  Additional functionality for events with time restriction
 %  Events codes with time restriction can be specified in a way that they
 %  are not preceded by certain event codes. E.g. one wants to have the
@@ -17,17 +17,17 @@
 %  treated as they should be.
 %  However, tested on a dataset containing 20.000 events, the output is exactly
 %  the same as with neobinlister2, and speed-up is in the range of 50-100 times.
-%  
+%
 %  Code adapted and new subfunction 'checkBINfnc' added
 %  by Christoph Huber-Huber, Feb 2018.
-% 
+%
 %
 %  Legacy help text for neobinlister2 below. Although it says "beta version"
-%  at some point, neobinlister2 is the default in many standard ERPLAB 
+%  at some point, neobinlister2 is the default in many standard ERPLAB
 %  situations.
-%  
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
+%
 %  BINLISTER IX 2010
 %
 %  binlister2.m is the Matlab  re-written version of the original Ecdbl from
@@ -132,15 +132,9 @@ version = geterplabversion;
 if isempty(bdfilename)
         error('ERPLAB says: bdfilename is empty.')
 end
-if ismember(neweventlistFile,{'none', 'no', ''})        
-        p = which('eegplugin_erplab');
-        path_temp = p(1:findstr(p,'eegplugin_erplab.m')-1);
-        newevefilepath = fullfile(path_temp, 'erplab_Box');
-        if exist(newevefilepath, 'dir')~=7
-                mkdir(newevefilepath);  % Thanks to Johanna Kreither. Jan 31, 2013
-        end        
-        neweventlistFile = sprintf('eventlist_backup_%g', (datenum(datestr(now))*1e10));    %   ['eventlist_backup_' num2str((datenum(datestr(now))*1e10))];
-        neweventlistFile = fullfile(newevefilepath, neweventlistFile);
+% No longer writing backup eventlist files to erplab_Box
+if ismember(neweventlistFile,{'none', 'no', ''})
+        neweventlistFile = 'none';  % Don't write backup file
 end
 
 %
@@ -148,7 +142,7 @@ end
 %
 [BIN, nwrongbins] = decodebdf(bdfilename);
 if nwrongbins == 0
-        
+
         %
         % BDF Decoder.
         % Converts BIN Descriptor into numeric parameters (struct).
@@ -156,7 +150,7 @@ if nwrongbins == 0
         [BIN, isparsenum] = bdf2struct(BIN, 1);
         % 1 -> allowMixedSign = true; allows separate event codes within
         % one {} to have different signs (~ or not ~).
-        
+
         if isparsenum==0
                 % parsing was not approved
                 return
@@ -195,7 +189,7 @@ EVENTLIST.bdf = BIN;
 bdfcrono   = datestr(now, 'mmmm dd, yyyy HH:MM:SS AM');
 
 if reportable
-        
+
         %
         % Creates a Report about Binlister performance
         %
@@ -224,7 +218,7 @@ if ispc
         userlogin  = regexprep(userdir, '.*\', '');
 else
         userdir = char(java.lang.System.getProperty('user.home'));
-        
+
         %
         % Captures user login
         %
@@ -310,7 +304,7 @@ TLitemNumIdx = find(cd1array & cd2array & itemCodes ~= -99 & ...
 % for iLogitem = 1:nitem  % Reads each log item (item pointer)
 % loop only through home code items (timelocking events, TL)
 for iLogitem = TLitemNumIdx
-    
+
     %
         % Progress report at command window
         %
@@ -325,15 +319,15 @@ for iLogitem = TLitemNumIdx
                 %                 end
                 numze = ceil(log10(pp + 1))-1; % number of zeros
                 nstepback = 3 + numze;
-                
+
                 fprintf([repmat('\b',1, nstepback) '%d%%\n'], pp);
                 ppaux=pp; % to avoid multiple printing for the same value
         end
-        
-        
+
+
         % check to which bin, or multiple bins, this item belongs
         belongsToBins = [];
-        
+
         for jBin = 1:nbin
             binok = checkBINfnc(iLogitem, itemCodes, itemTimes, BIN(jBin));
             if binok
@@ -341,13 +335,13 @@ for iLogitem = TLitemNumIdx
                 binOfBins(jBin) = binOfBins(jBin) + 1; % the counter for trials per bin
             end
         end
-        
+
         if numel(belongsToBins) > 1
             warning('Not clear whether an event can belong to more than one bin. Might be problem for epoching later on...');
         end
-        
+
         EVENTLIST.eventinfo(iLogitem).bini = belongsToBins;
-        
+
         % assign bin number(s) to EVENTLIST
         if isempty(belongsToBins) % no bin found
             EVENTLIST.eventinfo(iLogitem).bini = -1;
@@ -358,7 +352,7 @@ for iLogitem = TLitemNumIdx
             % Creates BIN LABELS
             auxname = num2str(belongsToBins);
             bname   = regexprep(auxname, '\s+', ',', 'ignorecase'); % inserts a comma instead blank space
-            
+
             if strcmp(EVENTLIST.eventinfo(iLogitem).codelabel,'""')
                 binName = ['B' bname '(' num2str(EVENTLIST.eventinfo(iLogitem).code) ')']; %B#(code)
             else
@@ -410,30 +404,30 @@ end
 %--------------------------------------------------------------------------------------------------------------------------------
 %
 %   Determine whether certain time-lock event belongs to certain bin
-% 
+%
 function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
     % The central function added by Christoph, Feb 2018.
-    
+
     binok = false;
-    
+
     preok = false;
     postok = false;
-    
+
     iLogitemTime = itemTimes(iLogitem);
     ip = iLogitem - 1;
     prehi = numel(B.prehome); % will move from last to first 'prehome' event
     preTimeLimit = -1; % an event with 'timecode' can occur at max at this time
-    
+
     % Actually twice almost exactly the same code, once for 'pre' and once
     % for 'post'.
     while ip > 0 && prehi > 0
-        
+
         % check if all eventsign are the same, ...
         %   if they are not we do something else (see below)
         if numel(unique(B.prehome(prehi).eventsign)) == 1
             % all 'eventsign' the same
             thisPreSign = all(B.prehome(prehi).eventsign);
-            
+
             % So, is time relevant?
             % Assuming that time window specification for prehome events is
             % also positive (and not negative as could be expected, since these
@@ -459,7 +453,7 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
                 % for events required to be absent, keep the whole time window
                 currentTimeWindow = currentTimeWindowNeg;
             end
-            
+
             if all(unique(B.prehome(prehi).timecode, 'rows') >= 0) % time is relevant
                 % use B.prehome.timecode, since currentTimeWindow has
                 % been ajusted and might be negative although relevant!
@@ -509,22 +503,22 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
                     return
                 end
             end
-        
-            
+
+
         else % not all eventsign the same
             % So, we ensure that there occurs no event of negated type (~)
             % before the required one (without ~)
-            
+
             if size(B.prehome(prehi).timecode, 1) ~= 1 % is not a row vector
                 % 'timecode' are not unique across all 'eventcodes'
                 % of the current 'prehome'. that's unexpected!
                 error('''timecode'' not unique across ''eventcodes'' of current ''prehome'' - how come?');
             end
-            
+
             % index to the events
             eventProhibitedIdx = B.prehome(prehi).eventsign == 0;
             eventRequiredIdx = B.prehome(prehi).eventsign == 1;
-            
+
             % in this case here, there has to be a time specification,
             % otherwise this specific feature of e.g. {~21;22} is obsolete.
             if all(unique(B.prehome(prehi).timecode, 'rows') >= 0) % time is relevant
@@ -552,20 +546,20 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
             % get indices to events in current time window
             currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
                          (itemTimes - iLogitemTime) <= currentTimeWindow(2);
-            
+
             % the required codes have to occur in the current time window
             currentRequiredIdx = currentIdx & ismember(itemCodes, B.prehome(prehi).eventcode(eventRequiredIdx));
             currentProhibitedIdx = currentIdx & ismember(itemCodes, B.prehome(prehi).eventcode(eventProhibitedIdx));
             currentCodesRequired = itemCodes(currentRequiredIdx);
             currentCodesProhibited = itemCodes(currentProhibitedIdx);
-            
+
             % at least one required code has to be present
             if ~isempty(currentCodesRequired)
                 % ensure that there is no prohibited event code before the
                 % first of the occuring required ones
                 currentTimesRequiredRel = itemTimes(currentRequiredIdx) - iLogitemTime; % time relativ to time-lock item (Logitem)
                 currentTimesRequiredRelLimit = max(currentTimesRequiredRel);
-                
+
                 if ~isempty(currentCodesProhibited)
                     currentTimesProhibitedRel = itemTimes(currentProhibitedIdx) - iLogitemTime;
                     % all prohibited event codes have to be outside the
@@ -608,24 +602,24 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
             end
         end
     end
-    
+
     % all prehome events are satisfied
     if prehi == 0
         preok = true;
     end
-    
+
     % check posthome events
     ip = iLogitem + 1;
     posthi = 1;
     postTimeLimit = 1;
     while ip <= numel(itemCodes) && posthi <= numel(B.posthome)
-        
+
         % Do all events in current 'posthome' have the same sign?
         if numel(unique(B.posthome(posthi).eventsign)) == 1
             % yes
             % What sign is it?
             thisPostSign = all(B.posthome(posthi).eventsign);
-            
+
             % So, is time relevant?
             currentTimeWindow = unique(B.posthome(posthi).timecode, 'rows');
             if size(currentTimeWindow, 1) ~= 1 % is not a row vector
@@ -641,7 +635,7 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
                 % otherwise, for events required to be absent, keep the whole
                 % time window.
             end
-            
+
             if all(unique(B.posthome(posthi).timecode, 'rows') >= 0) % time is relevant
                 % get index to all events in the time window
                 currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
@@ -686,12 +680,12 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
                     return
                 end
             end
-            
-        
+
+
         else % not all eventsign the same
             % So, we ensure that there occurs no event of negated type (~)
             % before the required one (without ~)
-            
+
             currentTimeWindowOrig = unique(B.posthome(posthi).timecode, 'rows');
             if size(currentTimeWindowOrig, 1) ~= 1 % is not a row vector
                 % 'timecode' are not unique across all 'eventcodes'
@@ -703,25 +697,25 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
             if ~all(currentTimeWindowOrig >= 0) % time is relevant
                 error('There has to be a time specification when required and prohibited event codes are being mixed within one binlister {}-term!');
             end
-            
+
             % adjust time window to take order of events with time limit
             % into account
             currentTimeWindowAdj = [max([currentTimeWindowOrig(1), postTimeLimit]), currentTimeWindowOrig(2)];
-            
+
             % get indices to events in current time window
             currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindowAdj(1) & ...
                 (itemTimes - iLogitemTime) <= currentTimeWindowAdj(2);
-            
+
             % index to required and prohibited the events within BIN
             eventProhibitedIdx = B.posthome(posthi).eventsign == 0;
             eventRequiredIdx = B.posthome(posthi).eventsign == 1;
-            
+
             % the required codes have to occur in the current time window
             currentRequiredIdx = currentIdx & ismember(itemCodes, B.posthome(posthi).eventcode(eventRequiredIdx));
             currentProhibitedIdx = currentIdx & ismember(itemCodes, B.posthome(posthi).eventcode(eventProhibitedIdx));
             currentCodesRequired = itemCodes(currentRequiredIdx);
             currentCodesProhibited = itemCodes(currentProhibitedIdx);
-            
+
             % at least one required code has to be present
             if ~isempty(currentCodesRequired)
                 % ensure that there is no prohibited event code before the
@@ -729,7 +723,7 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
                 currentTimesRequiredRel = itemTimes(currentRequiredIdx) - iLogitemTime; % time relativ to time-lock item (Logitem)
                 % in contrast to prehome section before, here we need MIN:
                 currentTimesRequiredRelLimit = min(currentTimesRequiredRel);
-                
+
                 if ~isempty(currentCodesProhibited)
                     currentTimesProhibitedRel = itemTimes(currentProhibitedIdx) - iLogitemTime;
                     % all prohibited event codes have to be outside the
@@ -768,12 +762,12 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
             end
         end
     end
-    
+
     % all posthome events are satisfied
     if posthi == numel(B.posthome)+1
         postok = true;
     end
-    
+
     binok = preok && postok;
 
 % FUNCTION END
@@ -892,14 +886,14 @@ end
 if israngedetected && isfrbddndetected   % Codes were detected but there was a pause code 04 February 2008
         timecodOK = targetLogTimeArray(rcr);
         targetLogPointer = targetLogItemArray(rcr);
-        
+
         if (timefrbddn >= timecodOK && kles==1) || (timefrbddn <= timecodOK && kles==2)
                 % the pause was between the home and the current code...bad news
                 % Oops! Event code was preceded by a forbiden code.
                 isdetectedLES = 0;
         else
                 if isnegated   % 02-21-2008
-                        % We have a problem...event code was found inside this time range.                        
+                        % We have a problem...event code was found inside this time range.
                         [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq,...
                                 jBin, targetLogItemArray(rcr) );  % call the function flagTest 12 March 2008
                         [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
@@ -921,23 +915,23 @@ if israngedetected && isfrbddndetected   % Codes were detected but there was a p
                                 jBin, targetLogItemArray(rcr) );  % Call the function flagTest 12 March 2008
                         [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                                 targetLogPointer, writeflag, writeindx);
-                          
-                          
+
+
                         %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                        
-                        
-                        if ~ishomeFlagdetected   % BUG: isdetectedLES may not be declared!                              
+
+
+                        if ~ishomeFlagdetected   % BUG: isdetectedLES may not be declared!
                                 % event code did not satisfy flag condition:
                                 isdetectedLES = 0;
                         end
-                        
+
                         % Now, the Log item pointer (offsetLogitem), which moves around the detected
                         % home logitem, is moved until the next successful detection by a time
                         % criterion. This will imply that the sequencer's pointer (mSeq) will go
                         % faster than offsetLogitem, for this bin
-                        
+
                         offsetLogitem = abs(targetLogItemArray(rcr) - iLogitem);
                         if targetLogPointer>1  &&  targetLogPointer<nitem
                                 previous_t2 = [EVENTLIST.eventinfo(targetLogItemArray(rcr) + traffic(kles)).time];
@@ -945,23 +939,23 @@ if israngedetected && isfrbddndetected   % Codes were detected but there was a p
                 end
         end
 elseif israngedetected && ~isfrbddndetected   % Code was detected and there was no pause 04 February 2008
-        
+
         %
         % Stores the time of the detected logcode (within the time range)
         %
         timecodOK = targetLogTimeArray(rcr);
         targetLogPointer = targetLogItemArray(rcr);
-        
+
         [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                 targetLogItemArray(rcr) );
         [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                 targetLogPointer, writeflag, writeindx);
-        
+
         if isnegated   % 02-21-2008
                 % We have a problem...event code was found inside this time range (%g).
-                
+
                 if EVENTLIST.eventinfo(targetLogItemArray(rcr)).enable  % checks enable  10-16-2008. Bug fixed Mar 28 2011
-                        if ishomeFlagdetected 
+                        if ishomeFlagdetected
                                 isdetectedLES = 0;
                         else
                                 % However, event code did not satisfy flag condition.
@@ -973,9 +967,9 @@ elseif israngedetected && ~isfrbddndetected   % Code was detected and there was 
                 end
         else
                 % Event code was found inside this time range. Event code satisfied condition by time.
-                
+
                 if EVENTLIST.eventinfo(targetLogItemArray(rcr)).enable  % checks enable  10-16-2008. Bug fixed Mar 28 2011
-                        if ishomeFlagdetected 
+                        if ishomeFlagdetected
                                 isdetectedLES = 1;
                         else
                                 % However, event code did not satisfy flag condition.
@@ -985,7 +979,7 @@ elseif israngedetected && ~isfrbddndetected   % Code was detected and there was 
                         % However, event code is not enable.
                         isdetectedLES = 0;
                 end
-                
+
                 % Now, the Log item pointer (offsetLogitem), which moves around the detected
                 % home logitem, is moved until the next successful detection by a time
                 % criterion. This will imply that the sequencer's pointer (mSeq) will go

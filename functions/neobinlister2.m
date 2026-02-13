@@ -102,15 +102,9 @@ version = geterplabversion;
 if isempty(bdfilename)
         error('ERPLAB says: bdfilename is empty.')
 end
-if ismember(neweventlistFile,{'none', 'no', ''})        
-        p = which('eegplugin_erplab');
-        path_temp = p(1:findstr(p,'eegplugin_erplab.m')-1);
-        newevefilepath = fullfile(path_temp, 'erplab_Box');
-        if exist(newevefilepath, 'dir')~=7
-                mkdir(newevefilepath);  % Thanks to Johanna Kreither. Jan 31, 2013
-        end        
-        neweventlistFile = sprintf('eventlist_backup_%g', (datenum(datestr(now))*1e10));    %   ['eventlist_backup_' num2str((datenum(datestr(now))*1e10))];
-        neweventlistFile = fullfile(newevefilepath, neweventlistFile);
+% No longer writing backup eventlist files to erplab_Box
+if ismember(neweventlistFile,{'none', 'no', ''})
+        neweventlistFile = 'none';  % Don't write backup file
 end
 
 %
@@ -118,13 +112,13 @@ end
 %
 [BIN, nwrongbins] = decodebdf(bdfilename);
 if nwrongbins == 0
-        
+
         %
         % BDF Decoder.
         % Converts BIN Descriptor into numeric parameters (struct).
         %
         [BIN, isparsenum] = bdf2struct(BIN);
-        
+
         if isparsenum==0
                 % parsing was not approved
                 return
@@ -163,7 +157,7 @@ EVENTLIST.bdf = BIN;
 bdfcrono   = datestr(now, 'mmmm dd, yyyy HH:MM:SS AM');
 
 if reportable
-        
+
         %
         % Creates a Report about Binlister performance
         %
@@ -192,7 +186,7 @@ if ispc
         userlogin  = regexprep(userdir, '.*\', '');
 else
         userdir = char(java.lang.System.getProperty('user.home'));
-        
+
         %
         % Captures user login
         %
@@ -254,7 +248,7 @@ ppaux=1;
 % tic;
 
 for iLogitem = 1:nitem  % Reads each log item (item pointer)
-        
+
         %
         % Progress report at command window
         %
@@ -269,23 +263,23 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                 %                 end
                 numze = ceil(log10(pp + 1))-1; % number of zeros
                 nstepback = 3 + numze;
-                
+
                 fprintf([repmat('\b',1, nstepback) '%d%%\n'], pp);
                 ppaux=pp; % to avoid multiple printing for the same value
          end
-        
+
         %
         % Current (log) item status should not be forbidden (enable = -1) code
         %
         cd1 = EVENTLIST.eventinfo(iLogitem).enable~=-1 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, forbiddenCodeArray);
-        
+
         %
         % Current event code should not be a ignored (enable = 0) code
         %
         cd2 =  EVENTLIST.eventinfo(iLogitem).enable~=0 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, ignoreCodeArray);
-        
+
         if cd1 && cd2 % check previous conditions
-                
+
 %                 %
 %                 % Inform remaining time
 %                 %
@@ -296,32 +290,32 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
 %                         else
 %                                 fprintf('%.1f seconds (aprox)\n', ttoc*60)
 %                         end
-%                 end     
-                
+%                 end
+
                 %
                 % loop bins
                 %
-                for jBin=1:nbin  % BIN's loop                        
+                for jBin=1:nbin  % BIN's loop
                         writeflag = []; writeindx = [];
-                        
+
                         %
                         % Conditions for bin
                         %
                         cond1 = iLogitem > length(BIN(jBin).prehome);             % current item's pointer has to be greater than the amount of pre-home sequencer at the current bin.
                         cond2 = (nitem - iLogitem) >= length(BIN(jBin).posthome); % remaining number of items has to be greater than the amount of post-home sequencer at the current bin.
                         cond3 = EVENTLIST.eventinfo(iLogitem).code~=-99;          % WARNING: current event codes should not be equal to -99 (this is the default code for 'boundary' events)
-                        
+
                         if cond1 && cond2 && cond3 % % check conditions
-                                
+
                                 %
                                 % HOME START
-                                %                                
+                                %
                                 %
                                 % Special event codes (take-all and take-nothing)
                                 %
                                 isallcode  = ~isempty(find(BIN(jBin).athome(1).eventcode == -7, 1));  % check for take-all event code (*)
                                 isnonecode = ~isempty(find(BIN(jBin).athome(1).eventcode == -13, 1)); % check for take-nothing event code (~*)
-                                
+
                                 if isallcode %(Take-All code case: -7)
                                         %
                                         %current BIN has a TAKE-ALL event code. So home is detected by default.
@@ -332,26 +326,26 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                 else
                                         %
                                         % otherwise, compares home against the current event code
-                                        %                                        
+                                        %
                                         nDesiredCodes   = nnz(BIN(jBin).athome(1).eventsign); % Number of non-negated codes (wanted codes)
                                         ishomedetected = ~isempty(find(BIN(jBin).athome(1).eventcode == EVENTLIST.eventinfo(iLogitem).code, 1));
-                                        
+
                                         if nDesiredCodes == 0     % this means all event codes at home were negated.
                                                 ishomedetected = ~ishomedetected;    % So, the detection was positive (This variable is used to detect pre & post home (~0: detected))
                                         end
-                                        
+
                                         % flag test
                                         ishomeFlagdetected     = flagTest(BIN, EVENTLIST, 'athome', 1, jBin, iLogitem ); % This variable is used to detect flag (1: detected)
                                         % write test
-                                        [writeflag, writeindx] = writeTest(BIN, EVENTLIST, 'athome', 1, jBin, iLogitem, writeflag, writeindx);                                        
+                                        [writeflag, writeindx] = writeTest(BIN, EVENTLIST, 'athome', 1, jBin, iLogitem, writeflag, writeindx);
                                 end
-                                
+
                                 %
                                 % If home matchs then it can do the rest of checking
-                                %                                
+                                %
                                 if ishomedetected && ishomeFlagdetected
 
-                                        %Home code of current BIN was detected at current item <iLogitem>                                        
+                                        %Home code of current BIN was detected at current item <iLogitem>
                                         %
                                         % PreHome & PostHome Test.
                                         % PQ Sequencers
@@ -360,97 +354,97 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                         traffic(2)    =  1;               % going to athome's right side  .{}->->->
                                         isdetectedLES =  1;               % This variable is used to detect pre & post home (1: detected)
                                 elseif ishomedetected && ~ishomeFlagdetected   % 03-13-2008
-                                        
-                                        % Home code of current BIN was detected at current item. 
-                                        % However, flag condition does not match. 
-                                        % Sorry, current BIN was not completely successful for current item 
+
+                                        % Home code of current BIN was detected at current item.
+                                        % However, flag condition does not match.
+                                        % Sorry, current BIN was not completely successful for current item
                                         isdetectedLES = 0; %This variable (positive logic) is used to detect pre & post home
                                 else
                                         isdetectedLES = 0; %This variable (positive logic) is used to detect pre & post home
                                 end
-                                
+
                                 les    = cell(1);
                                 les{1} = 'prehome';
                                 les{2} = 'posthome';
                                 nLes   = length(les);
                                 kles   = 1;   % les's (Log Event Selector) iterator
                                 capcodeatles = cell(2,1); % for RT measurements
-                                
+
                                 while (kles <= nLes) && isdetectedLES   % fields: {prehome} -->{posthome}
-                                        
+
                                         offsetLogitem = 1;  % this variable allows iterator jumpings
                                         nSequencer    = length(BIN(jBin).(les{kles})); % total number of sequencer ({}s) for the current les
-                                        
+
                                         if kles==1
                                                 previous_t2   = max([EVENTLIST.eventinfo.time]);
                                         else
                                                 previous_t2   = 0;
                                         end
-                                        
+
                                         kSeq            = 1; % auxiliar sequencer's iterator
                                         islastsequencer = 0; % is this the las sequencer (last {}) for the current les?  1:yes, 0:no
-                                        
+
                                         %
                                         %  PREHOME & POSTHOME START
-                                        %                                                                          
+                                        %
                                         while (kSeq <= nSequencer) && (isdetectedLES) % each sequencer
                                                 targetLogPointer = iLogitem + traffic(kles)*offsetLogitem;     % current log item to be tested (from EVENTLIST)
-                                                
+
                                                 if targetLogPointer>nitem % Oct 15, 2012
                                                         isdetectedLES=0;
                                                         break
                                                 end
-                                                
+
                                                 targetLogCode    = EVENTLIST.eventinfo(targetLogPointer).code;  % current event code to be tested, at current log item = targetLogPointer, from bin descriptor file.
                                                 isignoredc       = ismember(targetLogCode, ignoreCodeArray);    % is this code an ignored one?
                                                 isforbiddenc     = ismember(targetLogCode, forbiddenCodeArray); % is this code a forbidden one?
-                                                
+
                                                 if isforbiddenc
                                                         % 'Stop! Forbidden code was found!
                                                         isdetectedLES=0;
                                                         break
-                                                end                                                
+                                                end
                                                 if EVENTLIST.eventinfo(targetLogPointer).enable~=-1 && ~isignoredc % is enable the current event code to test?
-                                                        
+
                                                         if kles == 1
                                                                 mSeq = nSequencer - kSeq + 1;    % sequencer's iterator (countdown)
                                                         else
                                                                 mSeq = kSeq;                     % sequencer's iterator (countup)
                                                         end
-                                                        
+
                                                         nDesiredCodes        = nnz(BIN(jBin).(les{kles})(mSeq).eventsign);   % Number of desired codes. "desired codes" (wanted ones) are codes which sign is 1. Sign 0 means "negated codes"
                                                         targetEventCodeArray = BIN(jBin).(les{kles})(mSeq).eventcode;        % Code(s) inside the current sequencer ({}), at current les, that are going to be compared with the current event code at current item.
                                                         rc = find(targetEventCodeArray == targetLogCode, 1);                 % location of matching code at current sequencer. Empty means unsuccessful "detection" for desired codes (see below)
-                                                        
+
                                                         if nDesiredCodes > 0
-                                                                %'matching';                                                                
+                                                                %'matching';
                                                                 isnegated    = 0;                % NON NEGATED codes (desired codes)
                                                                 ispqdetected = ~isempty(rc);     % not empty means successful "detection" for desired codes
                                                         else
-                                                                %'mismatching';                                                                
+                                                                %'mismatching';
                                                                 isnegated     = 1;               % NEGATED codes
                                                                 ispqdetected  = isempty(rc);     % empty means (ispqdetected=1) successful "NO detection" for NEGATED codes
-                                                                
+
                                                                 if ispqdetected
                                                                         % if "NO detection" is successful then look for the first "different" code at current sequencer
                                                                         rc    = find(targetEventCodeArray ~= targetLogCode, 1);
                                                                 end
-                                                        end                                                       
-                                                        
+                                                        end
+
                                                         %
                                                         % Time condition detector
                                                         %
-                                                        
+
                                                         rt = find(BIN(jBin).(les{kles})(mSeq).timecode ~= -1, 1);  % is there time spec for the current sequencer?
                                                         istimed = ~isempty(rt);                                    % 1 means time spec was detected
-                                                        
+
                                                         if kSeq == nSequencer       % is this the last sequencer for the current les?
                                                                 islastsequencer = 1;
-                                                        end                                                        
+                                                        end
                                                         if ~ispqdetected
                                                                 isdetectedLES = 0;  % Current sequencer was not successful...so far...
                                                         end
-                                                        
+
                                                         CA =       isdetectedLES &&  istimed && ~isnegated;        % a) successful detection of (not negated) sequencer. However, there was time condition...
                                                         CB =     (~isdetectedLES &&  istimed && ~isnegated)...
                                                                 || ( isdetectedLES &&  istimed &&  isnegated)...
@@ -458,23 +452,23 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                                                                                    %    or successful detection of negated sequencer. However, there was time condition,
                                                                                                                    %    or unsuccessful detection of (not negated) sequencer. However, there was time condition...
                                                         CC =      ~isdetectedLES && ~istimed;                      % c) successful detection of (not negated) sequencer. However, there was time condition...
-                                                        
-                                                        if CA % a)                                                                
-                                                                
+
+                                                        if CA % a)
+
                                                                 %
                                                                 % PREHOME & POSTHOME TIME-RANGE TEST 1
                                                                 %
-    
-                                                                tempi = BIN(jBin).(les{kles})(mSeq).timecode(rc,1:2); % get time interval (time spec)                                                               
+
+                                                                tempi = BIN(jBin).(les{kles})(mSeq).timecode(rc,1:2); % get time interval (time spec)
                                                                 t1 = EVENTLIST.eventinfo(iLogitem).time + traffic(kles) * tempi(1,2^(2-kles)) / 1000;
-                                                                t2 = EVENTLIST.eventinfo(iLogitem).time + traffic(kles) * tempi(1,kles) / 1000;                                                                
-                                                                
+                                                                t2 = EVENTLIST.eventinfo(iLogitem).time + traffic(kles) * tempi(1,kles) / 1000;
+
                                                                 if kles==1
                                                                         if t2 > previous_t2     % avoids earlier event codes detection by prehome time.
-                                                                                
+
                                                                                 % due to the presence of the previous sequencer the last
                                                                                 % window is being corrected
-                                                                                t2 = previous_t2;                                                                                
+                                                                                t2 = previous_t2;
                                                                         end
                                                                 elseif kles==2
                                                                         if t1 < previous_t2    % avoids earlier event codes detection by posthome time.OK
@@ -490,19 +484,19 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                                         isdetectedLES = 0;
                                                                 else
                                                                         targetLogTime = EVENTLIST.eventinfo(targetLogPointer).time;
-                                                                        
-                                                                        if targetLogTime >= t1 && targetLogTime <= t2 % TIME-RANGE TEST was approved!                                                                                
+
+                                                                        if targetLogTime >= t1 && targetLogTime <= t2 % TIME-RANGE TEST was approved!
                                                                                 if targetLogPointer>1  &&  targetLogPointer<nitem
                                                                                         previous_t2 = EVENTLIST.eventinfo(targetLogPointer + traffic(kles)).time ;   %targetLogTimeArray(rcr);  % 10 March  % 12 March
                                                                                 end
-                                                                                
+
                                                                                 % flag test
                                                                                 [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin, targetLogPointer );
                                                                                 % write test
                                                                                 [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                                                                                         targetLogPointer, writeflag, writeindx);
-                                                                                
-                                                                                if ~ishomeFlagdetected 
+
+                                                                                if ~ishomeFlagdetected
                                                                                         % flag condition did not match with the event
                                                                                         isdetectedLES = 0;
                                                                                 end
@@ -514,15 +508,15 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                                                 % III) Code match, but we need to check the specified time range.
                                                                                 % *Remember that isdetectedLES = 0 for non-negated and isdetectedLES = 1 for negated
                                                                                 % chance = 2;
-                                                                                
+
                                                                                 %
                                                                                 % Call Time Test 2
                                                                                 %
                                                                                 [targetLogPointer, isdetectedLES, writeflag, writeindx, offsetLogitem] = timetest2(EVENTLIST, BIN, les, isnegated, previous_t2, ...
                                                                                         iLogitem, traffic, islastsequencer, writeflag, writeindx, jBin, kles, mSeq, offsetLogitem, forbiddenCodeArray, ...
-                                                                                        targetLogPointer, targetEventCodeArray);                                          
+                                                                                        targetLogPointer, targetEventCodeArray);
                                                                         end
-                                                                end                                                                
+                                                                end
                                                         elseif CB
                                                                 % I) The basic detection said there was no event code that matches,
                                                                 % but there is a description of time range for a non-negated code.
@@ -531,38 +525,38 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                                 % III) Code match, but we need to check the specified time range.
                                                                 % *Remember that isdetectedLES = 0 for non-negated and isdetectedLES = 1 for negated
                                                                 % chance = 1;
-                                                                
+
                                                                 %
                                                                 % Call Time Test 2
-                                                                %                                                                
+                                                                %
                                                                 [targetLogPointer, isdetectedLES, writeflag, writeindx, offsetLogitem] = timetest2(EVENTLIST, BIN, les, isnegated, previous_t2, ...
                                                                         iLogitem, traffic, islastsequencer, writeflag, writeindx, jBin, kles, mSeq, offsetLogitem, forbiddenCodeArray, targetLogPointer, targetEventCodeArray);
-                                                                                                                                
+
                                                         elseif CC % The basic detection said there is no match for the specified event code and there is no time range specified.
-                                                                
-                                                                % flag test
-                                                                [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq,...
-                                                                        jBin, targetLogPointer ); 
-                                                                % write test
-                                                                [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
-                                                                        targetLogPointer, writeflag, writeindx);
-                                                                
-                                                                if ~ishomeFlagdetected && flgx && isnegated
-                                                                        % not successful??? however, current working code is negated.
-                                                                        isdetectedLES = 1;
-                                                                end
-                                                        else              % The basic detection was successful and no time interval is specified
-                                                                
+
                                                                 % flag test
                                                                 [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq,...
                                                                         jBin, targetLogPointer );
                                                                 % write test
                                                                 [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                                                                         targetLogPointer, writeflag, writeindx);
-                                                                
+
+                                                                if ~ishomeFlagdetected && flgx && isnegated
+                                                                        % not successful??? however, current working code is negated.
+                                                                        isdetectedLES = 1;
+                                                                end
+                                                        else              % The basic detection was successful and no time interval is specified
+
+                                                                % flag test
+                                                                [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq,...
+                                                                        jBin, targetLogPointer );
+                                                                % write test
+                                                                [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
+                                                                        targetLogPointer, writeflag, writeindx);
+
                                                                 if isnegated   % 21 February 2008
                                                                         % good news, working event code is different(s). It was not necessary to test flag
-                                                                        isdetectedLES = 1;                                                                        
+                                                                        isdetectedLES = 1;
                                                                 else
                                                                         % working event code matchs. working event code satisfies time
                                                                         % condition by default.
@@ -575,51 +569,51 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                                         previous_t2 = EVENTLIST.eventinfo(targetLogPointer + traffic(kles)).time ;
                                                                 end
                                                         end
-                                                        
+
                                                         kSeq = kSeq+1; %sequence number**********
-                                                        
-                                                elseif EVENTLIST.eventinfo(targetLogPointer).enable==-1 || isforbiddenc    %12-12-2008                                                        
-                                                        %current working event code is a forbidden one (-1). 
+
+                                                elseif EVENTLIST.eventinfo(targetLogPointer).enable==-1 || isforbiddenc    %12-12-2008
+                                                        %current working event code is a forbidden one (-1).
                                                         %Sequencer will be rejected
                                                         isdetectedLES = 0;
-                                                else % is enable current event code to test?                                                        
+                                                else % is enable current event code to test?
                                                         % current working event code is not enable for working (0).
-                                                        % I''ll test the next one.         
+                                                        % I''ll test the next one.
                                                         kSeq = kSeq+1; %sequence number**********
                                                 end  % Check enable condition
-                                                
-                                                offsetLogitem = offsetLogitem + 1;  % check next (or previous) logcode                                                
-                                                
+
+                                                offsetLogitem = offsetLogitem + 1;  % check next (or previous) logcode
+
                                                 if isdetectedLES && ~isignoredc  % Apr 6, 2013
-                                                        capcodeatles{kles, mSeq} = targetLogPointer; 
+                                                        capcodeatles{kles, mSeq} = targetLogPointer;
                                                 end
                                         end     % each sequencer
-                                                                                
+
                                         kles = kles + 1;   % 1 = prehome; 2 = posthome. February 15, 2008
-                                        
+
                                 end % fields
-                                
+
                                 %
                                 % Write bin's number in the output file (fully successful case)
                                 %
-                                if isdetectedLES %% && detectp 02-15-2008                                        
-                                        wrf = num2cell(writeflag);                                        
+                                if isdetectedLES %% && detectp 02-15-2008
+                                        wrf = num2cell(writeflag);
                                         if ~isempty(writeindx)
                                                 [EVENTLIST.eventinfo(writeindx).flag] = wrf{:};  %Overwrite flags    10-29-2008
                                         end
-                                        
+
                                         binOfBins(1,jBin) = binOfBins(1,jBin) + 1;
                                         indxbin = binOfBins(1,jBin);
                                         binrow  = cat(2, binrow, jBin);
-                                        
+
                                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                         %%% Added field to get reaction time in milliseconds%%
                                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                                        if isfield(BIN, 'rtname')                                                
-                                                if ~isempty(BIN(jBin).rtname)                                                        
+                                        if isfield(BIN, 'rtname')
+                                                if ~isempty(BIN(jBin).rtname)
                                                         rtpointer = [capcodeatles{2,BIN(jBin).rtindex}]; % only posthome reaction times
                                                         temp_rt_time = [EVENTLIST.eventinfo(rtpointer).time];
-                                                        temp_rt_code = [EVENTLIST.eventinfo(rtpointer).code];                                                        
+                                                        temp_rt_code = [EVENTLIST.eventinfo(rtpointer).code];
                                                         for nLoop = 1:length(temp_rt_time)
                                                                 EVENTLIST.bdf(jBin).rt(indxbin, nLoop) = 1000*(temp_rt_time(nLoop) - EVENTLIST.eventinfo(iLogitem).time); %*************************
                                                                 EVENTLIST.bdf(jBin).rtitem(indxbin, nLoop) = rtpointer(nLoop);
@@ -631,7 +625,7 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                                 EVENTLIST.bdf(jBin).rtcode(indxbin, nLoop) = temp_rt_code(nLoop);
                                                         end
                                                 end
-                                        end % reaction time                                        
+                                        end % reaction time
                                 end % isdetectedLES
                         end  % conditions for BIN checking
                 end  % BIN's loop
@@ -641,7 +635,7 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                 EVENTLIST.eventinfo(iLogitem).enable = -1;
         else % forbidden
                 EVENTLIST.eventinfo(iLogitem).enable = -1;
-        end % checks enable condition  10-16-2008      
+        end % checks enable condition  10-16-2008
         % write bin number in EVENTLIST.eventinfo(iLogitem).bini
         if isempty(binrow)
                 EVENTLIST.eventinfo(iLogitem).bini = -1;
@@ -652,18 +646,18 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                 % Creates BIN LABELS
                 auxname = num2str(binrow);
                 bname   = regexprep(auxname, '\s+', ',', 'ignorecase'); % inserts a comma instead blank space
-                
+
                 if strcmp(EVENTLIST.eventinfo(iLogitem).codelabel,'""')
                         binName = ['B' bname '(' num2str(EVENTLIST.eventinfo(iLogitem).code) ')']; %B#(code)
                 else
                         binName = ['B' bname '(' EVENTLIST.eventinfo(iLogitem).codelabel ')']; %B#(codelabel)
                 end
         end
-        
+
         EVENTLIST.eventinfo(iLogitem).binlabel = binName;
-        binrow = [];        
-        
-        %         tiempostim(iLogitem) = toc;       
+        binrow = [];
+
+        %         tiempostim(iLogitem) = toc;
 end  % Reads each log item (iLogitem loop)
 
 % assignin('base', 'tiemporesp', tiempostim);
@@ -814,14 +808,14 @@ end
 if israngedetected && isfrbddndetected   % Codes were detected but there was a pause code 04 February 2008
         timecodOK = targetLogTimeArray(rcr);
         targetLogPointer = targetLogItemArray(rcr);
-        
+
         if (timefrbddn >= timecodOK && kles==1) || (timefrbddn <= timecodOK && kles==2)
                 % the pause was between the home and the current code...bad news
                 % Oops! Event code was preceded by a forbiden code.
                 isdetectedLES = 0;
         else
                 if isnegated   % 02-21-2008
-                        % We have a problem...event code was found inside this time range.                        
+                        % We have a problem...event code was found inside this time range.
                         [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq,...
                                 jBin, targetLogItemArray(rcr) );  % call the function flagTest 12 March 2008
                         [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
@@ -843,23 +837,23 @@ if israngedetected && isfrbddndetected   % Codes were detected but there was a p
                                 jBin, targetLogItemArray(rcr) );  % Call the function flagTest 12 March 2008
                         [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                                 targetLogPointer, writeflag, writeindx);
-                          
-                          
+
+
                         %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                        
-                        
-                        if ~ishomeFlagdetected   % BUG: isdetectedLES may not be declared!                              
+
+
+                        if ~ishomeFlagdetected   % BUG: isdetectedLES may not be declared!
                                 % event code did not satisfy flag condition:
                                 isdetectedLES = 0;
                         end
-                        
+
                         % Now, the Log item pointer (offsetLogitem), which moves around the detected
                         % home logitem, is moved until the next successful detection by a time
                         % criterion. This will imply that the sequencer's pointer (mSeq) will go
                         % faster than offsetLogitem, for this bin
-                        
+
                         offsetLogitem = abs(targetLogItemArray(rcr) - iLogitem);
                         if targetLogPointer>1  &&  targetLogPointer<nitem
                                 previous_t2 = [EVENTLIST.eventinfo(targetLogItemArray(rcr) + traffic(kles)).time];
@@ -867,23 +861,23 @@ if israngedetected && isfrbddndetected   % Codes were detected but there was a p
                 end
         end
 elseif israngedetected && ~isfrbddndetected   % Code was detected and there was no pause 04 February 2008
-        
+
         %
         % Stores the time of the detected logcode (within the time range)
         %
         timecodOK = targetLogTimeArray(rcr);
         targetLogPointer = targetLogItemArray(rcr);
-        
+
         [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                 targetLogItemArray(rcr) );
         [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                 targetLogPointer, writeflag, writeindx);
-        
+
         if isnegated   % 02-21-2008
                 % We have a problem...event code was found inside this time range (%g).
-                
+
                 if EVENTLIST.eventinfo(targetLogItemArray(rcr)).enable  % checks enable  10-16-2008. Bug fixed Mar 28 2011
-                        if ishomeFlagdetected 
+                        if ishomeFlagdetected
                                 isdetectedLES = 0;
                         else
                                 % However, event code did not satisfy flag condition.
@@ -895,9 +889,9 @@ elseif israngedetected && ~isfrbddndetected   % Code was detected and there was 
                 end
         else
                 % Event code was found inside this time range. Event code satisfied condition by time.
-                
+
                 if EVENTLIST.eventinfo(targetLogItemArray(rcr)).enable  % checks enable  10-16-2008. Bug fixed Mar 28 2011
-                        if ishomeFlagdetected 
+                        if ishomeFlagdetected
                                 isdetectedLES = 1;
                         else
                                 % However, event code did not satisfy flag condition.
@@ -907,7 +901,7 @@ elseif israngedetected && ~isfrbddndetected   % Code was detected and there was 
                         % However, event code is not enable.
                         isdetectedLES = 0;
                 end
-                
+
                 % Now, the Log item pointer (offsetLogitem), which moves around the detected
                 % home logitem, is moved until the next successful detection by a time
                 % criterion. This will imply that the sequencer's pointer (mSeq) will go
