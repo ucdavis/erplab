@@ -137,7 +137,7 @@ if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_a
     set(EStudio_gui_erp_totl.mvpcwave_Axes_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
     MVPC = observe_DECODE.MVPC;
     OutputViewerparerp = f_preparms_decodetab(MVPC,0);
-    
+
     % %%Plot the eeg waves
     if ~isempty(OutputViewerparerp)
         f_plotabmvpcwave(observe_DECODE.ALLMVPC,OutputViewerparerp{1}, OutputViewerparerp{2},OutputViewerparerp{3},...
@@ -162,14 +162,14 @@ if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC) && Decode_a
     else
         EStudio_gui_erp_totl.View_decode_Axes.Heights = pb_height*(1+zoomSpace/100);
     end
-    
+
     widthViewer = EStudio_gui_erp_totl.View_decode_Axes.Position(3)-EStudio_gui_erp_totl.View_decode_Axes.Position(2);
     if zoomSpace <=0
         EStudio_gui_erp_totl.View_decode_Axes.Widths = widthViewer;
     else
         EStudio_gui_erp_totl.View_decode_Axes.Widths = widthViewer*(1+zoomSpace/100);
     end
-    
+
     %%Keep the same positions for Vertical and Horizontal scrolling bars asbefore
     if zoomSpace~=0 && zoomSpace>0
         if EStudio_gui_erp_totl.decode_VerticalOffsets<=1
@@ -247,7 +247,7 @@ else
         fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
     end
     EStudio_gui_erp_totl.Process_decode_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
-    
+
     pause(0.1);
     EStudio_gui_erp_totl.Process_decode_messg.ForegroundColor = [1 0.65 0];
 end
@@ -448,7 +448,7 @@ try
     POS4 = (New_pos1(2)-New_posin(2))/100;
     new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
     if new_pos(2) <  -abs(new_pos(4))%%if
-        
+
     end
     set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
 catch
@@ -627,29 +627,29 @@ if reset_paras(5)==1
     if EStudio_gui_erp_totl.clear_alldecode == 0
         f_redrawmvpc_Wave_Viewer();
     else
-        observe_ERPDAT.ALLMVPC = [];
-        observe_ERPDAT.MVPC = [];
-        observe_ERPDAT.CURRENTMVPC  = 1;
-        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.ALLMVPC = [];
+        observe_DECODE.MVPC = [];
+        observe_DECODE.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',[]);
         observe_DECODE.Count_currentMVPC = 1;
         observe_DECODE.BEST =  [];
         observe_DECODE.CURRENTBEST = 1;
         observe_DECODE.ALLBEST =  [];
-        estudioworkingmemory('BESTArray',1);
+        estudioworkingmemory('BESTArray',[]);
         observe_DECODE.Count_currentbest=1;
     end
 else
     if EStudio_gui_erp_totl.clear_alldecode == 1
-        observe_ERPDAT.ALLMVPC = [];
-        observe_ERPDAT.MVPC = [];
-        observe_ERPDAT.CURRENTMVPC  = 1;
-        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.ALLMVPC = [];
+        observe_DECODE.MVPC = [];
+        observe_DECODE.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',[]);
         observe_DECODE.Count_currentMVPC = 1;
-        
+
         observe_DECODE.BEST =  [];
         observe_DECODE.CURRENTBEST = 1;
         observe_DECODE.ALLBEST =  [];
-        estudioworkingmemory('BESTArray',1);
+        estudioworkingmemory('BESTArray',[]);
         observe_DECODE.Count_currentbest=1;
     end
 end
@@ -913,5 +913,3 @@ if ~isempty(hplot11)
     set(h_legend,'NumColumns',qLegcolumns,'FontName', qFontLeg, 'Color', [1 1 1], 'position', p,'FontSize',qFontSizeLeg);
 end
 end
-
-

@@ -1,6 +1,6 @@
 % New GUI Layout -ERPLAB Studio
 %
-% Author: Guanghui Zhang, Kurt Winsler, David Garrett, & Steve J. Luck 
+% Author: Guanghui Zhang, Kurt Winsler, David Garrett, & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -338,18 +338,18 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         % + File menu
         EStudio_gui_erp_totl.FileMenu = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'File');
         uimenu( EStudio_gui_erp_totl.FileMenu, 'Label', 'Exit', 'Callback', @onExit);
-        
+
         %%-----------Setting------------------------------------------------
         EStudio_gui_erp_totl.Setting = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Settings');
-        
+
         %%ERPStudio Memory
         EStudio_gui_erp_totl.set_ERP_memory = uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'Memory Settings','separator','off');
         uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset Working Memory', 'Callback', @resetmemory,'separator','off');
         uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Save a copy of the current working memory as...', 'Callback', 'estudioworking_mem_save_load(1)','separator','off');
         comLoadWM = ['clear vmemoryestudio; vmemoryestudio = estudioworking_mem_save_load(2); assignin(''base'',''vmemoryestudio'',vmemoryestudio);'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
-        
-        
+
+
         EStudio_gui_erp_totl.set_windowsize = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Window Size','separator','off','CallBack',@window_size);
         EStudio_gui_erp_totl.set_reset = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Reset','separator','off','CallBack',@rest_estudio);
         %%Help
@@ -362,8 +362,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'Send question/feedback to the ERPLAB Studio email list','separator','on','CallBack','web(''mailto:erplab@ucdavis.edu?subject=feedback'');');
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERPLAB email list (may need to register)','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/wiki/ERPLAB-email-list'', ''-browser'');');
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'Download latest version','separator','off','CallBack','web(''https://github.com/ucdavis/erplab/releases'', ''-browser'');');
-        
-        
+
+
         %% Create tabs
         FonsizeDefault = f_get_default_fontsize();
         EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',FonsizeDefault+1);
@@ -377,7 +377,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.context_tabs.FontWeight = 'bold';
         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
         EStudio_gui_erp_totl.context_tabs.BackgroundColor = ColorB_def;
-        
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%------------EEG tab for continous EEG and epoched EEG------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -385,17 +385,17 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         Pos = EStudio_gui_erp_totl.myeegviewer.Position;
         EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.5,Pos(3)*1.15,Pos(4)*1.05];%%x,y,width,height
         estudioworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
-        
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%---------------set the layouts for ERP Tab-----------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         EStudio_gui_erp_totl = EStudio_ERP_Tab(EStudio_gui_erp_totl,ColorB_def);
-        
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%---------------set the layouts for decoding Tab------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         EStudio_gui_erp_totl = EStudio_decode_Tab(EStudio_gui_erp_totl,ColorB_def);
-        
+
     end % createInterface
 
 
@@ -420,7 +420,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             New_posin = [75,75];
         end
         New_posin(2) = abs(New_posin(2));
-        
+
         app = feval('EStudio_pos_gui',New_posin);
         waitfor(app,'Finishbutton',1);
         try
@@ -431,7 +431,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             return;
         end
         try New_pos1(2) = abs(New_pos1(2));catch; end;
-        
+
         if isempty(New_pos1) || numel(New_pos1)~=2
             estudioworkingmemory('f_EEG_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
             observe_EEGDAT.eeg_panel_message =4;
@@ -442,7 +442,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             POS4 = (New_pos1(2)-New_posin(2))/100;
             new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
             if new_pos(2) <  -abs(new_pos(4))%%if
-                
+
             end
             set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
         catch
@@ -465,7 +465,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
         end
-        
+
         estudioworkingmemory('EEGUpdate',0);
         observe_EEGDAT.count_current_eeg =1;
         if EStudio_gui_erp_totl.context_tabs.SelectedChild==1
@@ -483,7 +483,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             observe_DECODE.Process_messg =2;
             app = feval('estudio_reset_paras',[0 0 0 0 1 0]);
         end
-        
+
         waitfor(app,'Finishbutton',1);
         try
             reset_paras = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
@@ -509,7 +509,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_EEGDAT.ALLEEG = [];
                 observe_EEGDAT.EEG = [];
                 observe_EEGDAT.CURRENTSET  = 0;
-                estudioworkingmemory('EEGArray',1);
+                estudioworkingmemory('EEGArray',[]);
                 observe_EEGDAT.count_current_eeg =1;
             end
         else
@@ -517,7 +517,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_EEGDAT.ALLEEG = [];
                 observe_EEGDAT.EEG = [];
                 observe_EEGDAT.CURRENTSET  = 0;
-                estudioworkingmemory('EEGArray',1);
+                estudioworkingmemory('EEGArray',[]);
                 observe_EEGDAT.count_current_eeg =1;
             end
         end
@@ -534,7 +534,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         else
             EStudio_gui_erp_totl.clear_allerp = 0;
         end
-        
+
         if reset_paras(3)==1
             observe_ERPDAT.Reset_erp_paras_panel = 1;
             if EStudio_gui_erp_totl.clear_allerp == 0
@@ -566,33 +566,33 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             if EStudio_gui_erp_totl.clear_alldecode == 0
                 f_redrawmvpc_Wave_Viewer();
             else
-                observe_ERPDAT.ALLMVPC = [];
-                observe_ERPDAT.MVPC = [];
-                observe_ERPDAT.CURRENTMVPC  = 1;
-                estudioworkingmemory('MVPCArray',1);
+                observe_DECODE.ALLMVPC = [];
+                observe_DECODE.MVPC = [];
+                observe_DECODE.CURRENTMVPC  = 1;
+                estudioworkingmemory('MVPCArray',[]);
                 observe_DECODE.Count_currentMVPC = 1;
                 observe_DECODE.BEST =  [];
                 observe_DECODE.CURRENTBEST = 1;
                 observe_DECODE.ALLBEST =  [];
-                estudioworkingmemory('BESTArray',1);
+                estudioworkingmemory('BESTArray',[]);
                 observe_DECODE.Count_currentbest=1;
             end
         else
             if EStudio_gui_erp_totl.clear_alldecode == 1
-                observe_ERPDAT.ALLMVPC = [];
-                observe_ERPDAT.MVPC = [];
-                observe_ERPDAT.CURRENTMVPC  = 1;
-                estudioworkingmemory('MVPCArray',1);
+                observe_DECODE.ALLMVPC = [];
+                observe_DECODE.MVPC = [];
+                observe_DECODE.CURRENTMVPC  = 1;
+                estudioworkingmemory('MVPCArray',[]);
                 observe_DECODE.Count_currentMVPC = 1;
-                
+
                 observe_DECODE.BEST =  [];
                 observe_DECODE.CURRENTBEST = 1;
                 observe_DECODE.ALLBEST =  [];
-                estudioworkingmemory('BESTArray',1);
+                estudioworkingmemory('BESTArray',[]);
                 observe_DECODE.Count_currentbest=1;
             end
         end
-        
+
     end
 
 
@@ -705,7 +705,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             EStudio_gui_erp_totl.Process_messg.String = strcat('Warning: ',32,Processed_Method);
             EStudio_gui_erp_totl.Process_messg.ForegroundColor = [1 0.65 0];
         else
-            
+
         end
         if observe_ERPDAT.Process_messg ~=4
             pause(0.1);

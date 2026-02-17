@@ -111,7 +111,7 @@ EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_le
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
 %%note that needs to go to lines 487,491, 495, 670,671 of "uix.ScrollingPanel" if change the background color ([0.9 0.9 0.9]) of scrollingbar or this toolbox is updated
- 
+
 
 EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def); % 1A
@@ -206,7 +206,7 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autopl
     set(EStudio_gui_erp_totl.erptabwaveiwer_legend, 'XTick', [], 'YTick', []);
     ERP = observe_ERPDAT.ERP;
     OutputViewerparerp = f_preparms_erptab(ERP,0);
-    
+
     % %%Plot the eeg waves
     if ~isempty(OutputViewerparerp)
         f_plotaberpwave(ERP,OutputViewerparerp{1},OutputViewerparerp{2},...
@@ -218,7 +218,7 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autopl
         return;
     end
     pb_height =  1*Resolation(4);  %px
-    
+
     splot_n = OutputViewerparerp{12};
     if isempty(splot_n) || any(splot_n<=0)
         splot_n = size(OutputViewerparerp{13},1);
@@ -234,14 +234,14 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autopl
     else
         EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height*(1+zoomSpace/100);
     end
-    
+
     widthViewer = EStudio_gui_erp_totl.ViewAxes.Position(3)-EStudio_gui_erp_totl.ViewAxes.Position(2);
     if zoomSpace <=0
         EStudio_gui_erp_totl.ViewAxes.Widths = widthViewer;
     else
         EStudio_gui_erp_totl.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
     end
-    
+
     %%Keep the same positions for Vertical and Horizontal scrolling bars asbefore
     if zoomSpace~=0 && zoomSpace>0
         if EStudio_gui_erp_totl.ScrollVerticalOffsets<=1
@@ -290,7 +290,7 @@ if Value==2
     EStudio_gui_erp_totl.erp_popmenu.String=popmemu_eegString;
     EStudio_gui_erp_totl.ERP_autoplot = plotSet;
     f_redrawERP();
-    
+
 elseif Value==3
     EStudiowinsize();
 elseif Value==4
@@ -455,7 +455,7 @@ try
     POS4 = (New_pos1(2)-New_posin(2))/100;
     new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
     if new_pos(2) <  -abs(new_pos(4))%%if
-        
+
     end
     set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
 catch
@@ -851,7 +851,7 @@ if reset_paras(3)==1
     end
 else
     if EStudio_gui_erp_totl.clear_allerp == 1
-        
+
         observe_ERPDAT.ALLERP = [];
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;
@@ -872,29 +872,29 @@ if reset_paras(5)==1
     if EStudio_gui_erp_totl.clear_alldecode == 0
         f_redrawmvpc_Wave_Viewer();
     else
-        observe_ERPDAT.ALLMVPC = [];
-        observe_ERPDAT.MVPC = [];
-        observe_ERPDAT.CURRENTMVPC  = 1;
-        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.ALLMVPC = [];
+        observe_DECODE.MVPC = [];
+        observe_DECODE.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',[]);
         observe_DECODE.Count_currentMVPC = 1;
         observe_DECODE.BEST =  [];
         observe_DECODE.CURRENTBEST = 1;
         observe_DECODE.ALLBEST =  [];
-        estudioworkingmemory('BESTArray',1);
+        estudioworkingmemory('BESTArray',[]);
         observe_DECODE.Count_currentbest=1;
     end
 else
     if EStudio_gui_erp_totl.clear_alldecode == 1
-        observe_ERPDAT.ALLMVPC = [];
-        observe_ERPDAT.MVPC = [];
-        observe_ERPDAT.CURRENTMVPC  = 1;
-        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.ALLMVPC = [];
+        observe_DECODE.MVPC = [];
+        observe_DECODE.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',[]);
         observe_DECODE.Count_currentMVPC = 1;
-        
+
         observe_DECODE.BEST =  [];
         observe_DECODE.CURRENTBEST = 1;
         observe_DECODE.ALLBEST =  [];
-        estudioworkingmemory('BESTArray',1);
+        estudioworkingmemory('BESTArray',[]);
         observe_DECODE.Count_currentbest=1;
     end
 end
@@ -1121,7 +1121,7 @@ for Numofrows = 1:rowNums
         catch
             plotbindata = [];
         end
-        
+
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
             try
@@ -1132,13 +1132,13 @@ for Numofrows = 1:rowNums
             catch
                 labelcbe = 'no';
             end
-            
+
             if qPolarityWave==1
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1));
             else
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1))*(-1);
             end
-            
+
             data4plot = reshape(data4plot,numel(timeRangedef),NumOverlay);
             for Numofoverlay = 1:NumOverlay
                 [Xtimerange, bindatatrs] = f_adjustbindtabasedtimedefd(squeeze(data4plot(:,Numofoverlay)), timeRangedef,qtimeRange,fs);
@@ -1169,10 +1169,10 @@ for Numofrows = 1:rowNums
                 end
                 hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
                     'Color', qLineColorspec(Numofoverlay,:));
-                
+
             end
-            
-            
+
+
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust y axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1183,12 +1183,12 @@ for Numofrows = 1:rowNums
                 props.YTick =  fliplr (-1*qYticks)+OffSetY(Numofrows);
             end
             props.YTickLabel = cell(numel(props.YTick),1);
-            
-            
+
+
             for Numofytick = 1:numel(props.YTick)
                 props.YTickLabel(Numofytick) = {num2str(props.YTick(Numofytick))};
             end
-            
+
             %[x,y_0] = find(Xtimerange==0); % bugfix kpw 7/29/25
             %if isempty(y_0)
             %    y_0 = 1;
@@ -1201,7 +1201,7 @@ for Numofrows = 1:rowNums
             myY_Crossing = Xtimerangetrasf(y_0);
 
             tick_top = 0;
-            
+
             if countPlot ==1
                 ytick_bottom = -props.TickLength(1)*diff(props.XLim);
                 ytick_bottomratio = abs(ytick_bottom)/diff(props.XLim);
@@ -1231,7 +1231,7 @@ for Numofrows = 1:rowNums
                 catch
                 end
             end
-            
+
             if ~isempty(qYScales)  && numel(qYScales)==2 %qYScales(end))+OffSetY(1)
                 if  qPolarityWave~=1
                     qYScalestras =   fliplr (-1*qYScales);
@@ -1250,7 +1250,7 @@ for Numofrows = 1:rowNums
                 else
                 end
             end
-            
+
             qYtickdecimal=1;
             nYTicks = length(props.YTick);
             for iCount = 1:nYTicks
@@ -1274,8 +1274,8 @@ for Numofrows = 1:rowNums
                     'FontName', fontnames, ...
                     'Color',[0 0 0]);%
             end
-            
-            
+
+
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust x axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1359,10 +1359,10 @@ for Numofrows = 1:rowNums
                 set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end
         catch
-            
+
         end
     end%% end of columns
-    
+
     if numel(OffSetY)==1 && OffSetY==0
         if ~qPolarityWave
             YscalesNew =  sort(y_scale_def*(-1));
@@ -1380,7 +1380,7 @@ for Numofrows = 1:rowNums
         end
         set(waveview,'ylim',[ylimleftedge,1.05*ylimrightedge]);
     end
-    
+
 end%% end of rows
 set(waveview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 if ~isempty(hplot)

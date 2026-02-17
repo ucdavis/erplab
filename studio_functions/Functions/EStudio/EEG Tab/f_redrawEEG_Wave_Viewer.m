@@ -37,7 +37,7 @@ else
     catch
         Winlength = 5;
     end
-    
+
     [chaNum,sampleNum,trialNum]=size(observe_EEGDAT.EEG.data);
     Frames = sampleNum*trialNum;
     if observe_EEGDAT.EEG.trials>1 % time in second or in trials
@@ -292,7 +292,7 @@ try
     POS4 = (New_pos1(2)-New_posin(2))/100;
     new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
     if new_pos(2) <  -abs(new_pos(4))%%if
-        
+
     end
     set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
 catch
@@ -997,7 +997,8 @@ if reset_paras(1)==1
         observe_EEGDAT.ALLEEG = [];
         observe_EEGDAT.EEG = [];
         observe_EEGDAT.CURRENTSET  = 0;
-        estudioworkingmemory('EEGArray',1);
+        estudioworkingmemory('EEGArray',[]);
+        observe_EEGDAT.eeg_panel_message=2;  % Set message to complete before triggering count change
         observe_EEGDAT.count_current_eeg =1;
     end
 else
@@ -1005,7 +1006,8 @@ else
         observe_EEGDAT.ALLEEG = [];
         observe_EEGDAT.EEG = [];
         observe_EEGDAT.CURRENTSET  = 0;
-        estudioworkingmemory('EEGArray',1);
+        estudioworkingmemory('EEGArray',[]);
+        observe_EEGDAT.eeg_panel_message=2;  % Set message to complete before triggering count change
         observe_EEGDAT.count_current_eeg =1;
     end
 end
@@ -1030,7 +1032,7 @@ if reset_paras(3)==1
     end
 else
     if EStudio_gui_erp_totl.clear_allerp == 1
-        
+
         observe_ERPDAT.ALLERP = [];
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;
@@ -1050,25 +1052,25 @@ if reset_paras(5)==1
     if EStudio_gui_erp_totl.clear_alldecode == 0
         f_redrawmvpc_Wave_Viewer();
     else
-        observe_ERPDAT.ALLMVPC = [];
-        observe_ERPDAT.MVPC = [];
-        observe_ERPDAT.CURRENTMVPC  = 1;
-        estudioworkingmemory('MVPCArray',1);
+        observe_DECODE.ALLMVPC = [];
+        observe_DECODE.MVPC = [];
+        observe_DECODE.CURRENTMVPC  = 1;
+        estudioworkingmemory('MVPCArray',[]);
         observe_DECODE.Count_currentMVPC = 1;
         observe_DECODE.BEST =  [];
         observe_DECODE.CURRENTBEST = 1;
         observe_DECODE.ALLBEST =  [];
-        estudioworkingmemory('BESTArray',1);
+        estudioworkingmemory('BESTArray',[]);
         observe_DECODE.Count_currentbest=1;
     end
 else
     if EStudio_gui_erp_totl.clear_alldecode == 1
-        observe_ERPDAT.ALLMVPC = [];
-        observe_ERPDAT.MVPC = [];
-        observe_ERPDAT.CURRENTMVPC  = 1;
+        observe_DECODE.ALLMVPC = [];
+        observe_DECODE.MVPC = [];
+        observe_DECODE.CURRENTMVPC  = 1;
         estudioworkingmemory('MVPCArray',1);
         observe_DECODE.Count_currentMVPC = 1;
-        
+
         observe_DECODE.BEST =  [];
         observe_DECODE.CURRENTBEST = 1;
         observe_DECODE.ALLBEST =  [];
@@ -1115,7 +1117,9 @@ global observe_EEGDAT;
 global EStudio_gui_erp_totl;
 % addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
-if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
+% Allow message clearing/completion even when EEG data is empty (e.g., after reset)
+% Only skip if we're trying to show "Running" message (state 1) with no data
+if (isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)) && observe_EEGDAT.eeg_panel_message == 1
     return;
 end
 FonsizeDefault = f_get_default_fontsize();
@@ -1163,7 +1167,7 @@ else
         fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
     end
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
-    
+
     pause(0.1);
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0.65 0];
 end
@@ -1383,7 +1387,7 @@ if ~isempty(Events)
     Eventcolors     = Eventcolors(mod(indexcolor-1               ,length(Eventcolors))+1);
     Eventtypestyle  = Eventstyle (mod([1:length(Eventtypes)]-1 ,length(Eventstyle))+1);
     Eventstyle      = Eventstyle (mod(indexcolor-1               ,length(Eventstyle))+1);
-    
+
     % for width, only boundary events have width 2 (for the line)
     % -----------------------------------------------------------
     indexwidth = ones(1,length(Eventtypes))*2;
@@ -1395,7 +1399,7 @@ if ~isempty(Events)
     end
     Eventtypewidths = Eventwidths (mod(indexwidth([1:length(Eventtypes)])-1 ,length(Eventwidths))+1);
     Eventwidths     = Eventwidths (mod(indexwidth(indexcolor)-1               ,length(Eventwidths))+1);
-    
+
     % latency and duration of events
     % ------------------------------
     Eventlatencies  = [ Events.latency ]+1;
@@ -1448,7 +1452,7 @@ if NormFlag==1
             %             end
         end
     end
-    
+
     %%norm for IC data
     if ~isempty(dataica)
         dataicstd = std(dataica(:,1:min(1000,Allsamples)),[],2);
@@ -1567,7 +1571,7 @@ if ~isempty(data)
             end
         end
     end
-    
+
     %%colors for ICs
     Coloricrgb = round([180 0 0;127 68 127;228 88 44;15 175 175;0 0 0;9 158 74]/255,3);
     Colorgb_IC = [];
@@ -1580,11 +1584,11 @@ if ~isempty(data)
             for ii = 1:jj
                 Colorgb_IC = [Colorgb_IC; Coloricrgb];
             end
-            
+
             if jj*6~=ICNum
                 Colorgb_IC = [Colorgb_IC; Coloricrgb(1:ICNum-jj*6,:)];
             end
-            
+
         end
     end
     Colorgbwave = [Colorgb_chan;Colorgb_IC];
@@ -1631,7 +1635,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
     end
     %     AXES_POSITION = [0.0964286 0.15 0.842 0.75-(MAXEVENTSTRING-5)/100];
     %
-    
+
     % find event to plot
     % ------------------
     event2plot    = find ( Eventlatencies >=lowlim & Eventlatencies <= highlim );
@@ -1645,7 +1649,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
         if index == 1
             EVENTFONT = [' \fontsize{',num2str(FonsizeDefault),'} '];
         end
-        
+
         % draw latency line
         % -----------------
         if ndims(EEG.data)==2
@@ -1687,7 +1691,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
         tmph   = plot(myeegviewer, [ tmplat tmplat ], ylims, 'color', Eventcolors{ event2plot(index) }, ...
             'linestyle', Eventstyle { event2plot(index) }, ...
             'linewidth', Eventwidths( event2plot(index) ) );
-        
+
         % schtefan: add Event types text above event latency line
         % -------------------------------------------------------
         evntxt = strrep(num2str(Events(event2plot(index)).type),'_','-');
@@ -1700,7 +1704,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
                     'rotation',90,'FontSize',FonsizeDefault);
             end
         catch, end
-        
+
         % draw duration is not 0
         % ----------------------
         %         if EventOnsetdur && ~isempty(Eventlatencyend) ...
@@ -1737,7 +1741,7 @@ leftintv = [];
 tmpcolor = [ 0 0 0.4 ];
 if ndims(EEG.data)==2
     if ~isempty(data) && PlotNum~=0
-        
+
         for ii = size(data,1):-1:1
             try
                 plot(myeegviewer, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' , ...
@@ -1752,7 +1756,7 @@ if ndims(EEG.data)==2
         set(myeegviewer, 'Xlim',[1 Winlength*multiplier+1],...
             'XTick',[1:multiplier*DEFAULT_GRID_SPACING:Winlength*multiplier+1]);
         set(myeegviewer, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'));
-        
+
         %%
         %%-----------------plot scale------------------
         leftintv = Winlength*multiplier+1;
@@ -1797,10 +1801,10 @@ if EEG.trials>1
                 set(myeegviewer,'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)]);
             end
         end
-        
+
         %%add the gap between epochs if any
         Epochintv = [];
-        
+
         if ~isempty(tmpind)
             if (numel(tmpind)==1 && tmpind(end) == numel(tmptag)) || (numel(tmpind)==1 && tmpind(1) == 1)
                 dataplot =   data(:,lowlim:highlim);
@@ -1830,7 +1834,7 @@ if EEG.trials>1
                 end
             end
         end
-        
+
         %%-----------plot background color for trias with artifact---------
         %%highlight waves with labels
         Value_adjust = floor(Startimes+1);
@@ -1838,7 +1842,7 @@ if EEG.trials>1
             Value_adjust=1;
         end
         tagnum  = unique([Value_adjust,tagnum]);
-        
+
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
         try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
@@ -1862,7 +1866,7 @@ if EEG.trials>1
                                     try
                                         plot(myeegviewer, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' , ...
                                             'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
-                                        
+
                                         plot(myeegviewer, (dataChan1+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' , ...
                                             'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5,'Marker' ,'s','MarkerSize',8,...
                                             'MarkerEdgeColor',Colorgbwave(ypos1(kk),:),'MarkerFaceColor',Colorgbwave(ypos1(kk),:));%%
@@ -1880,7 +1884,7 @@ if EEG.trials>1
                 end
             end
         end
-        
+
         %%
         for ii = size(dataplot,1):-1:1
             try
@@ -1891,7 +1895,7 @@ if EEG.trials>1
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
         end
-        
+
         %------------------------Xticks------------------------------------
         tagpos  = [];
         tagtext = [];
@@ -1900,19 +1904,19 @@ if EEG.trials>1
         else
             alltag = [ floor(lowlim/Trialstag)*Trialstag ceil(highlim/Trialstag)*Trialstag ]+1;
         end
-        
+
         nbdiv = 20/Winlength; % approximative number of divisions
         divpossible = [ 100000./[1 2 4 5] 10000./[1 2 4 5] 1000./[1 2 4 5] 100./[1 2 4 5 10 20]]; % possible increments
         [tmp indexdiv] = min(abs(nbdiv*divpossible-(Limits(2)-Limits(1)))); % closest possible increment
         incrementpoint = divpossible(indexdiv)/1000*Srate;
-        
+
         % tag zero below is an offset used to be sure that 0 is included
         % in the absicia of the data epochs
         if Limits(2) < 0, tagzerooffset  = (Limits(2)-Limits(1))/1000*Srate+1;
         else                tagzerooffset  = -Limits(1)/1000*Srate;
         end
         if tagzerooffset < 0, tagzerooffset = 0; end
-        
+
         for i=1:length(alltag)-1
             if ~isempty(tagpos) && tagpos(end)-alltag(i)<2*incrementpoint/3
                 tagpos  = tagpos(1:end-1);
@@ -1928,7 +1932,7 @@ if EEG.trials>1
                 tagpos  = [ tagpos [tmptagpos(end:-1:2) alltag(i)+tagzerooffset:incrementpoint:(alltag(i+1)-1)]];
             end
         end
-        
+
         % find corresponding epochs
         % -------------------------
         if ~isfreq
@@ -1939,10 +1943,10 @@ if EEG.trials>1
             tpmorder = 1;
         end
         tagtext = eeg_point2lat(tagpos, floor((tagpos)/Trialstag)+1, Srate, tmplimit,tpmorder);
-        
+
         %%adjust xticks
         EpochFlag = floor((tagpos)/Trialstag)+1;%%
-        
+
         EpochFlag = reshape(EpochFlag,1,numel(EpochFlag));
         xtickstr =  tagpos-lowlim+1;
         [xpos,ypos] = find(xtickstr>0);
@@ -1951,7 +1955,7 @@ if EEG.trials>1
             xtickstr = xtickstr(ypos);
             tagtext = tagtext(ypos);
         end
-        
+
         EpochFlagunique =unique(setdiff(EpochFlag,0));
         if  numel(EpochFlagunique)~=1
             for ii = 2:numel(EpochFlagunique)
@@ -2029,4 +2033,3 @@ if ~isempty(data) && PlotNum~=0
     end
 end
 end
-
