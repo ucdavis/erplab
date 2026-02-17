@@ -65,17 +65,19 @@ if ~isempty(overlap_elec)
 end
 
 % Error check: When the user inputs electrodes not found in the input EEG dataset
-missing_replace_elecss = setdiff(replace_elecs, [inputEEG.chanlocs.urchan]);
+% Note: now validate against current channel indices (1:nbchan) rather than urchan field
+current_chan_indices = 1:inputEEG.nbchan;
+missing_replace_elecss = setdiff(replace_elecs, current_chan_indices);
 if(~isempty(missing_replace_elecss))
-    error(sprintf('Missing Replace Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t\t%s', ...
-        num2str(missing_replace_elecss)));
+    error(sprintf('Missing Replace Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t\t%s\nValid channel range: 1-%d', ...
+        num2str(missing_replace_elecss), inputEEG.nbchan));
 end
 
 % Warning check: Missing ignored electrodes in EEG dataset
-missing_ignore_elecs = setdiff(ignore_elecs, [inputEEG.chanlocs.urchan]);
+missing_ignore_elecs = setdiff(ignore_elecs, current_chan_indices);
 if(~isempty(missing_ignore_elecs))
-    warning(sprintf('Missing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s', ...
-        num2str(missing_ignore_elecs))); %#ok<SPWRN>
+    warning(sprintf('Missing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s\nValid channel range: 1-%d', ...
+        num2str(missing_ignore_elecs), inputEEG.nbchan)); %#ok<SPWRN>
 end
 
 
@@ -102,7 +104,7 @@ optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep t
 
 %%
 if isstruct(replace_elecs)
-    
+
     % add missing channels in interpolation structure
     % -----------------------------------------------
     lab1 = { replace_elecs.labels };
@@ -125,38 +127,38 @@ if isstruct(replace_elecs)
         replace_elecs = newchanlocs;
     end;
     if length(EEG.chanlocs) == length(replace_elecs), return; end;
-    
+
     lab1          = { replace_elecs.labels };
     tmpchanlocs   = EEG.chanlocs;
     lab2          = { tmpchanlocs.labels };
     [~, badchans] = setdiff_bc( lab1, lab2);
-    
+
     fprintf('Interpolating %d channels...\n', length(badchans));
-    
+
     if isempty(badchans), return; end;
     goodchans      = sort(setdiff(1:length(replace_elecs), badchans));
-    
+
     % re-order good channels
     % ----------------------
     [~, tmp2, neworder] = intersect_bc( lab1, lab2 );
     [~, ordertmp2]      = sort(tmp2);
     neworder            = neworder(ordertmp2);
     EEG.data            = EEG.data(neworder, :, :);
-    
+
     % looking at channels for ICA
     % ---------------------------
     %[~, sorti] = sort(neworder);
     %{ EEG.chanlocs(EEG.icachansind).labels; replace_elecs(goodchans(sorti(EEG.icachansind))).labels }
-    
+
     % update EEG dataset (add blank channels)
     % ---------------------------------------
     if ~isempty(EEG.icasphere)
-        
+
         [~, sorti] = sort(neworder);
         EEG.icachansind = sorti(EEG.icachansind);
         EEG.icachansind = goodchans(EEG.icachansind);
         EEG.chaninfo.icachansind = EEG.icachansind;
-        
+
         % TESTING SORTING
         %icachansind = [ 3 4 5 7 8]
         %data = round(rand(8,10)*10)
@@ -169,16 +171,16 @@ if isstruct(replace_elecs)
     % { EEG.chanlocs(neworder).labels; replace_elecs(sort(goodchans)).labels }
     %tmpdata                  = zeros(length(replace_elecs), size(EEG.data,2), size(EEG.data,3));
     %tmpdata(goodchans, :, :) = EEG.data;
-    
+
     % looking at the data
     % -------------------
     %tmp1 = mattocell(EEG.data(sorti,1));
     %tmp2 = mattocell(tmpdata(goodchans,1));
     %{ EEG.chanlocs.labels; replace_elecs(goodchans).labels; tmp1{:}; tmp2{:} }
     %EEG.data      = tmpdata;
-    
+
     EEG.chanlocs  = replace_elecs;
-    
+
 else
     badchans  = replace_elecs;
     goodchans = setdiff_bc(1:EEG.nbchan, badchans);
@@ -263,7 +265,7 @@ if strcmpi(method, 'spherical')
     xbad        = xbad./rad;
     ybad        = ybad./rad;
     zbad        = zbad./rad;
-    
+
     EEG.data    = reshape(EEG.data, EEG.nbchan, EEG.pnts*EEG.trials);
     %[~, tmp2, tmp3 tmpchans] = spheric_spline_old( xelec, yelec, zelec, EEG.data(goodchans,1));
     %max(tmpchans(:,1)), std(tmpchans(:,1)),
@@ -275,7 +277,7 @@ if strcmpi(method, 'spherical')
 elseif strcmpi(method, 'spacetime') % 3D interpolation, works but x10 times slower
     disp('Warning: if processing epoch data, epoch boundary are ignored...');
     disp('3-D interpolation, this can take a long (long) time...');
-    
+
     tmpgoodlocs     = EEG.chanlocs(goodchans);
     tmpbadlocs      = EEG.chanlocs(badchans);
     [xbad ,ybad]    = pol2cart([tmpbadlocs.theta],[tmpbadlocs.radius]);
@@ -307,11 +309,11 @@ else
     badchansdata = zeros(length(badchans), ...
         size(EEG.data,2)*size(EEG.data,3));
     fprintf('Points (/%d):', size(EEG.data,2)*size(EEG.data,3));
-    
+
     for t=1:(size(EEG.data,2)*size(EEG.data,3)) % scan data points
         if mod(t,100) == 0, fprintf('%d ', t); end;
         if mod(t,1000) == 0, fprintf('\n'); end;
-        
+
         %for c = 1:length(badchans)
         %   [h EEG.data(badchans(c),t)]= topoplot(EEG.data(goodchans,t),EEG.chanlocs(goodchans),'noplot', ...
         %        [EEG.chanlocs( badchans(c)).radius EEG.chanlocs( badchans(c)).theta]);
@@ -340,19 +342,19 @@ EEG = eeg_checkset(EEG);
 % Needs to occur before actually deleting the time segments in EEG
 if displayEEG
     % Plot EEG data with to-be-rejected time windows
-    
+
     eegplotoptions = { ...
         'events',       EEG.event,          ...
         'srate',        EEG.srate,          ...
         'winlength',    10};
-    
+
     % Display channel labels instead of numbers
     if ~isempty(EEG.chanlocs)
         eegplotoptions = [ eegplotoptions {'eloc_file', EEG.chanlocs}];
     end;
-    
-    eegplot(EEG.data, eegplotoptions{:});   
-    
+
+    eegplot(EEG.data, eegplotoptions{:});
+
 end
 
 
@@ -466,4 +468,3 @@ for n = 1:7
     g = g + ((2*n+1)/(n^m*(n+1)^m))*squeeze(L(1,:,:));
 end
 g = g/(4*pi);
-
