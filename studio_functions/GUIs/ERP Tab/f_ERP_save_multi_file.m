@@ -52,7 +52,7 @@ try
     ALLERP  = varargin{1};
     EEGArray = varargin{2};
     suffix = varargin{3};
-    
+
 catch
     suffix  = '';
     EEGLAB = [];
@@ -63,7 +63,7 @@ catch
     EEGLAB.nbchan = 0;
     ALLERP(1) = EEGLAB;
     EEGArray = 1;
-    
+
 end
 try
     ERPIndex = varargin{4};
@@ -202,8 +202,16 @@ if Values
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = ALLERP(EEGArray(Numoferpset)).filename;
-        [pathstr, file_name, ext] = fileparts(fileName);
-        
+        if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+            % filename not set (e.g. ERP created in memory by bin operations)
+            % fall back to erpname
+            fileName = ALLERP(EEGArray(Numoferpset)).erpname;
+            if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+                fileName = '';
+            end
+        end
+        [~, file_name, ~] = fileparts(fileName);
+
         DataString{Numoferpset,2} = [file_name,'.erp'];
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
@@ -296,7 +304,7 @@ end
 
 if handles.checkbox3_filename_erpname.Value==1
     DataString_before = handles.uitable1_erpset_table.Data;
-    
+
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = char(DataString_before{Numoferpset,1});
@@ -311,7 +319,7 @@ if handles.checkbox3_filename_erpname.Value==1
         end
         DataString{Numoferpset,2} = file_name;
     end
-    
+
     set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 end
 guidata(hObject, handles);
@@ -357,7 +365,7 @@ for Numofselected = 1:numel(EEGArray)
         errorfound(msgboxText, title);
         return
     end
-    
+
 end
 
 pathName = handles.edit_path.String;
@@ -375,25 +383,25 @@ for Numoferpset = 1:numel(EEGArray)
     if isempty(fileName)
         fileName = Data_String{Numoferpset,1};
     end
-    
+
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
         file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
     else
         file_name = [file_name,'.erp'];
     end
-    
+
     ALLERP(EEGArray(Numoferpset)).filename = file_name;
     if handles.checkbox2_save_label.Value
         ALLERP(EEGArray(Numoferpset)).filepath = pathName;
     end
-    
+
     if handles.checkbox2_save_label.Value
         ALLERP(EEGArray(Numoferpset)).saved = 'yes';
     else
         ALLERP(EEGArray(Numoferpset)).saved = 'no';
     end
-    
+
 end
 
 FilePath = handles.checkbox2_save_label.Value;

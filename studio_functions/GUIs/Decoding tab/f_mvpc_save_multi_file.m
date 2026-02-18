@@ -52,7 +52,7 @@ try
     ALLERP  = varargin{1};
     EEGArray = varargin{2};
     suffix = varargin{3};
-   
+
 catch
     suffix  = '';
     EEGLAB = [];
@@ -63,7 +63,7 @@ catch
     EEGLAB.nbchan = 0;
     ALLERP(1) = EEGLAB;
     EEGArray = 1;
-    
+
 end
 try
     ERPIndex = varargin{4};
@@ -73,7 +73,7 @@ end
 try
  pathNames = varargin{5};
 catch
-   pathNames = pwd; 
+   pathNames = pwd;
 end
 handles.ERPIndex = ERPIndex;
 % handles.erpnameor = erpname;
@@ -207,14 +207,14 @@ if Values
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = ALLERP(EEGArray(Numoferpset)).filename;
-        if isempty(fileName) && ~isempty(ALLERP(EEGArray(Numoferpset)).mvpcname)
+        if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+            % filename not set (e.g. MVPC created in memory), fall back to mvpcname
             fileName = ALLERP(EEGArray(Numoferpset)).mvpcname;
+            if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+                fileName = '';
+            end
         end
-        try 
-        [pathstr, file_name, ext] = fileparts(fileName);
-        catch
-           file_name = 'newmvpc'; 
-        end
+        [~, file_name, ~] = fileparts(fileName);
         DataString{Numoferpset,2} = [file_name,'.mvpc'];
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
@@ -269,7 +269,7 @@ for Numoferpset = 1:size(DataString_before,1)
         if ~isempty(ALLERP(EEGArray).filename)
         DataString{Numoferpset,2} =  ALLERP(EEGArray).filename;
         else
-           DataString{Numoferpset,2} =  ''; 
+           DataString{Numoferpset,2} =  '';
         end
     end
 end
@@ -311,7 +311,7 @@ end
 
 if handles.checkbox3_filename_erpname.Value==1
     DataString_before = handles.uitable1_erpset_table.Data;
-    
+
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = char(DataString_before{Numoferpset,1});
@@ -326,7 +326,7 @@ if handles.checkbox3_filename_erpname.Value==1
         end
         DataString{Numoferpset,2} = file_name;
     end
-    
+
     set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 end
 guidata(hObject, handles);
@@ -372,7 +372,7 @@ for Numofselected = 1:numel(EEGArray)
         errorfound(msgboxText, title);
         return
     end
-    
+
 end
 
 pathName = handles.edit_path.String;
@@ -382,30 +382,30 @@ end
 
 for Numoferpset = 1:numel(EEGArray)
     ALLERP(EEGArray(Numoferpset)).mvpcname = Data_String{Numoferpset,1};
-   
+
     fileName = char(Data_String{Numoferpset,2});
     if isempty(fileName)
         fileName = Data_String{Numoferpset,1};
     end
-    
+
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
         file_name = [num2str(EEGArray(Numoferpset)),'.mvpc'];
     else
         file_name = [file_name,'.mvpc'];
     end
-    
+
     ALLERP(EEGArray(Numoferpset)).filename = file_name;
     if handles.checkbox2_save_label.Value
         ALLERP(EEGArray(Numoferpset)).filepath = pathName;
     end
-    
+
     if handles.checkbox2_save_label.Value
         ALLERP(EEGArray(Numoferpset)).saved = 'yes';
     else
         ALLERP(EEGArray(Numoferpset)).saved = 'no';
     end
-    
+
 end
 
 FilePath = handles.checkbox2_save_label.Value;

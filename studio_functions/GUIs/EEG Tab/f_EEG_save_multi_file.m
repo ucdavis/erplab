@@ -184,12 +184,21 @@ EEGArray = handles.EEGArray;
 
 if Values
     set(handles.checkbox3_filename_setname,'Enable','on');
-    
+
     DataString_before = handles.uitable1_erpset_table.Data;
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         if handles.checkbox3_filename_setname.Value==0
-            DataString{Numoferpset,2} = char(ALLEEG(EEGArray(Numoferpset)).filename);
+            fileName = ALLEEG(EEGArray(Numoferpset)).filename;
+            if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+                % filename not set (e.g. EEG created in memory), fall back to setname
+                fileName = ALLEEG(EEGArray(Numoferpset)).setname;
+                if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+                    fileName = '';
+                end
+            end
+            [~, file_name, ~] = fileparts(fileName);
+            DataString{Numoferpset,2} = [file_name, '.set'];
         else
             DataString{Numoferpset,2} =  [DataString{Numoferpset,1},'.set'];
         end
@@ -285,7 +294,7 @@ end
 
 if handles.checkbox3_filename_setname.Value==1
     DataString_before = handles.uitable1_erpset_table.Data;
-    
+
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = char(DataString_before{Numoferpset,1});
@@ -300,7 +309,7 @@ if handles.checkbox3_filename_setname.Value==1
         end
         DataString{Numoferpset,2} = file_name;
     end
-    
+
     set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 end
 guidata(hObject, handles);
@@ -346,7 +355,7 @@ for Numofselected = 1:numel(EEGArray)
         errorfound(msgboxText, title);
         return
     end
-    
+
 end
 
 pathName = handles.edit_path.String;
@@ -360,25 +369,25 @@ for Numoferpset = 1:numel(EEGArray)
     if isempty(fileName)
         fileName = Data_String{Numoferpset,1};
     end
-    
+
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
         file_name = [num2str(EEGArray(Numoferpset)),'.set'];
     else
         file_name = [file_name,'.set'];
     end
-    
+
     ALLEEG(EEGArray(Numoferpset)).filename = file_name;
     if handles.checkbox2_save_label.Value
         ALLEEG(EEGArray(Numoferpset)).filepath = pathName;
     end
-    
+
     if handles.checkbox2_save_label.Value
         ALLEEG(EEGArray(Numoferpset)).saved = 'yes';
     else
         ALLEEG(EEGArray(Numoferpset)).saved = 'no';
     end
-    
+
 end
 
 FilePath = handles.checkbox2_save_label.Value;

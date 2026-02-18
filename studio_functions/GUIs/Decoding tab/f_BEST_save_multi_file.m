@@ -52,7 +52,7 @@ try
     ALLBEST  = varargin{1};
     BESTArray = varargin{2};
     suffix = varargin{3};
-    
+
 catch
     suffix  = '';
     BEST = [];
@@ -63,7 +63,7 @@ catch
     BEST.nbchan = 0;
     ALLBEST(1) = BEST;
     BESTArray = 1;
-    
+
 end
 try
     ERPIndex = varargin{4};
@@ -194,8 +194,15 @@ if Values
     for Numofbestset = 1:size(DataString_before,1)
         DataString{Numofbestset,1} = DataString_before{Numofbestset,1};
         fileName = ALLBEST(BESTArray(Numofbestset)).filename;
-        [pathstr, file_name, ext] = fileparts(fileName);
-        
+        if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+            % filename not set (e.g. BEST created in memory), fall back to erpname
+            fileName = ALLBEST(BESTArray(Numofbestset)).erpname;
+            if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
+                fileName = '';
+            end
+        end
+        [~, file_name, ~] = fileparts(fileName);
+
         DataString{Numofbestset,2} = [file_name,'.best'];
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
@@ -283,7 +290,7 @@ end
 
 if handles.checkbox3_filename_erpname.Value==1
     DataString_before = handles.uitable1_erpset_table.Data;
-    
+
     for Numofbestset = 1:size(DataString_before,1)
         DataString{Numofbestset,1} = DataString_before{Numofbestset,1};
         fileName = char(DataString_before{Numofbestset,1});
@@ -298,7 +305,7 @@ if handles.checkbox3_filename_erpname.Value==1
         end
         DataString{Numofbestset,2} = file_name;
     end
-    
+
     set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 end
 guidata(hObject, handles);
@@ -352,32 +359,32 @@ if isempty(pathName)
 end
 
 for Numofbestset = 1:numel(BESTArray)
-    
+
     ALLBEST(BESTArray(Numofbestset)).bestname = Data_String{Numofbestset,1};
-    
+
     fileName = char(Data_String{Numofbestset,2});
     if isempty(fileName)
         fileName = Data_String{Numofbestset,1};
     end
-    
+
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
         file_name = [num2str(BESTArray(Numofbestset)),'.best'];
     else
         file_name = [file_name,'.best'];
     end
-    
+
     ALLBEST(BESTArray(Numofbestset)).filename = file_name;
     if handles.checkbox2_save_label.Value
         ALLBEST(BESTArray(Numofbestset)).filepath = pathName;
     end
-    
+
     if handles.checkbox2_save_label.Value
         ALLBEST(BESTArray(Numofbestset)).saved = 'yes';
     else
         ALLBEST(BESTArray(Numofbestset)).saved = 'no';
     end
-    
+
 end
 
 FilePath = handles.checkbox2_save_label.Value;
