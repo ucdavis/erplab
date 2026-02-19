@@ -973,7 +973,11 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Max =length(ERPlistName)+1;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
-        SelectedERP = observe_ERPDAT.CURRENTERP;
+        if isempty(observe_ERPDAT.ALLERP)
+            SelectedERP = [];
+        else
+            SelectedERP = observe_ERPDAT.CURRENTERP;
+        end
         estudioworkingmemory('selectederpstudio',SelectedERP);
 
         % add set selection to history
@@ -981,9 +985,7 @@ varargout{1} = box_erpset_gui;
 
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-        if EStudio_gui_erp_totl.ERP_autoplot==1
-            f_redrawERP();
-        end
+        f_redrawERP();
     end
 
 %%----------------------Clear ALL ERPsets-------------------------
@@ -1419,6 +1421,12 @@ function clearall(source,~)
         % Get sets with names
         ERPArray = estudioworkingmemory('selectederpstudio');
         allSetNames =  getERPsets();
+
+        % Bounds check: if ERPArray is empty or contains indices beyond available sets, return early
+        if isempty(ERPArray) || isempty(allSetNames) || max(ERPArray) > length(allSetNames)
+            return;
+        end
+
         selectedSetNames = allSetNames(ERPArray);
 
         % Communication to display in command window

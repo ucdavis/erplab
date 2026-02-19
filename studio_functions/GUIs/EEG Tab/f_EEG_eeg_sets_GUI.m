@@ -915,18 +915,16 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('f_EEG_proces_messg','EEGsets>Clear');
         observe_EEGDAT.eeg_panel_message =1;
         EEGArray = EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        if length(observe_EEGDAT.ALLEEG)==1 && numel(EEGArray) == length(observe_EEGDAT.ALLEEG)
+        ERPset_remained = setdiff(1:length(observe_EEGDAT.ALLEEG), EEGArray);
+        if isempty(ERPset_remained)
+            % pop_delset refuses to delete the last dataset, so handle it directly
             ALLEEG = [];
-            LASTCOM = 'ALLEEG = []; EEG=[]; CURRENTSET=[];';
+            LASTCOM = sprintf('ALLEEG = pop_delset( ALLEEG, [%s] );', num2str(EEGArray));
         else
             [ALLEEG,LASTCOM] = pop_delset( observe_EEGDAT.ALLEEG , EEGArray);
-            if  isempty(LASTCOM)
+            if isempty(LASTCOM)
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
-            end
-            ERPset_remained = setdiff([1:length(observe_EEGDAT.ALLEEG)],EEGArray);
-            if isempty(ERPset_remained)
-                ALLEEG = [];
             end
         end
         eegh(LASTCOM);
@@ -1001,16 +999,18 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable = Edit_label;
         EStduio_eegtab_EEG_set.refresh_eegset.Enable= 'on';
-        EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
+        if isempty(observe_EEGDAT.ALLEEG)
+            EEGArray = [];
+        else
+            EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
+        end
         estudioworkingmemory('EEGArray',EEGArray);
 
         % add set selection to history
         logSelectedSets()
 
         observe_EEGDAT.count_current_eeg =2;
-        if EStudio_gui_erp_totl.EEG_autoplot==1
-            f_redrawEEG_Wave_Viewer();
-        end
+        f_redrawEEG_Wave_Viewer();
         estudioworkingmemory('f_EEG_proces_messg','EEGsets > Clear EEG');
         observe_EEGDAT.eeg_panel_message=2;
     end
