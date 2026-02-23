@@ -69,7 +69,7 @@ varargout{1} = ERP_bin_operation_gui;
             'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_clear = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
             'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        
+
         %%%----------------Mode-----------------------------------
         gui_erp_bin_operation.mode_1 = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.mode_modify_title = uicontrol('Style','text','Parent',gui_erp_bin_operation.mode_1 ,...
@@ -88,8 +88,8 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.mode_create.String =  '<html>Create New ERPset<br />(independent transformations)</html>';
         set(gui_erp_bin_operation.mode_2,'Sizes',[55 -1]);
         gui_erp_bin_operation.mode_create.KeyPressFcn = @erp_binop_presskey;
-        
-        
+
+
         %%-----------------Run---------------------------------------------
         gui_erp_bin_operation.run_title = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
@@ -156,7 +156,7 @@ varargout{1} = ERP_bin_operation_gui;
             binopGUI.listname = '';
         end
         estudioworkingmemory('binopGUI',binopGUI);
-        
+
         ERP = observe_ERPDAT.ERP;
         answer = binoperGUI(ERP, def);
         if isempty(answer)
@@ -174,7 +174,7 @@ varargout{1} = ERP_bin_operation_gui;
         end
         formulas = answer{1};
         wbmsgon  = answer{2};
-        
+
         def = {formulas, wbmsgon};
         estudioworkingmemory('pop_binoperator', def);
         for ii = 1:100
@@ -188,7 +188,7 @@ varargout{1} = ERP_bin_operation_gui;
             gui_erp_bin_operation.edit_bineq.Data = dsnames;
             set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         end
-        
+
     end
 
 %%-------------------Equation Load---------------------------------------
@@ -208,8 +208,8 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_binop',1);
-        
-        
+
+
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
             return
@@ -217,11 +217,11 @@ varargout{1} = ERP_bin_operation_gui;
             fullname = fullfile(filepath, filename);
             disp(['f_ERP_binoperation_GUI(): For formulas-file, user selected ', fullname])
         end
-        
+
         fid_formula = fopen( fullname );
         formcell    = textscan(fid_formula, '%s','delimiter', '\r');
         formulas    = char(formcell{:});
-        
+
         if size(formulas,2)>256
             msgboxText =  ['Bin Operations - Formulas length exceed 256 characters.'...
                 'Be sure to press [Enter] after you have entered each formula.'];
@@ -240,7 +240,7 @@ varargout{1} = ERP_bin_operation_gui;
             observe_ERPDAT.Count_currentERP=1;
             return;
         end
-        
+
         Eq_Data =  gui_erp_bin_operation.edit_bineq.Data;
         Formula_str = {};
         count = 0;
@@ -264,7 +264,7 @@ varargout{1} = ERP_bin_operation_gui;
         %         if isempty(pathName)
         pathName =[cd,filesep];
         %         end
-        
+
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
             return
@@ -356,7 +356,7 @@ varargout{1} = ERP_bin_operation_gui;
             def{1} = formulaArray;
             estudioworkingmemory('pop_binoperator',def);
         end
-        
+
     end
 
 %%------------------Create New ERPset---------------------------------------
@@ -376,7 +376,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_binop',1);
-        
+
         gui_erp_bin_operation.mode_modify.Value = 0;
         gui_erp_bin_operation.mode_create.Value = 1;
         FormulaArrayIn = char(gui_erp_bin_operation.edit_bineq.Data);
@@ -408,7 +408,7 @@ varargout{1} = ERP_bin_operation_gui;
             def{1} = formulaArray;
             estudioworkingmemory('pop_binoperator',def);
         end
-        
+
     end
 
 %%---------------------Run-------------------------------------------------
@@ -422,7 +422,7 @@ varargout{1} = ERP_bin_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=7
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         %         pathName_def =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathName_def)
         pathName_def =[cd,filesep];
@@ -435,7 +435,7 @@ varargout{1} = ERP_bin_operation_gui;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         Eq_Data =  gui_erp_bin_operation.edit_bineq.Data;
-        
+
         Formula_str = {};
         count = 0;
         for ii = 1:length(Eq_Data)
@@ -450,7 +450,7 @@ varargout{1} = ERP_bin_operation_gui;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        
+
         gui_erp_bin_operation.run.BackgroundColor =  [1 1 1];
         gui_erp_bin_operation.run.ForegroundColor = [0 0 0];
         ERP_bin_operation_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -467,10 +467,10 @@ varargout{1} = ERP_bin_operation_gui;
         if goeson==0
             return
         end
-        
+
         gui_erp_bin_operation.Paras{1} = gui_erp_bin_operation.edit_bineq.Data;
         gui_erp_bin_operation.Paras{2} = gui_erp_bin_operation.mode_modify.Value;
-        
+
         %%%Create a new ERPset for the bin-operated ERPsets
         estudioworkingmemory('f_ERP_proces_messg','Bin Operations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
@@ -508,7 +508,7 @@ varargout{1} = ERP_bin_operation_gui;
                 Save_file_label = Answer{2};
             end
         end
-        
+
         if gui_erp_bin_operation.mode_modify.Value%% If select "Modify Existing ERPset (recursive updating)"
             ALLERP(ERPArray) = ALLERP_out;
         elseif gui_erp_bin_operation.mode_create.Value %% If select "Create New ERPset (independent transformations)"
@@ -516,7 +516,7 @@ varargout{1} = ERP_bin_operation_gui;
                 ERP = ALLERP_out(Numoferp);
                 if Save_file_label==1
                     [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Numoferp).erpname,...
-                        'filename', ALLERP_out(ERPArray(Numoferp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
+                        'filename', ALLERP_out(Numoferp).filename, 'filepath',ALLERP_out(Numoferp).filepath);
                     ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
                     if Numoferp ==numel(ERPArray)
                         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
@@ -546,7 +546,7 @@ varargout{1} = ERP_bin_operation_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         estudioworkingmemory('f_ERP_bin_opt',1);
-        
+
         binAllNew = [1:observe_ERPDAT.ERP.nbin];
         bindiff = setdiff(binAllNew,binAllold);
         binArray =  estudioworkingmemory('ERP_BinArray');
@@ -554,7 +554,7 @@ varargout{1} = ERP_bin_operation_gui;
             binArray = [binArray,bindiff];
             estudioworkingmemory('ERP_BinArray',binArray);
         end
-        
+
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         return;
@@ -577,7 +577,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.cancel.BackgroundColor =  [1 1 1];
         gui_erp_bin_operation.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_binop',0);
-        
+
         gui_erp_bin_operation.edit_bineq.Data= gui_erp_bin_operation.Paras{1};
         mode_modify = gui_erp_bin_operation.Paras{2};
         gui_erp_bin_operation.mode_modify.Value = mode_modify;
@@ -605,12 +605,12 @@ varargout{1} = ERP_bin_operation_gui;
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
                 estudioworkingmemory('selectederpstudio',ERPArray);
             end
-            
+
             binNumAll = [];
             for Numoferp = 1:numel(ERPArray)
                 binNumAll(Numoferp) =observe_ERPDAT.ALLERP(ERPArray(Numoferp)).nbin;
             end
-            
+
             Enable_label = 'on';
             binopDataor =  gui_erp_bin_operation.edit_bineq.Data;
             for ii = 1:100
