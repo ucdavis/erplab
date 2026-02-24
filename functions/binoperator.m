@@ -168,7 +168,7 @@ end
 
 if ~isempty(toklabel)
         shortexp = toklabel{:}{1};
-        
+
         %
         % erase label from expression
         %
@@ -349,21 +349,21 @@ end
 [mat, tok] = regexpi(expression, '[n]*b[in]*(\d+)([@]\w+)*', 'match', 'tokens','ignorecase');
 
 if isempty(mat) && iswavebin== 0 &&  isavebin== 0 && isharmbin== 0 && ismedianbin== 0 && isstdbin== 0 && iszsbin== 0
-        
+
         %
         %
         % Matlab expression (no bin definition)
         % The outcome will be sent to workspace
         %
-        
+
         %
         % Matlab 7.3 and higher %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %
         [expspliter, formulasp] = regexp(strtrim(expression), '=','match','split');
         leftsize  =   formulasp{1};
-        
+
         [mater, tok2]  = regexpi(leftsize, '(\w+)', 'match', 'tokens');
-        
+
         if isempty(mater)
                 msgboxText = 'ERPLAB says: error at binoperator(). Formula %s contains errors.';
                 if errormsgtype
@@ -375,18 +375,18 @@ if isempty(mat) && iswavebin== 0 &&  isavebin== 0 && isharmbin== 0 && ismedianbi
                 else
                         error('prog:input', ['ERPLAB says: ' msgboxText], expression)
                 end
-        end        
-        
+        end
+
         %
         % Sends to workspace your channel definition
         %
         eval(expression)
-        
+
         for j=1:length(mater)
                 outvar = char(tok2{j});
                 assignin('base', outvar, eval(outvar));
         end
-        
+
         conti = 0;
         return
 else
@@ -396,15 +396,15 @@ else
                 chspec     = {[]};
                 lengthchan = zeros(1,ntok);
                 CHANSP     = {[]};
-                
+
                 for tk=1:ntok
                         % contains index of  bins in the formula
                         binpos(tk) = str2double(tok{1,tk}{1,1});
-                        
+
                         % contains chan spec per bin in the formula
                         chspec{tk} = char(tok{1,tk}{1,2});
                         chspec{tk} = regexprep(chspec{tk}, '@', ''); % ":" was replaced by "@"
-                        
+
                         if tk>1
                                 %
                                 % Test right size
@@ -429,16 +429,16 @@ else
                                 [tf(1), realbinpos(1)]= ismember_bc2(binpos(1), 1:ERPout.nbin);
                         end
                 end
-                
+
                 %
                 % Test amount of defined channels (contra & ipsi bins, for instance)
                 %
                 [unilengthch, a, indexx] = unique_bc2(lengthchan(2:end), 'first');
-                
+
                 if ~isempty(indexx)
-                        
+
                         loc = find(indexx>1, 1);
-                        
+
                         if isempty(loc)
                                 CHANSP{1} = 1:unilengthch;
                         else
@@ -470,13 +470,13 @@ else
                         end
                 end
         end
-        
+
         %
         % Check right side
         %
         nonexistingbinpos = find([realbinpos(2:end)]==0);
-        
-        if ~isempty(nonexistingbinpos)              
+
+        if ~isempty(nonexistingbinpos)
                 msgboxText =  ['Error: Bin(s) [%s] does not exist!\n'...
                         'Only use bins from the list on the right'];
                 if errormsgtype
@@ -489,31 +489,31 @@ else
                         error('prog:input', ['ERPLAB says: ' msgboxText], num2str(binpos(nonexistingbinpos+1)))
                 end
         end
-        
+
         %
         % Prepares new channel labels
         %
         nchansp = length(CHANSP{2});
         LABEL = {[]};
- %    
-        for c=1:nchansp                
+ %
+        for c=1:nchansp
                 labeltemp = {[]};
                 labelsch  = {[]};
-                
+
                 for d=1:ntok-1
                         labelsch{c,d} = ERPin.chanlocs(CHANSP{d+1}(c)).labels;
                 end
-                
+
                 %labeltemp = unique_bc2(labelsch(c,:))
                 labeltemp = labelsch(c,:); % to allow pairing middle line channels: e.g. Cz/Cz
-                
+
                 if length(labeltemp)>1
                         deflabel = '';
-                        
+
                         for m=1:length(labeltemp)
                                 deflabel = [deflabel '/' labeltemp{1,m}]; % for contra ipsi
                         end
-                        
+
                         match_expr = '(^\w)(\w*)(\w$)';
                         replace_expr1 = '$118$3';
                         deflabel = regexprep(deflabel, '^\/|\/$', '');
@@ -523,17 +523,17 @@ else
                 LABEL{c} = deflabel;
         end
 %
-        
+
         % erase chan spec from expression
         expression = regexprep(expression, '[@]\w*', ''); %":" was replaced by "@"
         %this is "the whished bin" index,
         newbin     = binpos(1);
-        
+
         %
         %  Test New Bin
         %
         lastslot = ERPout.nbin;
-        
+
         if tf(1) && newbin>=1
                 if ~eraser
                         %
@@ -547,7 +547,7 @@ else
                         if wbmsgon==0
                                 button = 'yes';
                         else
-                                question = ['Bin ' num2str(newbin) ' already exist!\n'...
+                                question = ['Bin ' num2str(newbin) ' already exists!\n'...
                                         'Would you like to overwrite?'];
                                 tittle      = 'ERPLAB: binoperator, Overwriting Confirmation';
                                 button      = askquest(sprintf(question), tittle, 'Yes');
@@ -561,7 +561,7 @@ else
                                 tittle = 'ERPLAB: binoperator, Bin Erasing Confirmation';
                                 button =askquest(sprintf(question), tittle);
                         end
-                        
+
                 end
                 if strcmpi(button,'no')
                         confirma = 0;
@@ -577,7 +577,7 @@ else
                         cancelop = 1;
                         return
                 end
-                
+
         elseif (~tf(1) && newbin>=1 && newbin<=lastslot+1)
                 confirma = 1;  % Everything is ok!
                 realbinpos(1) = lastslot+1;
@@ -597,7 +597,7 @@ else
         end
         if confirma
                 try
-                        newexp = regexprep(expression, '[n]*b[in]*(\d+)', 'bin(@$1)','ignorecase');                        
+                        newexp = regexprep(expression, '[n]*b[in]*(\d+)', 'bin(@$1)','ignorecase');
                         for p = 1:ntok
                                 newexp = regexprep(newexp, '@\d+', [num2str(realbinpos(p)) ':' num2str(p)],'ignorecase','once');
                         end
@@ -622,16 +622,16 @@ else
                                 if isempty(ERPout.bindata) || isempty(binpos(2:end))
                                         error('ERPLAB says: error at binoperator(). Unknown')
                                 end
-                                
+
                                 ERPout.bindescr{realbinpos(1)}  = shortexp;
                                 ERPout.ntrials.accepted(newbin) = sum(ERPin.ntrials.accepted(binpos(2:end)));
                                 ERPout.ntrials.rejected(newbin) = sum(ERPin.ntrials.rejected(binpos(2:end)));
                                 ERPout.ntrials.invalid(newbin)  = sum(ERPin.ntrials.invalid(binpos(2:end)));
-                                ERPout.ntrials.arflags(newbin, :) = sum(ERPin.ntrials.arflags(binpos(2:end),:),1);                                
+                                ERPout.ntrials.arflags(newbin, :) = sum(ERPin.ntrials.arflags(binpos(2:end),:),1);
                                 newnchan     = length(CHANSP{1}); % new bin's number of channels
                                 ERPout.nchan = newnchan;
-                                
-                                %here is the problem with the contra-lateral channel...                                
+
+                                %here is the problem with the contra-lateral channel...
                                 if orinchan~=newnchan
                                         ERPout.chanlocs = [];
                                         for s=1:ERPout.nchan
@@ -643,13 +643,13 @@ else
                                     %disp('aqui')
                                         ERPout.chanlocs = ERPin.chanlocs;
                                 end
-                                
+
                                 %
                                 % Standard error
                                 %
                                 if ~isempty(ERPin.binerror)
                                         ERPout.binerror(CHANSP{1},:,newbin) = zeros(newnchan,ERPin.pnts, 1);
-                                end                                
+                                end
                                 disp(['Bin ' num2str(newbin) ' was  mounted'])
                         else
                                 %
@@ -658,13 +658,13 @@ else
                                 ERPout.bindescr(realbinpos(1)) = [];
                                 disp(['Bin ' num2str(newbin) ' was  erased'])
                         end
-                        
+
                         ERPout.nbin = size(ERPout.bindata,3);
                         ERPout.saved = 'no';
                 catch
                         serr = lasterror;
                         msgboxText = sprintf('Please, check your formula: \n\n%s\n%s',...
-                                expression, serr.message);                      
+                                expression, serr.message);
                         if errormsgtype
                                 tittle = 'ERPLAB: binoperator() Error';
                                 errorfound(sprintf(msgboxText), tittle);

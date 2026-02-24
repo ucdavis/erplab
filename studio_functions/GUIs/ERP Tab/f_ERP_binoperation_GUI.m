@@ -60,6 +60,11 @@ varargout{1} = ERP_bin_operation_gui;
         set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
         gui_erp_bin_operation.Paras{1} = gui_erp_bin_operation.edit_bineq.Data;
         gui_erp_bin_operation.edit_bineq.KeyPressFcn = @erp_binop_presskey;
+        gui_erp_bin_operation.edit_bineq.CellEditCallback = @equation_table_edited;
+
+        % Track loaded equation file for history
+        gui_erp_bin_operation.loaded_filename = '';  % Empty if equations manually entered
+        gui_erp_bin_operation.equations_modified = false;  % True if user edits after loading file
         gui_erp_bin_operation.equation_selection = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
             'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
@@ -175,6 +180,38 @@ varargout{1} = ERP_bin_operation_gui;
         formulas = answer{1};
         wbmsgon  = answer{2};
 
+        % Check if formulas is a filename string or cell array of formulas
+        if ischar(formulas)
+            % It's a filename - need to read the file to display equations
+            gui_erp_bin_operation.loaded_filename = formulas;  % Remember the filename
+            gui_erp_bin_operation.equations_modified = false;  % Not modified yet
+
+            fid_formula = fopen(formulas);
+            if fid_formula == -1
+                msgboxText = ['Bin Operations - Cannot open file: ', formulas];
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg = 2;
+                return;
+            end
+            try
+                formcell = textscan(fid_formula, '%s', 'delimiter', '\r');
+                fclose(fid_formula);
+                formulas = formcell{1}; % Convert to cell array for display
+            catch
+                fclose(fid_formula);
+                msgboxText = ['Bin Operations - Error reading file: ', formulas];
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                observe_ERPDAT.Process_messg = 2;
+                return;
+            end
+        else
+            % It's a cell array of equations - no file source
+            gui_erp_bin_operation.loaded_filename = '';
+            gui_erp_bin_operation.equations_modified = false;
+        end
+
         def = {formulas, wbmsgon};
         estudioworkingmemory('pop_binoperator', def);
         for ii = 1:100
@@ -230,6 +267,11 @@ varargout{1} = ERP_bin_operation_gui;
             return;
         end
         fclose(fid_formula);
+
+        % Track the loaded file for history
+        gui_erp_bin_operation.loaded_filename = fullname;
+        gui_erp_bin_operation.equations_modified = false;
+
         gui_erp_bin_operation.edit_bineq.Data = formcell{1,1};
         set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
@@ -305,6 +347,11 @@ varargout{1} = ERP_bin_operation_gui;
         for ii = 1:100
             dsnames{ii,1} = '';
         end
+
+        % Clear filename tracking when clearing equations
+        gui_erp_bin_operation.loaded_filename = '';
+        gui_erp_bin_operation.equations_modified = false;
+
         gui_erp_bin_operation.edit_bineq.Data = dsnames;
         set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
@@ -471,6 +518,16 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.Paras{1} = gui_erp_bin_operation.edit_bineq.Data;
         gui_erp_bin_operation.Paras{2} = gui_erp_bin_operation.mode_modify.Value;
 
+        % Determine what to pass to pop_binoperator: filename or equations
+        % If user loaded from file and hasn't modified, pass filename for cleaner history
+        if ~isempty(gui_erp_bin_operation.loaded_filename) && ~gui_erp_bin_operation.equations_modified
+            % Pass filename - backend will put 'Filename', 'file.txt' in history
+            Formulas_to_pass = gui_erp_bin_operation.loaded_filename;
+        else
+            % Pass equations - backend will expand them in history
+            Formulas_to_pass = Formula_str;
+        end
+
         %%%Create a new ERPset for the bin-operated ERPsets
         estudioworkingmemory('f_ERP_proces_messg','Bin Operations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
@@ -480,7 +537,7 @@ varargout{1} = ERP_bin_operation_gui;
         ALLERP_out = [];
         for Numoferp = 1:numel(ERPArray)%%Bin Operations for each selected ERPset
             ERP = ALLERP(ERPArray(Numoferp));
-            [ERP ERPCOM]= pop_binoperator( ERP, Formula_str, 'Warning', 'on', 'ErrorMsg', 'command', 'Saveas', 'off', 'History', 'gui');
+            [ERP ERPCOM]= pop_binoperator( ERP, Formulas_to_pass, 'Warning', 'on', 'ErrorMsg', 'command', 'Saveas', 'off', 'History', 'gui');
             if isempty(ERPCOM)
                 observe_ERPDAT.Process_messg =2;
                 return;
@@ -665,6 +722,13 @@ varargout{1} = ERP_bin_operation_gui;
         else
             return;
         end
+    end
+
+%%--------------Detect equation table edits--------------------------------
+    function equation_table_edited(~,~)
+        % Mark equations as modified when user edits the table
+        % This invalidates the loaded filename for history purposes
+        gui_erp_bin_operation.equations_modified = true;
     end
 
     function Reset_erp_panel_change(~,~)

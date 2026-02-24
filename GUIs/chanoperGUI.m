@@ -300,14 +300,20 @@ if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
     title = 'WARNING: Save List of edited chans';
     oldcolor = get(0,'DefaultUicontrolBackgroundColor');
     set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-    button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
+
+    % Button text depends on context: Studio uses "continue", Classic uses "run"
+    if handles.Toolabel  % Studio context
+        button = questdlg(sprintf(question), title,'Save and continue','Continue without saving', 'Cancel','Continue without saving');
+    else  % Classic context
+        button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
+    end
     set(0,'DefaultUicontrolBackgroundColor',oldcolor)
 
-    if strcmpi(button,'Save and run')
+    if strcmpi(button,'Save and continue') || strcmpi(button,'Save and run')
         fullname = savelist(hObject, eventdata, handles);
         listname = fullname;
         handles.output = {listname, wchmsgon}; % sent filenam string)
-    elseif strcmpi(button,'Run without saving')
+    elseif strcmpi(button,'Continue without saving') || strcmpi(button,'Run without saving')
         handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
     elseif strcmpi(button,'Cancel') || strcmpi(button,'')
         handles.output   = [];
