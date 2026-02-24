@@ -60,7 +60,7 @@ end
 try
     %                        def = {inp1 erpset prefixlist};
     def = varargin{2};
-    
+
 catch
     def = {1 1 [] '', []};
 end
@@ -130,9 +130,9 @@ end
 function pushbutton_RUN_Callback(hObject, eventdata, handles)
 % nsets = handles.totalerpset;
 if handles.radiobutton_folders.Value==0
-    
+
     erpset = str2num(char(get(handles.edit_erpset, 'String')));
-    
+
     %         if isempty(erpset)
     %                 msgboxText =  ['No ERPset indices were specified!\n\n'...
     %                         'You must use any integer value(s) between 1 and ' num2str(nsets)];
@@ -160,16 +160,16 @@ if handles.radiobutton_folders.Value==0
 else
     erpset = get(handles.listbox_erpnames, 'String');
     nline  = length(erpset);
-    
+
     if nline==1
         msgboxText =  'You have to specify at least one erpset!';
         etitle = 'ERPLAB: geterpvaluesGUI() -> missing input';
         errorfound(msgboxText, etitle);
         return
     end
-    
+
     listname = handles.listname; % file conteining the list of erpsets
-    
+
     if isempty(listname) && nline>1
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         question = ['You have not yet saved your list.\n'...
@@ -179,20 +179,20 @@ else
         set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
         button      = questdlg(sprintf(question), etitle,'Save and Continue','Save As', 'Cancel','Save and Continue');
         set(0,'DefaultUicontrolBackgroundColor',oldcolor)
-        
+
         if strcmpi(button,'Save As')
             fullname = savelist(hObject, eventdata, handles);
             listname = fullname;
             set(handles.edit_filelist,'String', listname);
             handles.listname = listname;
-            
+
             % Update handles structure
             guidata(hObject, handles);
             return
         elseif strcmpi(button,'Save and Continue')
             fulltext = char(get(handles.listbox_erpnames,'String'));
             listname = char(strtrim(get(handles.edit_filelist,'String')));
-            
+
             if isempty(listname)
                 % save as
                 fullname = savelist(hObject, eventdata, handles);
@@ -209,7 +209,7 @@ else
         elseif strcmpi(button,'Cancel') || strcmpi(button,'')
             handles.output   = [];
             handles.listname = [];
-            
+
             % Update handles structure
             guidata(hObject, handles);
             return
@@ -237,7 +237,7 @@ else
     end
     ERPsetOp = handles.radiobutton_erpset.Value;
     handles.output = {foption,ERPsetOp, erpset, prefixArray};
-    
+
     % Update handles structure
     guidata(hObject, handles);
     uiresume(handles.gui_chassis);
@@ -285,7 +285,7 @@ if currline==totline
 else
     set(handles.listbox_prefix, 'Value', currline)
     resto = full_list(currline:totline);
-    
+
     full_list  = cat(1, full_list, {'new prefix'});
     set(handles.listbox_prefix, 'Value', currline+1)
     [full_list{currline+1:totline+1}] = resto{:};
@@ -315,7 +315,7 @@ if currline>=1 && currline<totline
     listbox_prefix_Callback(hObject, eventdata, handles)
     handles.full_list = full_list;
     totline = length(full_list);
-    
+
     % Update handles structure
     guidata(hObject, handles);
 end
@@ -336,12 +336,12 @@ if get(hObject,'value')
         fulltext = get(handles.listbox_erpnames,'String');
         nerpset  = length(fulltext)-1;
     end
-    
+
     full_list   = get(handles.listbox_prefix, 'String');
     backup_list = full_list;
     totline     = length(full_list)-1;
     full_list_new = cell(1);
-    
+
     if  nerpset>0 && (totline==nerpset || totline==1)
         for i=1:nerpset
             if totline==1
@@ -356,7 +356,7 @@ if get(hObject,'value')
     elseif nerpset==0
         set(handles.togglebutton_autonumber, 'Value', 0);
         set(handles.togglebutton_autonumber,'Enable','off')
-        msgboxText =  'You must enter at least two datasets to use this button.';
+        msgboxText =  'You must enter at least two ERPsets to use this button.';
         etitle = 'ERPLAB: Append ERP GUI automatic prefix numbering';
         errorfound(msgboxText, etitle);
         set(handles.togglebutton_autonumber,'Enable','on')
@@ -395,7 +395,7 @@ currline  = get(handles.listbox_prefix, 'Value');
 
 if currline>=1 && currline<totline
     set(handles.edit_prefix,'String',full_list{currline})
-    
+
     % Update handles structure
     guidata(hObject, handles);
 end
@@ -434,12 +434,12 @@ if get(hObject,'Value')
     set(handles.listbox_erpnames,'Enable','on')
     set(handles.button_adderpset,'Enable','on')
     set(handles.button_delerpset,'Enable','on')
-    
+
     if ~isempty(get(handles.edit_filelist,'String'))
         set(handles.button_savelist,'Enable','on')
         set(handles.button_clearfile,'Enable','on')
     end
-    
+
     set(handles.button_savelistas,'Enable','on')
     set(handles.button_loadlist,'Enable','on')
     set(handles.edit_filelist,'Enable','on')
@@ -520,20 +520,20 @@ if lentext>1
     filereadin = strtrim(lista{1});
     ERP1 = load(filereadin, '-mat');
     ERP = ERP1.ERP;
-    
+
     if ~iserpstruct(ERP)
         error('')
     end
-    
+
     set(handles.listbox_erpnames,'String',lista);
     set(handles.edit_filelist,'String',fullname);
     listname = fullname;
     handles.listname = listname;
     set(handles.button_savelistas, 'Enable','on')
-    
+
     set(handles.radiobutton_includep, 'Enable', 'on');
-    
-    
+
+
     % Update handles structure
     guidata(hObject, handles);
     %         catch
@@ -552,7 +552,7 @@ else
     errorfound(msgboxText, etitle);
     handles.listname = [];
     set(handles.button_savelist, 'Enable','off')
-    
+
     % Update handles structure
     guidata(hObject, handles);
 end
@@ -563,16 +563,16 @@ fulltext = char(strtrim(get(handles.listbox_erpnames,'String')));
 
 if length(fulltext)>1
     fullname = get(handles.edit_filelist, 'String');
-    
+
     if ~strcmp(fullname,'')
         fid_list   = fopen( fullname , 'w');
         for i=1:size(fulltext,1)
             fprintf(fid_list,'%s\n', fulltext(i,:));
         end
-        
+
         fclose(fid_list);
         handles.listname = fullname;
-        
+
         % Update handles structure
         guidata(hObject, handles);
         disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
@@ -606,19 +606,19 @@ else
     % test current directory
     %
     % changecd(erppathname)
-    
+
     if ~iscell(erpfname)
         erpfname = {erpfname};
     end
-    
+
     nerpn = length(erpfname);
-    
+
     for i=1:nerpn
         newline  = fullfile(erppathname, erpfname{i});
         currline = get(handles.listbox_erpnames, 'Value');
         fulltext = get(handles.listbox_erpnames, 'String');
         indxline = length(fulltext);
-        
+
         if currline==indxline
             % extra line forward
             fulltext  = cat(1, fulltext, {'new erpset'});
@@ -630,11 +630,11 @@ else
             set(handles.listbox_erpnames, 'Value', currline+1)
             [fulltext{currline+1:indxline+1}] = resto{:};
         end
-        
+
         fulltext{currline} = newline;
         set(handles.listbox_erpnames, 'String', fulltext)
     end
-    
+
     handles.listname = [];
     indxline         = length(fulltext);
     handles.indxline = indxline;
@@ -642,8 +642,8 @@ else
     set(handles.button_savelistas, 'Enable','on')
     set(handles.edit_filelist,'String','');
     set(handles.radiobutton_includep, 'Enable', 'on');
-    
-    
+
+
     % Update handles structure
     guidata(hObject, handles);
     %       catch
@@ -674,15 +674,15 @@ function button_savelistas_Callback(hObject, eventdata, handles)
 fulltext = char(get(handles.listbox_erpnames,'String'));
 if length(fulltext)>1
     fullname = savelist(hObject, eventdata, handles);
-    
+
     if isempty(fullname)
         return
     end
-    
+
     set(handles.edit_filelist, 'String', fullname )
     set(handles.button_savelist, 'Enable', 'on')
     handles.listname = fullname;
-    
+
     % Update handles structure
     guidata(hObject, handles);
 else
@@ -702,23 +702,23 @@ fulltext = char(fulltext); % string matrix
 currline = get(handles.listbox_erpnames, 'Value');
 
 if currline>=1 && currline<indxline
-    
+
     fulltext(currline,:) = [];
     fulltext = cellstr(fulltext); % cell string
-    
+
     if length(fulltext)>1 % put this one first on the list
         newline = fulltext{1};
         ERP1    = load(newline, '-mat');
         ERP     = ERP1.ERP;
     end
-    
+
     set(handles.listbox_erpnames, 'String', fulltext);
     listbox_erpnames_Callback(hObject, eventdata, handles)
     handles.fulltext = fulltext;
     indxline = length(fulltext);
     handles.listname = [];
     set(handles.edit_filelist,'String','');
-    
+
     % Update handles structure
     guidata(hObject, handles);
 else
@@ -734,7 +734,7 @@ if get(hObject,'Value')
     set(handles.listbox_erpnames, 'Max',2)
     set(handles.listbox_erpnames, 'HorizontalAlignment','left')
     set(handles.listbox_erpnames, 'Foregroundcolor',[0 0 0.72])
-    
+
     set(handles.button_delerpset,'Enable','off')
     set(handles.button_adderpset,'Enable','off')
     set(handles.button_savelistas,'Enable','off')
@@ -757,7 +757,7 @@ end
 % -----------------------------------------------------------------------
 function radiobutton_erpset_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
-    
+
     set(hObject,'Value',1);
     set(handles.edit_erpset,'Enable','off');
     set(handles.radiobutton_ERPsetcustom,'Value',0);
@@ -765,7 +765,7 @@ if get(hObject,'Value')
 %     if handles.erpsetop ==1
     set(handles.edit_erpset, 'String',num2str(handles.erpsetPanel));
 %     end
-    
+
     set(handles.radiobutton_folders,'Value',0)
     set(handles.listbox_erpnames,'Enable','off')
     set(handles.button_adderpset,'Enable','off')
@@ -791,7 +791,7 @@ nerp     = handles.totalerpset;
 %
 if get(handles.radiobutton_folders, 'Value')==0;
     indexerp = unique_bc2(str2num(get(handles.edit_erpset, 'String')));
-    
+
     if isempty(indexerp)
         msgboxText =  ['Invalid ERPset indexing!\n\n'...
             'You must use any integer value between 1 and %g.'];
@@ -823,9 +823,9 @@ if get(handles.radiobutton_folders, 'Value')==0;
         chkerp  = 1;
         return
     end
-    
+
     ALLERP = evalin('base', 'ALLERP');
-    
+
     if ~isempty(ALLERP)
         nerp2 = length(indexerp);
         numpoints = zeros(1,nerp2);
@@ -843,19 +843,19 @@ if get(handles.radiobutton_folders, 'Value')==0;
     clear ALLERP
 else
     listname = strtrim(char(get(handles.edit_filelist,'String')));
-    
+
     %
     % open file containing the erp list
     %
     fid_list = fopen( listname );
     formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
     lista    = formcell{:};
-    
+
     % extra line forward
     lista    = cat(1, lista, {'new erpset'});
     lentext  = length(lista);
     fclose(fid_list);
-    
+
     if lentext>1
         numpoints = zeros(1,lentext-1);
         numchans  = zeros(1,lentext-1);
@@ -869,7 +869,7 @@ else
                 etitle = 'ERPLAB: appenderpGUI inputs';
                 errorfound(msgboxText, etitle);
                 handles.listname = [];
-                
+
                 % Update handles structure
                 guidata(hObject, handles);
                 errorerp = 1;
@@ -880,7 +880,7 @@ else
                 numchans(j)  = ERP.nchan;
                 nameerp{j}   = ERP.filename;
             end
-            
+
             clear ERP1 ERP
         end
         if errorerp
@@ -934,9 +934,9 @@ if nsets>0 && optioni==0 %&& isnumeric(erpset)   % from erpset menu
     if ERPsetOp==1
         set( handles.edit_erpset, 'Enable', 'off');
     else
-        set( handles.edit_erpset, 'Enable', 'on'); 
+        set( handles.edit_erpset, 'Enable', 'on');
     end
-    
+
     set(handles.radiobutton_folders, 'Value', 0);
     set(handles.listbox_erpnames, 'Enable', 'off');
     set(handles.button_adderpset, 'Enable', 'off');
@@ -961,11 +961,11 @@ else % from hard drive
 %     else
         set( handles.radiobutton_ERPsetcustom, 'Enable', 'off');
 %     end
-    
-    
+
+
     set(handles.pushbutton_flush,'Enable','on')
     set(handles.radiobutton_includep, 'Value', 0);
-    
+
     if nsets==0
         set(handles.radiobutton_erpset, 'Enable', 'off');
         set(handles.edit_erpset, 'String', 'no erpset');
@@ -973,7 +973,7 @@ else % from hard drive
         set(handles.edit_erpset, 'String', vect2colon(1:nsets, 'Delimiter','off', 'Repeat', 'off'));
     end
     if ~isempty(erpset) && ischar(erpset)
-        
+
         %
         % open file containing the erp list
         %
@@ -985,7 +985,7 @@ else % from hard drive
         end
         formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
         fclose(fid_list);
-        
+
         lista = formcell{:};
         listname = erpset;
         set(handles.radiobutton_includep, 'Enable', 'on');
@@ -995,11 +995,11 @@ else % from hard drive
         listname = [];
         set(handles.radiobutton_includep, 'Enable', 'off');
     end
-    
+
     % extra line forward
     lista   = cat(1, lista, {'new erpset'});
     %lentext = length(lista);
-    
+
     handles.listname = listname;
     set(handles.button_savelistas, 'Enable','on')
     set(handles.listbox_erpnames,'String',lista);
@@ -1057,7 +1057,7 @@ if isequal(filename,0)
     return
 else
     [px, fname, ext] = fileparts(filename);
-    
+
     if strcmp(ext,'')
         if filterindex==1 || filterindex==3
             ext   = '.txt';
@@ -1065,13 +1065,13 @@ else
             ext   = '.dat';
         end
     end
-    
+
     fname = [ fname ext];
     fullname = fullfile(filepath, fname);
     disp(['To Save erpset list, user selected ', fullname])
-    
+
     fid_list   = fopen( fullname , 'w');
-    
+
     for i=1:size(fulltext,1)-1
         fprintf(fid_list,'%s\n', fulltext(i,:));
     end
@@ -1141,7 +1141,7 @@ if get(hObject,'Value')
     set(handles.edit_erpset,'Enable','on');
     set(handles.radiobutton_erpset,'Value',0);
     set(handles.radiobutton_ERPsetcustom,'Value',1);
-    
+
     set(handles.radiobutton_folders,'Value',0);
     set(handles.listbox_erpnames,'Enable','off');
     set(handles.button_adderpset,'Enable','off');

@@ -56,23 +56,23 @@ varargout{1} = EStudio_erp_box_edit_chan;
         Enable_label = 'off';
         %%--------------------channel and bin setting----------------------
         ERP_tab_edit_chan.DataSelBox = uiextras.VBox('Parent', EStudio_erp_box_edit_chan,'BackgroundColor',ColorB_def);
-        
+
         %%%----------------Mode-----------------------------------
         ERP_tab_edit_chan.mode_1 = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         ERP_tab_edit_chan.mode_modify_title = uicontrol('Style','text','Parent',ERP_tab_edit_chan.mode_1 ,...
             'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         ERP_tab_edit_chan.mode_modify = uicontrol('Style','radiobutton','Parent',ERP_tab_edit_chan.mode_1 ,...
-            'String','Modify existing dataset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        %         ERP_tab_edit_chan.mode_modify.String =  '<html>Modify existing dataset<br />(recursive updating)</html>';
+            'String','Modify existing ERPset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+        %         ERP_tab_edit_chan.mode_modify.String =  '<html>Modify existing ERPset<br />(recursive updating)</html>';
         set(ERP_tab_edit_chan.mode_1,'Sizes',[55 -1]);
         %%--------------For create a new ERPset----------------------------
         ERP_tab_edit_chan.mode_2 = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  ERP_tab_edit_chan.mode_2,'BackgroundColor',ColorB_def);
         ERP_tab_edit_chan.mode_create = uicontrol('Style','radiobutton','Parent',ERP_tab_edit_chan.mode_2 ,...
-            'String','Create new dataset','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        %         ERP_tab_edit_chan.mode_create.String =  '<html>Create new dataset<br />(independent transformations)</html>';
+            'String','Create new ERPset','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+        %         ERP_tab_edit_chan.mode_create.String =  '<html>Create new ERPset<br />(independent transformations)</html>';
         set(ERP_tab_edit_chan.mode_2,'Sizes',[55 -1]);
-        
+
         %%Select channels that will be deleted and renamed
         ERP_tab_edit_chan.select_chan_title = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',ERP_tab_edit_chan.select_chan_title,...
@@ -82,14 +82,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
         ERP_tab_edit_chan.browse_chan = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.select_chan_title,...
             'String','Browse','callback',@browse_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set(ERP_tab_edit_chan.select_chan_title,'sizes',[40 -1 60])
-        
+
         %%Delete selected channels && Rename selected channels
         ERP_tab_edit_chan.delete_rename = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         ERP_tab_edit_chan.delete_chan = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.delete_rename ,...
             'String','Delete chan','callback',@delete_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         ERP_tab_edit_chan.rename_chan = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.delete_rename ,...
             'String','Rename chan','callback',@rename_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        
+
         %%Add/edit chan locations
         ERP_tab_edit_chan.edit_chanlocs = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.delete_rename,...
             'String','Add/edit chanlocs','callback',@edit_chanlocs,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
@@ -147,7 +147,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if ~isempty(messgStr) && ERPpanelIndex~=15
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
         New_chans = str2num(Source.String);
@@ -177,15 +177,15 @@ varargout{1} = EStudio_erp_box_edit_chan;
             Source.Enable= 'off';
             return;
         end
-        
+
         [messgStr,ERPpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr) && ERPpanelIndex~=15
             observe_ERPDAT.Count_currentERP=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
-        
+
         ERP = observe_ERPDAT.ERP;
         for Numofchan = 1:ERP.nchan
             try
@@ -227,15 +227,15 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
-        
+
         estudioworkingmemory('f_ERP_proces_messg','Edit/Delete Channels & Locations >  Delete selected chan');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        
+
         ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP))  ||  any(ERPArray <1)
             ERPArray = observe_ERPDAT.CURRENTERP;estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        
+
         ChanArray =  str2num(ERP_tab_edit_chan.select_edit_chan.String);
         if isempty(ChanArray) || any(ChanArray(:)<=0)
             msgboxText='Edit/Delete Channels & Locations >  Delete selected chan > Indexes of chans should be positive numbers';
@@ -261,7 +261,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 observe_ERPDAT.Process_messg =2;
                 return;
             end
-            
+
             if numel(ChanArray) == ERP.nchan
                 msgboxText = ['Edit/Delete Channels & Locations >  Delete selected chan > Please clear this ERPset in "ERPsets" panel if you want to delete all channels'];
                 titlNamerro = 'Warning for ERP Tab';
@@ -272,7 +272,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             end
             keeplocs=1;
             Formula_str = strcat(['delerpchan(', vect2colon(ChanArray),')']);
-            
+
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, {Formula_str}, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
             if isempty(ERPCOM)
                 observe_ERPDAT.Process_messg =2;
@@ -301,7 +301,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Save_file_label = Answer{2};
             end
         end
-        
+
         if CreateERPFlag==0
             ALLERP(ERPArray) = ALLERP_out;
         else
@@ -360,23 +360,23 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
-        
+
         estudioworkingmemory('f_ERP_proces_messg','Edit/Delete Channels & Locations >  Rename selected chan');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ChanArray =  str2num(ERP_tab_edit_chan.select_edit_chan.String);
-        
+
         if isempty(ChanArray) || any(ChanArray(:)<=0)
             msgboxText='Edit/Delete Channels & Locations >  Delete selected chan > Indexes of chans should be positive numbers';
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        
+
         ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
             ERPArray = observe_ERPDAT.CURRENTERP; estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        
+
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
         ALLERP = observe_ERPDAT.ALLERP;
         ALLERP_out = [];
@@ -386,7 +386,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Rename selected chan*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current ERPset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
-            
+
             %%check the selected chans
             if any(ChanArray(:) > ERP.nchan)
                 fprintf( ['Edit/Delete Channels & Locations >  Rename selected chan: Some of chan indexes exceed',32,num2str(ERP.nchan),32,', we therefore select all channels.\n']);
@@ -407,14 +407,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
             end
             titleName= ['Dataset',32,num2str(CURRENTSET),': ERPLAB Change Channel Name'];
             Chanlabelsnew= f_change_chan_name_GUI(Chanlabelsold,def,titleName);
-            
+
             if isempty(Chanlabelsnew)
                 fprintf( [repmat('-',1,100) '\n']);
                 observe_ERPDAT.Process_messg =2;
                 return
             end
             estudioworkingmemory('pop_rename2chan',Chanlabelsnew);
-            
+
             [ERP, ERPCOM] = pop_rename2chan(ALLERP,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'gui');
             if isempty(ERPCOM)
                 observe_ERPDAT.Process_messg =2;
@@ -432,8 +432,8 @@ varargout{1} = EStudio_erp_box_edit_chan;
             end
             fprintf( [repmat('-',1,100) '\n']);
         end
-        
-        
+
+
         Save_file_label=0;
         if CreateERPFlag==0
             ALLERP(ERPArray) = ALLERP_out;
@@ -475,7 +475,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.ALLERP = ALLERP;
-        
+
         if CreateERPFlag==1
             try
                 Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
@@ -508,10 +508,10 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
-        
+
         estudioworkingmemory('f_ERP_proces_messg','Edit/Delete Channels & Locations >  Add or edit channel locations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        
+
         ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:) <1)
             ERPArray = observe_ERPDAT.CURRENTERP;
@@ -531,7 +531,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             observe_ERPDAT.Process_messg =2;
             return;
         end
-        
+
         if isempty(ERPoutput)
             observe_ERPDAT.Process_messg =2;
             return;
@@ -556,7 +556,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            
+
             if isempty(ALLERP_out)
                 ALLERP_out  = ERP;
             else
@@ -564,7 +564,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end
-        
+
         Save_file_label=0;
         if CreateERPFlag==1
             Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_editchan');
@@ -612,7 +612,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            
+
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
@@ -685,4 +685,3 @@ if exist(filenamex, 'file')~=0
     end
 end
 end
-
