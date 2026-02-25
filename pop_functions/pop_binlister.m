@@ -33,7 +33,7 @@
 %                    'Workspace&Text' - send to Workspace and text file,
 %                    'Workspace&EEG'  - send to workspace and EEG,
 %                    'All'- send to all of them.
-%     'Report'      - 'on'= create report about binlister performance, 'off'= do not create a report.
+%     'Report'      - DEPRECATED. Accepted for backwards compatibility but ignored.
 %     'Saveas'      - (optional) open GUI for saving dataset. 'on'/'off'
 %
 %
@@ -61,7 +61,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright � 2007 The Regents of the University of California
+% Copyright � 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -173,7 +173,7 @@ if nargin==1
                         %        indexEL = 1;
                         %end
 
-                        if isfield(EEG.EVENTLIST, 'eventinfo')
+                        if isfield(EEG.EVENTLIST, 'eventinfo') && indexEL <= length(EEG.EVENTLIST)
                                 if isempty(EEG.EVENTLIST(indexEL).eventinfo)
                                         msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
                                                 'Use Create EVENTLIST before BINLISTER'];
@@ -181,7 +181,7 @@ if nargin==1
                                         errorfound(sprintf(msgboxText), title);
                                         return
                                 end
-                        else
+                        elseif ~isfield(EEG.EVENTLIST, 'eventinfo')
                                 msgboxText =  ['EVENTLIST.eventinfo structure was not found!\n'...
                                         'Use Create EVENTLIST before BINLISTER'];
                                 title = 'ERPLAB: Error';
@@ -333,7 +333,8 @@ if ismember_bc2(option2do, [1 3 5 7]) && (isempty(file3) || strcmpi(file3,'no') 
 end
 
 if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
-        if isfield(EEG, 'EVENTLIST')
+        if isfield(EEG, 'EVENTLIST') && indexEL <= length(EEG.EVENTLIST)
+                % indexEL slot exists — validate it has eventinfo
                 if isfield(EEG.EVENTLIST, 'eventinfo')
                         if isempty(EEG.EVENTLIST(indexEL).eventinfo)
                                 msgboxText = ['ERPLAB says: EVENTLIST.eventinfo structure is empty!\n'...
@@ -345,12 +346,18 @@ if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
                                 'Use Create EVENTLIST before BINLISTER'];
                         error(sprintf(msgboxText));
                 end
-        else
-                msgboxText =  ['ERPLAB says: EVENTLIST structure was not found!\n'...
-                        'Use Create EVENTLIST before BINLISTER'];
-                error(sprintf(msgboxText));
+        elseif ~isfield(EEG, 'EVENTLIST') || isempty(EEG.EVENTLIST)
+                % No EVENTLIST at all — binlister_smart will build from EEG.event
+                % but warn if indexEL==1 since pop_creabasiceventlist should have been run
+                if indexEL == 1
+                        msgboxText =  ['ERPLAB says: EVENTLIST structure was not found!\n'...
+                                'Use Create EVENTLIST before BINLISTER'];
+                        error(sprintf(msgboxText));
+                end
         end
-        if ~isempty(EEG.EVENTLIST(indexEL)) && iswarning==1
+        % If indexEL > length(EEG.EVENTLIST), binlister_smart will build a fresh
+        % eventlist from EEG.event and pasteeventlist will extend the array.
+        if indexEL <= length(EEG.EVENTLIST) && ~isempty(EEG.EVENTLIST(indexEL)) && iswarning==1
                 binaux    = [EEG.EVENTLIST(indexEL).eventinfo.bini];
                 binhunter = binaux(binaux>0); %8/19/2009
 
@@ -367,17 +374,16 @@ if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
         end
 
         %
-        % Check for alphanumeric event codes
+        % Check for alphanumeric event codes (only if this EVENTLIST slot exists)
         %
-        codelist = {EEG.EVENTLIST(indexEL).eventinfo.code};
-        if nnz(cellfun(@ischar, codelist))>0
-                msgboxText = ['Your dataset still has alphanumeric/string codes.\n\n'...
-                        'You may try either eliminating nonnumeric information (see Create EVENTLIST)\n'...
-                        'or remapping your events (see Create EVENTLIST Advanced)'];
-                %title = 'ERPLAB: BDF Parsing Error';
-                %errorfound(sprintf(msgboxText), title);
-                %return
-                error(msgboxText);
+        if indexEL <= length(EEG.EVENTLIST)
+                codelist = {EEG.EVENTLIST(indexEL).eventinfo.code};
+                if nnz(cellfun(@ischar, codelist))>0
+                        msgboxText = ['Your dataset still has alphanumeric/string codes.\n\n'...
+                                'You may try either eliminating nonnumeric information (see Create EVENTLIST)\n'...
+                                'or remapping your events (see Create EVENTLIST Advanced)'];
+                        error(msgboxText);
+                end
         end
         % save original EVENTLIST
         %ELaux = EEG.EVENTLIST(indexEL); % store original EVENTLIST
@@ -406,9 +412,7 @@ else
         updevent = 0;
 end
 if strcmpi(p.Results.Report, 'on')
-        reportable = 1;
-else
-        reportable = 0;
+        fprintf('Note: The ''Report'' option is no longer supported and will be ignored.\n');
 end
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas    = 1;
@@ -434,13 +438,10 @@ end
 % subroutine
 %
 %
-% Call (neo)binlister
+% Call binlister_smart: automatically selects fast or standard path based
+% on BDF content (RT specs, flag conditions, forbidden codes in timed windows).
 %
-if reportable % workaround for a faster binlister... 02/28/12 JLC
-        [EEG, EVENTLIST, binofbins, isparsenum] = binlister(EEG, file1, file2, file3, forbiddenCodeArray, ignoreCodeArray, reportable);
-else
-        [EEG, EVENTLIST, binofbins, isparsenum] = neobinlister2(EEG, file1, file2, file3, forbiddenCodeArray, ignoreCodeArray, 0);
-end
+[EEG, EVENTLIST, binofbins, isparsenum] = binlister_smart(EEG, file1, file2, file3, forbiddenCodeArray, ignoreCodeArray);
 if isparsenum==0
         % parsing was not approved
         msgboxText = ['Bin descriptor file contains errors!\n'...
