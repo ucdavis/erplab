@@ -135,9 +135,25 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_binop',1);
-        def  = estudioworkingmemory('pop_binoperator');
-        if isempty(def)
-            def = { [], 1};
+        % Build def from current table content (not stale working memory)
+        % so the user doesn't lose edits made in the main panel
+        Eq_Data_cur = gui_erp_bin_operation.edit_bineq.Data;
+        Formula_str_cur = {};
+        count_cur = 0;
+        for ii_cur = 1:length(Eq_Data_cur)
+            if ~isempty(Eq_Data_cur{ii_cur})
+                count_cur = count_cur + 1;
+                Formula_str_cur{count_cur} = Eq_Data_cur{ii_cur};
+            end
+        end
+        def_prev = estudioworkingmemory('pop_binoperator');
+        if isempty(def_prev)
+            def_prev = { [], 1};
+        end
+        if isempty(Formula_str_cur)
+            def = def_prev;  % Nothing in table, fall back to working memory
+        else
+            def = {Formula_str_cur, def_prev{2}};  % Use current table formulas
         end
         binopGUI = estudioworkingmemory('binopGUI');
         if gui_erp_bin_operation.mode_modify.Value ==1
@@ -222,9 +238,10 @@ varargout{1} = ERP_bin_operation_gui;
             for ii = 1:length(def{1,1})
                 dsnames{ii,1}  = Eqs{ii};
             end
-            gui_erp_bin_operation.edit_bineq.Data = dsnames;
-            set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         end
+        % Always update table (clears it when formulas is empty)
+        gui_erp_bin_operation.edit_bineq.Data = dsnames;
+        set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
 
     end
 
@@ -348,9 +365,10 @@ varargout{1} = ERP_bin_operation_gui;
             dsnames{ii,1} = '';
         end
 
-        % Clear filename tracking when clearing equations
+        % Clear filename tracking and working memory when clearing equations
         gui_erp_bin_operation.loaded_filename = '';
         gui_erp_bin_operation.equations_modified = false;
+        estudioworkingmemory('pop_binoperator', {[], 1});
 
         gui_erp_bin_operation.edit_bineq.Data = dsnames;
         set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
@@ -747,6 +765,10 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.edit_bineq.Data = dsnames;
         gui_erp_bin_operation.mode_modify.Value = 1;
         gui_erp_bin_operation.mode_create.Value = 0;
+        % Clear file tracking and working memory on reset
+        gui_erp_bin_operation.loaded_filename = '';
+        gui_erp_bin_operation.equations_modified = false;
+        estudioworkingmemory('pop_binoperator', {[], 1});
         observe_ERPDAT.Reset_erp_paras_panel=10;
     end
 

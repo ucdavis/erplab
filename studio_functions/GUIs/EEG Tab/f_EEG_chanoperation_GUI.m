@@ -77,6 +77,12 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.Paras{1} = gui_eegtab_chan_optn.edit_bineq.Data;
         set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
         gui_eegtab_chan_optn.edit_bineq.KeyPressFcn=  @eeg_chanop_presskey;
+        gui_eegtab_chan_optn.edit_bineq.CellEditCallback = @equation_table_edited;
+
+        % Track loaded equation file for history
+        gui_eegtab_chan_optn.loaded_filename = '';  % Empty if equations manually entered
+        gui_eegtab_chan_optn.equations_modified = false;  % True if user edits after loading file
+
         gui_eegtab_chan_optn.equation_selection = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.eq_editor = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
             'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
@@ -151,9 +157,25 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
 
-        def  = estudioworkingmemory('pop_eegchanoperator');
-        if isempty(def)
-            def = { [], 1};
+        % Build def from current table content (not stale working memory)
+        % so the user doesn't lose edits made in the main panel
+        Eq_Data_cur = gui_eegtab_chan_optn.edit_bineq.Data;
+        Formula_str_cur = {};
+        count_cur = 0;
+        for ii_cur = 1:length(Eq_Data_cur)
+            if ~isempty(Eq_Data_cur{ii_cur})
+                count_cur = count_cur + 1;
+                Formula_str_cur{count_cur} = Eq_Data_cur{ii_cur};
+            end
+        end
+        def_prev = estudioworkingmemory('pop_eegchanoperator');
+        if isempty(def_prev)
+            def_prev = { [], 1};
+        end
+        if isempty(Formula_str_cur)
+            def = def_prev;  % Nothing in table, fall back to working memory
+        else
+            def = {Formula_str_cur, def_prev{2}};  % Use current table formulas
         end
         chanopGUI = estudioworkingmemory('chanopGUI');
         if  gui_eegtab_chan_optn.mode_modify.Value==1
@@ -216,7 +238,10 @@ varargout{1} = EEG_chan_operation_gui;
 
         % Check if formulas is a filename string or cell array of formulas
         if ischar(formulas)
-            % It's a filename - need to read the file
+            % It's a filename - need to read the file to display equations
+            gui_eegtab_chan_optn.loaded_filename = formulas;  % Remember the filename
+            gui_eegtab_chan_optn.equations_modified = false;  % Not modified yet
+
             fid_formula = fopen(formulas);
             if fid_formula == -1
                 msgboxText = ['Channel Operations - Cannot open file: ', formulas];
@@ -228,7 +253,7 @@ varargout{1} = EEG_chan_operation_gui;
             try
                 formcell = textscan(fid_formula, '%s', 'delimiter', '\r');
                 fclose(fid_formula);
-                formulas = formcell{1}; % Convert to cell array
+                formulas = formcell{1}; % Convert to cell array for display
             catch
                 fclose(fid_formula);
                 msgboxText = ['Channel Operations - Error reading file: ', formulas];
@@ -237,6 +262,10 @@ varargout{1} = EEG_chan_operation_gui;
                 observe_EEGDAT.eeg_panel_message = 2;
                 return;
             end
+        else
+            % It's a cell array of equations - no file source
+            gui_eegtab_chan_optn.loaded_filename = '';
+            gui_eegtab_chan_optn.equations_modified = false;
         end
 
         def = {formulas, wbmsgon};
@@ -250,9 +279,10 @@ varargout{1} = EEG_chan_operation_gui;
             for ii = 1:length(def{1,1})
                 dsnames{ii,1}  = Eqs{ii};
             end
-            gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
-            set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         end
+        % Always update table (clears it when formulas is empty)
+        gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
+        set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
 
 %%-------------------Equation Load---------------------------------------
@@ -302,6 +332,11 @@ varargout{1} = EEG_chan_operation_gui;
             return;
         end
         fclose(fid_formula);
+
+        % Track the loaded file for history
+        gui_eegtab_chan_optn.loaded_filename = fullname;
+        gui_eegtab_chan_optn.equations_modified = false;
+
         gui_eegtab_chan_optn.edit_bineq.Data = formcell{1,1};
         set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
@@ -363,6 +398,12 @@ varargout{1} = EEG_chan_operation_gui;
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
+
+        % Clear filename tracking and working memory when clearing equations
+        gui_eegtab_chan_optn.loaded_filename = '';
+        gui_eegtab_chan_optn.equations_modified = false;
+        estudioworkingmemory('pop_eegchanoperator', {[], 1});
+
         gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
         set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
@@ -682,11 +723,20 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.Paras{1} = gui_eegtab_chan_optn.edit_bineq.Data;
         gui_eegtab_chan_optn.Paras{2} = gui_eegtab_chan_optn.locaInfor.Value;
         gui_eegtab_chan_optn.Paras{3} =gui_eegtab_chan_optn.mode_modify.Value;
+
+        % Determine what to pass to pop_eegchanoperator: filename or equations
+        % If user loaded from file and hasn't modified, pass filename for cleaner history
+        if ~isempty(gui_eegtab_chan_optn.loaded_filename) && ~gui_eegtab_chan_optn.equations_modified
+            Formulas_to_pass = gui_eegtab_chan_optn.loaded_filename;
+        else
+            Formulas_to_pass = Formula_str;
+        end
+
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
             EEG = ALLEEG(EEGArray(Numofeeg));
-            [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
+            [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formulas_to_pass, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
             if isempty(LASTCOM)
                 observe_EEGDAT.eeg_panel_message = 2;
                 return;
@@ -849,6 +899,13 @@ varargout{1} = EEG_chan_operation_gui;
     end
 
 
+%%--------------Detect equation table edits--------------------------------
+    function equation_table_edited(~,~)
+        % Mark equations as modified when user edits the table
+        % This invalidates the loaded filename for history purposes
+        gui_eegtab_chan_optn.equations_modified = true;
+    end
+
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
         if observe_EEGDAT.Reset_eeg_paras_panel~=6
@@ -867,6 +924,10 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.locaInfor.Value=1;
         gui_eegtab_chan_optn.mode_modify.Value = 1;
         gui_eegtab_chan_optn.mode_create.Value = 0;
+        % Clear file tracking and working memory on reset
+        gui_eegtab_chan_optn.loaded_filename = '';
+        gui_eegtab_chan_optn.equations_modified = false;
+        estudioworkingmemory('pop_eegchanoperator', {[], 1});
         observe_EEGDAT.Reset_eeg_paras_panel=7;
     end
 end

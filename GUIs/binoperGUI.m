@@ -7,9 +7,9 @@
 %
 % Bin Operations:
 %
-% The ‘Bin Operations’ function allows you to compute RUN bins that are linear
+% The ï¿½Bin Operationsï¿½ function allows you to compute RUN bins that are linear
 % combinations of the bins in the current ERP structure.  For example, you can
-% average multiple bins together, and you can compute difference waves.  It operates in the same manner as Channel Operations.  That is, you create equations that look like this: “bin6 = 0.5*bin3 – 0.5*bin2”.  This is like a simplified version of the erpmanip program in ERPSS.  We will eventually create a more sophisticated version that has the same power as erpmanip.
+% average multiple bins together, and you can compute difference waves.  It operates in the same manner as Channel Operations.  That is, you create equations that look like this: ï¿½bin6 = 0.5*bin3 ï¿½ 0.5*bin2ï¿½.  This is like a simplified version of the erpmanip program in ERPSS.  We will eventually create a more sophisticated version that has the same power as erpmanip.
 %
 % Your bins are stored in a Matlab structure named ERP, at binavg field
 % (ERP.binvg). This field has 3 dimensions:
@@ -73,7 +73,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -230,7 +230,17 @@ else
     else
         set(handles.checkbox_sendfile2history,'Value', 1);
     end
-    set(handles.edit_filelist,'String', binopGUI.listname );
+    if Toolabel  % Studio: don't restore listname or send-file checkbox from
+                 % working memory. The checkbox should only be on if a file
+                 % was loaded/saved in this Advanced session. Main panel
+                 % tracks loaded_filename independently.
+        set(handles.edit_filelist,'String', '');
+        set(handles.checkbox_sendfile2history,'Value', 0);
+        handles.listname = [];
+    else
+        set(handles.edit_filelist,'String', binopGUI.listname );
+        handles.listname = binopGUI.listname;
+    end
 end
 if isempty(formulas)
     set(handles.editor,'String','');
@@ -318,6 +328,12 @@ formulalist = get(handles.editor,'String');
 wbmsgon = get(handles.bwarning,'Value');
 
 if strcmp(formulalist,'')
+    if handles.Toolabel  % Studio context: return empty cell so main panel can clear
+        handles.output = {{}, wbmsgon};
+        guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+        return
+    end
     msgboxText =  'You have not yet written a formula!';
     title = 'ERPLAB: binoperGUI few inputs';
     errorfound(msgboxText, title);
@@ -441,6 +457,9 @@ if ~strcmp(fulltext,'')
     set(handles.edit_filelist, 'String', fullname )
     set(handles.button_savelist, 'Enable', 'on')
     handles.listname = fullname;
+    if handles.Toolabel  % Studio: auto-check "send file" since a file was saved
+        set(handles.checkbox_sendfile2history, 'Value', 1);
+    end
     % Update handles structure
     guidata(hObject, handles);
 else
@@ -466,8 +485,11 @@ end
 set(handles.edit_filelist,'String',fullname);
 fid_formula = fopen( fullname );
 try
-    formcell    = textscan(fid_formula, '%s','delimiter', '\r');
-    formulas    = char(formcell{:});
+    formcell = textscan(fid_formula, '%s', 'delimiter', '\n', 'Whitespace', '');
+    % Filter out empty/missing entries (newer MATLAB returns <missing> for blank lines)
+    formraw  = formcell{1};
+    formraw  = formraw(cellfun(@(x) ischar(x) && ~isempty(strtrim(x)), formraw));
+    formulas = char(formraw);
 catch
     serr = lasterror;
     msgboxText = ['Please, check your file:\n '...
@@ -490,6 +512,9 @@ set(handles.editor,'String',formulas);
 fclose(fid_formula);
 set(handles.button_savelist, 'Enable','on')
 handles.listname = fullname;
+if handles.Toolabel  % Studio: auto-check "send file" since a file was loaded
+    set(handles.checkbox_sendfile2history, 'Value', 1);
+end
 
 % Update handles structure
 guidata(hObject, handles);

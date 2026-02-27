@@ -180,9 +180,18 @@ else
     else
         set(handles.chkeeplocs,'Value',0);
     end
-    listname = chanopGUI.listname;
-    set(handles.edit_filelist,'String', listname );
-    handles.listname = listname; % JLC Sept 1, 2012
+    if Toolabel  % Studio: don't restore listname or send-file checkbox from
+                 % working memory. The checkbox should only be on if a file
+                 % was loaded/saved in this Advanced session. Main panel
+                 % tracks loaded_filename independently.
+        set(handles.edit_filelist,'String', '');
+        set(handles.checkbox_sendfile2history,'Value', 0);
+        handles.listname = [];
+    else
+        listname = chanopGUI.listname;
+        set(handles.edit_filelist,'String', listname );
+        handles.listname = listname; % JLC Sept 1, 2012
+    end
 end
 
 % wchmsgon = erpworkingmemory('wchmsgon');
@@ -265,6 +274,12 @@ keeplocs    = get(handles.chkeeplocs,'Value');
 
 
 if strcmp(formulalist,'')
+    if handles.Toolabel  % Studio context: return empty cell so main panel can clear
+        handles.output = {{}, wchmsgon, keeplocs};
+        guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+        return
+    end
     msgboxText =  'You have not written any formula!';
     title = 'ERPLAB: chanoperGUI few inputs';
     errorfound(msgboxText, title);
@@ -420,6 +435,9 @@ if ~strcmp(fulltext,'')
     set(handles.edit_filelist, 'String', fullname )
     set(handles.button_savelist, 'Enable', 'on')
     handles.listname = fullname;
+    if handles.Toolabel  % Studio: auto-check "send file" since a file was saved
+        set(handles.checkbox_sendfile2history, 'Value', 1);
+    end
     % Update handles structure
     guidata(hObject, handles);
 else
@@ -447,8 +465,11 @@ set(handles.edit_filelist,'String',fullname);
 fid_formula = fopen( fullname );
 
 try
-    formcell    = textscan(fid_formula, '%s','delimiter', '\r');
-    formulas    = char(formcell{:});
+    formcell = textscan(fid_formula, '%s', 'delimiter', '\n', 'Whitespace', '');
+    % Filter out empty/missing entries (newer MATLAB returns <missing> for blank lines)
+    formraw  = formcell{1};
+    formraw  = formraw(cellfun(@(x) ischar(x) && ~isempty(strtrim(x)), formraw));
+    formulas = char(formraw);
 catch
     serr = lasterror;
     msgboxText =  ['Please, check your file: \n';
@@ -471,6 +492,9 @@ set(handles.editor,'String',formulas);
 fclose(fid_formula);
 set(handles.button_savelist, 'Enable','on')
 handles.listname = fullname;
+if handles.Toolabel  % Studio: auto-check "send file" since a file was loaded
+    set(handles.checkbox_sendfile2history, 'Value', 1);
+end
 
 % Update handles structure
 guidata(hObject, handles);
