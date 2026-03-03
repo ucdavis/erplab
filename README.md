@@ -1,4 +1,4 @@
-## Note: We recommend against using Matlab 2025A with ERPLAB at this time. It is very buggy!
+## Note: We recommend against using Matlab 2025A or later with ERPLAB at this time. It is very buggy!
 
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data. It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis. We have two versions: [ERPLAB Studio](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual) is a standalone package that provides an intuitive and easy-to-use graphical user interface. [ERPLAB Classic](https://github.com/ucdavis/erplab/wiki/Manual) is a plugin that runs inside the EEGLAB graphical user interface.
 </p>
@@ -6,10 +6,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v12.10
+## ERPLAB v12.20
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/12.10/erplab12.10.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
+  <a href="https://github.com/ucdavis/erplab/releases/download/12.20/erplab12.20.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
@@ -25,7 +25,30 @@ This download contains both [ERPLAB Studio](https://github.com/ucdavis/erplab/wi
 
 We encourage most users to use this latest major version.
 
-## Release Notes
+### ERPLAB v12.20 Release Notes
+
+*Changes since previous release:*
+
+Adoption of an optimized version of binlister which examines the bin descriptor file and runs a faster binning algorithm if possible. This should lead to a significant speed increase for many users, particularly for data sets with many event codes.
+
+Removed “erplab_box” and all cases where backup files are automatically written (e.g. eventlist backups). Now all writing of files must be user specified.
+
+Added various improvements to history logging in Studio. Most notably, history now includes lines for which data set(s) are selected between function calls.
+
+Made checks/warnings/errors for time window specification in linear detrending, baseline correction, ERP simulation, and artifact detection functions consistent with each other and across Classic and Studio.
+
+Numerous bug fixes and improvements regarding bin and channel operations, including:
+- Issue causing channel interpolation to fail when using newer versions of EEGLAB
+- Issues with channel operations in the case of missing or mismatching channel information or ICA component information
+- Improved Studio history for running channel and bin operations from a file
+- Various issues and inconsistencies in the advanced panel for bin/channel operation in Studio
+- Issues with creating/saving new datasets from bin or channel operations in Studio
+
+Fixed various issues with data set selection and saving in Studio, including:
+- Errors related to MVPCset structures not being initialized
+- Various issues with clearing and refreshing data sets
+- File naming issues when saving ERPsets that could cause a crash
+- Issues causing data set saving to be prompted extra times
 
 ### ERPLAB v12.10 Release Notes
 
@@ -118,4 +141,5 @@ Various fixes to the GUI layouts for many routines (e.g. "Delete Time Segments" 
 ## ERPLAB Help
 
 ERPLAB tutorial, manual, and other documentation can be found on the [ERPLAB wiki, here](https://github.com/lucklab/erplab/wiki).
+
 
