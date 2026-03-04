@@ -83,6 +83,7 @@ p.CaseSensitive = false;
 p.addRequired('ALLERP');
 % option(s)
 p.addParamValue('erpnames', '',@iscell);
+p.addParamValue('ClearFilepath', 'off', @ischar);
 p.addParamValue('Saveas', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
@@ -91,6 +92,8 @@ p.parse(ALLERP, varargin{:});
 
 
 erpnames = p.Results.erpnames;
+clearfilepath = strcmpi(p.Results.ClearFilepath, 'on');
+
 if ischar(erpnames) && numel(ALLERP)==1
     ALLERP.erpname = erpnames;
     ALLERP.saved  = 'no';
@@ -103,6 +106,10 @@ elseif iscell(erpnames)
             ALLERP(Numoferp).saved  = 'no';
         else
             ALLERP(Numoferp).saved  = 'no';
+        end
+        if clearfilepath
+            ALLERP(Numoferp).filename = '';
+            ALLERP(Numoferp).filepath = '';
         end
     end
 end
@@ -131,7 +138,7 @@ end
 % History
 %
 
-skipfields = {'ALLERP', 'Saveas','History'};
+skipfields = {'ALLERP', 'Saveas', 'ClearFilepath', 'History'};
 fn     = fieldnames(p.Results);
 erpcom = sprintf( '%s = pop_renamerp( %s ', inputname(1), inputname(1) );
 for q=1:length(fn)

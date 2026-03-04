@@ -51,7 +51,8 @@ if nargin==1
     app = feval('EEG_Tab_rename_gui',ALLEEG,1:length(ALLEEG));
     waitfor(app,'Finishbutton',1);
     try
-        eegnames = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+        eegnames      = app.Output;
+        clearfilepath = app.ClearFilepath;
         app.delete; %delete app from view
         pause(0.1); %wait for app to leave
     catch
@@ -60,11 +61,12 @@ if nargin==1
     if isempty(eegnames)
         return;
     end
+    if clearfilepath; clearfilepathstr = 'on'; else; clearfilepathstr = 'off'; end
     %
     % Somersault
     %
     [ALLEEG, erpcom] = pop_renameeg( ALLEEG, 'eegnames',eegnames,...
-        'Saveas', 'off', 'History', 'gui');
+        'ClearFilepath', clearfilepathstr, 'Saveas', 'off', 'History', 'gui');
     return
 end
 
@@ -77,15 +79,18 @@ p.CaseSensitive = false;
 p.addRequired('ALLEEG');
 % option(s)
 p.addParamValue('eegnames', '',@iscell);
+p.addParamValue('ClearFilepath', 'off', @ischar);
 p.addParamValue('Saveas', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(ALLEEG, varargin{:});
 
 
-eegnames = p.Results.eegnames;
+eegnames      = p.Results.eegnames;
+clearfilepath = strcmpi(p.Results.ClearFilepath, 'on');
+
 if ischar(eegnames) && numel(ALLEEG)==1
-    ALLEEG.erpname = eegnames;
+    ALLEEG.setname = eegnames;
     ALLEEG.saved  = 'no';
 elseif iscell(eegnames)
     for Numoferp = 1:numel(ALLEEG)
@@ -96,6 +101,10 @@ elseif iscell(eegnames)
             ALLEEG(Numoferp).saved  = 'no';
         else
             ALLEEG(Numoferp).saved  = 'no';
+        end
+        if clearfilepath
+            ALLEEG(Numoferp).filename = '';
+            ALLEEG(Numoferp).filepath = '';
         end
     end
 end
@@ -124,7 +133,7 @@ end
 % History
 %
 
-skipfields = {'ALLEEG', 'Saveas','History'};
+skipfields = {'ALLEEG', 'Saveas', 'ClearFilepath', 'History'};
 fn     = fieldnames(p.Results);
 erpcom = sprintf( '%s = pop_renameeg( %s ', inputname(1), inputname(1) );
 for q=1:length(fn)

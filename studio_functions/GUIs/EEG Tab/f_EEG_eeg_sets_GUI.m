@@ -385,7 +385,8 @@ estudioworkingmemory('Startimes',0);%%set default value
         app = feval('EEG_Tab_rename_gui',observe_EEGDAT.ALLEEG(SelectedEEG),SelectedEEG);
         waitfor(app,'Finishbutton',1);
         try
-            setnames = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            setnames      = app.Output;
+            clearfilepath = app.ClearFilepath;
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
@@ -394,9 +395,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         if isempty(setnames)
             return;
         end
+        if clearfilepath; clearfilepathstr = 'on'; else; clearfilepathstr = 'off'; end
         ALLEEG = observe_EEGDAT.ALLEEG(SelectedEEG);
         [ALLEEG, LASTCOM] = pop_renameeg( ALLEEG, 'eegnames',setnames,...
-            'Saveas', 'off', 'History', 'gui');
+            'ClearFilepath', clearfilepathstr, 'Saveas', 'off', 'History', 'gui');
         if isempty(LASTCOM)
             return;
         end

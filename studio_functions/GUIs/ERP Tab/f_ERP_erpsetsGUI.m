@@ -273,7 +273,8 @@ varargout{1} = box_erpset_gui;
         app = feval('ERP_Tab_rename_gui',observe_ERPDAT.ALLERP(ERPArray),ERPArray);
         waitfor(app,'Finishbutton',1);
         try
-            erpnames = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            erpnames      = app.Output;
+            clearfilepath = app.ClearFilepath;
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
@@ -282,12 +283,17 @@ varargout{1} = box_erpset_gui;
         if isempty(erpnames)
             return;
         end
+        if clearfilepath
+            clearfilepathstr = 'on';
+        else
+            clearfilepathstr = 'off';
+        end
         try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
 
         ALLERP_out = [];
         ALLERP = observe_ERPDAT.ALLERP(ERPArray);
         [ALLERP, ERPCOM] = pop_renamerp( ALLERP, 'erpnames',erpnames,...
-            'Saveas', 'off', 'History', 'gui');
+            'ClearFilepath', clearfilepathstr, 'Saveas', 'off', 'History', 'gui');
         if isempty(ERPCOM)
             return;
         end
