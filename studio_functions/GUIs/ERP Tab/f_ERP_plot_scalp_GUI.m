@@ -47,7 +47,7 @@ varargout{1} = ERP_plot_scalp_gui;
         plegend.bindesc = 1;
         plegend.type = 1;
         plegend.latency = 1;
-        plegend.electrodes = 0;
+        plegend.electrodes = 1;
         plegend.elestyle = 'on';
         plegend.elec3D = 'off';
         plegend.colorbar = 1;
@@ -1648,19 +1648,29 @@ varargout{1} = ERP_plot_scalp_gui;
             observe_ERPDAT.Count_currentERP =1;
         end
         
-        BinArray = estudioworkingmemory('ERP_BinArray');
-        if isempty(BinArray) || any(BinArray>observe_ERPDAT.ERP.nbin) || any(BinArray<=0)
-            BinArray = [1:observe_ERPDAT.ERP.nbin];
-            estudioworkingmemory('ERP_BinArray',BinArray);
-            observe_ERPDAT.Count_currentERP =2;
+        % Preserve user's scalp-map bin selection if it was explicitly set and
+        % is still valid for the current ERP. Fall back to the global bin
+        % selection only on first use (empty) or if bins are out of range.
+        ERPTab_plotscalp_tmp = estudioworkingmemory('ERPTab_plotscalp');
+        try savedBins = ERPTab_plotscalp_tmp{1}; catch; savedBins = []; end
+        if ~isempty(savedBins) && ~any(savedBins > observe_ERPDAT.ERP.nbin) && ~any(savedBins <= 0)
+            BinArray = savedBins;
+        else
+            BinArray = estudioworkingmemory('ERP_BinArray');
+            if isempty(BinArray) || any(BinArray>observe_ERPDAT.ERP.nbin) || any(BinArray<=0)
+                BinArray = [1:observe_ERPDAT.ERP.nbin];
+                estudioworkingmemory('ERP_BinArray',BinArray);
+                observe_ERPDAT.Count_currentERP =2;
+            end
         end
         binset = vect2colon(BinArray,'Sort', 'on');
         binset = erase(binset,{'[',']'});
-        gui_erp_scalp_map.bin_plot_edit.String =binset;
+        gui_erp_scalp_map.bin_plot_edit.String = binset;
         
-        %%check latency
-        latency= str2num(gui_erp_scalp_map.latency_plot_edit.String);
-        if numel(latency)~=2 || any(latency(:)>observe_ERPDAT.ERP.times(end)) ||  any(latency(:)<observe_ERPDAT.ERP.times(1))
+        %%check latency - only clear if values are outside the ERP time range;
+        %% preserve single-value latencies (used for Instantaneous amplitude)
+        latency = str2num(gui_erp_scalp_map.latency_plot_edit.String);
+        if ~isempty(latency) && (any(latency(:) > observe_ERPDAT.ERP.times(end)) || any(latency(:) < observe_ERPDAT.ERP.times(1)))
             gui_erp_scalp_map.latency_plot_edit.String = '';
         end
         
@@ -1694,7 +1704,7 @@ varargout{1} = ERP_plot_scalp_gui;
         end
         if  gui_erp_scalp_map.map_type_2d.Value==1%%%If select 2D
             gui_erp_scalp_map.map_type_3d.Value=0;
-            set(gui_erp_scalp_map.map_type_2d_type,'Enable','on','Value',1);
+            set(gui_erp_scalp_map.map_type_2d_type,'Enable','on'); % preserve user's map style selection
             gui_erp_scalp_map.map_type_3d_spl.Enable = 'off';
             gui_erp_scalp_map.map_extras_view_ops.Enable = 'off';
             gui_erp_scalp_map.map_extras_view_ops.String = '+X';
