@@ -60,6 +60,11 @@ ERP = varargin{1};
 ALLERP = varargin{2};
 current_ERP = varargin{3};
 guiwin_num = varargin{4};
+if numel(varargin) >= 5 && strcmpi(varargin{5}, 'EEG')
+    datatype = 'EEG';
+else
+    datatype = 'ERP';
+end
 
 %GUI positions (for multiple DQ tables)
 
@@ -93,7 +98,7 @@ n_erp = numel(ALLERP);
 if n_erp == 0
     %for the case of showing aSME preavg
     erp_names = ERP.erpname;
-    handles.text_ERPSET_title.String = 'Selected EEG Dataset:';
+    handles.text_ERPSET_title.String = 'Selected EEGset:';
     handles.text_ERPSET_title.FontSize = 12;
     handles.text11.Visible = 0;
     handles.newerpwin.Visible = 0;
@@ -105,13 +110,24 @@ if n_erp == 0
     end
     %update handles
     guidata(hObject, handles);
-    
+
 else
-    
+
     for i = 1:n_erp
         erp_names{i} = ALLERP(i).erpname;
     end
-    
+
+    % Set labels based on whether data came from EEGsets or ERPsets
+    if strcmpi(datatype, 'EEG')
+        handles.text_ERPSET_title.String  = 'Selected EEGset:';
+        handles.text11.String             = 'Open new EEGset Window';
+        handles.pushbutton_selERP.String  = 'Select EEGset';
+    else
+        handles.text_ERPSET_title.String  = 'Selected ERPset:';
+        handles.text11.String             = 'Open new ERPset Window';
+        handles.pushbutton_selERP.String  = 'Select ERPset';
+    end
+
 end
 
 %ERPSET_title_str = ['ERPSET - ' erp_names(current_ERP)];
