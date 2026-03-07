@@ -29,7 +29,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -167,6 +167,83 @@ if keep_binerror == 0
 end
 
 
+%% Append Data Quality measures (if present and compatible across all input sets)
+% added 3/6/26 -kpw
+dq_ok = nerp > 0;
+
+% check all sets have a non-empty dataquality field
+for i = 1:nerp
+    dq_i = [];
+    if isfield(ALLERP(indx(i)), 'dataquality')
+        dq_i = ALLERP(indx(i)).dataquality;
+    end
+    if isempty(dq_i) || strcmpi(dq_i(1).type, 'empty')
+        dq_ok = false;
+        break;
+    end
+end
+
+% verify measure types and time windows match across all sets
+if dq_ok && nerp > 1
+    ref_dq = ALLERP(indx(1)).dataquality;
+    n_dqm  = numel(ref_dq);
+    for i = 2:nerp
+        cur_dq = ALLERP(indx(i)).dataquality;
+        if numel(cur_dq) ~= n_dqm
+            dq_ok = false; break;
+        end
+        for k = 1:n_dqm
+            if ~strcmpi(cur_dq(k).type, ref_dq(k).type) || ...
+               ~isequal(cur_dq(k).times, ref_dq(k).times)
+                dq_ok = false; break;
+            end
+        end
+        if ~dq_ok; break; end
+    end
+end
+
+% concatenate DQ data along the bin dimension (last dim)
+if dq_ok
+    ref_dq      = ALLERP(indx(1)).dataquality;
+    n_dqm       = numel(ref_dq);
+    combined_dq = ref_dq;  % copy structure (types, times, labels, comments) from first set
+    try
+        for k = 1:n_dqm
+            cat_data = ALLERP(indx(1)).dataquality(k).data;
+            nd = ndims(cat_data);  % bin dimension is always last (2D or 3D measures)
+            for i = 2:nerp
+                cat_data = cat(nd, cat_data, ALLERP(indx(i)).dataquality(k).data);
+            end
+            combined_dq(k).data = cat_data;
+        end
+    catch ME
+        fprintf('Note: Data Quality measures not appended (error during concatenation: %s).\n', ME.message);
+        dq_ok = false;
+    end
+end
+
+if ~dq_ok
+    % Warn if at least one set had DQ data (incompatible rather than simply absent)
+    any_dq = false;
+    for i = 1:nerp
+        if isfield(ALLERP(indx(i)), 'dataquality') && ...
+           ~isempty(ALLERP(indx(i)).dataquality) && ...
+           ~strcmpi(ALLERP(indx(i)).dataquality(1).type, 'empty')
+            any_dq = true; break;
+        end
+    end
+    if any_dq
+        fprintf('Note: Data Quality measures not appended (missing or incompatible DQ data across ERPsets).\n');
+    end
+    combined_dq = [];
+    combined_dq.type             = 'empty';
+    combined_dq.times            = [];
+    combined_dq.data             = [];
+    combined_dq.time_window_labels = {};
+    combined_dq.comments         = [];
+end
+
+
 ERP.erpname    = erpname;
 ERP.filename   = filename;
 ERP.filepath   = filepath;
@@ -193,6 +270,7 @@ ERP.history    = history;
 ERP.saved      = 'no';
 ERP.isfilt     = 0;   % 1= avg was filtered or smoothed
 ERP.version    = geterplabversion;
+ERP.dataquality = combined_dq;
 
 ERP = old2newerp(ERP);
 [ERP, serror] = sorterpstruct(ERP);
