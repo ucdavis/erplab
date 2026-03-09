@@ -266,8 +266,8 @@ for Numoferpset = 1:size(DataString_before,1)
     if Value_filename_erpname==1
         DataString{Numoferpset,2} = file_name;
     else
-        if ~isempty(ALLERP(EEGArray).filename)
-        DataString{Numoferpset,2} =  ALLERP(EEGArray).filename;
+        if ~isempty(ALLERP(EEGArray(Numoferpset)).filename)
+        DataString{Numoferpset,2} =  ALLERP(EEGArray(Numoferpset)).filename;
         else
            DataString{Numoferpset,2} =  '';
         end

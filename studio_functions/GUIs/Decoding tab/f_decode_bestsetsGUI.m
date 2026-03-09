@@ -999,7 +999,7 @@ end
 
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%% 2024
-checkfileindex=0;
+checkfileindex=1; % default: allow save (only ask if file already exists)
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr,filesep, file_name,'.best'];
 if exist(filenamex, 'file')~=0

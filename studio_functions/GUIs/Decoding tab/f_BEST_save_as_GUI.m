@@ -347,7 +347,7 @@ end
 
 for Numofselected = 1:numel(EEGArray)
     if  isempty(Data_String{Numofselected,1})
-        msgboxText =  BESTset name is missing for one for one of or more of the sets! Please name bestset.;
+        msgboxText =  'BESTset name is missing for one for one of or more of the sets! Please name bestset.';
         title = 'EStudio: f_BEST_save_as_GUI empty bestname';
         errorfound(msgboxText, title);
         return
