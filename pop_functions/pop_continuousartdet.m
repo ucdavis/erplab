@@ -134,7 +134,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -419,6 +419,9 @@ winoffsetsam      = floor(winoffset * EEG.srate/1000);  % to samples
 
 if isempty(WinRej)
     fprintf('\nCriterion was not found. No rejection was performed.\n');
+    if strcmpi(p.Results.review, 'on')
+        msgbox('No segments exceeded the artifact criterion. No rejection was performed.', 'Artifact Detection - Preview');
+    end
 else
     if ~isempty(shortisisam)
         [WinRej, chanrej ] = joinclosesegments(WinRej, chanrej, shortisisam);
