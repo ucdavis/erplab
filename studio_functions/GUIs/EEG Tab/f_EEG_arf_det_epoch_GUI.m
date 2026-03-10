@@ -1705,6 +1705,16 @@ varargout{1} = Eegtab_box_art_det_epoch;
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+
+        % Update EEGset panel and workspace before showing summary so the
+        % new set is visible immediately (not after the user closes the dialog)
+        estudioworkingmemory('EEGArray',EEGArray);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+
         %%----------------------display summary of artifacts---------------
         if Eegtab_EEG_art_det_epoch.show_sumy_ar.Value==1
             LASTCOM = pop_eeg_ar_summary(ALLEEG,EEGArray);
@@ -1712,11 +1722,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 eegh(LASTCOM);
             end
         end
-
-        estudioworkingmemory('EEGArray',EEGArray);
-        assignin('base','EEG',observe_EEGDAT.EEG);
-        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
 
         if Eegtab_EEG_art_det_epoch.mflag2.Value==2
             Eegtab_EEG_art_det_epoch.mflag= [1,1,0,0,0,0,0,0];
@@ -1743,8 +1748,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
-        observe_EEGDAT.count_current_eeg=1;
-        observe_EEGDAT.eeg_panel_message =2;
     end
 
 
