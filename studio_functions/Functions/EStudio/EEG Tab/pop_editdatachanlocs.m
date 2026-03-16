@@ -82,6 +82,8 @@ if nargin< 3
     waitfor(app,'Finishbutton',1);
     try
         EEGINOUT = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+        locfile  = app.locfile;
+        loccom   = app.loccom;
         app.delete; %delete app from view
         pause(0.5); %wait for app to leave
     catch
@@ -92,7 +94,7 @@ if nargin< 3
         disp('User selected Cancel')
         return
     end
-    
+
     Chanlocs = EEGINOUT.chanlocs;
     %%add suffix
     try
@@ -100,7 +102,7 @@ if nargin< 3
     catch
         ALLEEG(CURRENTSET).erpname = [ALLEEG(CURRENTSET).erpname,'_editchan'];
     end
-    [EEG, eegcom] = pop_editdatachanlocs(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'gui');
+    [EEG, eegcom] = pop_editdatachanlocs(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'History', 'gui');
     pause(0.1);
     return;
 end
@@ -121,6 +123,8 @@ p.addParamValue('ChanArray',[],@isnumeric);
 p.addParamValue('Chanlocs','', @isstruct);
 
 p.addParamValue('History', '', @ischar); % history from scripting
+p.addParamValue('LocFile', '', @ischar); % loc file path if loaded from file (not manually edited)
+p.addParamValue('LocCom',  '', @ischar); % history command from Guess chanlocs
 
 p.parse(ALLEEG,CURRENTSET,varargin{:});
 
@@ -201,50 +205,29 @@ end
 
 
 %%history
-fn = fieldnames(p.Results);
-skipfields = {'ALLEEG','CURRENTSET'};
-if isfield(EEG,'datatype') && strcmpi(EEG.datatype,'ERP')
-   eegcom     = sprintf( 'ERP = pop_editdatachanlocs( %s %s', 'ALLERP,',num2str(CURRENTSET)); 
+qLocFile = p_Results.LocFile;
+qLocCom  = p_Results.LocCom;
+
+if ~isempty(qLocFile)
+    % Locations were loaded from a file and not manually edited — log that
+    if isfield(EEG,'datatype') && strcmpi(EEG.datatype,'ERP')
+        eegcom = sprintf('ERP = pop_chanedit(ERP, ''lookup'', ''%s'');', qLocFile);
+    else
+        eegcom = sprintf('EEG = pop_chanedit(EEG, ''lookup'', ''%s'');', qLocFile);
+    end
+elseif ~isempty(qLocCom)
+    % Locations were set via Guess chanlocs — use LASTCOM from pop_chanedit
+    eegcom = qLocCom;
 else
-eegcom     = sprintf( 'EEG = pop_editdatachanlocs( %s %s', 'ALLEEG,',num2str(CURRENTSET));
-end
-for q=1:length(fn)
-    fn2com = fn{q}; % inputname
-    if ~ismember_bc2(fn2com, skipfields)
-        fn2res = p.Results.(fn2com); %  input value
-        if ~isempty(fn2res)
-            if isstruct(fn2res)
-                eegcom = sprintf( '%s, ''%s'', %s', eegcom, fn2com, fn2com);
-            elseif iscell(fn2res)
-                nn = length(fn2res);
-                eegcom = sprintf( '%s, ''%s'', {''%s'' ', eegcom, fn2com, fn2res{1});
-                for ff=2:nn
-                    eegcom = sprintf( '%s, ''%s'' ', eegcom, fn2res{ff});
-                end
-                eegcom = sprintf( '%s}', eegcom);
-            elseif isnumeric(fn2res)
-                
-                if size(fn2res,1)==1
-                    fn2res_trans = char(num2str(fn2res));
-                else
-                    fn2res_trans = vect2colon(fn2res);
-                end
-                fn2res = fn2res_trans;
-                eegcom = sprintf( '%s, ''%s'', [%s', eegcom,fn2com,fn2res);
-                eegcom = sprintf( '%s]', eegcom);
-            else
-                %                 if ~ismember_bc2(fn2com,{'xscale','yscale'})
-                %                     eegcom = sprintf( '%s, ''%s'', %s', eegcom, fn2com, vect2colon(fn2res,'Repeat','on'));
-                %                 else
-                %                     xyscalestr = sprintf('[ %.1f %.1f  %s ]', fn2res(1), fn2res(2), vect2colon(fn2res(3:end),'Delimiter','off'));
-                %                     eegcom = sprintf( '%s, ''%s'', %s', eegcom, fn2com, xyscalestr);
-                %                 end
-            end
-        end
+    % Fallback: log channel indices only (chanlocs struct not serializable)
+    if isfield(EEG,'datatype') && strcmpi(EEG.datatype,'ERP')
+        eegcom = sprintf('ERP = pop_editdatachanlocs(ALLERP, %s, ''ChanArray'', [%s]);', ...
+            num2str(CURRENTSET), num2str(p_Results.ChanArray));
+    else
+        eegcom = sprintf('EEG = pop_editdatachanlocs(ALLEEG, %s, ''ChanArray'', [%s]);', ...
+            num2str(CURRENTSET), num2str(p_Results.ChanArray));
     end
 end
-
-eegcom = sprintf( '%s );', eegcom);
 % get history from script. ERP
 % shist = 1;
 switch shist

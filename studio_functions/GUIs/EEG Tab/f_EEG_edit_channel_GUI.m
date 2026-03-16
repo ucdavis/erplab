@@ -503,6 +503,8 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         waitfor(app,'Finishbutton',1);
         try
             EEGoutput = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            locfile   = app.locfile;
+            loccom    = app.loccom;
             app.delete; %delete app from view
             pause(0.5); %wait for app to leave
         catch
@@ -510,7 +512,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-        
+
         if isempty(EEGoutput)
             fprintf( ['\n',repmat('-',1,100) '\n']);
             observe_EEGDAT.eeg_panel_message =2;
@@ -525,7 +527,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             ChanArray = [1:EEG.nbchan];
             [EEG, LASTCOM] = pop_editdatachanlocs(ALLEEG,EEGArray(Numofeeg),...
-                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'implicit');
+                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'History', 'implicit');
             if isempty(LASTCOM)
                 estudioworkingmemory('f_EEG_proces_messg','Edit/Delete Channels & Locations >  Add or edit channel locations: Please check you data or you selected cancel');
                 observe_EEGDAT.eeg_panel_message =2;

@@ -525,6 +525,8 @@ varargout{1} = EStudio_erp_box_edit_chan;
         waitfor(app,'Finishbutton',1);
         try
             ERPoutput = app.output; %NO you don't want to output ERP with edited channel locations, you want to output the parameters to run decoding
+            locfile   = app.locfile;
+            loccom    = app.loccom;
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
@@ -545,7 +547,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             fprintf(['*Add or edit all  channel locations*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current ERPset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
             [ERP, ERPCOM] = pop_editdatachanlocs(ALLERP,ERPArray(Numoferp),...
-                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'gui');
+                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'History', 'gui');
             if isempty(ERPCOM)
                 observe_ERPDAT.Process_messg =2;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
