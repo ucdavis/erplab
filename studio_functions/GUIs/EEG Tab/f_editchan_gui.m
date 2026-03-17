@@ -78,12 +78,79 @@ classdef f_editchan_gui < matlab.apps.AppBase
         end
 
         function refreshhp(app)
-            cla(app.headplotaxs);
-            hp_fig = figure('Visible','Off');
-            topoplot([],app.nchl, 'style', 'blank',  'electrodes', 'labelpoint', 'chaninfo', app.EEG.chaninfo);
-            topo_axes = gca;
-            topo2 = get(topo_axes,'children');
-            copyobj(topo2, app.headplotaxs);
+            ax = app.headplotaxs;
+            cla(ax);
+            % Reset axis properties that draw_empty_head may have set, so the
+            % topoplot+copyobj path always gets a clean auto-scaling state.
+            set(ax, 'XLimMode', 'auto', 'YLimMode', 'auto', ...
+                    'DataAspectRatioMode', 'auto', 'PlotBoxAspectRatioMode', 'auto');
+            % Only pass channels that have location data (non-empty theta) to
+            % topoplot — it errors if any channel coords are empty. When no
+            % channels have locations yet, draw the head outline directly.
+            valid_chans = ~cellfun('isempty', {app.nchl.theta});
+            if any(valid_chans)
+                try
+                    hp_fig = figure('Visible','Off');
+                    topoplot([],app.nchl(valid_chans), 'style', 'blank', 'electrodes', 'labelpoint', 'chaninfo', app.EEG.chaninfo);
+                    topo_axes = gca;
+                    topo2 = get(topo_axes,'children');
+                    copyobj(topo2, app.headplotaxs);
+                    drawnow;
+                    close(hp_fig);
+                catch ME
+                    fprintf('Warning: Could not render headplot: %s\n', ME.message);
+                    draw_empty_head(app);
+                end
+            else
+                draw_empty_head(app);
+            end
+        end
+
+        function draw_empty_head(app)
+            % Draw a topoplot-style head outline directly in headplotaxs
+            % without invoking topoplot (which requires valid coord data).
+            % Coordinates and axis limits match topoplot.m (EEGLAB 2025).
+            ax = app.headplotaxs;
+            cla(ax);
+            hold(ax, 'on');
+
+            HEADCOLOR  = [0 0 0];
+            HLINEWIDTH = 2;
+            rmax       = 0.5;   % plotrad
+            headrad    = 0.5;
+            hwidth     = 0.007; % HEADRINGWIDTH
+            hin        = headrad * (1 - hwidth/2);  % ≈ 0.498
+
+            % Head circle
+            circ = linspace(0, 2*pi, 201);
+            plot(ax, hin*sin(circ), hin*cos(circ), ...
+                'Color', HEADCOLOR, 'LineWidth', HLINEWIDTH);
+
+            % Nose — exact topoplot coordinates
+            base  = rmax - 0.0046;
+            basex = 0.18 * rmax;
+            tip   = 1.15 * rmax;
+            tiphw = 0.04 * rmax;
+            tipr  = 0.01 * rmax;
+            NoseX = [basex;  tiphw;  0; -tiphw; -basex];
+            NoseY = [base; tip-tipr; tip; tip-tipr; base];
+            plot(ax, NoseX, NoseY, 'Color', HEADCOLOR, 'LineWidth', HLINEWIDTH);
+
+            % Ears — exact topoplot coordinates (q=0.04 offset, rmax=0.5)
+            q    = 0.04;
+            EarX = [.497-.005  .510  .518  .5299 .5419  .54    .547   .532   .510   .489-.005];
+            EarY = [q+.0555 q+.0775 q+.0783 q+.0746 q+.0555 -.0055 -.0932 -.1313 -.1384 -.1199];
+            plot(ax,  EarX, EarY, 'Color', HEADCOLOR, 'LineWidth', HLINEWIDTH);
+            plot(ax, -EarX, EarY, 'Color', HEADCOLOR, 'LineWidth', HLINEWIDTH);
+
+            hold(ax, 'off');
+            % Match topoplot's explicit data limits (no axis equal — let the
+            % panel fill rectangularly, same as the topoplot+copyobj path).
+            xlim(ax, [-0.55 0.55]);
+            ylim(ax, [-0.5  0.58]);
+            ax.XTick = [];
+            ax.YTick = [];
+            drawnow;
         end
     end
 
@@ -189,8 +256,16 @@ classdef f_editchan_gui < matlab.apps.AppBase
                     [nchl] = pop_chanedit(nchl, 'convert', 'sph2cart');
                 end
             end
-            % Fill in all coordinate systems so both XYZ and spherical views work
-            [nchl] = pop_chanedit(nchl, 'convert', 'cart2all');
+            % Fill in all coordinate systems so both XYZ and spherical views work.
+            % Only run if at least one channel has some location data — cart2all
+            % crashes on datasets where all coordinate fields are empty.
+            if has_xyz || has_topo || has_sph
+                try
+                    [nchl] = pop_chanedit(nchl, 'convert', 'cart2all');
+                catch ME
+                    fprintf('Warning: Could not convert channel locations: %s\n', ME.message);
+                end
+            end
 
 
             %app.locformat = {'channum','X','Y','Z','labels'};
@@ -210,9 +285,9 @@ classdef f_editchan_gui < matlab.apps.AppBase
             end
 
             refreshtable(app);
-            refreshhp(app);
             painterplabapp(app);
             setfonterplab(app);
+            refreshhp(app);
         end
 
         % Callback function
@@ -317,7 +392,13 @@ classdef f_editchan_gui < matlab.apps.AppBase
                     app.nchl = pop_chanedit(app.nchl, 'convert', 'sph2cart');
                 end
             end
-            app.nchl = pop_chanedit(app.nchl, 'convert', 'cart2all');
+            if has_xyz || has_topo || has_sph
+                try
+                    app.nchl = pop_chanedit(app.nchl, 'convert', 'cart2all');
+                catch ME
+                    fprintf('Warning: Could not convert channel locations: %s\n', ME.message);
+                end
+            end
 
             app.locfile = fullfile(lpath, lfile);
             app.loccom  = '';
@@ -397,7 +478,13 @@ classdef f_editchan_gui < matlab.apps.AppBase
                     app.nchl = pop_chanedit(app.nchl, 'convert', 'sph2cart');
                 end
             end
-            app.nchl = pop_chanedit(app.nchl, 'convert', 'cart2all');
+            if has_xyz || has_topo || has_sph
+                try
+                    app.nchl = pop_chanedit(app.nchl, 'convert', 'cart2all');
+                catch ME
+                    fprintf('Warning: Could not convert channel locations: %s\n', ME.message);
+                end
+            end
 
             app.locfile = '';
             app.loccom  = '';
@@ -462,7 +549,6 @@ classdef f_editchan_gui < matlab.apps.AppBase
                 app.loccom  = '';
                 refreshtable(app);
                 refreshhp(app);
-                loc_table_CellEditCallback(app, event);
             end
         end
 
@@ -552,48 +638,7 @@ classdef f_editchan_gui < matlab.apps.AppBase
             app.locfile = '';
             app.loccom  = LASTCOM;
 
-             lnchl = EEG1.chanlocs;
-
-            % Sanity check
-            loaded = struct2cell(lnchl);
-            loaded = squeeze(loaded)';
-            loaded_labels = loaded(:,1);
-            loaded_n = length(lnchl);
-
-            if isequal(loaded_labels,app.ch_labels)
-                % if the labels exactly match, just write to app
-                app.nchl = lnchl;
-                done_loading = 1;
-            end
-              app.nchl = app.EEG.chanlocs;
-            fields_here = fieldnames(app.nchl);
-            field_x = find(strcmp(fields_here,'X')==1);
-            field_y = find(strcmp(fields_here,'Y')==1);
-            field_z = find(strcmp(fields_here,'Z')==1);
-            field_labels = find(strcmp(fields_here,'labels')==1);
-
-            % Remake the xyz num array
-            locs_cells = [loaded(:,field_x) loaded(:,field_y) loaded(:,field_z)];
-            empty_cells = cellfun('isempty',locs_cells);
-            if any(empty_cells(:))
-                for i = 1:numel(empty_cells)
-                    if empty_cells(i)
-                        locs_cells{i} = 0;
-                    end
-                end
-
-                % Record which chans were missing
-                for ir = 1:loaded_n
-                    if any(empty_cells(ir,:))
-                        missing(ir) = 1;
-                    end
-                end
-            end
-
-            % convert de-nan'd cells to numeric array
-            app.xyz = cell2mat(locs_cells);
-
-            %nchl.type = 'nope';
+            app.nchl = EEG2.chanlocs;
             refreshtable(app);
             refreshhp(app);
         end
