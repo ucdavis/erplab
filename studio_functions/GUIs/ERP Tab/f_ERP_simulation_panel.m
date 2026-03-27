@@ -143,6 +143,17 @@ varargout{1} = ERP_simulation_box;
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.epoch_title,...
             'String','ms','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         set(gui_erp_simulation.epoch_title, 'Sizes',[80 60 40 60 25]);
+        %% Epoch-based defaults for simulation parameters.
+        % peak_lat_def = middle of epoch (rounded to integer ms).
+        % spread_def   = half the peak latency (ExGaussian SD etc.).
+        % Fallback to quarter-epoch when peak latency is zero or negative.
+        peak_lat_def = round((epochStart + epochStop) / 2);
+        if peak_lat_def > 0
+            spread_def = round(peak_lat_def / 2);
+        else
+            spread_def = round(abs(epochStop - epochStart) / 4);
+        end
+        spread_def = max(spread_def, 10);
         
         try
             srateop = def{8};
@@ -224,10 +235,10 @@ varargout{1} = ERP_simulation_box;
         try
             Exgau_amp = def{2};
         catch
-            Exgau_amp =0;
+            Exgau_amp = 1;
         end
         if isempty(Exgau_amp)|| ~isnumeric(Exgau_amp)
-            Exgau_amp =0;
+            Exgau_amp = 1;
         end
         if numel(Exgau_amp)~=1
             Exgau_amp = Exgau_amp(1);
@@ -248,10 +259,10 @@ varargout{1} = ERP_simulation_box;
         try
             Exgau_mean = def{3};
         catch
-            Exgau_mean =100;
+            Exgau_mean = peak_lat_def;
         end
         if isempty(Exgau_mean) || ~isnumeric(Exgau_mean)
-            Exgau_mean =100;
+            Exgau_mean = peak_lat_def;
         end
         gui_erp_simulation.exgua_mean = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_setting,...
             'String',num2str(Exgau_mean),'callback',@exgau_mean,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -262,10 +273,10 @@ varargout{1} = ERP_simulation_box;
         try
             ExGauSD = def{4};
         catch
-            ExGauSD =50;
+            ExGauSD = spread_def;
         end
         if isempty(ExGauSD) || ~isnumeric(ExGauSD)
-            ExGauSD =50;
+            ExGauSD = spread_def;
         end
         gui_erp_simulation.exgua_sd = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_setting,...
             'String',num2str(ExGauSD),'callback',@exgau_sd,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -313,16 +324,12 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.impulse_peakamp.KeyPressFcn= @erp_simuls_presskey;
         gui_erp_simulation.Paras{15} = str2num(gui_erp_simulation.impulse_peakamp.String);
         if BasFunLabel==2
-            try
-                impulsePeakamp = def{2};
-            catch
-                impulsePeakamp = 1;
-            end
-            if isempty(impulsePeakamp) ||  ~isnumeric(impulsePeakamp)
-                impulsePeakamp =1;
-            end
-            gui_erp_simulation.impulse_peakamp.String = num2str(impulsePeakamp);
+            try; impulsePeakamp = def{2}; catch; impulsePeakamp = 1; end
+            if isempty(impulsePeakamp) || ~isnumeric(impulsePeakamp); impulsePeakamp = 1; end
+        else
+            impulsePeakamp = 1;
         end
+        gui_erp_simulation.impulse_peakamp.String = num2str(impulsePeakamp);
         uiextras.Empty('Parent', gui_erp_simulation.impulse_option);
         set( gui_erp_simulation.impulse_option, 'Sizes',[80 100 60 30 15]);
         gui_erp_simulation.impulse_setting = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -333,18 +340,14 @@ varargout{1} = ERP_simulation_box;
             'String','','callback',@impulse_latency,'Enable',ImpulseEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_simulation.impulse_latency.KeyPressFcn= @erp_simuls_presskey;
-        gui_erp_simulation.Paras{16} = str2num(gui_erp_simulation.impulse_latency.String);
         if BasFunLabel==2
-            try
-                impulselat = def{3};
-            catch
-                impulselat = 100;
-            end
-            if isempty(impulselat) || ~isnumeric(impulselat)
-                impulselat = 100;
-            end
-            gui_erp_simulation.impulse_latency.String = num2str(impulselat);
+            try; impulselat = def{3}; catch; impulselat = peak_lat_def; end
+            if isempty(impulselat) || ~isnumeric(impulselat); impulselat = peak_lat_def; end
+        else
+            impulselat = peak_lat_def;
         end
+        gui_erp_simulation.impulse_latency.String = num2str(impulselat);
+        gui_erp_simulation.Paras{16} = str2num(gui_erp_simulation.impulse_latency.String);
         uiextras.Empty('Parent', gui_erp_simulation.impulse_setting);
         set(gui_erp_simulation.impulse_setting, 'Sizes',[80 100 60 30 15]);
         %%Boxcar function
@@ -366,21 +369,16 @@ varargout{1} = ERP_simulation_box;
             'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.square_option);
         gui_erp_simulation.square_peakamp.KeyPressFcn= @erp_simuls_presskey;
-        gui_erp_simulation.Paras{18} =str2num(gui_erp_simulation.square_peakamp.String);
         if BasFunLabel==3
-            try
-                sqaurePeakamp = def{2};
-            catch
-                sqaurePeakamp = 1;
-            end
-            if isempty(sqaurePeakamp) ||  ~isnumeric(sqaurePeakamp)
-                sqaurePeakamp =1;
-            end
-            gui_erp_simulation.square_peakamp.String = num2str(sqaurePeakamp);
-            gui_erp_simulation.square_op.Value =1;
+            try; sqaurePeakamp = def{2}; catch; sqaurePeakamp = 1; end
+            if isempty(sqaurePeakamp) || ~isnumeric(sqaurePeakamp); sqaurePeakamp = 1; end
+            gui_erp_simulation.square_op.Value = 1;
         else
-            gui_erp_simulation.square_op.Value =0;
+            sqaurePeakamp = 1;
+            gui_erp_simulation.square_op.Value = 0;
         end
+        gui_erp_simulation.square_peakamp.String = num2str(sqaurePeakamp);
+        gui_erp_simulation.Paras{18} = str2num(gui_erp_simulation.square_peakamp.String);
         set( gui_erp_simulation.square_option, 'Sizes',[80 100 60 30 15]);
         gui_erp_simulation.square_setting = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.square_setting);
@@ -390,36 +388,36 @@ varargout{1} = ERP_simulation_box;
             'String','','callback',@square_onset,'Enable',squareEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_simulation.square_onset.KeyPressFcn= @erp_simuls_presskey;
-        gui_erp_simulation.Paras{19} =str2num(gui_erp_simulation.square_onset.String);
-        if BasFunLabel==3
-            try
-                Onsetlat = def{3};
-            catch
-                Onsetlat = 100;
-            end
-            if isempty(Onsetlat) ||  ~isnumeric(Onsetlat)
-                Onsetlat =100;
-            end
-            gui_erp_simulation.square_onset.String = num2str(Onsetlat);
+        % Boxcar half-width: peak_lat/3 gives onset=200, offset=400 for
+        % the default epoch [-200 800].  Fall back to spread/2 when peak
+        % latency is zero or negative to keep onset < offset.
+        if peak_lat_def > 0
+            box_half = round(peak_lat_def / 3);
+        else
+            box_half = round(spread_def / 2);
         end
+        if BasFunLabel==3
+            try; Onsetlat = def{3}; catch; Onsetlat = peak_lat_def - box_half; end
+            if isempty(Onsetlat) || ~isnumeric(Onsetlat); Onsetlat = peak_lat_def - box_half; end
+        else
+            Onsetlat = peak_lat_def - box_half;
+        end
+        gui_erp_simulation.square_onset.String = num2str(Onsetlat);
+        gui_erp_simulation.Paras{19} = str2num(gui_erp_simulation.square_onset.String);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
             'String','Offset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_simulation.square_offset = uicontrol('Style', 'edit','Parent', gui_erp_simulation.square_setting,...
             'String','','callback',@square_offset,'Enable',squareEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_simulation.square_offset.KeyPressFcn= @erp_simuls_presskey;
-        gui_erp_simulation.Paras{20} =str2num(gui_erp_simulation.square_offset.String);
         if BasFunLabel==3
-            try
-                Offsetlat = def{4};
-            catch
-                Offsetlat = 50;
-            end
-            if isempty(Offsetlat) ||  ~isnumeric(Offsetlat)
-                Offsetlat =50;
-            end
-            gui_erp_simulation.square_offset.String = num2str(Offsetlat);
+            try; Offsetlat = def{4}; catch; Offsetlat = peak_lat_def + box_half; end
+            if isempty(Offsetlat) || ~isnumeric(Offsetlat); Offsetlat = peak_lat_def + box_half; end
+        else
+            Offsetlat = peak_lat_def + box_half;
         end
+        gui_erp_simulation.square_offset.String = num2str(Offsetlat);
+        gui_erp_simulation.Paras{20} = str2num(gui_erp_simulation.square_offset.String);
         set(  gui_erp_simulation.square_setting, 'Sizes',[15 40 60 25 40 60 25]);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -630,6 +628,32 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.channelpopup.Enable = EnableFlag;
         gui_erp_simulation.binedit.Enable = EnableFlag;
         gui_erp_simulation.binpopup.Enable = EnableFlag;
+        if Value == 1
+            % Default ERPset/channel/bin if not yet set, then update
+            % epoch and srate boxes to match the selected real ERP.
+            if isempty(strtrim(gui_erp_simulation.erpsetedit.String))
+                gui_erp_simulation.erpsetedit.String = num2str(observe_ERPDAT.CURRENTERP);
+            end
+            if isempty(strtrim(gui_erp_simulation.channeledit.String))
+                gui_erp_simulation.channeledit.String = '1';
+            end
+            if isempty(strtrim(gui_erp_simulation.binedit.String))
+                gui_erp_simulation.binedit.String = '1';
+            end
+            ERPidx = str2num(gui_erp_simulation.erpsetedit.String);
+            if ~isempty(ERPidx) && ERPidx > 0 && ERPidx <= length(observe_ERPDAT.ALLERP)
+                ERP_real = observe_ERPDAT.ALLERP(ERPidx);
+                if ~isempty(ERP_real.times)
+                    gui_erp_simulation.epoch_start.String = num2str(ERP_real.times(1));
+                    gui_erp_simulation.epoch_stop.String  = num2str(ERP_real.times(end));
+                    if ERP_real.srate ~= 0
+                        gui_erp_simulation.srateedit.String      = num2str(ERP_real.srate);
+                        gui_erp_simulation.srateperiodedit.String = num2str(1000/ERP_real.srate);
+                    end
+                    update_defaults_for_new_epoch();
+                end
+            end
+        end
         if Value ==1
             EnableFlagn = 'off';
         else
@@ -1057,6 +1081,56 @@ varargout{1} = ERP_simulation_box;
     end
 
 
+%%-------------------------------------------------------------------
+%% Helper: reset timing parameters that are out-of-range for the epoch.
+%%
+%% Rules:
+%%   ExGaussian mean  — reset if outside [epochStart, epochStop]
+%%   Impulse latency  — reset if outside [epochStart, epochStop]
+%%   Boxcar onset/offset — reset BOTH only if neither is inside the epoch
+%%     (one can be outside: e.g. a boxcar that begins before or ends after
+%%      the epoch boundary)
+%%-------------------------------------------------------------------
+    function update_defaults_for_new_epoch()
+        epochStart = str2num(gui_erp_simulation.epoch_start.String);
+        epochStop  = str2num(gui_erp_simulation.epoch_stop.String);
+        if isempty(epochStart) || isempty(epochStop) || epochStart >= epochStop
+            return;
+        end
+        peak_lat = round((epochStart + epochStop) / 2);
+        if peak_lat > 0
+            spread = round(peak_lat / 2);
+            box_half = round(peak_lat / 3);
+        else
+            spread   = round(abs(epochStop - epochStart) / 4);
+            box_half = round(spread / 2);
+        end
+        spread   = max(spread, 10);
+        box_half = max(box_half, 10);
+
+        % ExGaussian mean
+        cur_mean = str2num(gui_erp_simulation.exgua_mean.String);
+        if isempty(cur_mean) || cur_mean < epochStart || cur_mean > epochStop
+            gui_erp_simulation.exgua_mean.String = num2str(peak_lat);
+        end
+
+        % Impulse latency
+        cur_lat = str2num(gui_erp_simulation.impulse_latency.String);
+        if isempty(cur_lat) || cur_lat < epochStart || cur_lat > epochStop
+            gui_erp_simulation.impulse_latency.String = num2str(peak_lat);
+        end
+
+        % Boxcar: reset both only when neither is inside the epoch
+        cur_onset  = str2num(gui_erp_simulation.square_onset.String);
+        cur_offset = str2num(gui_erp_simulation.square_offset.String);
+        onset_in  = ~isempty(cur_onset)  && cur_onset  >= epochStart && cur_onset  <= epochStop;
+        offset_in = ~isempty(cur_offset) && cur_offset >= epochStart && cur_offset <= epochStop;
+        if ~onset_in && ~offset_in
+            gui_erp_simulation.square_onset.String  = num2str(peak_lat - box_half);
+            gui_erp_simulation.square_offset.String = num2str(peak_lat + box_half);
+        end
+    end
+
 %%----------------------------epoch start----------------------------------
     function epochstart(Str,~)
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
@@ -1079,6 +1153,7 @@ varargout{1} = ERP_simulation_box;
             Str.String = '';
             return;
         end
+        update_defaults_for_new_epoch();
         plot_erp_simulation();
     end
 
@@ -1103,6 +1178,7 @@ varargout{1} = ERP_simulation_box;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
+        update_defaults_for_new_epoch();
         plot_erp_simulation();
     end
 
@@ -1847,8 +1923,8 @@ varargout{1} = ERP_simulation_box;
         
         estudioworkingmemory('f_ERP_proces_messg','Create Artificial ERP waveform');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
-        
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
+
         EpochStart = str2num(gui_erp_simulation.epoch_start.String);
         EpochStop = str2num(gui_erp_simulation.epoch_stop.String);
         if gui_erp_simulation.srate.Value
@@ -1910,81 +1986,97 @@ varargout{1} = ERP_simulation_box;
             return;
         end
         %%---------------------------Simulated signal------------------------------
-        ExGauTau =0;
-        SDOffset =50;
-        MeanLatOnset =0;
+        ExGauTau    = 0;
+        SDOffset    = 50;
+        MeanLatOnset = 0;
+        BasPeakAmp  = 1;
+        titlNamerro = 'Warning for ERP Tab';
+        if ~(gui_erp_simulation.exgua_op.Value==1 || ...
+             gui_erp_simulation.impulse_op.Value==1 || ...
+             gui_erp_simulation.square_op.Value==1)
+            msgboxText = 'Create Artificial ERP Waveform> Please select a basic function (ExGaussian, Impulse, or Boxcar)';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
         if gui_erp_simulation.exgua_op.Value ==1
             BasFuncName = 'ExGaussian';
-            BasPeakAmp =   str2num(gui_erp_simulation.exgua_peakamp.String);
+            BasPeakAmp = str2num(gui_erp_simulation.exgua_peakamp.String);
             if isempty(BasPeakAmp) || numel(BasPeakAmp)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of ex-Gaussian function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of ex-Gaussian function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             MeanLatOnset = str2num(gui_erp_simulation.exgua_mean.String);
             if isempty(MeanLatOnset) || numel(MeanLatOnset)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "Gaussian mean" of Ex-Gaussian function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "Gaussian mean" of Ex-Gaussian function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            ExGauTau =  str2num(gui_erp_simulation.exgua_tau.String);
+            if MeanLatOnset < EpochStart || MeanLatOnset > EpochStop
+                msgboxText = 'Create Artificial ERP Waveform> Gaussian mean must be within the epoch';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            ExGauTau = str2num(gui_erp_simulation.exgua_tau.String);
             if isempty(ExGauTau) || numel(ExGauTau)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "Tau" of Ex-Gaussian function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "Tau" of Ex-Gaussian function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             SDOffset = str2num(gui_erp_simulation.exgua_sd.String);
             if isempty(SDOffset) || numel(SDOffset)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "SD" of Ex-Gaussian function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "SD" of Ex-Gaussian function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-        elseif  gui_erp_simulation.impulse_op.Value ==1
+        elseif gui_erp_simulation.impulse_op.Value ==1
             BasFuncName = 'Impulse';
-            BasPeakAmp =   str2num(gui_erp_simulation.impulse_peakamp.String);
+            BasPeakAmp = str2num(gui_erp_simulation.impulse_peakamp.String);
             if isempty(BasPeakAmp) || numel(BasPeakAmp)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of impulse function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of impulse function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             MeanLatOnset = str2num(gui_erp_simulation.impulse_latency.String);
             if isempty(MeanLatOnset) || numel(MeanLatOnset)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "latency" of impulse function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "latency" of impulse function';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            if MeanLatOnset < EpochStart || MeanLatOnset > EpochStop
+                msgboxText = 'Create Artificial ERP Waveform> Impulse latency must be within the epoch';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         elseif gui_erp_simulation.square_op.Value ==1
             BasFuncName = 'Boxcar';
-            BasPeakAmp =   str2num(gui_erp_simulation.square_peakamp.String);
+            BasPeakAmp = str2num(gui_erp_simulation.square_peakamp.String);
             if isempty(BasPeakAmp) || numel(BasPeakAmp)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of Boxcar function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of Boxcar function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             MeanLatOnset = str2num(gui_erp_simulation.square_onset.String);
             if isempty(MeanLatOnset) || numel(MeanLatOnset)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "onset" of Boxcar function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "onset" of Boxcar function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             SDOffset = str2num(gui_erp_simulation.square_offset.String);
             if isempty(SDOffset) || numel(SDOffset)~=1
-                msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "offset" of Boxcar function'];
-                titlNamerro = 'Warning for ERP Tab';
+                msgboxText = 'Create Artificial ERP Waveform> Please define one numeric for "offset" of Boxcar function';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            if SDOffset< MeanLatOnset
-                msgboxText =  ['Create Artificial ERP Waveform> Please "offset" should be larger than "onset" of Boxcar function'];
-                titlNamerro = 'Warning for ERP Tab';
+            if SDOffset <= MeanLatOnset
+                msgboxText = 'Create Artificial ERP Waveform> Boxcar offset must be greater than onset';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            onset_in  = MeanLatOnset >= EpochStart && MeanLatOnset <= EpochStop;
+            offset_in = SDOffset     >= EpochStart && SDOffset     <= EpochStop;
+            if ~onset_in && ~offset_in
+                msgboxText = 'Create Artificial ERP Waveform> At least one of boxcar onset or offset must be within the epoch';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
@@ -2084,7 +2176,7 @@ varargout{1} = ERP_simulation_box;
             end
             fileName_full = Answer{2};
             if isempty(fileName_full)
-                ERP.filename = ERP.erpname;
+                ERP.filename = '';
             elseif ~isempty(fileName_full)
                 [pathstr, file_name, ext] = fileparts(fileName_full);
                 ext = '.erp';

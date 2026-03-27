@@ -353,7 +353,7 @@ if EpochStop<=EpochStart
 end
 
 if qMeanLatOnset< EpochStart
-    msgboxText =  [' "MeanLatencyOnset" should be larger than',32,num2str(EpochStop),'ms'];
+    msgboxText =  [' "MeanLatencyOnset" should be larger than',32,num2str(EpochStart),'ms'];
     title = 'ERPLAB: pop_ERP_simulation() error';
     errorfound(msgboxText, title);
     return;
@@ -371,6 +371,7 @@ if strcmpi(BasFuncName,'Exgaussian')
         msgboxText =  [' "SDOffset" for EX-Gaussian function should be a positive number.'];
         title = 'ERPLAB: pop_ERP_simulation() error';
         errorfound(msgboxText, title);
+        return;
     end
 end
 
@@ -692,7 +693,7 @@ ERPautx.times = Times;
 ERPautx.nchan = 1;
 ERPautx.nbin = 1;
 ERPautx.pnts = numel(Times);
-ERPautx.erpname ='Cretedartificialwave';
+ERPautx.erpname ='Createdartificialwave';
 ERPautx.srate = Srate;
 ERPautx.saved  = 'no';
 %%fixed by GH
