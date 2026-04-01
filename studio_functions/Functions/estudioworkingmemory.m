@@ -65,88 +65,48 @@ catch
     vmemoryestudio = [];
 end
 
+if ~isempty(vmemoryestudio)
+    vmemoryestudio = erplab_memory_store('studio', 'normalize', vmemoryestudio);
+    assignin('base','vmemoryestudio', vmemoryestudio);
+else
+    try
+        vmemoryestudio = erplab_memory_store('studio', 'load');
+        assignin('base','vmemoryestudio', vmemoryestudio);
+    catch
+        msgboxText = ['EStudio (estudioworkingmemory.m) could not access its persistent working memory.\n'...
+            'EStudio will use workspace memory for this session only.\n'];
+        try
+            cprintf([0.45 0.45 0.45], msgboxText');
+        catch
+            fprintf(msgboxText);
+        end
+        vmemoryestudio = estudio_default_memory_struct(0);
+        assignin('base','vmemoryestudio', vmemoryestudio);
+    end
+end
+
 
 if nargin==1 % read
-    if ~isempty(vmemoryestudio)  %  variable at the workspace for storing/reading memory
-        if isfield(vmemoryestudio, field)
-            output = vmemoryestudio.(field);
-        else
-            output = [];
-        end
-    else % file for storing/reading memory
-        try
-            p = which('o_ERPDAT');
-            p = p(1:findstr(p,'o_ERPDAT.m')-1);
-            v = load(fullfile(p,'memoryerpstudio.erpm'), '-mat');
-        catch
-            msgboxText = ['EStudio (memoryerpstudio.m) could not find "memoryerpstudio.erpm" or does not have permission for reading it.\n'...
-                'Please, run EStudio again or go to EStudio''s Setting menu and specify/create a new memory file.\n'];
-            try
-                cprintf([0.45 0.45 0.45], msgboxText');
-            catch
-                fprintf(msgboxText);
-            end
-            output = [];
-            return
-        end
-        if isfield(v, field)
-            output = v.(field);
-        else
-            output = [];
-        end
+    if isfield(vmemoryestudio, field)
+        output = vmemoryestudio.(field);
+    else
+        output = [];
     end
     return
 elseif nargin==2 % write
-    if ~isempty(vmemoryestudio) %  variable at the workspace for storing/reading memory
+    try
+        vmemoryestudio.(field) = input2store;
+        assignin('base','vmemoryestudio', vmemoryestudio);
+        erplab_memory_store('studio', 'savefield', field, input2store);
+    catch
+        msgboxText = ['EStudio (estudioworkingmemory.m) could not write its working memory to the user settings folder.\n'...
+            'Please check that Matlab can write to your preferences directory.\n'];
         try
-            vmemoryestudio.(field) = input2store;
-            assignin('base','vmemoryestudio', vmemoryestudio);
+            cprintf([0.45 0.45 0.45], msgboxText');
         catch
-            msgboxText = 'EStudio (estudioworkingmemory.m) could not write to the variable called vmemoryestudio, at workspace.';
-            try
-                cprintf([0.45 0.45 0.45], sprintf(msgboxText', erplabmemoryfile));
-            catch
-                fprintf(msgboxText);
-            end
-            return
+            fprintf(msgboxText);
         end
-    else % file for storing/reading memory
-        try
-            eval([field '=input2store;'])
-            p = which('o_ERPDAT');
-            p = p(1:findstr(p,'o_ERPDAT.m')-1);
-            save(fullfile(p,'memoryerpstudio.erpm'), field,'-append');
-        catch
-            % Try to create the file if it doesn't exist
-            msgboxText1 = 'EStudio could not find "memoryerpstudio.erpm" - attempting to create new file...\n';
-            try
-                cprintf([0.45 0.45 0.45], msgboxText1);
-            catch
-                fprintf(msgboxText1);
-            end
-
-            try
-                p1 = which('o_ERPDAT');
-                p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-                EStudioversion= 16;
-                save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion');
-                msgboxText2 = 'memoryerpstudio.erpm created\n';
-                try
-                    cprintf([0.45 0.45 0.45], msgboxText2);
-                catch
-                    fprintf(msgboxText2);
-                end
-            catch
-                % Only show error if we truly can't create/write the file
-                msgboxText3 = ['Failed to create memoryerpstudio.erpm. This may be because EStudio does not have permission to write the erplab folder. Please go to EStudio''s Setting menu and specify a different memory file location.\n'];
-                try
-                    cprintf([0.45 0.45 0.45], msgboxText3);
-                catch
-                    fprintf(msgboxText3);
-                end
-            end
-            return
-        end
+        return
     end
 else % invalid inputs
     msgboxText = 'Wrong number of inputs for estudioworkingmemory.m\n';

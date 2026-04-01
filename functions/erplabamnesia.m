@@ -54,59 +54,17 @@ if warningop>0
                 return
         end
 end
-erplab_default_values % script
-% check variable at workspace
 try
-        vmemoryerp = evalin('base', 'vmemoryerp');
-catch
-        vmemoryerp = [];
-end
-if isempty(vmemoryerp)
-        fprintf('\n* FYI: ERPLAB''s working memory variable does not exist at workspace.\n')
-else
+        vmemoryerp = erplab_memory_store('classic', 'reset');
+        assignin('base','vmemoryerp',vmemoryerp);
         if isfield(vmemoryerp, 'mshock')
                 mshock = vmemoryerp.mshock;
         else
                 mshock = 0;
         end
-        clear vmemoryerp
-        mshock = mshock + 1;
-        
-        %
-        %  IMPORTANT: If this strucure (vmemoryerp) is modified then also must be modified the same line at eegplugin_erplab.m
-        % 
-        vmemoryerp = struct('erplabrel',erplabrel,'erplabver',erplabver,'ColorB',ColorB,'ColorF',ColorF,'fontsizeGUI',fontsizeGUI,...
-                                    'fontunitsGUI',fontunitsGUI,'mshock',mshock, 'errorColorF', errorColorF, 'errorColorB', errorColorB);
-        assignin('base','vmemoryerp',vmemoryerp);
-        fprintf('\n* ERPLAB''s working memory was reset (variable "vmemoryerp", at workspace, was rebuild with default values).\n');
-end
-
-% check file for memory
-p = which('eegplugin_erplab');
-p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-mfile = fullfile(p,'memoryerp.erpm');
-
-if exist(mfile, 'file')==2
-        v = load(fullfile(p,'memoryerp.erpm'), '-mat');
-        if isfield(v, 'mshock')
-                mshock = v.mshock;
-        else
-                mshock = 0;
-        end
-        
-        recycle on;
-        delete(mfile)
-        pause(0.1)
-        recycle off
-        mshock = mshock + 1;
-        fprintf('\n*** ERPLAB WARNING: ERPLAB''s working memory was wiped out. Default values will be used.\n\n')
-        
-        %
-        %  IMPORTANT: If this file (saved variables inside memoryerp.erpm) is modified then also must be modified the same line at eegplugin_erplab.m
-        %
-        save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
-else
-        fprintf('\n* FYI: ERPLAB''s working memory file does not exist.\n')
+        fprintf('\n*** ERPLAB WARNING: ERPLAB''s working memory was reset. Default values will be used.\n\n')
+catch
+        fprintf('\n* ERPLAB''s working memory could not be reset in the user settings folder.\n')
         return
 end
 if mshock>=30 && rand>0.8

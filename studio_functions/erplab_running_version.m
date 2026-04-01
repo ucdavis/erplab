@@ -10,19 +10,6 @@ if nargin < 1
     return
 end
 
-% if isempty(tooltype)
-%
-%
-% end
-%
-% CHECK EEGLAB Version
-%
-if exist('erplab_running_version.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
-
 %
 % Parsing inputs
 %
@@ -30,25 +17,19 @@ p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 
-p.addParamValue('version', @isnumeric); % erpset index or input file
-p.addParamValue('tooltype', @ischar); % 'on', 'off'
+p.addParamValue('version', []); % erpset index or input file
+p.addParamValue('tooltype', ''); % 'on', 'off'
 
 p.parse(varargin{:});
 
+if ~isempty(p.Results.tooltype)
+    erplab_session_state('set', 'tooltype', p.Results.tooltype);
+end
 
+if ~isempty(p.Results.version)
+    erplab_session_state('set', 'version', p.Results.version);
+end
 
-
-% if ~iserpmem
-
-p_location = which('o_ERPDAT');
-p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
-
-
-save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype','version');
-
-
-
-% end
 % erpcom = char(strcat());
 
 fn     = fieldnames(p.Results);

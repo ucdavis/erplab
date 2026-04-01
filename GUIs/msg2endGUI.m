@@ -93,10 +93,16 @@ function pushbutton_ok_Callback(hObject, eventdata, handles)
 
 msg = cellstr(get(handles.edit_msg, 'String'));
 msg = [sprintf('<[%.4f %.4f %.4f]>', handles.mcolor); msg];
-p = which('eegplugin_erplab');
-p = p(1:strfind(p,'eegplugin_erplab.m')-1);
-filename = fullfile(p,'functions','msg2end.txt');
+filename = erplab_msg2end_file('write');
+if isempty(filename)
+        errordlg('ERPLAB could not determine a writable message file location.');
+        return
+end
 fid = fopen(filename, 'w');
+if fid == -1
+        errordlg(sprintf('ERPLAB could not open:\n%s', filename));
+        return
+end
 
 for i=1:length(msg)
       fprintf(fid, '%s\n', msg{i});
@@ -137,9 +143,11 @@ guidata(hObject, handles);
 
 % -----------------------------------------------------------------------
 function pushbutton_editfile_Callback(hObject, eventdata, handles)
-p = which('eegplugin_erplab');
-p = p(1:strfind(p,'eegplugin_erplab.m')-1);
-filename = fullfile(p,'functions','msg2end.txt');
+filename = erplab_msg2end_file('write');
+if isempty(filename)
+        errordlg('ERPLAB could not determine a writable message file location.');
+        return
+end
 edit(filename);
 uiresume(handles.gui_chassis);
 
