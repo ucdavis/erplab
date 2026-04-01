@@ -341,10 +341,10 @@ varargout{1} = ERP_simulation_box;
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_simulation.impulse_latency.KeyPressFcn= @erp_simuls_presskey;
         if BasFunLabel==2
-            try; impulselat = def{3}; catch; impulselat = peak_lat_def; end
-            if isempty(impulselat) || ~isnumeric(impulselat); impulselat = peak_lat_def; end
+            try; impulselat = def{3}; catch; impulselat = 100; end
+            if isempty(impulselat) || ~isnumeric(impulselat); impulselat = 100; end
         else
-            impulselat = peak_lat_def;
+            impulselat = 100;
         end
         gui_erp_simulation.impulse_latency.String = num2str(impulselat);
         gui_erp_simulation.Paras{16} = str2num(gui_erp_simulation.impulse_latency.String);
@@ -397,10 +397,10 @@ varargout{1} = ERP_simulation_box;
             box_half = round(spread_def / 2);
         end
         if BasFunLabel==3
-            try; Onsetlat = def{3}; catch; Onsetlat = peak_lat_def - box_half; end
-            if isempty(Onsetlat) || ~isnumeric(Onsetlat); Onsetlat = peak_lat_def - box_half; end
+            try; Onsetlat = def{3}; catch; Onsetlat = 100; end
+            if isempty(Onsetlat) || ~isnumeric(Onsetlat); Onsetlat = 100; end
         else
-            Onsetlat = peak_lat_def - box_half;
+            Onsetlat = 100;
         end
         gui_erp_simulation.square_onset.String = num2str(Onsetlat);
         gui_erp_simulation.Paras{19} = str2num(gui_erp_simulation.square_onset.String);
@@ -411,10 +411,10 @@ varargout{1} = ERP_simulation_box;
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_simulation.square_offset.KeyPressFcn= @erp_simuls_presskey;
         if BasFunLabel==3
-            try; Offsetlat = def{4}; catch; Offsetlat = peak_lat_def + box_half; end
-            if isempty(Offsetlat) || ~isnumeric(Offsetlat); Offsetlat = peak_lat_def + box_half; end
+            try; Offsetlat = def{4}; catch; Offsetlat = 200; end
+            if isempty(Offsetlat) || ~isnumeric(Offsetlat); Offsetlat = 200; end
         else
-            Offsetlat = peak_lat_def + box_half;
+            Offsetlat = 200;
         end
         gui_erp_simulation.square_offset.String = num2str(Offsetlat);
         gui_erp_simulation.Paras{20} = str2num(gui_erp_simulation.square_offset.String);
@@ -454,10 +454,10 @@ varargout{1} = ERP_simulation_box;
         try
             sinamp = def{15};
         catch
-            sinamp =0;
+            sinamp =1;
         end
         if isempty(sinamp) ||~isnumeric(sinamp)
-            sinamp =0;
+            sinamp =1;
         end
         gui_erp_simulation.sin_amp.String = num2str(sinamp);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.sin_option,...
@@ -509,10 +509,10 @@ varargout{1} = ERP_simulation_box;
         try
             whiteamp =def{11};
         catch
-            whiteamp=0;
+            whiteamp=1;
         end
         if isempty(whiteamp)
-            whiteamp=0;
+            whiteamp=1;
         end
         gui_erp_simulation.white_amp.String = num2str(whiteamp);
         set(gui_erp_simulation.white_title, 'Sizes',[90 60 30 60 30]);
@@ -545,7 +545,10 @@ varargout{1} = ERP_simulation_box;
         try
             pinkAmp = def{13};
         catch
-            pinkAmp=0;
+            pinkAmp=1;
+        end
+        if isempty(pinkAmp)
+            pinkAmp=1;
         end
         gui_erp_simulation.pink_amp.String = num2str(pinkAmp);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.pink_title,'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
@@ -1741,6 +1744,27 @@ varargout{1} = ERP_simulation_box;
         estudioworkingmemory('ERPTab_stimulation',0);
         
         
+        % Apply defaults for any missing Paras values
+        P = gui_erp_simulation.Paras;
+        if numel(P)<27; P{27}=1; end
+        if isempty(P{5})  || ~isnumeric(P{5});  P{5}  = -200; end
+        if isempty(P{6})  || ~isnumeric(P{6});  P{6}  =  799; end
+        if isempty(P{8})  || ~isnumeric(P{8})  || P{8}<=0; P{8}=1000; end
+        if isempty(P{10}) || ~isnumeric(P{10}); P{10} =    1; end
+        if isempty(P{11}) || ~isnumeric(P{11}); P{11} =  100; end
+        if isempty(P{12}) || ~isnumeric(P{12}); P{12} =   50; end
+        if isempty(P{13}) || ~isnumeric(P{13}); P{13} =    0; end
+        if isempty(P{15}) || ~isnumeric(P{15}); P{15} =    1; end
+        if isempty(P{16}) || ~isnumeric(P{16}); P{16} =  100; end
+        if isempty(P{18}) || ~isnumeric(P{18}); P{18} =    1; end
+        if isempty(P{19}) || ~isnumeric(P{19}); P{19} =  100; end
+        if isempty(P{20}) || ~isnumeric(P{20}); P{20} =  200; end
+        if isempty(P{22}) || ~isnumeric(P{22}); P{22} =    1; end
+        if isempty(P{23}) || ~isnumeric(P{23}); P{23} =   10; end
+        if isempty(P{25}) || ~isnumeric(P{25}); P{25} =    1; end
+        if isempty(P{27}) || ~isnumeric(P{27}); P{27} =    1; end
+        gui_erp_simulation.Paras = P;
+
         try gui_erp_simulation.realerp_check.Value = gui_erp_simulation.Paras{1};catch gui_erp_simulation.realerp_check.Value=0; end
         gui_erp_simulation.erpsetedit.String = num2str(gui_erp_simulation.Paras{2});
         if gui_erp_simulation.realerp_check.Value==0

@@ -54,7 +54,7 @@ if nargin==1 || nargin==2 %with GUI to get other parameters
     
     def   = erpworkingmemory('pop_ERP_simulation');
     if isempty(def)
-        def  = {1,1,100,50,1000,-200,799,1,1000,0,1,0,1,0,1,10,0};
+        def  = {1,1,100,50,0,-200,799,1,1000,0,1,0,1,0,1,10,0};
     end
     
     if isempty(BasFuncName) || ~ischar(BasFuncName)
