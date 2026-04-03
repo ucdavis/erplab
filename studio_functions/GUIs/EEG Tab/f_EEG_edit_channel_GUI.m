@@ -99,7 +99,11 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         %         set(EStduio_eegtab_EEG_edit_chan.interpolate_epoch_title,'Sizes',[160 -1]);
         EStduio_eegtab_EEG_edit_chan.edit_chanlocs.String = '<html>    Add or edit   <br />chan locations</html>';
         EStduio_eegtab_EEG_edit_chan.edit_chanlocs.HorizontalAlignment='Center';
-        set(EStduio_eegtab_EEG_edit_chan.DataSelBox,'sizes',[30 30 30 40])
+        uicontrol('Style','text','Parent',EStduio_eegtab_EEG_edit_chan.DataSelBox,...
+            'String','See also Chan Locations button in EEGLAB Tools',...
+            'FontSize',FontSize_defualt-1,'HorizontalAlignment','center',...
+            'BackgroundColor',ColorB_def,'ForegroundColor',[0.4 0.4 0.4]);
+        set(EStduio_eegtab_EEG_edit_chan.DataSelBox,'sizes',[30 30 30 40 20])
         estudioworkingmemory('EEGTab_editchan',0);
     end
 
@@ -502,9 +506,10 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         app = feval('f_editchan_gui',observe_EEGDAT.EEG,titleName);
         waitfor(app,'Finishbutton',1);
         try
-            EEGoutput = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-            locfile   = app.locfile;
-            loccom    = app.loccom;
+            EEGoutput     = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            locfile       = app.locfile;
+            loccom        = app.loccom;
+            usedGuessChan = app.usedGuessChan;
             app.delete; %delete app from view
             pause(0.5); %wait for app to leave
         catch
@@ -527,16 +532,22 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             ChanArray = [1:EEG.nbchan];
             [EEG, LASTCOM] = pop_editdatachanlocs(ALLEEG,EEGArray(Numofeeg),...
-                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'History', 'implicit');
+                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'UsedGuessChan',usedGuessChan,'History', 'implicit');
             if isempty(LASTCOM)
                 estudioworkingmemory('f_EEG_proces_messg','Edit/Delete Channels & Locations >  Add or edit channel locations: Please check you data or you selected cancel');
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-            EEG = eegh(LASTCOM, EEG);
+            lastcom_parts = regexp(LASTCOM, '\n', 'split');
+            lastcom_parts = lastcom_parts(~cellfun(@(x) isempty(strtrim(x)), lastcom_parts));
+            for ll = 1:numel(lastcom_parts)
+                EEG = eegh(lastcom_parts{ll}, EEG);
+            end
             fprintf(['\n',LASTCOM,'\n']);
             if Numofeeg==1
-                eegh(LASTCOM);
+                for ll = 1:numel(lastcom_parts)
+                    eegh(lastcom_parts{ll});
+                end
             end
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( ['\n',repmat('-',1,100) '\n']);

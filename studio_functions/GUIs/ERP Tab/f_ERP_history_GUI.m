@@ -66,7 +66,7 @@ varargout{1} = box_erp_history;
         gui_erp_history.erp_history_table = uiextras.HBox('Parent', gui_erp_history.DataSelBox);
         gui_erp_history.uitable = uitable(  ...
             'Parent'        , gui_erp_history.erp_history_table,...
-            'Data'          , strsplit(ERP_history(1,:), '\n')', ...
+            'Data'          , regexp(ERP_history(1,:), '\n', 'split')', ...
             'ColumnWidth'   , {total_len+2}, ...
             'ColumnName'    , {'Function call'}, ...
             'RowName'       , []);
@@ -102,7 +102,7 @@ varargout{1} = box_erp_history;
         end
         ERP_history_display = {};
         for Numofrow = 1:size(ERP_history,1)
-            ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
+            ERP_history_display = [ERP_history_display,regexp(ERP_history(Numofrow,:), '\n', 'split')];
         end
         set(gui_erp_history.uitable,'Data', ERP_history_display');
         
@@ -181,7 +181,7 @@ varargout{1} = box_erp_history;
             end
             ERP_history_display = {};
             for Numofrow = 1:size(ERP_history,1)
-                ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
+                ERP_history_display = [ERP_history_display,regexp(ERP_history(Numofrow,:), '\n', 'split')];
             end
             set(gui_erp_history.uitable,'Data', ERP_history_display');
         else%% ALLERPCOM for current session
@@ -226,7 +226,7 @@ varargout{1} = box_erp_history;
             end
             ERP_history_display = {};
             for Numofrow = 1:size(ERP_history,1)
-                ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
+                ERP_history_display = [ERP_history_display,regexp(ERP_history(Numofrow,:), '\n', 'split')];
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
             fprintf(['**Command history**',32,datestr(datetime('now')),'\n']);
@@ -284,7 +284,7 @@ varargout{1} = box_erp_history;
         end
         ERP_history_display = {};
         for Numofrow = 1:size(ERP_history,1)
-            ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
+            ERP_history_display = [ERP_history_display,regexp(ERP_history(Numofrow,:), '\n', 'split')];
         end
         set(gui_erp_history.uitable,'Data', ERP_history_display');
         if isempty(observe_ERPDAT.ERP)

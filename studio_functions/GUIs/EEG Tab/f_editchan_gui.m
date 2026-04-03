@@ -29,6 +29,7 @@ classdef f_editchan_gui < matlab.apps.AppBase
         Finishbutton % Set to 1 when dialog closes (waitfor trigger)
         locfile      % Full path of loc file loaded (empty if manual edit or dataset load)
         loccom       % History command from Guess chanlocs (empty if not used)
+        usedGuessChan % True if Guess chanlocs (pop_chanedit) was used at any point
     end
 
     properties (Access = private)
@@ -173,8 +174,9 @@ classdef f_editchan_gui < matlab.apps.AppBase
             app.headplotaxs.YLabel.String = '';
             app.headplotaxs.Title.String = '';
 
-            app.locfile = '';
-            app.loccom  = '';
+            app.locfile       = '';
+            app.loccom        = '';
+            app.usedGuessChan = false;
 
             %to close out gui
             ready = 0;
@@ -486,8 +488,9 @@ classdef f_editchan_gui < matlab.apps.AppBase
                 end
             end
 
-            app.locfile = '';
-            app.loccom  = '';
+            app.locfile       = '';
+            app.loccom        = '';
+            app.usedGuessChan = false;
             refreshtable(app);
             refreshhp(app);
             figure(app.UIFigure);
@@ -544,9 +547,10 @@ classdef f_editchan_gui < matlab.apps.AppBase
         function restlocstable(app, event)
             confirm_reset = questdlg('Reset the locations in this table to the original values?');
             if strcmp(confirm_reset, 'Yes') == 1
-                app.nchl    = app.nchl_orig;
-                app.locfile = '';
-                app.loccom  = '';
+                app.nchl          = app.nchl_orig;
+                app.locfile       = '';
+                app.loccom        = '';
+                app.usedGuessChan = false;
                 refreshtable(app);
                 refreshhp(app);
             end
@@ -567,40 +571,41 @@ classdef f_editchan_gui < matlab.apps.AppBase
 
         % Cell edit callback: loc_table
         function loc_table_CellEditCallback(app, event)
-            %             indices = event.Indices;
-            %             newData = event.NewData;
             tdata = app.loc_table.Data;
+            i = event.Indices(1); % only update the channel row that was edited
 
-            % recreate a new channel location structure
-            for i = 1:app.ch_n
-                nchl(i).labels = app.ch_labels{i};
-                nchl(i).type = [];
-                nchl(i).theta = [];
-                nchl(i).radius = [];
-                nchl(i).X = [];%handles.xyz(i,1);
-                nchl(i).Y = [];%handles.xyz(i,2);
-                nchl(i).Z = [];%handles.xyz(i,3);
-                nchl(i).sph_theta = [];
-                nchl(i).sph_phi = [];
-                nchl(i).sph_radius = 85;
-                nchl(i).ref = [];
-                if strcmp(app.tformat,'xyz')  % in xyz
-                    nchl(i).X = tdata(i,1);
-                    nchl(i).Y = tdata(i,2);
-                    nchl(i).Z = tdata(i,3);
-
-                elseif strcmp(app.tformat,'sph')  % in sph
-                    nchl(i).sph_theta = tdata(i,1);
-                    nchl(i).sph_phi = tdata(i,2);
-                end
+            % Build a clean temporary struct for coordinate conversion of the edited channel only.
+            % Using a temporary struct avoids overwriting channels with empty locations
+            % (which display as 0 in the table but should remain empty).
+            nchl_tmp.labels    = app.ch_labels{i};
+            nchl_tmp.type      = [];
+            nchl_tmp.theta     = [];
+            nchl_tmp.radius    = [];
+            nchl_tmp.X         = [];
+            nchl_tmp.Y         = [];
+            nchl_tmp.Z         = [];
+            nchl_tmp.sph_theta = [];
+            nchl_tmp.sph_phi   = [];
+            nchl_tmp.sph_radius = 85;
+            nchl_tmp.ref       = [];
+            if strcmp(app.tformat,'xyz')
+                nchl_tmp.X = tdata(i,1);
+                nchl_tmp.Y = tdata(i,2);
+                nchl_tmp.Z = tdata(i,3);
+                nchl_tmp = pop_chanedit(nchl_tmp, 'convert','cart2all');
+            elseif strcmp(app.tformat,'sph')
+                nchl_tmp.sph_theta = tdata(i,1);
+                nchl_tmp.sph_phi   = tdata(i,2);
+                nchl_tmp = pop_chanedit(nchl_tmp, 'convert','sph2all');
             end
 
-            if strcmp(app.tformat,'xyz')  % in xyz
-                [nchl] = pop_chanedit(nchl, 'convert','cart2all');
-            else
-                [nchl] = pop_chanedit(nchl, 'convert','sph2all');
+            % Apply converted coordinate fields back to the original struct entry,
+            % preserving any extra fields (e.g. urchan) the original may have.
+            conv_fields = fieldnames(nchl_tmp);
+            for fi = 1:numel(conv_fields)
+                app.nchl(i).(conv_fields{fi}) = nchl_tmp.(conv_fields{fi});
             end
-            app.nchl    = nchl;
+
             app.locfile = '';
             app.loccom  = '';
             refreshtable(app);
@@ -634,9 +639,10 @@ classdef f_editchan_gui < matlab.apps.AppBase
 
             end
             EEG1.chanlocs = EEG2.chanlocs;
-            app.EEG    = EEG1;
-            app.locfile = '';
-            app.loccom  = LASTCOM;
+            app.EEG           = EEG1;
+            app.locfile       = '';
+            app.loccom        = LASTCOM;
+            app.usedGuessChan = true;
 
             app.nchl = EEG2.chanlocs;
             refreshtable(app);

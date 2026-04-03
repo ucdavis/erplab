@@ -38,7 +38,7 @@ EStudio_gui_erp_totl.eegpanelSizes(2) = 320;
 EStudio_gui_erp_totl.eegpanel{3} = f_EEG_Plot_setting_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(3) = 290;
 EStudio_gui_erp_totl.eegpanel{4} = f_EEG_edit_channel_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(4) = 170;
+EStudio_gui_erp_totl.eegpanelSizes(4) = 185;
 disp('EEG Tab: Launching EEGsets, Channel and IC Selection, Plot Settings, Edit/Delete Channels & Locations,...');
 EStudio_gui_erp_totl.eegpanel{5} = f_EEG_interpolate_chan_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(5) = 290;
