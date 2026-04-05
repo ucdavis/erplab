@@ -71,6 +71,13 @@ catch
     ERPIndex=1;
 end
 handles.ERPIndex = ERPIndex;
+try
+    showEEGPathOption = varargin{5};
+catch
+    showEEGPathOption = false;
+end
+handles.showEEGPathOption = showEEGPathOption;
+handles.checkbox_use_eeg_path = [];
 % handles.erpnameor = erpname;
 handles.output = [];
 handles.suffix = suffix;
@@ -121,6 +128,26 @@ handles = painterplabstudio(handles);
 % % Set font size
 % %
 handles = setfonterplabestudio(handles);
+
+if showEEGPathOption
+    cbFontSize = get(handles.checkbox2_save_label, 'FontSize');
+    % Get position in pixels so offset arithmetic is reliable regardless of GUIDE units
+    origUnits = get(handles.checkbox2_save_label, 'Units');
+    set(handles.checkbox2_save_label, 'Units', 'pixels');
+    cbPos = get(handles.checkbox2_save_label, 'Position');
+    set(handles.checkbox2_save_label, 'Units', origUnits);
+    figHandle = hObject;
+    handles.checkbox_use_eeg_path = uicontrol('Style','checkbox', ...
+        'Parent',          handles.gui_chassis, ...
+        'Units',           'pixels', ...
+        'String',          'Use EEGset path as ERPset path', ...
+        'Position',        [cbPos(1), cbPos(2)-22, max(cbPos(3), 230), 18], ...
+        'Value',           1, ...
+        'Enable',          'off', ...
+        'BackgroundColor', get(handles.gui_chassis,'Color'), ...
+        'FontSize',        cbFontSize, ...
+        'Callback',        @(h,e) checkbox_use_eeg_path_Callback(h, e, figHandle));
+end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -230,13 +257,42 @@ else
 end
 if handles.checkbox2_save_label.Value
     set(handles.uitable1_erpset_table,'Enable','on');
-    set(handles.edit_path,'Enable','on');
-    set(handles.pushbutton_path_browse,'Enable','on');
+    if handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path)
+        set(handles.checkbox_use_eeg_path, 'Enable', 'on');
+        if handles.checkbox_use_eeg_path.Value
+            % EEGset path will be used — keep path controls disabled
+            set(handles.edit_path,'Enable','off');
+            set(handles.pushbutton_path_browse,'Enable','off');
+        else
+            set(handles.edit_path,'Enable','on');
+            set(handles.pushbutton_path_browse,'Enable','on');
+        end
+    else
+        set(handles.edit_path,'Enable','on');
+        set(handles.pushbutton_path_browse,'Enable','on');
+    end
 else
     set(handles.uitable1_erpset_table,'Enable','on');
+    if handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path)
+        set(handles.checkbox_use_eeg_path, 'Enable', 'off');
+    end
     set(handles.edit_path,'Enable','off');
     set(handles.pushbutton_path_browse,'Enable','off');
 end
+
+
+
+% Callback for the dynamically added "Use EEGset path" checkbox.
+function checkbox_use_eeg_path_Callback(hObject, eventdata, figHandle)
+handles = guidata(figHandle);
+if handles.checkbox_use_eeg_path.Value
+    set(handles.edit_path, 'Enable', 'off', 'String', '');
+    set(handles.pushbutton_path_browse, 'Enable', 'off');
+else
+    set(handles.edit_path, 'Enable', 'on', 'String', cd);
+    set(handles.pushbutton_path_browse, 'Enable', 'on');
+end
+guidata(figHandle, handles);
 
 
 
@@ -392,7 +448,10 @@ for Numoferpset = 1:numel(EEGArray)
     end
 
     ALLERP(EEGArray(Numoferpset)).filename = file_name;
-    if handles.checkbox2_save_label.Value
+    % Only override filepath when saving to disk and NOT using EEGset path
+    useEEGsetPath = handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path) ...
+                    && handles.checkbox_use_eeg_path.Value && handles.checkbox2_save_label.Value;
+    if handles.checkbox2_save_label.Value && ~useEEGsetPath
         ALLERP(EEGArray(Numoferpset)).filepath = pathName;
     end
 
@@ -405,8 +464,10 @@ for Numoferpset = 1:numel(EEGArray)
 end
 
 FilePath = handles.checkbox2_save_label.Value;
+useEEGsetPath = handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path) ...
+                && handles.checkbox_use_eeg_path.Value && handles.checkbox2_save_label.Value;
 
-handles.output = {ALLERP, FilePath};
+handles.output = {ALLERP, FilePath, useEEGsetPath};
 % Update handles structure
 guidata(hObject, handles);
 

@@ -641,8 +641,9 @@ varargout{1} = Eegtab_box_avg_erp;
             assignin('base','ALLERPCOM',ERPCOM);
         end
         
-        Answer = f_ERP_save_multi_file(ALLEEG1,EEGArray,'',0);
+        Answer = f_ERP_save_multi_file(ALLEEG1,EEGArray,'',0,true);
         if isempty(Answer)
+            observe_EEGDAT.eeg_panel_message = 2;
             return;
         end
         if ~isempty(Answer{1})
