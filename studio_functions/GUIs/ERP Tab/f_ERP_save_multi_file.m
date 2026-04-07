@@ -34,24 +34,30 @@ version = erplabver;
 
 % --- Layout: pixel positions extracted from original .fig (683 x 319 px) ---
 %
-% When showEEGPathOption=true the figure grows by EEG_EXTRA pixels and the
-% path row + Save-ERPsets checkbox shift up by EEG_SHIFT, making room for
-% the new "Use EEGset path" checkbox between them and the filename checkbox.
+% When showEEGPathOption=true:
+%   - Figure widens to 760 px to fit the "Use EEGset path" checkbox (right
+%     edge at x=735) and to give the table enough width without scrolling.
+%   - Figure grows by EEG_EXTRA pixels vertically.
+%   - Path row + Save-ERPsets checkbox shift up by EEG_SHIFT.
 %
-% Vertical spacing with showEEGPathOption:
-%   checkbox2_save_label top:  306 + 19 = 325
-%   checkbox_use_eeg_path top: 276 + 22 = 298  → gap above = 325-298 = 27
-%   checkbox3_filename top:    234 + 34 = 268  → gap above = 276-268 =  8
+% Table width = FIG_W - 24 (16px left margin + 8px right margin).
+% ColumnWidth is sized so both columns fit without a horizontal scrollbar
+% (row-number header takes ~40px, so each data column = (table_w-40)/2).
 EEG_EXTRA = 20;
 EEG_SHIFT = 20;
 
-FIG_W = 683;
 if showEEGPathOption
-    FIG_H = 319 + EEG_EXTRA;
-    shift = EEG_SHIFT;
+    FIG_W  = 760;
+    FIG_H  = 319 + EEG_EXTRA;
+    shift  = EEG_SHIFT;
+    tbl_w  = FIG_W - 24;   % 736 px
+    col_w  = 345;           % {345 345} = 690 px < 736-40 = 696 px  ✓
 else
-    FIG_H = 319;
-    shift = 0;
+    FIG_W  = 683;
+    FIG_H  = 319;
+    shift  = 0;
+    tbl_w  = FIG_W - 24;   % 659 px  (matches original .fig exactly)
+    col_w  = 300;           % {300 300} = 600 px < 659-40 = 619 px  ✓
 end
 
 hfig = figure( ...
@@ -67,14 +73,14 @@ hfig = figure( ...
 movegui(hfig, 'center');
 ColorBG = get(hfig, 'Color');
 
-% --- Table: [16 55 659 164] px ---
+% --- Table ---
 tbl = uitable( ...
     'Parent',           hfig, ...
     'Tag',              'uitable1_erpset_table', ...
     'Units',            'pixels', ...
-    'Position',         [16, 55, 659, 164], ...
+    'Position',         [16, 55, tbl_w, 164], ...
     'ColumnName',       {'ERP name', 'File name'}, ...
-    'ColumnWidth',      {350 350}, ...
+    'ColumnWidth',      {col_w col_w}, ...
     'ColumnEditable',   [true false], ...
     'RowName',          cellstr(num2str(EEGArray')), ...
     'BackgroundColor',  [1 1 1], ...
@@ -103,7 +109,7 @@ edit_suffix = uicontrol( ...
     'Position',            [187, 236, 282, 30], ...
     'String',              suffix, ...
     'BackgroundColor',     [1 1 1], ...
-    'HorizontalAlignment', 'left', ...
+    'HorizontalAlignment', 'center', ...
     'FontSize',            12);
 
 % --- Right column checkboxes ---
@@ -157,7 +163,8 @@ cb_erpname = uicontrol( ...
 % --- Path row (left column): shifted up by `shift` ---
 
 % text9 "Path:": [9 279 46 24]
-uicontrol( ...
+% Stored so painterplabstudio sets its BackgroundColor consistently.
+text9 = uicontrol( ...
     'Style',               'text', ...
     'Tag',                 'text9', ...
     'Parent',              hfig, ...
@@ -231,6 +238,7 @@ set(tbl, 'Data', cellstr(DataString));
 % --- Store handles ---
 handles.gui_chassis                = hfig;
 handles.uitable1_erpset_table      = tbl;
+handles.text9                      = text9;
 handles.checkbox1_suffix           = cb_suffix;
 handles.edit_suffix_name           = edit_suffix;
 handles.checkbox2_save_label       = cb_save;
