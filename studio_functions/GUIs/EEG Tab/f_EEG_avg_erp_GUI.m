@@ -679,17 +679,13 @@ varargout{1} = Eegtab_box_avg_erp;
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
             ERP.erpname = EEG.setname;
-            [pathstr, file_name, ~] = fileparts(EEG.filename);
+            [~, file_name, ~] = fileparts(EEG.filename);
             ERP.filename = [file_name,'.erp'];
-            ERP.filepath=EEG.filepath;
             if Save_file_label
-                [pathstr, file_name, ext] = fileparts(ERP.filename);
-                ext = '.erp';
-                pathstr= ERP.filepath;
-                if strcmp(pathstr,'')
+                pathstr = EEG.filepath;
+                if isempty(pathstr)
                     pathstr = cd;
                 end
-                ERP.filename = [file_name,ext];
                 ERP.filepath = pathstr;
                 %%----------save the current sdata as--------------------
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
@@ -701,8 +697,10 @@ varargout{1} = Eegtab_box_avg_erp;
                 if Numofeeg==1
                     eegh(ERPCOM);
                 end
+            else
+                ERP.filepath = '';  % not saved to disk; clear path for fresh ERPset
             end
-            
+
             if isempty(observe_ERPDAT.ALLERP)
                 observe_ERPDAT.ALLERP = ERP;
             else

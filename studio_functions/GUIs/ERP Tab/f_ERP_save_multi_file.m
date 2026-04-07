@@ -1,307 +1,382 @@
 function varargout = f_ERP_save_multi_file(varargin)
-% F_ERP_SAVE_MULTI_FILE MATLAB code for f_ERP_save_multi_file.fig
-%      F_ERP_SAVE_MULTI_FILE, by itself, creates a new F_ERP_SAVE_MULTI_FILE or raises the existing
-%      singleton*.
+% NOTE: Migrated from GUIDE (.fig) to programmatic .m for version control.
+% Original .fig archived outside ERPLAB. Edit here, not the .fig.
+% Migrated to .m: April 2026 by Kurt Winsler
 %
-%      H = F_ERP_SAVE_MULTI_FILE returns the handle to a new F_ERP_SAVE_MULTI_FILE or the handle to
-%      the existing singleton*.
+% Usage: Answer = f_ERP_save_multi_file(ALLERP, EEGArray, suffix, ERPIndex, showEEGPathOption)
+%   ALLERP            - struct array (ERPsets or EEGsets depending on ERPIndex)
+%   EEGArray          - indices into ALLERP for sets being saved
+%   suffix            - string appended to names (default '')
+%   ERPIndex          - 1 = ALLERP has .erpname fields; 0 = has .setname fields
+%   showEEGPathOption - true = show "Use EEGset path" checkbox (averaging context)
 %
-%      F_ERP_SAVE_MULTI_FILE('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in F_ERP_SAVE_MULTI_FILE.M with the given input arguments.
-%
-%      F_ERP_SAVE_MULTI_FILE('Property','Value',...) creates a new F_ERP_SAVE_MULTI_FILE or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before f_ERP_save_multi_file_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to f_ERP_save_multi_file_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
+% Returns: {ALLERP_modified, Save_file_label, useEEGsetPath}
 
-% Edit the above text to modify the response to help f_ERP_save_multi_file
-
-% Last Modified by GUIDE v2.5 30-Jul-2024 10:39:13
-
-% Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
-gui_State = struct('gui_Name',       mfilename, ...
-    'gui_Singleton',  gui_Singleton, ...
-    'gui_OpeningFcn', @f_ERP_save_multi_file_OpeningFcn, ...
-    'gui_OutputFcn',  @f_ERP_save_multi_file_OutputFcn, ...
-    'gui_LayoutFcn',  [] , ...
-    'gui_Callback',   []);
-if nargin && ischar(varargin{1})
-    gui_State.gui_Callback = str2func(varargin{1});
-end
-
-if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
-else
-    gui_mainfcn(gui_State, varargin{:});
-end
-% End initialization code - DO NOT EDIT
-
-
-% --- Executes just before f_ERP_save_multi_file is made visible.
-function f_ERP_save_multi_file_OpeningFcn(hObject, eventdata, handles, varargin)
-% Choose default command line output for f_ERP_save_multi_file
-
+% --- Parse inputs ---
 try
-    ALLERP  = varargin{1};
+    ALLERP   = varargin{1};
     EEGArray = varargin{2};
-    suffix = varargin{3};
-
+    suffix   = varargin{3};
 catch
-    suffix  = '';
-    EEGLAB = [];
-    EEGLAB.erpname = 'No erpset was selected';
-    EEGLAB.filename ='No erpset was selected';
-    EEGLAB.event = [];
-    EEGLAB.chanlocs = [];
-    EEGLAB.nbchan = 0;
-    ALLERP(1) = EEGLAB;
+    suffix = '';
+    ALLERP(1).erpname  = 'No erpset was selected';
+    ALLERP(1).filename = 'No erpset was selected';
+    ALLERP(1).event    = [];
+    ALLERP(1).chanlocs = [];
+    ALLERP(1).nbchan   = 0;
     EEGArray = 1;
-
 end
-try
-    ERPIndex = varargin{4};
-catch
-    ERPIndex=1;
-end
-handles.ERPIndex = ERPIndex;
-try
-    showEEGPathOption = varargin{5};
-catch
-    showEEGPathOption = false;
-end
-handles.showEEGPathOption = showEEGPathOption;
-handles.checkbox_use_eeg_path = [];
-% handles.erpnameor = erpname;
-handles.output = [];
-handles.suffix = suffix;
-
-handles.ALLERP = ALLERP;
-handles.EEGArray =EEGArray;
-
+try; ERPIndex          = varargin{4}; catch; ERPIndex          = 1;     end
+try; showEEGPathOption = varargin{5}; catch; showEEGPathOption = false;  end
 
 erplab_default_values;
 version = erplabver;
-set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Save multiple erpsets GUI'])
 
+% --- Layout: pixel positions extracted from original .fig (683 x 319 px) ---
+%
+% When showEEGPathOption=true the figure grows by EEG_EXTRA pixels and the
+% path row + Save-ERPsets checkbox shift up by EEG_SHIFT, making room for
+% the new "Use EEGset path" checkbox between them and the filename checkbox.
+%
+% Vertical spacing with showEEGPathOption:
+%   checkbox2_save_label top:  306 + 19 = 325
+%   checkbox_use_eeg_path top: 276 + 22 = 298  → gap above = 325-298 = 27
+%   checkbox3_filename top:    234 + 34 = 268  → gap above = 276-268 =  8
+EEG_EXTRA = 20;
+EEG_SHIFT = 20;
 
-% set(handles.checkbox1_suffix,'Value',1);
-set(handles.edit_suffix_name,'String',suffix);
-set(handles.checkbox2_save_label,'Value',0);
+FIG_W = 683;
+if showEEGPathOption
+    FIG_H = 319 + EEG_EXTRA;
+    shift = EEG_SHIFT;
+else
+    FIG_H = 319;
+    shift = 0;
+end
 
-ColumnName_table = {'ERP name','File name'};
+hfig = figure( ...
+    'Units',           'pixels', ...
+    'Position',        [100, 100, FIG_W, FIG_H], ...
+    'Name',            ['EStudio ' version '   -   Save multiple erpsets GUI'], ...
+    'NumberTitle',     'off', ...
+    'MenuBar',         'none', ...
+    'ToolBar',         'none', ...
+    'Resize',          'off', ...
+    'CloseRequestFcn', @gui_CloseRequestFcn, ...
+    'Visible',         'off');
+movegui(hfig, 'center');
+ColorBG = get(hfig, 'Color');
 
-set(handles.uitable1_erpset_table,'ColumnName',cellstr(ColumnName_table));
-set(handles.uitable1_erpset_table,'RowName',cellstr(num2str(EEGArray')));
-handles.uitable1_erpset_table.ColumnEditable(1) = true;
-handles.uitable1_erpset_table.ColumnEditable(2) = false;
+% --- Table: [16 55 659 164] px ---
+tbl = uitable( ...
+    'Parent',           hfig, ...
+    'Tag',              'uitable1_erpset_table', ...
+    'Units',            'pixels', ...
+    'Position',         [16, 55, 659, 164], ...
+    'ColumnName',       {'ERP name', 'File name'}, ...
+    'ColumnWidth',      {350 350}, ...
+    'ColumnEditable',   [true false], ...
+    'RowName',          cellstr(num2str(EEGArray')), ...
+    'BackgroundColor',  [1 1 1], ...
+    'FontSize',         12, ...
+    'CellEditCallback', @(h,e) uitable1_erpset_table_CellEditCallback(h, e, guidata(hfig)));
+
+% --- Suffix row (left column) ---
+% pushbutton: [16 235 160 31]
+cb_suffix = uicontrol( ...
+    'Style',           'pushbutton', ...
+    'Tag',             'checkbox1_suffix', ...
+    'Parent',          hfig, ...
+    'Units',           'pixels', ...
+    'Position',        [16, 235, 160, 31], ...
+    'String',          'Add suffix to ERPset Names', ...
+    'BackgroundColor', [1 1 1], ...
+    'FontSize',        12, ...
+    'Callback',        @(h,e) checkbox1_suffix_Callback(h, e, guidata(hfig)));
+
+% edit_suffix_name: [187 236 282 30]
+edit_suffix = uicontrol( ...
+    'Style',               'edit', ...
+    'Tag',                 'edit_suffix_name', ...
+    'Parent',              hfig, ...
+    'Units',               'pixels', ...
+    'Position',            [187, 236, 282, 30], ...
+    'String',              suffix, ...
+    'BackgroundColor',     [1 1 1], ...
+    'HorizontalAlignment', 'left', ...
+    'FontSize',            12);
+
+% --- Right column checkboxes ---
+
+% checkbox2_save_label: [505 286 139 19] shifted up by `shift`
+cb_save = uicontrol( ...
+    'Style',           'checkbox', ...
+    'Tag',             'checkbox2_save_label', ...
+    'Parent',          hfig, ...
+    'Units',           'pixels', ...
+    'Position',        [505, 286+shift, 139, 19], ...
+    'String',          'Save ERPsets to disk', ...
+    'Value',           0, ...
+    'BackgroundColor', ColorBG, ...
+    'FontSize',        12, ...
+    'Callback',        @(h,e) checkbox2_save_label_Callback(h, e, guidata(hfig)));
+
+% "Use EEGset path" checkbox (averaging context only).
+% Positioned at the midpoint between cb2 and cb3 (8px gaps on each side).
+if showEEGPathOption
+    cb_eeg_path = uicontrol( ...
+        'Style',           'checkbox', ...
+        'Tag',             'checkbox_use_eeg_path', ...
+        'Parent',          hfig, ...
+        'Units',           'pixels', ...
+        'Position',        [505, 274, 230, 22], ...
+        'String',          'Use EEGset path as ERPset path', ...
+        'Value',           0, ...
+        'Enable',          'off', ...
+        'BackgroundColor', ColorBG, ...
+        'FontSize',        12, ...
+        'Callback',        @(h,e) checkbox_use_eeg_path_Callback(h, e, hfig));
+else
+    cb_eeg_path = [];
+end
+
+% checkbox3_filename_erpname: [504 234 167 34] — exact .fig position
+cb_erpname = uicontrol( ...
+    'Style',           'checkbox', ...
+    'Tag',             'checkbox3_filename_erpname', ...
+    'Parent',          hfig, ...
+    'Units',           'pixels', ...
+    'Position',        [504, 234, 167, 34], ...
+    'String',          'Use ERP name as filename', ...
+    'Value',           0, ...
+    'Enable',          'off', ...
+    'BackgroundColor', ColorBG, ...
+    'FontSize',        12, ...
+    'Callback',        @(h,e) checkbox3_filename_erpname_Callback(h, e, guidata(hfig)));
+
+% --- Path row (left column): shifted up by `shift` ---
+
+% text9 "Path:": [9 279 46 24]
+uicontrol( ...
+    'Style',               'text', ...
+    'Tag',                 'text9', ...
+    'Parent',              hfig, ...
+    'Units',               'pixels', ...
+    'Position',            [9, 279+shift, 46, 24], ...
+    'String',              'Path:', ...
+    'BackgroundColor',     ColorBG, ...
+    'HorizontalAlignment', 'left', ...
+    'FontSize',            12);
+
+% edit_path: [57 279 364 30]
+edit_path = uicontrol( ...
+    'Style',               'edit', ...
+    'Tag',                 'edit_path', ...
+    'Parent',              hfig, ...
+    'Units',               'pixels', ...
+    'Position',            [57, 279+shift, 364, 30], ...
+    'String',              '', ...
+    'Enable',              'off', ...
+    'BackgroundColor',     [1 1 1], ...
+    'HorizontalAlignment', 'left', ...
+    'FontSize',            12);
+
+% pushbutton_path_browse: [432 278 51 34]
+btn_browse = uicontrol( ...
+    'Style',    'pushbutton', ...
+    'Tag',      'pushbutton_path_browse', ...
+    'Parent',   hfig, ...
+    'Units',    'pixels', ...
+    'Position', [432, 278+shift, 51, 34], ...
+    'String',   'Browse', ...
+    'Enable',   'off', ...
+    'FontSize', 12, ...
+    'Callback', @(h,e) pushbutton_path_browse_Callback(h, e, guidata(hfig)));
+
+% --- Buttons ---
+
+% pushbutton_Cancel: [53 10 88 37]
+btn_cancel = uicontrol( ...
+    'Style',    'pushbutton', ...
+    'Tag',      'pushbutton_Cancel', ...
+    'Parent',   hfig, ...
+    'Units',    'pixels', ...
+    'Position', [53, 10, 88, 37], ...
+    'String',   'Cancel', ...
+    'FontSize', 12, ...
+    'Callback', @(h,e) pushbutton_Cancel_Callback(h, e, guidata(hfig)));
+
+% pushbutton4_okay: [351 9 88 37]
+btn_ok = uicontrol( ...
+    'Style',    'pushbutton', ...
+    'Tag',      'pushbutton4_okay', ...
+    'Parent',   hfig, ...
+    'Units',    'pixels', ...
+    'Position', [351, 9, 88, 37], ...
+    'String',   'Okay', ...
+    'FontSize', 12, ...
+    'Callback', @(h,e) pushbutton4_okay_Callback(h, e, guidata(hfig)));
+
+% --- Populate table ---
 for Numoferpset = 1:numel(EEGArray)
     if ERPIndex==1
-        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix);
+        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,  suffix);
     else
-        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix);
+        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname, suffix);
     end
     DataString{Numoferpset,2} = '';
 end
+set(tbl, 'Data', cellstr(DataString));
 
-set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
-set(handles.uitable1_erpset_table,'Enable','on');
-set(handles.checkbox3_filename_erpname,'Enable','off');
-set(handles.edit_path,'Enable','off','String','');
-set(handles.pushbutton_path_browse,'Enable','off');
+% --- Store handles ---
+handles.gui_chassis                = hfig;
+handles.uitable1_erpset_table      = tbl;
+handles.checkbox1_suffix           = cb_suffix;
+handles.edit_suffix_name           = edit_suffix;
+handles.checkbox2_save_label       = cb_save;
+handles.checkbox_use_eeg_path      = cb_eeg_path;
+handles.checkbox3_filename_erpname = cb_erpname;
+handles.edit_path                  = edit_path;
+handles.pushbutton_path_browse     = btn_browse;
+handles.ALLERP                     = ALLERP;
+handles.EEGArray                   = EEGArray;
+handles.ERPIndex                   = ERPIndex;
+handles.showEEGPathOption          = showEEGPathOption;
+handles.output                     = [];
 
-
-% handles.uitable1_erpset_table.DisplayDataChangedFcn = {@tableDisplayDataChangedFcn,hObject,handles};
-%
-% % Color GUI
-% %
 handles = painterplabstudio(handles);
-%
-% %
-% % Set font size
-% %
 handles = setfonterplabestudio(handles);
+% Pixel positions are unaffected by the above calls — no re-pinning needed.
 
-if showEEGPathOption
-    cbFontSize = get(handles.checkbox2_save_label, 'FontSize');
-    % Get position in pixels so offset arithmetic is reliable regardless of GUIDE units
-    origUnits = get(handles.checkbox2_save_label, 'Units');
-    set(handles.checkbox2_save_label, 'Units', 'pixels');
-    cbPos = get(handles.checkbox2_save_label, 'Position');
-    set(handles.checkbox2_save_label, 'Units', origUnits);
-    figHandle = hObject;
-    handles.checkbox_use_eeg_path = uicontrol('Style','checkbox', ...
-        'Parent',          handles.gui_chassis, ...
-        'Units',           'pixels', ...
-        'String',          'Use EEGset path as ERPset path', ...
-        'Position',        [cbPos(1), cbPos(2)-22, max(cbPos(3), 230), 18], ...
-        'Value',           1, ...
-        'Enable',          'off', ...
-        'BackgroundColor', get(handles.gui_chassis,'Color'), ...
-        'FontSize',        cbFontSize, ...
-        'Callback',        @(h,e) checkbox_use_eeg_path_Callback(h, e, figHandle));
-end
+% Restore white backgrounds on edit/table controls after style calls
+set(handles.edit_path,          'BackgroundColor', [1 1 1]);
+set(handles.edit_suffix_name,   'BackgroundColor', [1 1 1]);
+set(handles.uitable1_erpset_table, 'BackgroundColor', [1 1 1]);
+set(handles.checkbox1_suffix,   'BackgroundColor', [1 1 1]);
 
-% Update handles structure
-guidata(hObject, handles);
-handles.uitable1_erpset_table.BackgroundColor = [1 1 1];
-handles.checkbox1_suffix.BackgroundColor = [1 1 1];
-% handles.checkbox3_filename_erpname.BackgroundColor = [1 1 1];
-% UIWAIT makes savemyerpGUI wait for user response (see UIRESUME)
-uiwait(handles.gui_chassis);
+guidata(hfig, handles);
+set(hfig, 'Visible', 'on');
+uiwait(hfig);
 
-
-
-
-% --- Outputs from this function are returned to the command line.
-function varargout = f_ERP_save_multi_file_OutputFcn(hObject, eventdata, handles)
-
-% Get default command line output from handles structure
+% Collect output after dialog closes
 try
-    varargout{1} = handles.output;
+    out = guidata(hfig);
+    varargout{1} = out.output;
 catch
     varargout{1} = [];
 end
-
-delete(handles.gui_chassis);
-pause(0.1)
-
+try; delete(hfig); catch; end
+pause(0.1);
 
 
-% --- Executes on button press in checkbox1_suffix.
+
+% =========================================================================
+% Callbacks
+% =========================================================================
+
 function checkbox1_suffix_Callback(hObject, eventdata, handles)
-ALLERP = handles.ALLERP;
-EEGArray = handles.EEGArray;
-suffix_edit = handles.edit_suffix_name.String;
-
+ALLERP       = handles.ALLERP;
+EEGArray     = handles.EEGArray;
+suffix_edit  = handles.edit_suffix_name.String;
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
-    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix_edit);
+    if handles.ERPIndex==1
+        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,  suffix_edit);
+    else
+        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname, suffix_edit);
+    end
     if handles.checkbox2_save_label.Value==1
         if handles.checkbox3_filename_erpname.Value==0
             DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
         else
-            DataString{Numoferpset,2} =  [DataString{Numoferpset,1},'.erp'];
+            DataString{Numoferpset,2} = [DataString{Numoferpset,1},'.erp'];
         end
     else
         DataString{Numoferpset,2} = '';
     end
 end
-set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-set(handles.uitable1_erpset_table,'Enable','on');
+set(handles.uitable1_erpset_table, 'Data', cellstr(DataString));
 
 
 
-
-function edit_suffix_name_Callback(hObject, eventdata, handles)
-
-
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_suffix_name_CreateFcn(hObject, eventdata, handles)
-
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-
-
-% --- Executes on button press in checkbox2_save_label.
 function checkbox2_save_label_Callback(hObject, eventdata, handles)
-
-Values = handles.checkbox2_save_label.Value;
+Values   = handles.checkbox2_save_label.Value;
+ALLERP   = handles.ALLERP;
+EEGArray = handles.EEGArray;
 
 if Values
-    set(handles.checkbox3_filename_erpname,'Enable','on');
-    ALLERP = handles.ALLERP;
-    EEGArray = handles.EEGArray;
+    set(handles.checkbox3_filename_erpname, 'Enable', 'on');
     DataString_before = handles.uitable1_erpset_table.Data;
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = ALLERP(EEGArray(Numoferpset)).filename;
         if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
-            % filename not set (e.g. ERP created in memory by bin operations)
-            % fall back to erpname
-            fileName = ALLERP(EEGArray(Numoferpset)).erpname;
+            if handles.ERPIndex==1
+                fileName = ALLERP(EEGArray(Numoferpset)).erpname;
+            else
+                fileName = ALLERP(EEGArray(Numoferpset)).setname;
+            end
             if isempty(fileName) || ~(ischar(fileName) || isstring(fileName))
                 fileName = '';
             end
         end
         [~, file_name, ~] = fileparts(fileName);
-
         DataString{Numoferpset,2} = [file_name,'.erp'];
     end
-    set(handles.uitable1_erpset_table,'Data',DataString);
+    set(handles.uitable1_erpset_table, 'Data', DataString);
     handles.uitable1_erpset_table.ColumnEditable(1) = true;
     handles.uitable1_erpset_table.ColumnEditable(2) = true;
+
+    if handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path)
+        set(handles.checkbox_use_eeg_path, 'Enable', 'on');
+        if handles.checkbox_use_eeg_path.Value
+            eegPath = handles.ALLERP(handles.EEGArray(1)).filepath;
+            set(handles.edit_path, 'Enable', 'off', 'String', eegPath);
+            set(handles.pushbutton_path_browse, 'Enable', 'off');
+        else
+            set(handles.edit_path, 'Enable', 'on', 'String', cd);
+            set(handles.pushbutton_path_browse, 'Enable', 'on');
+        end
+    else
+        set(handles.edit_path, 'Enable', 'on', 'String', cd);
+        set(handles.pushbutton_path_browse, 'Enable', 'on');
+    end
 else
-    set(handles.checkbox3_filename_erpname,'Enable','off');
+    set(handles.checkbox3_filename_erpname, 'Enable', 'off');
     DataString_before = handles.uitable1_erpset_table.Data;
     for Numoferpset = 1:size(DataString_before,1)
         DataString_before{Numoferpset,2} = '';
     end
-    set(handles.uitable1_erpset_table,'Data',DataString_before);
-    set(handles.uitable1_erpset_table,'Enable','on');
+    set(handles.uitable1_erpset_table, 'Data', DataString_before);
     handles.uitable1_erpset_table.ColumnEditable(1) = true;
     handles.uitable1_erpset_table.ColumnEditable(2) = false;
-end
-if handles.checkbox2_save_label.Value
-    set(handles.uitable1_erpset_table,'Enable','on');
-    if handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path)
-        set(handles.checkbox_use_eeg_path, 'Enable', 'on');
-        if handles.checkbox_use_eeg_path.Value
-            % EEGset path will be used — keep path controls disabled
-            set(handles.edit_path,'Enable','off');
-            set(handles.pushbutton_path_browse,'Enable','off');
-        else
-            set(handles.edit_path,'Enable','on');
-            set(handles.pushbutton_path_browse,'Enable','on');
-        end
-    else
-        set(handles.edit_path,'Enable','on');
-        set(handles.pushbutton_path_browse,'Enable','on');
-    end
-else
-    set(handles.uitable1_erpset_table,'Enable','on');
+
     if handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path)
         set(handles.checkbox_use_eeg_path, 'Enable', 'off');
     end
-    set(handles.edit_path,'Enable','off');
-    set(handles.pushbutton_path_browse,'Enable','off');
+    set(handles.edit_path, 'Enable', 'off', 'String', '');
+    set(handles.pushbutton_path_browse, 'Enable', 'off');
 end
 
 
 
-% Callback for the dynamically added "Use EEGset path" checkbox.
 function checkbox_use_eeg_path_Callback(hObject, eventdata, figHandle)
 handles = guidata(figHandle);
 if handles.checkbox_use_eeg_path.Value
-    set(handles.edit_path, 'Enable', 'off', 'String', '');
+    eegPath = handles.ALLERP(handles.EEGArray(1)).filepath;
+    set(handles.edit_path, 'Enable', 'off', 'String', eegPath);
     set(handles.pushbutton_path_browse, 'Enable', 'off');
 else
     set(handles.edit_path, 'Enable', 'on', 'String', cd);
     set(handles.pushbutton_path_browse, 'Enable', 'on');
 end
-guidata(figHandle, handles);
 
 
 
-% --- Executes on button press in checkbox3_filename_erpname.
 function checkbox3_filename_erpname_Callback(hObject, eventdata, handles)
 Value_filename_erpname = handles.checkbox3_filename_erpname.Value;
-ALLERP = handles.ALLERP;
+ALLERP   = handles.ALLERP;
 EEGArray = handles.EEGArray;
-% set(handles.uitable1_erpset_table,'Enable','off');
 DataString_before = handles.uitable1_erpset_table.Data;
 
 for Numoferpset = 1:size(DataString_before,1)
@@ -310,7 +385,7 @@ for Numoferpset = 1:size(DataString_before,1)
     if isempty(fileName)
         fileName = strcat(num2str(Numoferpset),'.erp');
     end
-    [pathstr, file_name, ext] = fileparts(fileName);
+    [~, file_name, ~] = fileparts(fileName);
     if isempty(file_name)
         file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
     else
@@ -319,55 +394,49 @@ for Numoferpset = 1:size(DataString_before,1)
     if Value_filename_erpname==1
         DataString{Numoferpset,2} = file_name;
     else
-        DataString{Numoferpset,2} =  ALLERP(EEGArray).filename;
+        % Revert to EEGset-derived filename with .erp extension
+        eegFileName = ALLERP(EEGArray(Numoferpset)).filename;
+        if isempty(eegFileName) || ~(ischar(eegFileName) || isstring(eegFileName))
+            if handles.ERPIndex==1
+                eegFileName = ALLERP(EEGArray(Numoferpset)).erpname;
+            else
+                eegFileName = ALLERP(EEGArray(Numoferpset)).setname;
+            end
+        end
+        [~, base_name, ~] = fileparts(eegFileName);
+        DataString{Numoferpset,2} = [base_name,'.erp'];
     end
 end
-
-set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-% set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
-if handles.checkbox3_filename_erpname.Value==0
-    handles.uitable1_erpset_table.ColumnEditable(1) = true;
-    handles.uitable1_erpset_table.ColumnEditable(2) = false;
-else
-    handles.uitable1_erpset_table.ColumnEditable(1) = true;
-    handles.uitable1_erpset_table.ColumnEditable(2) = true;
-end
+set(handles.uitable1_erpset_table, 'Data', cellstr(DataString));
+handles.uitable1_erpset_table.ColumnEditable(1) = true;
+handles.uitable1_erpset_table.ColumnEditable(2) = (Value_filename_erpname==1);
 
 
 
-
-
-% --- Executes when entered data in editable cell(s) in uitable1_erpset_table.
 function uitable1_erpset_table_CellEditCallback(hObject, eventdata, handles)
-
 DataString = handles.uitable1_erpset_table.Data;
-EEGArray = handles.EEGArray;
+EEGArray   = handles.EEGArray;
 if size(DataString,1) < numel(EEGArray)
-    msgboxText =  'EEG name and filename for one of erpsets are empty at least! Please give name to eegname and filename';
-    title = 'EStudio: f_ERP_save_multi_file empty erpname';
-    errorfound(msgboxText, title);
+    errorfound('EEG name and filename for one of erpsets are empty at least! Please give name to eegname and filename', ...
+               'EStudio: f_ERP_save_multi_file empty erpname');
     return
 end
-
 for Numofselected = 1:numel(EEGArray)
-    if  isempty(DataString{Numofselected,1})
-        msgboxText =  'Erpname for one of erpsets is empty at least! Please give name to that erpset';
-        title = 'EStudio: f_ERP_save_multi_file empty eegname';
-        errorfound(msgboxText, title);
+    if isempty(DataString{Numofselected,1})
+        errorfound('Erpname for one of erpsets is empty at least! Please give name to that erpset', ...
+                   'EStudio: f_ERP_save_multi_file empty eegname');
         return
     end
 end
-
 if handles.checkbox3_filename_erpname.Value==1
     DataString_before = handles.uitable1_erpset_table.Data;
-
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
         fileName = char(DataString_before{Numoferpset,1});
         if isempty(fileName)
             fileName = strcat(num2str(Numoferpset),'.erp');
         end
-        [pathstr, file_name, ext] = fileparts(fileName);
+        [~, file_name, ~] = fileparts(fileName);
         if isempty(file_name)
             file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
         else
@@ -375,63 +444,53 @@ if handles.checkbox3_filename_erpname.Value==1
         end
         DataString{Numoferpset,2} = file_name;
     end
-
-    set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
+    set(handles.uitable1_erpset_table, 'Data', cellstr(DataString));
 end
 guidata(hObject, handles);
 
 
 
-% --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-% Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
 
 
 
-
-% --- Executes on button press in pushbutton4_okay.
 function pushbutton4_okay_Callback(hObject, eventdata, handles)
+Data_String = handles.uitable1_erpset_table.Data;
+ALLERP      = handles.ALLERP;
+EEGArray    = handles.EEGArray;
 
-Data_String =handles.uitable1_erpset_table.Data;
-ALLERP = handles.ALLERP;
-EEGArray = handles.EEGArray;
-
-if size(Data_String,1)< numel(EEGArray)%
-    msgboxText =  'ERP name for one of erpsets is empty at least! Please give a name';
-    title = 'EStudio: f_ERP_save_multi_file empty eegname';
-    errorfound(msgboxText, title);
+if size(Data_String,1) < numel(EEGArray)
+    errorfound('ERP name for one of erpsets is empty at least! Please give a name', ...
+               'EStudio: f_ERP_save_multi_file empty eegname');
     return
 end
-
-
-if size(Data_String,1)> numel(EEGArray)%
-    msgboxText =  'More eegname is given. Please delect it!!!';
-    title = 'EStudio: f_ERP_save_multi_file empty erpname';
-    errorfound(msgboxText, title);
+if size(Data_String,1) > numel(EEGArray)
+    errorfound('More eegname is given. Please delete it!!!', ...
+               'EStudio: f_ERP_save_multi_file empty erpname');
     return
 end
-
 for Numofselected = 1:numel(EEGArray)
-    if  isempty(Data_String{Numofselected,1})
-        msgboxText =  'Erpname for one of erpsets is empty at least! Please give name to that erpset';
-        title = 'EStudio: f_ERP_save_multi_file empty erpname';
-        errorfound(msgboxText, title);
+    if isempty(Data_String{Numofselected,1})
+        errorfound('Erpname for one of erpsets is empty at least! Please give name to that erpset', ...
+                   'EStudio: f_ERP_save_multi_file empty erpname');
         return
     end
-
 end
 
 pathName = handles.edit_path.String;
 if isempty(pathName)
-    pathName =cd;
+    pathName = cd;
 end
+
+useEEGsetPath = handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path) ...
+                && handles.checkbox_use_eeg_path.Value && handles.checkbox2_save_label.Value;
 
 for Numoferpset = 1:numel(EEGArray)
     if handles.ERPIndex==1
-        ALLERP(EEGArray(Numoferpset)).erpname = Data_String{Numoferpset,1};
+        ALLERP(EEGArray(Numoferpset)).erpname  = Data_String{Numoferpset,1};
     else
         ALLERP(EEGArray(Numoferpset)).setname = Data_String{Numoferpset,1};
     end
@@ -439,18 +498,15 @@ for Numoferpset = 1:numel(EEGArray)
     if isempty(fileName)
         fileName = Data_String{Numoferpset,1};
     end
-
-    [pathstr, file_name, ext] = fileparts(fileName);
+    [~, file_name, ~] = fileparts(fileName);
     if isempty(file_name)
         file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
     else
         file_name = [file_name,'.erp'];
     end
-
     ALLERP(EEGArray(Numoferpset)).filename = file_name;
+
     % Only override filepath when saving to disk and NOT using EEGset path
-    useEEGsetPath = handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path) ...
-                    && handles.checkbox_use_eeg_path.Value && handles.checkbox2_save_label.Value;
     if handles.checkbox2_save_label.Value && ~useEEGsetPath
         ALLERP(EEGArray(Numoferpset)).filepath = pathName;
     end
@@ -460,78 +516,32 @@ for Numoferpset = 1:numel(EEGArray)
     else
         ALLERP(EEGArray(Numoferpset)).saved = 'no';
     end
-
 end
 
-FilePath = handles.checkbox2_save_label.Value;
-useEEGsetPath = handles.showEEGPathOption && ~isempty(handles.checkbox_use_eeg_path) ...
-                && handles.checkbox_use_eeg_path.Value && handles.checkbox2_save_label.Value;
-
-handles.output = {ALLERP, FilePath, useEEGsetPath};
-% Update handles structure
+handles.output = {ALLERP, handles.checkbox2_save_label.Value, useEEGsetPath};
 guidata(hObject, handles);
-
 uiresume(handles.gui_chassis);
 
 
 
-% -----------------------------------------------------------------------
-function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
-
-if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
-    %The GUI is still in UIWAIT, us UIRESUME
-    handles.output = '';
-    %Update handles structure
-    guidata(hObject, handles);
-    uiresume(handles.gui_chassis);
-else
-    % The GUI is no longer waiting, just close it
-    delete(handles.gui_chassis);
-end
-
-
-
-function edit_path_Callback(hObject, eventdata, handles)
-
-
-PathName = handles.edit_path.String;
-
-
-
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_path_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_path (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in pushbutton_path_browse.
 function pushbutton_path_browse_Callback(hObject, eventdata, handles)
-
-
 pathName = handles.edit_path.String;
 if isempty(pathName)
-    pathName =cd;
+    pathName = cd;
 end
-title = 'Select one forlder for saving files in following procedures';
-select_path = uigetdir(pathName,title);
-
-if isequal(select_path,0)
-    select_path = cd;
+select_path = uigetdir(pathName, 'Select folder for saving files');
+if ~isequal(select_path, 0)
+    handles.edit_path.String = select_path;
 end
-handles.edit_path.String = select_path;
 
 
-% --- Executes during object creation, after setting all properties.
-function pushbutton_path_browse_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to pushbutton_path_browse (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+
+function gui_CloseRequestFcn(hObject, eventdata)
+handles = guidata(hObject);
+if isequal(get(hObject,'waitstatus'), 'waiting')
+    handles.output = [];
+    guidata(hObject, handles);
+    uiresume(hObject);
+else
+    delete(hObject);
+end
