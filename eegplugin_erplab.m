@@ -65,10 +65,8 @@ catch
 end
 
 %%running erplab%%GH 2024
-p_location = which('o_ERPDAT');
-p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
-tooltype =  'ERPLAB';
-save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype');
+erplab_session_state('set', 'tooltype', 'ERPLAB');
+erplab_session_state('set', 'version', erplabver);
 
 
 global observe_EEGDAT;
@@ -126,12 +124,8 @@ end
 %
 % CHECK EEGLAB Version
 %
-fullMemFile = fullfile(p, 'memoryerp.erpm');
-if isfile(fullMemFile)
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
+fullMemFile = erplab_memory_store('classic', 'path');
+iserpmem = exist(fullMemFile, 'file') == 2;
 
 egv = regexp(eeg_getversion,'^(\d+)\.+','tokens','ignorecase');
 eegversion = str2num(char(egv{:}));
@@ -147,48 +141,21 @@ end
 %
 % ERPLAB's WORKING MEMORY
 %
+try
+    vmemoryerp = erplab_memory_store('classic', 'load');
+catch
+    % Keep the old fallback behavior if the user settings area is unavailable.
+    vmemoryerp = erplab_default_memory_struct(0);
+    msgboxText = ['\nERPLAB could not initialize its persistent working memory.\n'...
+        'Therefore, ERPLAB''s memory will be stored at Matlab''s workspace and will last 1 session.\n\n'];
 
-% Check erpmem version matches current version
-if iserpmem
-    oldmem = load(fullfile(p,'memoryerp.erpm'), '-mat');
-    memver = oldmem.erplabver;
-    if strcmp(memver,erplabver) == 0
-        disp('Updating erpmem with current version number')
-        mshock = oldmem.mshock;
-        save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
-    end
+    fprintf('%s\n', repmat('*',1,50));
+    fprintf('"Houston, we''ve had a problem here": \n %s\n', sprintf(msgboxText));
+    bottomline = 'If you think this is a bug, please report the error to erplabtoolbox@gmail.com and not to the EEGLAB developers.';
+    disp(bottomline)
+    fprintf('%s\n', repmat('*',1,50));
 end
-
-
-if iserpmem==0
-    mshock = 0;
-    try
-        % saves memory file
-        %
-        % IMPORTANT: If this file (saved variables inside memoryerp.erpm) is modified then also must be modified the same line at erplabamnesia.m
-        %
-        save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
-    catch
-        % saves memory variable at workspace
-        msgboxText = ['\nERPLAB could not find a file for storing its GUI memory or \n'...
-            'does not have permission for writting on it.\n\n'...
-            'Therefore, ERPLAB''s memory will be stored at Matlab''s workspace and will last 1 session.\n\n'];
-
-        % message on command window
-        fprintf('%s\n', repmat('*',1,50));
-        fprintf('"Houston, we''ve had a problem here": \n %s\n', sprintf(msgboxText));
-        bottomline = 'If you think this is a bug, please report the error to erplabtoolbox@gmail.com and not to the EEGLAB developers.';
-        disp(bottomline)
-        fprintf('%s\n', repmat('*',1,50));
-
-        %
-        % IMPORTANT: If this strucure (vmemoryerp) is modified then also must be modified the same line at erplabamnesia.m
-        %
-        vmemoryerp = struct('erplabrel',erplabrel,'erplabver',erplabver,'ColorB',ColorB,'ColorF',ColorF,'fontsizeGUI',fontsizeGUI,...
-            'fontunitsGUI',fontunitsGUI,'mshock',mshock, 'errorColorF', errorColorF, 'errorColorB', errorColorB);
-        assignin('base','vmemoryerp',vmemoryerp);
-    end
-end
+assignin('base','vmemoryerp',vmemoryerp);
 
 % ERPLAB Studio reminder
 disp(" ** ERPLAB Studio now available! Launch by typing 'estudio' in the command window **")
@@ -475,7 +442,8 @@ comEPSerp = ['ERP, LASTCOM = pop_getFFTfromERP(ERP);' '[ERP, ALLERPCOM] = erphis
 
 
 %% Working memory
-comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
+comLoadWM = ['vmemoryerp_new = working_mem_save_load(2); if ~isempty(vmemoryerp_new), vmemoryerp = vmemoryerp_new; ' ...
+    'assignin(''base'',''vmemoryerp'',vmemoryerp); end; clear vmemoryerp_new;'];
 
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

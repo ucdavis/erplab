@@ -39,6 +39,16 @@ function [] = estudio()
 tic;%
 disp('Estudio is launching. Please be patient...');
 
+estudiopath = which('estudio','-all');
+if length(estudiopath)>1
+    fprintf('\nEStudio WARNING: More than one EStudio folder was found.\n\n');
+end
+estudiopath = estudiopath{1};
+estudiopath= estudiopath(1:findstr(estudiopath,'estudio.m')-1);
+erplabpath = fileparts(estudiopath(1:end-1));
+% add the full plugin tree before touching shared helpers
+addpath(genpath(erplabpath));
+
 erplabver1 = geterplabeversion;
 EStudioversion = erplabver1;
 SignalProcessingToolboxCheck;
@@ -55,38 +65,19 @@ end
 
 disp('Initializing Parameters...');
 
-% check estudio memory file
-if exist('memoryerpstudio.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
+try
+    vmemoryestudio = erplab_memory_store('studio', 'load');
+catch
+    vmemoryestudio = estudio_default_memory_struct(0);
 end
-if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion');
+assignin('base','vmemoryestudio', vmemoryestudio);
+
+try
+    vmemoryerp = erplab_memory_store('classic', 'load');
+catch
+    vmemoryerp = erplab_default_memory_struct(0);
 end
-
-% check if erplab memory file exists
-if exist('memoryerp.erpm','file')==0
-    % does not exist, launch eeglab/erplab to resolve
-    fprintf('\nNo memoryerp.erpm file found; relaunching ERPLAB to attempt to resolve issue\n\n');
-
-    % launch eeglab
-    eeglab
-
-    % check if success
-    if exist('memoryerp.erpm','file')==0
-        % still does not exist, launch eeglab/erplab to resolve
-        fprintf('\nUnable to create memoryerp.erpm. You may need to manually launch EEGLAB or go to ERPLAB''s Setting menu and specify/create a new memory file.\n\n');
-    end
-
-    disp('Estudio is relaunching. Please be patient...');
-    erplabver1 = geterplabeversion;
-    EStudioversion = erplabver1;
-    SignalProcessingToolboxCheck;
-
-end
+assignin('base','vmemoryerp', vmemoryerp);
 
 
 %%close EEGLAB
@@ -102,10 +93,8 @@ try
 catch
 end
 %%running estudio
-p_location = which('o_ERPDAT');
-p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
-tooltype =  'estudio';
-save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype');
+erplab_session_state('set', 'tooltype', 'EStudio');
+erplab_session_state('set', 'version', EStudioversion);
 
 
 try
@@ -145,14 +134,8 @@ catch
 end
 
 %%---------------ADD FOLDER TO PATH-------------------
-estudiopath = which('estudio','-all');
-if length(estudiopath)>1
-    fprintf('\nEStudio WARNING: More than one EStudio folder was found.\n\n');
-end
-estudiopath = estudiopath{1};
-estudiopath= estudiopath(1:findstr(estudiopath,'estudio.m')-1);
-% add all ERPLAB subfolders
-addpath(genpath(estudiopath));
+% estudiopath was resolved and added to the path during startup so shared
+% helper functions are available before initialization.
 
 %%functions
 myaddpath( estudiopath, 'EStudio_EEG_Tab.m',   [ 'Functions' filesep 'EStudio',filesep,'EEG Tab']);
@@ -346,7 +329,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.set_ERP_memory = uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'Memory Settings','separator','off');
         uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset Working Memory', 'Callback', @resetmemory,'separator','off');
         uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Save a copy of the current working memory as...', 'Callback', 'estudioworking_mem_save_load(1)','separator','off');
-        comLoadWM = ['clear vmemoryestudio; vmemoryestudio = estudioworking_mem_save_load(2); assignin(''base'',''vmemoryestudio'',vmemoryestudio);'];
+        comLoadWM = ['vmemoryestudio_new = estudioworking_mem_save_load(2); if ~isempty(vmemoryestudio_new), vmemoryestudio = vmemoryestudio_new; ' ...
+            'assignin(''base'',''vmemoryestudio'',vmemoryestudio); end; clear vmemoryestudio_new;'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
 
 

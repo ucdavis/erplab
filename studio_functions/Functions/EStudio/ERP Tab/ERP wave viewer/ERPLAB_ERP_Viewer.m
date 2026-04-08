@@ -37,8 +37,6 @@ function  ERPLAB_ERP_Viewer(ALLERP,selectedERP_index,binArray,chanArray,Paramete
 tic;%
 disp('ERP Waveform Viewer is launching. Please be patient...');
 
-EStudioversion = geterplabeversion;
-
 global viewer_ERPDAT;
 global gui_erp_waviewer;
 ERPtooltype = erpgettoolversion('tooltype');
@@ -64,21 +62,16 @@ if ~strcmpi(ERPtooltype,'EStudio') &&  ~strcmpi(ERPtooltype,'ERPLAB')
     observe_ERPDAT.Process_messg = 0;
 end
 
-
-
-if exist('memoryerpstudio.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
+try
+    vmemoryestudio = evalin('base', 'vmemoryestudio');
+catch
+    vmemoryestudio = [];
 end
-
-
-if iserpmem==0
-    mshock = 0;
-    if iserpmem==0
-        p1 = which('o_ERPDAT');
-        p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-        save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
+if isempty(vmemoryestudio)
+    try
+        vmemoryestudio = erplab_memory_store('studio', 'load');
+        assignin('base','vmemoryestudio', vmemoryestudio);
+    catch
     end
 end
 

@@ -9,20 +9,18 @@ end
 
 if nargin==1 % read
     try
-        p = which('o_ERPDAT');
-        p = p(1:findstr(p,'o_ERPDAT.m')-1);
-        v = load(fullfile(p,'erplab_running_version.erpm'), '-mat');
-    catch
-        
-        msgboxText = ['EStudio (erpgettoolversion.m) could not find "erplab_running_version.erpm" or does not have permission for reading it.\n'...
-            'Please, run EStudio once again.\n'];
-        try
-            cprintf([0.45 0.45 0.45], msgboxText');
-        catch
-            fprintf(msgboxText);
+        output = erplab_session_state('get', field);
+        if ~isempty(output)
+            return
         end
-        output = [];
-        return
+        paths = erplab_user_paths;
+        if ~isempty(paths.legacyRunningVersion) && exist(paths.legacyRunningVersion, 'file') == 2
+            v = load(paths.legacyRunningVersion, '-mat');
+        else
+            v = struct();
+        end
+    catch
+        v = struct();
     end
     if isfield(v, field)
         output = v.(field);

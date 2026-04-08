@@ -1,0 +1,26 @@
+% PURPOSE: build the default ERPLAB Studio working-memory structure
+%
+% FORMAT:
+%
+% s = estudio_default_memory_struct(mshock)
+
+function s = estudio_default_memory_struct(mshock)
+
+if nargin < 1 || isempty(mshock)
+    mshock = 0;
+end
+
+% Keep Studio defaults aligned with the current runtime behavior.
+erplab_default_values
+
+s = struct('erplabrel', erplabrel, ...
+    'erplabver', erplabver, ...
+    'ColorB', ColorB, ...
+    'ColorF', ColorF, ...
+    'fontsizeGUI', fontsizeGUI, ...
+    'fontunitsGUI', fontunitsGUI, ...
+    'mshock', mshock, ...
+    'errorColorF', errorColorF, ...
+    'errorColorB', errorColorB);
+
+end

@@ -36,10 +36,14 @@
 function [msg2show msgori mcolor] = readmsg2end(textin)
 try
       if nargin<1
-            p = which('eegplugin_erplab');
-            p = p(1:strfind(p,'eegplugin_erplab.m')-1);
-            filename = fullfile(p,'functions','msg2end.txt');
+            filename = erplab_msg2end_file('read');
+            if isempty(filename) || exist(filename, 'file') ~= 2
+                  error('readmsg2end:MissingFile', 'Could not locate msg2end.txt');
+            end
             fid = fopen(filename);
+            if fid == -1
+                  error('readmsg2end:OpenFailed', 'Could not open %s', filename);
+            end
             k=1; msgArray{1,1} = [];
             while ~feof(fid) && k<100
                   msg = textscan(fid, '%[^\n]',1);

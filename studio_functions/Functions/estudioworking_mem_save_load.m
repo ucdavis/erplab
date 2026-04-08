@@ -25,10 +25,9 @@
 
 function [wm_loaded] = estudioworking_mem_save_load(save_or_load)
 
+wm_loaded = [];
+
 if save_or_load == 1
-    
-    wm_loaded = [];
-    
     % prompt for path with file browser ui
     [wm_fname, wm_pathname] = uiputfile({'*.erpm', 'ERP Studio working memory file (*.erpm)';
         '*.*'  , 'All Files (*.*)'},'Save working memory file as',...
@@ -36,10 +35,20 @@ if save_or_load == 1
     
     try
         vmemoryestudio = evalin('base', 'vmemoryestudio');
-        
+        vmemoryestudio = erplab_memory_store('studio', 'normalize', vmemoryestudio);
+    catch
+        try
+            vmemoryestudio = erplab_memory_store('studio', 'load');
+            assignin('base','vmemoryestudio', vmemoryestudio);
+        catch
+            errordlg('Memory save problem. Perhaps memory was empty?');
+            return;
+        end
+    end
+
+    try
         % save
         save(fullfile(wm_pathname, wm_fname), 'vmemoryestudio');
-        
     catch
         errordlg('Memory save problem.  Perhaps memory was empty?');
     end
@@ -58,7 +67,14 @@ elseif save_or_load == 2
         wm_loaded =[];
         return;
     end
-    wm_loaded = load(fullfile(wm_load_pathname,wm_load_fname), '-mat');
+    try
+        wm_loaded = load(fullfile(wm_load_pathname,wm_load_fname), '-mat');
+        wm_loaded = erplab_memory_store('studio', 'normalize', wm_loaded);
+        erplab_memory_store('studio', 'save', wm_loaded);
+    catch
+        wm_loaded = [];
+        errordlg('Memory load problem. The selected file may be invalid.');
+    end
     
 else
     errordlg('WM save function error?');

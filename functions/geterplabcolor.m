@@ -35,10 +35,10 @@
 
 function bcolor = geterplabcolor
 try
-        p = which('eegplugin_erplab');
-        p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-        v = load(fullfile(p,'memoryerp.erpm'), '-mat');
-        bcolor = v.BackERPLABcolor;
+        bcolor = erpworkingmemory('BackERPLABcolor');
+        if isempty(bcolor) || numel(bcolor)~=3
+                error('geterplabcolor:MissingBackColor', 'Invalid ERPLAB background color');
+        end
 catch
         bcolor = [ 0.83 0.82 0.78];    % ERPLAB main window ;
         return
