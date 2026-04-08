@@ -81,9 +81,10 @@ if nargin< 3
     app = feval('f_editchan_gui',EEGIN,titleName);
     waitfor(app,'Finishbutton',1);
     try
-        EEGINOUT = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-        locfile  = app.locfile;
-        loccom   = app.loccom;
+        EEGINOUT      = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+        locfile       = app.locfile;
+        loccom        = app.loccom;
+        usedGuessChan = app.usedGuessChan;
         app.delete; %delete app from view
         pause(0.5); %wait for app to leave
     catch
@@ -102,7 +103,7 @@ if nargin< 3
     catch
         ALLEEG(CURRENTSET).erpname = [ALLEEG(CURRENTSET).erpname,'_editchan'];
     end
-    [EEG, eegcom] = pop_editdatachanlocs(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'History', 'gui');
+    [EEG, eegcom] = pop_editdatachanlocs(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'UsedGuessChan',usedGuessChan,'History', 'gui');
     pause(0.1);
     return;
 end
@@ -125,6 +126,7 @@ p.addParamValue('Chanlocs','', @isstruct);
 p.addParamValue('History', '', @ischar); % history from scripting
 p.addParamValue('LocFile', '', @ischar); % loc file path if loaded from file (not manually edited)
 p.addParamValue('LocCom',  '', @ischar); % history command from Guess chanlocs
+p.addParamValue('UsedGuessChan', false, @islogical); % true if Guess chanlocs was used (even if table was later edited)
 
 p.parse(ALLEEG,CURRENTSET,varargin{:});
 
@@ -197,16 +199,20 @@ end
 
 
 %%--------------change the channel names-----------------------------------
+newfields = fieldnames(qChanlocsnew);
 for Numofchan = 1:numel(qchanArray)
     fprintf(['Channel ',32,num2str(qchanArray(Numofchan)),': Location was edited.\n']);
-    EEG.chanlocs(qchanArray(Numofchan)) = qChanlocsnew(Numofchan);
+    for fi = 1:numel(newfields)
+        EEG.chanlocs(qchanArray(Numofchan)).(newfields{fi}) = qChanlocsnew(Numofchan).(newfields{fi});
+    end
 end
 
 
 
 %%history
-qLocFile = p_Results.LocFile;
-qLocCom  = p_Results.LocCom;
+qLocFile       = p_Results.LocFile;
+qLocCom        = p_Results.LocCom;
+qUsedGuessChan = p_Results.UsedGuessChan;
 
 if ~isempty(qLocFile)
     % Locations were loaded from a file and not manually edited — log that
@@ -216,16 +222,33 @@ if ~isempty(qLocFile)
         eegcom = sprintf('EEG = pop_chanedit(EEG, ''lookup'', ''%s'');', qLocFile);
     end
 elseif ~isempty(qLocCom)
-    % Locations were set via Guess chanlocs — use LASTCOM from pop_chanedit
-    eegcom = qLocCom;
-else
-    % Fallback: log channel indices only (chanlocs struct not serializable)
+    % Locations were set via Guess chanlocs (pop_chanedit) and not manually edited after.
+    % The pop_chanedit call is interactive and not reproducible, so only log a note.
+    eegcom = '% User used EEGLAB''s Guess chanlocs function (pop_chanedit) to assign channel locations.';
+elseif qUsedGuessChan
+    % User used Guess chanlocs as a starting point, then manually edited the table.
+    % The final chanlocs cannot be reproduced from the Guess command alone.
+    chanArrayStr = strtrim(sprintf('%d ', p_Results.ChanArray));
     if isfield(EEG,'datatype') && strcmpi(EEG.datatype,'ERP')
-        eegcom = sprintf('ERP = pop_editdatachanlocs(ALLERP, %s, ''ChanArray'', [%s]);', ...
-            num2str(CURRENTSET), num2str(p_Results.ChanArray));
+        eegcom = sprintf(['%% Used EEGLAB''s Guess chanlocs (pop_chanedit), then manually edited. Assign final chanlocs struct to variable ''chanlocs'' before running (see help readlocs).\n' ...
+                          'ERP = pop_editdatachanlocs(ALLERP, %d, ''ChanArray'', [%s], ''Chanlocs'', chanlocs);'], ...
+            CURRENTSET, chanArrayStr);
     else
-        eegcom = sprintf('EEG = pop_editdatachanlocs(ALLEEG, %s, ''ChanArray'', [%s]);', ...
-            num2str(CURRENTSET), num2str(p_Results.ChanArray));
+        eegcom = sprintf(['%% Used EEGLAB''s Guess chanlocs (pop_chanedit), then manually edited. Assign final chanlocs struct to variable ''chanlocs'' before running (see help readlocs).\n' ...
+                          'EEG = pop_editdatachanlocs(ALLEEG, %d, ''ChanArray'', [%s], ''Chanlocs'', chanlocs);'], ...
+            CURRENTSET, chanArrayStr);
+    end
+else
+    % User manually edited locations — chanlocs struct is not serializable.
+    chanArrayStr = strtrim(sprintf('%d ', p_Results.ChanArray));
+    if isfield(EEG,'datatype') && strcmpi(EEG.datatype,'ERP')
+        eegcom = sprintf(['%% Manually edited channel locations. Assign final chanlocs struct to variable ''chanlocs'' before running (see help readlocs).\n' ...
+                          'ERP = pop_editdatachanlocs(ALLERP, %d, ''ChanArray'', [%s], ''Chanlocs'', chanlocs);'], ...
+            CURRENTSET, chanArrayStr);
+    else
+        eegcom = sprintf(['%% Manually edited channel locations. Assign final chanlocs struct to variable ''chanlocs'' before running (see help readlocs).\n' ...
+                          'EEG = pop_editdatachanlocs(ALLEEG, %d, ''ChanArray'', [%s], ''Chanlocs'', chanlocs);'], ...
+            CURRENTSET, chanArrayStr);
     end
 end
 % get history from script. ERP

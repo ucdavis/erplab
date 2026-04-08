@@ -456,7 +456,7 @@ varargout{1} = box_erp_append;
         if Save_file_label==1
             ERP_save =ERP;
             ERP_save.filepath = pathName_new;
-            [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
+            [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.filename, 'filepath',ERP_save.filepath);
             ERPCOM = f_erp_save_history(ERP_save.erpname,ERP_save.filename,ERP_save.filepath);
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
         end
@@ -584,7 +584,7 @@ varargout{1} = box_erp_append;
         if Save_file_label==1
             ERP_save =ERP;
             ERP_save.filepath = pathName_new;
-            [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
+            [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.filename, 'filepath',ERP_save.filepath);
             ERPCOM = f_erp_save_history(ERP_save.erpname,ERP_save.filename,ERP_save.filepath);
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
         else

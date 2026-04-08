@@ -601,7 +601,7 @@ varargout{1} = ERP_grdavg_box_gui;
                 for Numofselectederp =1:numel(Selected_ERP_afd)
                     ERP_save = observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp));
                     ERP_save.filepath = pathName_new;
-                    [observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp)), issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
+                    [observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp)), issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.filename, 'filepath',ERP_save.filepath);
                 end
                 [observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp)), ALLERPCOM, ERPCOM,2);
             end

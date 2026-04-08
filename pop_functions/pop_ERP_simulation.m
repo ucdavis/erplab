@@ -54,7 +54,7 @@ if nargin==1 || nargin==2 %with GUI to get other parameters
     
     def   = erpworkingmemory('pop_ERP_simulation');
     if isempty(def)
-        def  = {1,1,100,50,1000,-200,799,1,1000,0,1,0,1,0,1,10,0};
+        def  = {1,1,100,50,0,-200,799,1,1000,0,1,0,1,0,1,10,0};
     end
     
     if isempty(BasFuncName) || ~ischar(BasFuncName)
@@ -352,36 +352,16 @@ if EpochStop<=EpochStart
     return;
 end
 
-if qMeanLatOnset< EpochStart
-    msgboxText =  [' "MeanLatencyOnset" should be larger than',32,num2str(EpochStop),'ms'];
-    title = 'ERPLAB: pop_ERP_simulation() error';
-    errorfound(msgboxText, title);
-    return;
-end
-
-
-if qMeanLatOnset >  EpochStop
-    msgboxText =  [' "MeanLatencyOnset" should be smaller than',32,num2str(EpochStop),'ms'];
-    title = 'ERPLAB: pop_ERP_simulation() error';
-    errorfound(msgboxText, title);
-    return;
-end
 if strcmpi(BasFuncName,'Exgaussian')
     if qSDOffset<=0
         msgboxText =  [' "SDOffset" for EX-Gaussian function should be a positive number.'];
         title = 'ERPLAB: pop_ERP_simulation() error';
         errorfound(msgboxText, title);
+        return;
     end
 end
 
 if strcmpi(BasFuncName,'Boxcar')
-    if qSDOffset >  EpochStop
-        msgboxText =  [' "SDOffset" for Boxcar function should be smaller than',32,num2str(EpochStop),'ms'];
-        title = 'ERPLAB: pop_ERP_simulation() error';
-        errorfound(msgboxText, title);
-        return;
-    end
-    
     if qMeanLatOnset>qSDOffset
         msgboxText =  [' "MeanLatencyOnset" for Boxcar function should be smaller than',32, num2str(qSDOffset),'ms'];
         title = 'ERPLAB: pop_ERP_simulation() error';
@@ -595,25 +575,27 @@ if qBasFunLabel==1
         if ExGauTau<0
             Gua_PDF = fliplr(Gua_PDF);
         end
+        % Find true peak over a range centred on Mu (independent of epoch)
+        sig_step = LegthSig/numel(Times);
+        spread = 5*(qSDOffset + abs(ExGauTau));
+        SigFull = (Mu - spread) : sig_step : (Mu + spread);
+        TruePeak = max(abs(f_exgauss_pdf(SigFull, Mu, qSDOffset, abs(ExGauTau))));
     elseif ExGauTau==0 %%Gaussian signal
         Times_new = Times/1000;
         Gua_PDF = f_gaussian(Times_new,abs(qBasPeakAmp),qMeanLatOnset/1000,qSDOffset/10);
+        TruePeak = abs(qBasPeakAmp); % f_gaussian peak is exactly its amplitude parameter
     end
-    Max = max(abs( Gua_PDF(:)));
-    Gua_PDF = qBasPeakAmp*Gua_PDF./Max;
-    if qBasPeakAmp~=0
-        Desiredsignal = Gua_PDF;
+    if TruePeak > 0
+        Gua_PDF = qBasPeakAmp*Gua_PDF./TruePeak;
+        if qBasPeakAmp~=0
+            Desiredsignal = Gua_PDF;
+        end
     end
 elseif qBasFunLabel==2
-    
-    if qMeanLatOnset<Times(1)
-        qMeanLatOnset=Times(1);
+    if qMeanLatOnset >= Times(1) && qMeanLatOnset <= Times(end)
+        [xxx, latsamp, latdiffms] = closest(Times, qMeanLatOnset);
+        Desiredsignal(latsamp) = qBasPeakAmp;
     end
-    if qMeanLatOnset>Times(end)
-        qMeanLatOnset=Times(end);
-    end
-    [xxx, latsamp, latdiffms] = closest(Times, qMeanLatOnset);
-    Desiredsignal(latsamp) = qBasPeakAmp;
 elseif qBasFunLabel==3
     if qMeanLatOnset> qSDOffset
         msgboxText =  'Please "offset" should be larger than "onset" of boxcar function!';
@@ -621,8 +603,15 @@ elseif qBasFunLabel==3
         errorfound(msgboxText, title);
         return;
     end
-    [xxx, latsamp, latdiffms] = closest(Times, [qMeanLatOnset,qSDOffset]);
-    Desiredsignal(latsamp(1):latsamp(2)) = qBasPeakAmp;
+    if qMeanLatOnset <= Times(end) && qSDOffset >= Times(1)
+        [xxx, latsamp, latdiffms] = closest(Times, [qMeanLatOnset,qSDOffset]);
+        Desiredsignal(latsamp(1):latsamp(2)) = qBasPeakAmp;
+    end
+end
+
+if qBasPeakAmp ~= 0 && max(abs(Desiredsignal)) < 0.001 * abs(qBasPeakAmp)
+    fprintf('\nWarning: pop_ERP_simulation() - The signal parameters are outside or far outside the epoch window. The signal component will be all zeros.\n');
+    Desiredsignal = zeros(1, numel(Times));
 end
 
 %%----------------------Noise----------------------------------------------
@@ -692,7 +681,7 @@ ERPautx.times = Times;
 ERPautx.nchan = 1;
 ERPautx.nbin = 1;
 ERPautx.pnts = numel(Times);
-ERPautx.erpname ='Cretedartificialwave';
+ERPautx.erpname ='Createdartificialwave';
 ERPautx.srate = Srate;
 ERPautx.saved  = 'no';
 %%fixed by GH
@@ -757,7 +746,7 @@ if pinknoiseFlag==0
     skipfields{length(skipfields)+1} = 'PinkAmp';
 end
 
-if pinknoiseFlag==0
+if whitenoiseFlag==0 && pinknoiseFlag==0
     skipfields{length(skipfields)+1} = 'NewnoiseFlag';
 end
 

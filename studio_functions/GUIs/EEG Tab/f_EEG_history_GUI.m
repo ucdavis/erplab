@@ -85,7 +85,7 @@ varargout{1} = box_eeg_history;
         gui_eeg_history.eeg_history_table = uiextras.HBox('Parent', gui_eeg_history.DataSelBox);
         gui_eeg_history.uitable = uitable(  ...
             'Parent'        , gui_eeg_history.eeg_history_table,...
-            'Data'          , strsplit(eeg_history(1,:), '\n')', ...
+            'Data'          , regexp(eeg_history(1,:), '\n', 'split')', ...
             'ColumnWidth'   , {total_len+2}, ...
             'ColumnName'    , {'Function call'}, ...
             'RowName'       , [],'Enable',EnableFlag);
@@ -126,7 +126,7 @@ varargout{1} = box_eeg_history;
         end
         eeg_history_display = {};
         for Numofrow = 1:size(eeg_history,1)
-            eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
+            eeg_history_display = [eeg_history_display,regexp(eeg_history(Numofrow,:), '\n', 'split')];
         end
         set(gui_eeg_history.uitable,'Data', eeg_history_display');
     end
@@ -214,7 +214,7 @@ varargout{1} = box_eeg_history;
             end
             eeg_history_display = {};
             for Numofrow = 1:size(eeg_history,1)
-                eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
+                eeg_history_display = [eeg_history_display,regexp(eeg_history(Numofrow,:), '\n', 'split')];
             end
             set(gui_eeg_history.uitable,'Data', eeg_history_display');
         else%% ALLeegCOM for current session
@@ -259,7 +259,7 @@ varargout{1} = box_eeg_history;
             end
             eeg_history_display = {};
             for Numofrow = 1:size(eeg_history,1)
-                eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
+                eeg_history_display = [eeg_history_display,regexp(eeg_history(Numofrow,:), '\n', 'split')];
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
             fprintf(['**Command history**',32,datestr(datetime('now')),'\n']);
@@ -313,7 +313,7 @@ varargout{1} = box_eeg_history;
         end
         eeg_history_display = {};
         for Numofrow = 1:size(eeg_history,1)
-            eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
+            eeg_history_display = [eeg_history_display,regexp(eeg_history(Numofrow,:), '\n', 'split')];
         end
         set(gui_eeg_history.uitable,'Data', eeg_history_display');
         if ~isempty(observe_EEGDAT.EEG)

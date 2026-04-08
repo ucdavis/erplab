@@ -524,9 +524,10 @@ varargout{1} = EStudio_erp_box_edit_chan;
         app = feval('f_editchan_gui',observe_ERPDAT.ERP,titleName);
         waitfor(app,'Finishbutton',1);
         try
-            ERPoutput = app.output; %NO you don't want to output ERP with edited channel locations, you want to output the parameters to run decoding
-            locfile   = app.locfile;
-            loccom    = app.loccom;
+            ERPoutput     = app.output; %NO you don't want to output ERP with edited channel locations, you want to output the parameters to run decoding
+            locfile       = app.locfile;
+            loccom        = app.loccom;
+            usedGuessChan = app.usedGuessChan;
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
@@ -547,16 +548,22 @@ varargout{1} = EStudio_erp_box_edit_chan;
             fprintf(['*Add or edit all  channel locations*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current ERPset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
             [ERP, ERPCOM] = pop_editdatachanlocs(ALLERP,ERPArray(Numoferp),...
-                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'History', 'gui');
+                'ChanArray',ChanArray,'Chanlocs',Chanlocs,'LocFile',locfile,'LocCom',loccom,'UsedGuessChan',usedGuessChan,'History', 'gui');
             if isempty(ERPCOM)
                 observe_ERPDAT.Process_messg =2;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return;
             end
-            if Numoferp ==numel(ERPArray)
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
-            else
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            erpcom_parts = regexp(ERPCOM, '\n', 'split');
+            erpcom_parts = erpcom_parts(~cellfun(@(x) isempty(strtrim(x)), erpcom_parts));
+            for ll = 1:numel(erpcom_parts)
+                if Numoferp == numel(ERPArray)
+                    % Last ERPset: GUI mode so all parts (comment + call) appear in session history
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom_parts{ll}, 0);
+                else
+                    % Non-last ERPsets: Script mode, adds to individual ERP.history only
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom_parts{ll}, 1);
+                end
             end
 
             if isempty(ALLERP_out)

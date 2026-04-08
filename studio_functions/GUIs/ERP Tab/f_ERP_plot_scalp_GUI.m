@@ -305,8 +305,10 @@ varargout{1} = ERP_plot_scalp_gui;
         switch Value
             case {1,3}
                 gui_erp_scalp_map.measurement_exp.String='(one or more: e.g. 300 or 100:50:350)';
+                gui_erp_scalp_map.latency_plot.String = 'Latency values (ms)';
             case {2,4,5}
                 gui_erp_scalp_map.measurement_exp.String='(min max pairs: e.g., 300 400 ; 400 500)';
+                gui_erp_scalp_map.latency_plot.String = 'Latency (ms) [min max]';
         end
     end
 
@@ -1587,8 +1589,10 @@ varargout{1} = ERP_plot_scalp_gui;
         switch Value
             case {1,3}
                 gui_erp_scalp_map.measurement_exp.String='(one or more: e.g. 300 or 100:50:350)';
+                gui_erp_scalp_map.latency_plot.String = 'Latency values (ms)';
             case {2,4,5}
                 gui_erp_scalp_map.measurement_exp.String='(min max pairs: e.g., 300 400 ; 400 500)';
+                gui_erp_scalp_map.latency_plot.String = 'Latency (ms) [min max]';
         end
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
     end

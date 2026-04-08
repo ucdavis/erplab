@@ -51,13 +51,13 @@ function f_ERP_simulation_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 try
     def  = varargin{1};
 catch
-    def  = {1,1,100,50,1000,-200,799,1,1000,0,1,0,1,0,1,10,0};
+    def  = {1,1,100,50,0,-200,799,1,1000,0,1,0,1,0,1,10,0};
     %%Basic option, amp, mean, SD, Tau, epoch start, epoch
     %%stop, sample rate option, srate value, whitenoiseop,
     %%ampwhite, pinkop,amppink,sinop,sinamp,sinfre,random number generator
 end
 if isempty(def)
-    def  = {1,1,100,50,1000,-200,799,1,1000,0,1,0,1,0,1,10,0};
+    def  = {1,1,100,50,0,-200,799,1,1000,0,1,0,1,0,1,10,0};
 end
 
 try
@@ -294,10 +294,10 @@ end
 try
     WhiteNoiseamp = def{11};
 catch
-    WhiteNoiseamp = [];
+    WhiteNoiseamp = 1;
 end
 if isempty(WhiteNoiseamp)|| ~isnumeric(WhiteNoiseamp) || numel(WhiteNoiseamp)~=1
-    WhiteNoiseamp = [];
+    WhiteNoiseamp = 1;
 end
 set(handles.edit_whitenoise_amp,'String',num2str(WhiteNoiseamp));
 
@@ -318,10 +318,10 @@ end
 try
     pinkNoiseamp = def{13};
 catch
-    pinkNoiseamp = [];
+    pinkNoiseamp = 1;
 end
 if isempty(pinkNoiseamp)|| ~isnumeric(pinkNoiseamp) || numel(pinkNoiseamp)~=1
-    pinkNoiseamp = [];
+    pinkNoiseamp = 1;
 end
 set(handles.edit_pinknoise_amp,'String',num2str(pinkNoiseamp));
 
@@ -343,31 +343,32 @@ end
 try
     sinAmp = def{15};
 catch
-    sinAmp = [];
+    sinAmp = 1;
 end
 if isempty(sinAmp)|| ~isnumeric(sinAmp) || numel(sinAmp)~=1
-    sinAmp = [];
+    sinAmp = 1;
 end
 set(handles.edit_siniose_amp,'String',num2str(sinAmp));
 try
     sinFre = def{16};
 catch
-    sinFre = [];
+    sinFre = 10;
 end
 if isempty(sinFre) || ~isnumeric(sinFre) || numel(sinFre)~=1
-    sinFre = [];
+    sinFre = 10;
 end
 set(handles.edit_siniose_Hz,'String',num2str(sinFre));
 
 if ~isempty(ALLERP)
-    handles.checkbox_ERP_op.Value =1;
-    handles.edit_epoch_start.Enable = 'off';
-    handles.edit_epochstop.Enable = 'off';
-    handles.radiobutton_srate.Enable = 'off';
-    handles.edit_srate.Enable = 'off';
-    handles.radiobutton_speriod.Enable = 'off';
-    handles.edit_speriod.Enable = 'off';
-    
+    handles.checkbox_ERP_op.Value = 0;
+    % Populate erpset/channel/bin values but leave them disabled until user checks the box
+    handles.edit_erpset.Enable = 'off';
+    handles.pushbutton_erpset.Enable = 'off';
+    handles.edit_channel.Enable = 'off';
+    handles.pushbutton_channel.Enable = 'off';
+    handles.edit_bin.Enable = 'off';
+    handles.pushbutton_bin.Enable = 'off';
+
     if  ~isempty(CURRENTERP) && isnumeric(CURRENTERP)
         if numel(CURRENTERP)~=1
             CURRENTERP = CURRENTERP(1);
@@ -381,7 +382,7 @@ if ~isempty(ALLERP)
     end
     handles.edit_erpset.String = num2str(CURRENTERP);
     handles.CURRENTERP = CURRENTERP;
-    
+
     ERP = ALLERP(CURRENTERP);
     if ~isempty(ChanArray) && isnumeric(ChanArray)
         if numel(ChanArray)~=1
@@ -396,7 +397,7 @@ if ~isempty(ALLERP)
     end
     handles.ChanArray  = ChanArray;
     handles.edit_channel.String = num2str(ChanArray);
-    
+
     %%bin for real ERPset
     if ~isempty(BinArray) && isnumeric(BinArray)
         if numel(BinArray)~=1
@@ -409,7 +410,7 @@ if ~isempty(ALLERP)
     else
         BinArray =1;
     end
-    
+
     handles.BinArray = BinArray;
     handles.edit_bin.String = num2str(BinArray);
 else
@@ -702,12 +703,6 @@ elseif  handles.radiobutton_impulse.Value==1
         handles.text_message.FontSize = 12;
         return;
     end
-    if Latency<Times(1)
-        Latency=Times(1);
-    end
-    if Latency>Times(end)
-        Latency=Times(end);
-    end
     Amp_bas = PeakAmp;
     Mean_bas = Latency;
 elseif handles.radiobutton_square.Value ==1
@@ -851,6 +846,18 @@ set(handles.edit5_exgau_amp,'Enable','on');
 set(handles.edit_exgau_mean,'Enable','on');
 set(handles.edit_exgau_sd,'Enable','on');
 set(handles.edit8_exgua_tau,'Enable','on');
+if isempty(handles.edit5_exgau_amp.String)
+    set(handles.edit5_exgau_amp,'String','1');
+end
+if isempty(handles.edit_exgau_mean.String)
+    set(handles.edit_exgau_mean,'String','100');
+end
+if isempty(handles.edit_exgau_sd.String)
+    set(handles.edit_exgau_sd,'String','50');
+end
+if isempty(handles.edit8_exgua_tau.String)
+    set(handles.edit8_exgua_tau,'String','0');
+end
 
 %%Impulse
 set(handles.radiobutton_impulse,'Value',0);
@@ -918,22 +925,11 @@ if isempty(EpochStop)
     return;
 end
 
-if Amp< EpochStart
-    msgboxText =  ['Gaussian mean should be larger than',32,num2str(EpochStart),'ms'];
+if Amp < EpochStart || Amp > EpochStop
+    msgboxText =  ['Warning: Gaussian mean (',num2str(Amp),'ms) is outside the epoch. Signal may be all zeros.'];
     handles.text_message.String = msgboxText;
     handles.text_message.ForegroundColor = 'k';
     handles.text_message.FontSize = 12;
-    handles.edit_exgau_mean.String = '';
-    return;
-end
-
-if Amp > EpochStop
-    msgboxText =  ['Gaussian mean should be smaller than',32,num2str(EpochStop),'ms'];
-    handles.text_message.String = msgboxText;
-    handles.text_message.ForegroundColor = 'k';
-    handles.text_message.FontSize = 12;
-    handles.edit_exgau_mean.String = '';
-    return;
 end
 
 plotsimulationwave(hObject, eventdata, handles);
@@ -1030,6 +1026,12 @@ set(handles.edit8_exgua_tau,'Enable','off');
 set(handles.radiobutton_impulse,'Value',1);
 set(handles.edit_impulse_peak_amp,'Enable','on');
 set(handles.edit_impulse_lat,'Enable','on');
+if isempty(handles.edit_impulse_peak_amp.String)
+    set(handles.edit_impulse_peak_amp,'String','1');
+end
+if isempty(handles.edit_impulse_lat.String)
+    set(handles.edit_impulse_lat,'String','100');
+end
 
 %%Square signal
 set(handles.radiobutton_square,'Value',0);
@@ -1088,22 +1090,11 @@ if isempty(EpochStop)
     return;
 end
 
-if Lat< EpochStart
-    msgboxText =  ['Latency for Impulse function should be larger than',32,num2str(EpochStart),'ms'];
+if Lat < EpochStart || Lat > EpochStop
+    msgboxText =  ['Warning: Latency (',num2str(Lat),'ms) is outside the epoch. Signal will be all zeros.'];
     handles.text_message.String = msgboxText;
     handles.text_message.ForegroundColor = 'k';
     handles.text_message.FontSize = 12;
-    handles.edit_impulse_lat.String = '';
-    return;
-end
-
-if Lat > EpochStop
-    msgboxText =  ['Latency for Impulse function should be smaller than',32,num2str(EpochStop),'ms'];
-    handles.text_message.String = msgboxText;
-    handles.text_message.ForegroundColor = 'k';
-    handles.text_message.FontSize = 12;
-    handles.edit_impulse_lat.String = '';
-    return;
 end
 
 
@@ -1140,6 +1131,15 @@ set(handles.radiobutton_square,'Value',1);
 set(handles.edit_square_peak_amp,'Enable','on');
 set(handles.edit_square_onset,'Enable','on');
 set(handles.edit_square_offset,'Enable','on');
+if isempty(handles.edit_square_peak_amp.String)
+    set(handles.edit_square_peak_amp,'String','1');
+end
+if isempty(handles.edit_square_onset.String)
+    set(handles.edit_square_onset,'String','100');
+end
+if isempty(handles.edit_square_offset.String)
+    set(handles.edit_square_offset,'String','200');
+end
 plotsimulationwave(hObject, eventdata, handles);
 
 
@@ -1194,22 +1194,11 @@ if isempty(EpochStop)
     return;
 end
 
-if LatencyOnset< EpochStart
-    msgboxText =  ['Onset for Boxcar for Impulse function should be larger than',32,num2str(EpochStart),'ms'];
-    handles.text_message.String = msgboxText;
-    handles.text_message.ForegroundColor = 'k';
-    handles.text_message.FontSize = 12;
-     handles.edit_square_onset.String = '';
-    return;
-end
-
 if LatencyOnset > EpochStop
-    msgboxText =  ['Onset for Boxcar function should be smaller than',32,num2str(EpochStop),'ms'];
+    msgboxText =  ['Warning: Onset (',num2str(LatencyOnset),'ms) is after epoch end. Signal may be all zeros.'];
     handles.text_message.String = msgboxText;
     handles.text_message.ForegroundColor = 'k';
     handles.text_message.FontSize = 12;
-   handles.edit_square_onset.String = '';
-    return;
 end
 
 
@@ -1269,22 +1258,11 @@ if isempty(EpochStop)
     return;
 end
 
-if LatencyOffset< EpochStart
-    msgboxText =  ['Offset for Boxcar for Impulse function should be larger than',32,num2str(EpochStart),'ms'];
+if LatencyOffset < EpochStart
+    msgboxText =  ['Warning: Offset (',num2str(LatencyOffset),'ms) is before epoch start. Signal may be all zeros.'];
     handles.text_message.String = msgboxText;
     handles.text_message.ForegroundColor = 'k';
     handles.text_message.FontSize = 12;
-     handles.edit_square_offset.String = '';
-    return;
-end
-
-if LatencyOffset > EpochStop
-    msgboxText =  ['Offset for Boxcar function should be smaller than',32,num2str(EpochStop),'ms'];
-    handles.text_message.String = msgboxText;
-    handles.text_message.ForegroundColor = 'k';
-    handles.text_message.FontSize = 12;
-  handles.edit_square_offset.String = '';
-    return;
 end
 
 
@@ -1867,14 +1845,20 @@ if handles.radiobutton_exgaus.Value ==1
         if Tau<0
             Gua_PDF = fliplr(Gua_PDF);
         end
-        
+        % Normalize by true peak (not in-epoch max) so tails scale correctly
+        sig_step = LegthSig/numel(Times);
+        spread = 5*(SD + abs(Tau));
+        SigFull = (Mu - spread) : sig_step : (Mu + spread);
+        TruePeak = max(abs(f_exgauss_pdf(SigFull, Mu, SD, abs(Tau))));
     elseif Tau==0 %%Gaussian signal
         Times_new = Times/1000;
         Gua_PDF = f_gaussian(Times_new,abs(PeakAmp),Meanamp/1000,SD/10);
+        TruePeak = abs(PeakAmp);
     end
-    
-    Max = max(abs( Gua_PDF(:)));
-    Gua_PDF = PeakAmp*Gua_PDF./Max;
+
+    if TruePeak > 0
+        Gua_PDF = PeakAmp*Gua_PDF./TruePeak;
+    end
     if PeakAmp~=0
         Desiredsignal = Gua_PDF;
     end
@@ -1896,14 +1880,10 @@ elseif  handles.radiobutton_impulse.Value==1
         handles.text_message.FontSize = 12;
         return;
     end
-    if Latency<Times(1)
-        Latency=Times(1);
+    if Latency >= Times(1) && Latency <= Times(end)
+        [xxx, latsamp, latdiffms] = closest(Times, Latency);
+        Desiredsignal(latsamp) = PeakAmp;
     end
-    if Latency>Times(end)
-        Latency=Times(end);
-    end
-    [xxx, latsamp, latdiffms] = closest(Times, Latency);
-    Desiredsignal(latsamp) = PeakAmp;
     
 elseif handles.radiobutton_square.Value ==1
     PeakAmp =   str2num(handles.edit_square_peak_amp.String);
@@ -1938,10 +1918,20 @@ elseif handles.radiobutton_square.Value ==1
         handles.text_message.FontSize = 12;
         return;
     end
-    [xxx, latsamp, latdiffms] = closest(Times, [onsetLat,offsetLat]);
-    Desiredsignal(latsamp(1):latsamp(2)) = PeakAmp;
+    if onsetLat <= Times(end) && offsetLat >= Times(1)
+        [xxx, latsamp, latdiffms] = closest(Times, [onsetLat,offsetLat]);
+        Desiredsignal(latsamp(1):latsamp(2)) = PeakAmp;
+    end
 end
 
+% Zero out negligible signals and warn when parameters are far outside epoch
+if exist('PeakAmp','var') && PeakAmp ~= 0 && max(abs(Desiredsignal)) < 0.001 * abs(PeakAmp)
+    fprintf('\nWarning: pop_ERP_simulation() - The signal parameters are outside or far outside the epoch window. The signal component will be all zeros.\n');
+    handles.text_message.String = 'Warning: signal parameters are far outside the epoch. Signal will be all zeros.';
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    Desiredsignal = zeros(1, numel(Times));
+end
 
 
 %%---------------------------Noise signal----------------------------------
