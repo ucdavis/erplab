@@ -83,25 +83,20 @@ varargout{1} = EEG_filtering_box;
         remove_dc   = def{7};
         
         typef = 0;
-        
-        filterorder = 2;
-        if locutoff >= fs/2 || locutoff<=0
-            locutoff  = floor(fs/2)-1;
-        end
-        
-        if hicutoff>=fs/2 || hicutoff<=0
-            hicutoff = floor(fs/2)-1;
+
+        if locutoff > 0 && locutoff >= fs/2
+            locutoff = 0;
         end
         if isempty(locutoff)
             locutoff = 0;
         end
-        
+
+        if hicutoff > 0 && hicutoff >= fs/2
+            hicutoff = 0;
+        end
         if isempty(hicutoff)
             hicutoff = 0;
         end
-        
-        locutoff = 0;
-        hicutoff = 20;
         highpass_toggle_value = 1;
         lowpass_toggle_value =1;
         hp_halfamp_enable = 'on';
@@ -190,23 +185,11 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.hp_halfamp = uicontrol('Style','edit','Parent',gui_eegtab_filtering.filt_grid,...
             'callback',@hp_halfamp,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2B
         gui_eegtab_filtering.hp_halfamp.KeyPressFcn =@eeg_filter_presskey;
-        if strcmp(hp_halfamp_enable,'off')
-            if typef<2
-                gui_eegtab_filtering.hp_halfamp.String = '0';
-            else
-                gui_eegtab_filtering.hp_halfamp.String = '60';
-            end
-        else
-            gui_eegtab_filtering.hp_halfamp.String =  num2str(locutoff);
-        end
+        gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
         gui_eegtab_filtering.lp_halfamp = uicontrol('Style','edit','Parent',gui_eegtab_filtering.filt_grid,...
             'callback',@lp_halfamp,'Enable',lp_halfamp_Enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2C
         gui_eegtab_filtering.lp_halfamp.KeyPressFcn =@eeg_filter_presskey;
-        if strcmp(lp_halfamp_Enable,'off')
-            gui_eegtab_filtering.lp_halfamp.String = '20';
-        else
-            gui_eegtab_filtering.lp_halfamp.String =  num2str(hicutoff);
-        end
+        gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
         % third column
         uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,'String','Half Power','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3A
         gui_eegtab_filtering.hp_halfpow = uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,...
@@ -271,15 +254,6 @@ varargout{1} = EEG_filtering_box;
         
         filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         def{3} = filterorder;
-        locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%
-        hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);
-        
-        if isempty(locutoff)
-            locutoff =0;
-        end
-        if isempty(hicutoff)
-            hicutoff =0;
-        end
         def{1} = locutoff;
         def{2} = hicutoff;
         estudioworkingmemory('pop_basicfilter',def);
@@ -355,7 +329,6 @@ varargout{1} = EEG_filtering_box;
         catch
             return;
         end
-        locutoff = 0.1;
         try
             filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         catch
@@ -363,21 +336,23 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.roll_off.Value=1;
         end
         typef = 0;
-        
+
         if source.Value == 0
             gui_eegtab_filtering.hp_halfamp.Enable ='off';
             gui_eegtab_filtering.hp_halfpow.Enable ='off';
-            gui_eegtab_filtering.hp_halfamp.String = '0';
             gui_eegtab_filtering.hp_halfpow.String = '---';
             if gui_eegtab_filtering.lp_tog.Value ==0
                 gui_eegtab_filtering.roll_off.Enable = 'off';
             end
         else
+            locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);
+            if isempty(locutoff) || locutoff <= 0
+                locutoff = 0.1;
+                gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+            end
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder,0,locutoff,fs);
             gui_eegtab_filtering.hp_tog.Value =1;
             gui_eegtab_filtering.hp_halfamp.Enable ='on';
-            gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
-            gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB(1));
             gui_eegtab_filtering.hp_halfpow.Enable ='off';
             gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB);
             gui_eegtab_filtering.roll_off.Enable = 'on';
@@ -416,20 +391,22 @@ varargout{1} = EEG_filtering_box;
             filterorder =2;
             gui_eegtab_filtering.roll_off.Value=1;
         end
-        hicutoff = floor((fs/2-1)*5/10);
         if source.Value == 0
             gui_eegtab_filtering.lp_halfamp.Enable ='off';
             gui_eegtab_filtering.lp_halfpow.Enable ='off';
-            gui_eegtab_filtering.lp_halfamp.String = '0';
             gui_eegtab_filtering.lp_halfpow.String = '---';
             if gui_eegtab_filtering.hp_tog.Value ==0
                 gui_eegtab_filtering.roll_off.Enable = 'off';
             end
         else
+            hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);
+            if isempty(hicutoff) || hicutoff <= 0
+                hicutoff = floor((fs/2-1)*5/10);
+                gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+            end
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,0, fs);
             gui_eegtab_filtering.lp_tog.Value =1;
             gui_eegtab_filtering.lp_halfamp.Enable ='on';
-            gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
             gui_eegtab_filtering.lp_halfpow.String = num2str(frec3dB);
             gui_eegtab_filtering.lp_halfpow.Enable ='off';
             gui_eegtab_filtering.roll_off.Enable = 'on';
@@ -711,17 +688,23 @@ varargout{1} = EEG_filtering_box;
         def{3} = filterorder;
         locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%
         hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);
-        
+
         if isempty(locutoff)
             locutoff =0;
         end
         if isempty(hicutoff)
             hicutoff =0;
         end
+        if gui_eegtab_filtering.hp_tog.Value == 0
+            locutoff = 0;
+        end
+        if gui_eegtab_filtering.lp_tog.Value == 0
+            hicutoff = 0;
+        end
         def{1} = locutoff;
         def{2} = hicutoff;
         estudioworkingmemory('pop_basicfilter',def);
-        
+
         if gui_eegtab_filtering.lp_tog.Value ==1
             if length(hicutoff)~=1 || isempty(hicutoff)
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
@@ -939,11 +922,15 @@ varargout{1} = EEG_filtering_box;
             if isempty(def{1}) || def{1} ==0
                 def{1} = 0.01;
             end
+        else
+            def{1} = 0;
         end
         if gui_eegtab_filtering.lp_tog.Value ==1
             if isempty(def{2}) || def{2} ==0
                 def{2} = floor((fs/2-1)*5/10);
             end
+        else
+            def{2} = 0;
         end
         
         def{7} =  gui_eegtab_filtering.DC_remove.Value;

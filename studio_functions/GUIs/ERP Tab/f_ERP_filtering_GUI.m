@@ -72,27 +72,20 @@ varargout{1} = ERP_filtering_box;
         remove_dc   = def{7};
         
         typef = 0;
-        filterorder=2;
-        
-        if locutoff >= fs/2 || locutoff<=0
-            locutoff  = floor(fs/2)-1;
+
+        if locutoff > 0 && locutoff >= fs/2
+            locutoff = 0;
         end
-        
-        
-        if hicutoff>=fs/2 || hicutoff<=0
-            hicutoff = floor(fs/2)-1;
-        end
-        
         if isempty(locutoff)
             locutoff = 0;
         end
-        
+
+        if hicutoff > 0 && hicutoff >= fs/2
+            hicutoff = 0;
+        end
         if isempty(hicutoff)
             hicutoff = 0;
         end
-        
-        locutoff = 0;
-        hicutoff = 20;
         highpass_toggle_value = 1;
         lowpass_toggle_value =1;
         hp_halfamp_enable = 'on';
@@ -152,25 +145,12 @@ varargout{1} = ERP_filtering_box;
             'callback',@hp_halfamp,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2B
         gui_erp_filtering.hp_halfamp.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.params{3} = str2num(gui_erp_filtering.hp_halfamp.String);
-        if strcmp(hp_halfamp_enable,'off')
-            if typef<2
-                gui_erp_filtering.hp_halfamp.String = '0';
-            else
-                gui_erp_filtering.hp_halfamp.String = '60';
-            end
-            
-        else
-            gui_erp_filtering.hp_halfamp.String =  num2str(locutoff);
-        end
+        gui_erp_filtering.hp_halfamp.String = num2str(locutoff);
         gui_erp_filtering.lp_halfamp = uicontrol('Style','edit','Parent',gui_erp_filtering.filt_grid,...
             'callback',@lp_halfamp,'Enable',lp_halfamp_Enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2C
         gui_erp_filtering.lp_halfamp.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.params{6} = str2num(gui_erp_filtering.lp_halfamp.String);
-        if strcmp(lp_halfamp_Enable,'off')
-            gui_erp_filtering.lp_halfamp.String = '20';
-        else
-            gui_erp_filtering.lp_halfamp.String =  num2str(hicutoff);
-        end
+        gui_erp_filtering.lp_halfamp.String = num2str(hicutoff);
         % third column
         uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Half Power','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3A
         gui_erp_filtering.hp_halfpow = uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,...
@@ -293,7 +273,6 @@ varargout{1} = ERP_filtering_box;
         estudioworkingmemory('ERPTab_filter',1);
         
         fs = observe_ERPDAT.ERP.srate;
-        locutoff = 0.1;
         try
             filterorder = 2*gui_erp_filtering.roll_off.Value;
         catch
@@ -301,21 +280,23 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.roll_off.Value=1;
         end
         typef = 0;
-        
+
         if source.Value == 0
             gui_erp_filtering.hp_halfamp.Enable ='off';
             gui_erp_filtering.hp_halfpow.Enable ='off';
-            gui_erp_filtering.hp_halfamp.String = '0';
             gui_erp_filtering.hp_halfpow.String = '---';
             if gui_erp_filtering.lp_tog.Value ==0
                 gui_erp_filtering.roll_off.Enable = 'off';
             end
         else
+            locutoff = str2num(gui_erp_filtering.hp_halfamp.String);
+            if isempty(locutoff) || locutoff <= 0
+                locutoff = 0.1;
+                gui_erp_filtering.hp_halfamp.String = num2str(locutoff);
+            end
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder,0,locutoff,fs);
             gui_erp_filtering.hp_tog.Value =1;
             gui_erp_filtering.hp_halfamp.Enable ='on';
-            gui_erp_filtering.hp_halfamp.String = num2str(locutoff);
-            gui_erp_filtering.hp_halfpow.String = num2str(frec3dB(1));
             gui_erp_filtering.hp_halfpow.Enable ='off';
             gui_erp_filtering.hp_halfpow.String = num2str(frec3dB);
             gui_erp_filtering.roll_off.Enable = 'on';
@@ -358,20 +339,22 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.roll_off.Value=1;
         end
         
-        hicutoff = floor((fs/2-1)*5/10);
         if source.Value == 0
             gui_erp_filtering.lp_halfamp.Enable ='off';
             gui_erp_filtering.lp_halfpow.Enable ='off';
-            gui_erp_filtering.lp_halfamp.String = '0';
             gui_erp_filtering.lp_halfpow.String = '---';
             if gui_erp_filtering.hp_tog.Value ==0
                 gui_erp_filtering.roll_off.Enable = 'off';
             end
         else
+            hicutoff = str2num(gui_erp_filtering.lp_halfamp.String);
+            if isempty(hicutoff) || hicutoff <= 0
+                hicutoff = floor((fs/2-1)*5/10);
+                gui_erp_filtering.lp_halfamp.String = num2str(hicutoff);
+            end
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,0, fs);
             gui_erp_filtering.lp_tog.Value =1;
             gui_erp_filtering.lp_halfamp.Enable ='on';
-            gui_erp_filtering.lp_halfamp.String = num2str(hicutoff);
             gui_erp_filtering.lp_halfpow.String = num2str(frec3dB);
             gui_erp_filtering.lp_halfpow.Enable ='off';
             gui_erp_filtering.roll_off.Enable = 'on';
@@ -648,6 +631,12 @@ varargout{1} = ERP_filtering_box;
         if isempty(hicutoff)
             hicutoff =0;
         end
+        if gui_erp_filtering.hp_tog.Value == 0
+            locutoff = 0;
+        end
+        if gui_erp_filtering.lp_tog.Value == 0
+            hicutoff = 0;
+        end
         if gui_erp_filtering.lp_tog.Value ==1
             if length(hicutoff)~=1 || isempty(hicutoff)
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
@@ -881,11 +870,15 @@ varargout{1} = ERP_filtering_box;
             if isempty(def{1}) || def{1} ==0
                 def{1} = 0.01;
             end
+        else
+            def{1} = 0;
         end
         if gui_erp_filtering.lp_tog.Value ==1
             if isempty(def{2}) || def{2} ==0
                 def{2} = floor((fs/2-1)*5/10);
             end
+        else
+            def{2} = 0;
         end
         
         def{7} =  0;
