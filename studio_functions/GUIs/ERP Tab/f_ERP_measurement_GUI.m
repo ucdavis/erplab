@@ -224,8 +224,10 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.m_t_TW.KeyPressFcn = @erp_mt_presskey;
         %%2F
+        last_outfile = def_erpvalue{3};
+        if ~ischar(last_outfile); last_outfile = ''; end
         ERPMTops.m_t_file = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String','','callback',@file_name_set,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String', last_outfile,'callback',@file_name_set,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         ERPMTops.m_t_file.KeyPressFcn = @erp_mt_presskey;
         
@@ -956,17 +958,13 @@ varargout{1} = erp_measurement_box;
         else
             FileFormat = 0;
         end
-        pathName_folder_default =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName_folder_default)
-            pathName_folder_default = cd;
-        end
         FileName =  ERPMTops.m_t_file.String;
         [pathNamex, fname, ext] = fileparts(FileName);
         if isempty(fname)
             fname = 'save_erpvalues';
         end
         if isempty(pathNamex)
-            pathNamex = pathName_folder_default;
+            pathNamex = cd;
         end
         
         try
@@ -1056,10 +1054,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.apply.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_mesuretool',0);
         
-        pathName_folder =  estudioworkingmemory('EEG_save_folder');
-        if isempty(pathName_folder)
-            pathName_folder =  cd;
-        end
+        pathName_folder = cd;
         ERPArraydef = estudioworkingmemory('selectederpstudio');
         if isempty(ERPArraydef) || any(ERPArraydef> length(observe_ERPDAT.ALLERP))
             ERPArraydef =  observe_ERPDAT.CURRENTERP;
