@@ -195,6 +195,80 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
         set(Eegtab_EEG_art_det_epoch.DataSelBox,'Sizes',[30 30 30 25 25 35 35 35 30 20 30 20]);
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
+
+        % Restore persisted settings from previous session
+        def_artepoch = estudioworkingmemory('EEGTab_art_det_epoch');
+        if ~isempty(def_artepoch) && numel(def_artepoch) >= 10
+            try
+                if isnumeric(def_artepoch{1}) && def_artepoch{1} >= 1 && def_artepoch{1} <= 5
+                    Eegtab_EEG_art_det_epoch.det_algo.Value = def_artepoch{1};
+                    Eegtab_EEG_art_det_epoch.Paras{1} = def_artepoch{1};
+                end
+            catch; end
+            try
+                if ischar(def_artepoch{2})
+                    Eegtab_EEG_art_det_epoch.chan_edit.String = def_artepoch{2};
+                    Eegtab_EEG_art_det_epoch.Paras{2} = str2num(def_artepoch{2});
+                end
+            catch; end
+            try
+                mflag_saved = def_artepoch{3};
+                if isnumeric(mflag_saved) && numel(mflag_saved) == 8
+                    Eegtab_EEG_art_det_epoch.mflag1.Value = mflag_saved(1);
+                    Eegtab_EEG_art_det_epoch.mflag2.Value = mflag_saved(2);
+                    Eegtab_EEG_art_det_epoch.mflag3.Value = mflag_saved(3);
+                    Eegtab_EEG_art_det_epoch.mflag4.Value = mflag_saved(4);
+                    Eegtab_EEG_art_det_epoch.mflag5.Value = mflag_saved(5);
+                    Eegtab_EEG_art_det_epoch.mflag6.Value = mflag_saved(6);
+                    Eegtab_EEG_art_det_epoch.mflag7.Value = mflag_saved(7);
+                    Eegtab_EEG_art_det_epoch.mflag8.Value = mflag_saved(8);
+                    Eegtab_EEG_art_det_epoch.mflag = mflag_saved;
+                    Eegtab_EEG_art_det_epoch.Paras{3} = mflag_saved;
+                end
+            catch; end
+            try
+                if ischar(def_artepoch{4})
+                    Eegtab_EEG_art_det_epoch.periods_edit.String = def_artepoch{4};
+                    Eegtab_EEG_art_det_epoch.Paras{4} = str2num(def_artepoch{4});
+                end
+            catch; end
+            try
+                if ischar(def_artepoch{5})
+                    Eegtab_EEG_art_det_epoch.voltage_edit.String = def_artepoch{5};
+                    Eegtab_EEG_art_det_epoch.Paras{5} = str2num(def_artepoch{5});
+                end
+            catch; end
+            try
+                if ischar(def_artepoch{6})
+                    Eegtab_EEG_art_det_epoch.movewindow_edit.String = def_artepoch{6};
+                    Eegtab_EEG_art_det_epoch.Paras{6} = str2num(def_artepoch{6});
+                end
+            catch; end
+            try
+                if ischar(def_artepoch{7})
+                    Eegtab_EEG_art_det_epoch.windowstep_edit.String = def_artepoch{7};
+                    Eegtab_EEG_art_det_epoch.Paras{7} = str2num(def_artepoch{7});
+                end
+            catch; end
+            try
+                if isnumeric(def_artepoch{8})
+                    Eegtab_EEG_art_det_epoch.show_sumy_ar.Value = def_artepoch{8};
+                    Eegtab_EEG_art_det_epoch.Paras{8} = def_artepoch{8};
+                end
+            catch; end
+            try
+                if isnumeric(def_artepoch{9})
+                    Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value = def_artepoch{9};
+                    Eegtab_EEG_art_det_epoch.Paras{9} = def_artepoch{9};
+                end
+            catch; end
+            try
+                if ischar(def_artepoch{10})
+                    Eegtab_EEG_art_det_epoch.prefilter_edit.String = def_artepoch{10};
+                    Eegtab_EEG_art_det_epoch.Paras{10} = str2num(def_artepoch{10});
+                end
+            catch; end
+        end
     end
 
 %%**************************************************************************%%
@@ -1621,6 +1695,19 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{9} = Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value;
         Eegtab_EEG_art_det_epoch.Paras{10}= str2num(Eegtab_EEG_art_det_epoch.prefilter_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{11}=Eegtab_EEG_art_det_epoch.manuar_checkbox.Value;
+
+        % Persist settings so controls restore on next eStudio launch
+        estudioworkingmemory('EEGTab_art_det_epoch', {...
+            Eegtab_EEG_art_det_epoch.det_algo.Value, ...
+            Eegtab_EEG_art_det_epoch.chan_edit.String, ...
+            mflag, ...
+            Eegtab_EEG_art_det_epoch.periods_edit.String, ...
+            Eegtab_EEG_art_det_epoch.voltage_edit.String, ...
+            Eegtab_EEG_art_det_epoch.movewindow_edit.String, ...
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String, ...
+            Eegtab_EEG_art_det_epoch.show_sumy_ar.Value, ...
+            Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value, ...
+            Eegtab_EEG_art_det_epoch.prefilter_edit.String});
 
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
