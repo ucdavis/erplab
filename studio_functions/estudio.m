@@ -335,7 +335,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
 
         EStudio_gui_erp_totl.set_windowsize = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Window Size','separator','off','CallBack',@window_size);
-        EStudio_gui_erp_totl.set_reset = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Reset','separator','off','CallBack',@rest_estudio);
+        EStudio_gui_erp_totl.set_reset = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Reset','separator','off','CallBack',@reset_estudio);
         %%Help
         EStudio_gui_erp_totl.help_title = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Help');
         uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'About ERPLAB Studio','separator','off','CallBack',@about_estudio);
@@ -443,7 +443,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
 
 
-    function rest_estudio(~,~)
+    function reset_estudio(~,~)
         %%first check if the changed parameters have been applied in any panels
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
@@ -452,9 +452,10 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
         estudioworkingmemory('EEGUpdate',0);
         observe_EEGDAT.count_current_eeg =1;
+        estudioworkingmemory('ViewerFlag', 0);
+        observe_ERPDAT.Count_currentERP = 1;
         if EStudio_gui_erp_totl.context_tabs.SelectedChild==1
             estudioworkingmemory('f_EEG_proces_messg','Reset parameters for ALL panels');
-            observe_EEGDAT.eeg_panel_message=1;
             app = feval('estudio_reset_paras',[1 0 0 0 0 0 ]);
         elseif EStudio_gui_erp_totl.context_tabs.SelectedChild==2
             MessageViewer= char(strcat('Reset parameters for ALL panels '));
@@ -470,7 +471,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
         waitfor(app,'Finishbutton',1);
         try
-            reset_paras = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
@@ -479,6 +480,9 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         if isempty(reset_paras)
             return;
         end
+        EStudio_gui_erp_totl.EEG_autoplot = 1;
+        EStudio_gui_erp_totl.ERP_autoplot = 1;
+        EStudio_gui_erp_totl.Decode_autoplot = 1;
         observe_EEGDAT.eeg_panel_message=1;
         if reset_paras(2)==1
             EStudio_gui_erp_totl.clear_alleeg = 1;
@@ -494,6 +498,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_EEGDAT.EEG = [];
                 observe_EEGDAT.CURRENTSET  = 0;
                 estudioworkingmemory('EEGArray',[]);
+                observe_EEGDAT.eeg_panel_message=2;
                 observe_EEGDAT.count_current_eeg =1;
             end
         else
@@ -502,6 +507,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
                 observe_EEGDAT.EEG = [];
                 observe_EEGDAT.CURRENTSET  = 0;
                 estudioworkingmemory('EEGArray',[]);
+                observe_EEGDAT.eeg_panel_message=2;
                 observe_EEGDAT.count_current_eeg =1;
             end
         end

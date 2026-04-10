@@ -1560,7 +1560,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         [EEGSetNames,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
 
         % Bounds check: if EEGArray contains indices beyond available datasets, return early
-        if isempty(EEGArray) || isempty(EEGSetNames) || max(EEGArray) > length(EEGSetNames)
+        if isempty(EEGArray) || isempty(EEGSetNames) || isempty(EEGtypeFlag) || max(EEGArray) > length(EEGSetNames)
             return;
         end
 
