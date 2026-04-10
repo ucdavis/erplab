@@ -933,7 +933,7 @@ len1 = length(channelArray);
 %                 set(handles.pushbutton_browsechan, 'Enable', 'off');
 %         end
 % end
-filterallch = 1;
+filterallch = handles.def{5};
 highpasscutoff = str2num(get(handles.edit_highpass, 'string'));
 if length(highpasscutoff)~=1
     msgboxText =  'Invalid input for high pass cutoff';

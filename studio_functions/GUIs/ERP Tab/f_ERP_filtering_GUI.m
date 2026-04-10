@@ -724,8 +724,6 @@ varargout{1} = ERP_filtering_box;
             return;
         end
         
-        estudioworkingmemory('pop_filterp', {locutoff,hicutoff,filterorder,chanArray,filterallch,fdesign,remove_dc});
-        
         ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
             ERPArray =  length(observe_ERPDAT.ALLERP);
@@ -770,6 +768,7 @@ varargout{1} = ERP_filtering_box;
             BinArray = estudioworkingmemory('ERP_BinArray');
             ChanArray = estudioworkingmemory('ERP_ChanArray');
         end
+        estudioworkingmemory('pop_filterp', {locutoff,hicutoff,filterorder,ChanArray,filterallch,fdesign,remove_dc,[],BinArray});
         for Numoferp = 1:numel(ERPArray)
             ERP = ALLERP(ERPArray(Numoferp));
             if isempty(ChanArray) || any(ChanArray(:)>ERP.nchan) || any(ChanArray(:)<1)
@@ -912,7 +911,7 @@ varargout{1} = ERP_filtering_box;
             return;
         end
         
-        defx = {answer{1},answer{2},answer{3},answer{4},answer{5},answer{6},answer{7},answer{8}};
+        defx = {answer{1},answer{2},answer{3},answer{4},answer{5},answer{6},answer{7},answer{8},answer{9}};
         estudioworkingmemory('pop_filterp',defx);
         
         
