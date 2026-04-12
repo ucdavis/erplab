@@ -221,9 +221,10 @@ AX.hY = axes('position',YAxisPosition,...
 %
 set(AX.hX,'XTick',xxticks)
 set(AX.hY,'YTick',yyticks)
+yyticklabe = {};
 for Numofyyticklabel = 1:numel(yyticks)
     yyticklabe{Numofyyticklabel} = num2str(yyticks(Numofyyticklabel));
-    
+
 end
 AX.hY.YTickLabel = cell(numel(yyticks),1);
 set(AX.hY,'YTickLabel',yyticklabe);

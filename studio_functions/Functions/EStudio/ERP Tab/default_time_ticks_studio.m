@@ -3,16 +3,17 @@
 %
 % FORMAT
 %
-% def = default_time_ticks(ERP, trange)
+% [def, stepx] = default_time_ticks_studio(ERP, trange)
 %
 % INPUTS
 %
-% ERP       - ERPset
-% trange    - min and max ERP window time in ms
+% ERP       - ERPset (used to determine data type and epoch limits)
+% trange    - [tmin tmax] display window in ms (ERP) or Hz (spectrum)
 %
 % OUTPUT
 %
-% def       - tick values to show in x axis
+% def       - tick values as a cell string (e.g. {'-200 0 200 400 600 800'})
+% stepx     - the chosen tick spacing
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
@@ -21,15 +22,8 @@
 % Davis, CA
 % 2012
 
-function [def stepx]= default_time_ticks_studio(ERP,trange,kf)
+function [def, stepx] = default_time_ticks_studio(ERP, trange, kf) %#ok<INUSD>
 datatype = checkdatatype(ERP);
-if nargin<3
-    if strcmpi(datatype, 'ERP')
-        kf = 100;
-    else
-        kf = 10;
-    end
-end
 
 if strcmpi(datatype, 'ERP')
     kktime = 1000;
@@ -37,51 +31,59 @@ else
     kktime = 1;
 end
 
-% if 100<min(diff(trange))<=200
-%     kf = 50;
-% elseif 10<min(diff(trange))<=100
-%     kf = 10;
-% elseif 1<min(diff(trange))<=10
-%     kf =1;
-% elseif 0.1<min(diff(trange))<=1
-%     kf =0.1; 
-% end
-
 def = [];
-if nargin<2
-    xxs1 = ceil(kktime*ERP.xmin);
-    xxs2 = floor(kktime*ERP.xmax);
+if nargin < 2
+    xxs1 = ceil(kktime * ERP.xmin);
+    xxs2 = floor(kktime * ERP.xmax);
 else
     xxs1 = trange(1);
     xxs2 = trange(2);
 end
 
-
-stepx = kf;
-
-xxstick1   = (round(xxs1/kf)+ 1)*kf;
-xxstick2   = (round(xxs2/kf)+ 1)*kf;
-goags = 1;  L1=7; L2=15; w=1;
-
-while goags && w<=kf
-    %stepx
-    xtickarray = 1.5*xxstick1:stepx:xxstick2*1.5;
-    if length(xtickarray)>=L1 && length(xtickarray)<=L2
-        xm = xtickarray(round(length(xtickarray)/2));
-        xtickarray = xtickarray-xm;
-        xtickarray = xtickarray(xtickarray>=xxs1 & xtickarray<=xxs2 );
-        if xxs1<0 && xtickarray(1)>=0
-            xtickarray = [ -round((abs(xxs1)/2)) xtickarray];
-            xtickarray = unique_bc2(xtickarray);
-        end
-        def = {vect2colon(xtickarray,'Delimiter','off')};
-        goags = 0;
-    elseif length(xtickarray)>L2
-        stepx = stepx*2;
-    elseif length(xtickarray)<L1
-        %%
-        stepx = round(stepx/2);
-        %%
-    end
-    w=w+1;
+range_width = xxs2 - xxs1;
+if range_width <= 0
+    stepx = 1;
+    return;
 end
+
+% Candidate step sizes (nice round numbers), smallest to largest.
+% The algorithm picks the smallest step that yields 5-12 ticks within the
+% range, producing clean multiples rather than the centered-shift approach
+% of the prior algorithm (which could yield non-round tick values and
+% could get stuck when stepx reached 0 via repeated halving).
+if strcmpi(datatype, 'ERP')
+    candidates = [1 2 5 10 20 25 50 100 200 250 500 1000 2000];
+else
+    candidates = [0.001 0.002 0.005 0.01 0.02 0.05 0.1 0.2 0.5 1 2 5 10];
+end
+
+L1 = 5;
+L2 = 12;
+
+stepx = candidates(end); % fallback if nothing qualifies
+for ii = 1:length(candidates)
+    s = candidates(ii);
+    t1 = ceil(xxs1 / s) * s;
+    t2 = floor(xxs2 / s) * s;
+    if t2 >= t1
+        nticks = round((t2 - t1) / s) + 1;
+        if nticks >= L1 && nticks <= L2
+            stepx = s;
+            break;
+        end
+    end
+end
+
+% Generate ticks at exact multiples of stepx within the range
+t1 = ceil(xxs1 / stepx) * stepx;
+t2 = floor(xxs2 / stepx) * stepx;
+xtickarray = t1 : stepx : t2;
+xtickarray = xtickarray(xtickarray >= xxs1 & xtickarray <= xxs2);
+
+if isempty(xtickarray)
+    % Fallback: 5 evenly spaced ticks covering the full range
+    xtickarray = linspace(xxs1, xxs2, 5);
+    stepx = xtickarray(2) - xtickarray(1);
+end
+
+def = {vect2colon(xtickarray, 'Delimiter', 'off')};

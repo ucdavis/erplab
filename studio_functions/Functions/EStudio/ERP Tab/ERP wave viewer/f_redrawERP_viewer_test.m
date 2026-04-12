@@ -1459,7 +1459,7 @@ catch
     Ypert = 100;
 end
 if isempty( qYScales)
-    qYScales = [floor(min(bindata(:))),ceil(max(bindata(:)))];
+    qYScales = Yscalesdef;
 end
 if isempty(y_scale_def)
     y_scale_def = qYScales;
@@ -1569,6 +1569,13 @@ end
 if isempty(qYticks)
     qYticks = str2num(char(default_amp_ticks_viewer(qYScales)));
 end
+if ~isempty(qYticks) && numel(qYticks) >= 2
+    min_yspacing = min(abs(diff(sort(qYticks))));
+    if min_yspacing > 0
+        auto_ydecimal = max(0, ceil(-log10(min_yspacing)));
+        qytickprecision = max(qytickprecision, auto_ydecimal);
+    end
+end
 
 %%Get the figure name which is to be plotted
 if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1) %% Page is ERPset
@@ -1671,9 +1678,10 @@ for Numofrows = 1:Numrows
                     end
                     yt1 = bindatatrs1 - bindataerrtrs.*qSEM;
                     yt2 = bindatatrs1 + bindataerrtrs.*qSEM;
-                    %                     ciplot(yt1,yt2, Xtimerangetrasf, qLineColorspec(Numofoverlay,:), stdalpha);
-                    fill(hbig,[Xtimerangetrasf fliplr(Xtimerangetrasf)],[yt2 fliplr(yt1)], qLineColorspec(Numofoverlay,:), 'FaceAlpha', stdalpha, 'EdgeColor', 'none');
-                    %                     set(hbig, 'InvertHardcopy', 'off', 'PaperPositionMode', 'auto', 'PaperOrientation', 'portrait');
+                    valid = ~isnan(yt1) & ~isnan(yt2);
+                    if any(valid)
+                        fill(hbig,[Xtimerangetrasf(valid) fliplr(Xtimerangetrasf(valid))],[yt2(valid) fliplr(yt1(valid))], qLineColorspec(Numofoverlay,:), 'FaceAlpha', stdalpha, 'EdgeColor', 'none');
+                    end
                 end
                 if isxaxislabel==2
                     [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numcolumns,PosIndexs,StepXP);
@@ -1686,20 +1694,28 @@ for Numofrows = 1:Numrows
             
             if numel(OffSetY)==1 && OffSetY==0
                 if ~qPolarityWave
-                    YscalesNew =  sort(y_scale_def*(-1));
+                    YscalesNew =  sort(qYScales*(-1));
                 else
-                    YscalesNew =  y_scale_def;
+                    YscalesNew =  qYScales;
                 end
+                % Expand by 5% of range on each side; Clipping='off' on ticks handles the rest
+                yrange_new = diff(YscalesNew);
+                YscalesNew = [YscalesNew(1) - 0.05*yrange_new, YscalesNew(2) + 0.05*yrange_new];
                 set(hbig,'ylim',YscalesNew);
             else
+                % Multi-row: use qYScales directly (no floor/ceil rounding of user-specified limits)
                 if qPolarityWave
-                    ylimleftedge = floor(y_scale_def(1));
-                    ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
+                    ylimleftedge  = qYScales(1);
+                    ylimrightedge = qYScales(end) + OffSetY(1);
                 else
-                    ylimleftedge = -abs(ceil(1.05*y_scale_def(end)));
-                    ylimrightedge = ceil(1.05*abs(y_scale_def(1)))+OffSetY(1);
+                    ylimleftedge  = -abs(qYScales(end));
+                    ylimrightedge = abs(qYScales(1)) + OffSetY(1);
                 end
-                set(hbig,'ylim',[ylimleftedge,ylimrightedge]);
+                % Expand by 5% of total range on each side
+                yrange_total  = ylimrightedge - ylimleftedge;
+                ylimleftedge  = ylimleftedge  - 0.05*yrange_total;
+                ylimrightedge = ylimrightedge + 0.05*yrange_total;
+                set(hbig,'ylim',[ylimleftedge, ylimrightedge]);
             end
             
             
@@ -1863,7 +1879,7 @@ for Numofrows = 1:Numrows
             if ~isempty(props.XTick)
                 xtick_x = repmat(props.XTick, 2, 1);
                 xtick_y = repmat([xtick_bottom; tick_top] + myX_Crossing, 1, length(props.XTick));
-                line(hbig,xtick_x, xtick_y, 'color', 'k','LineWidth',1);
+                line(hbig,xtick_x, xtick_y, 'color', 'k','LineWidth',1,'Clipping','off');
             end
             [x_xtick,y_xtick] = find(props.XTick==0);
             if ~isempty(y_xtick)
@@ -1871,7 +1887,6 @@ for Numofrows = 1:Numrows
             end
             plot(hbig,Xtimerangetrasf, myX_Crossing.*ones(numel(Xtimerangetrasf),1),'k','LineWidth',1);
             nxTicks = length(props.XTick);
-            
             for iCount = 1:nxTicks
                 xtick_label = (props.XTickLabel(iCount, :));
                 if strcmpi(qXticklabel,'on')
@@ -1900,7 +1915,8 @@ for Numofrows = 1:Numrows
                     'FontName', qXlabelfont, ...
                     'FontAngle', props.FontAngle, ...
                     'FontUnits', props.FontUnits,...
-                    'Color',qXlabelcolor);
+                    'Color',qXlabelcolor, ...
+                    'Clipping','off');
             end
             %%-----------------minor X---------------
             if  Xtimerange(1)< Xtimerangetrasf(end)
@@ -1969,14 +1985,19 @@ for Numofrows = 1:Numrows
             %             disp(['Data at',32,'R',num2str(Numofrows),',','C',num2str(Numofcolumns), 32,'is not defined!']);
         end
         try
+            range_len = Xtimerange(end) - Xtimerange(1);
+            extra_left = 0;
+            if Xtimerange(1) >= -0.01 * abs(Xtimerange(end))
+                extra_left = range_len / 20;
+            end
             if 2<Numcolumns && Numcolumns<5
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
+                set(hbig,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/20)]);
             elseif Numcolumns==1
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
+                set(hbig,'xlim',[Xtimerange(1)-(range_len/20 + extra_left),XtimerangetrasfALL(end)+(range_len/40)]);
             elseif Numcolumns==2
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);
+                set(hbig,'xlim',[Xtimerange(1)-(range_len/15 + extra_left),XtimerangetrasfALL(end)+(range_len/30)]);
             else
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+                set(hbig,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/10)]);
             end
         catch
             

@@ -36,7 +36,7 @@ end
 nbin = length(binArray);
 ymin = zeros(1,nbin);
 ymax = ymin;
-minpnts = 40; % minimum amuount of values for selecting ticks.
+minpnts = 40; % minimum amount of values for selecting ticks.
 for k=1:nbin
     ymin(k) = min(min(ERP.bindata(:,:,binArray(k))'));
     ymax(k) = max(max(ERP.bindata(:,:,binArray(k))'));

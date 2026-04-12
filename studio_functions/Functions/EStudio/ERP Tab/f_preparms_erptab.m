@@ -104,8 +104,15 @@ end
 ERP1 = ERP;
 ERP1.bindata = ERP.bindata(ChanArray,:,:);
 [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-minydef = floor(minydef);
-maxydef = ceil(maxydef);
+yrange_mag = max(abs([minydef, maxydef]));
+if yrange_mag > 0 && yrange_mag < 1
+    yrnd = 10^(-floor(log10(yrange_mag)));
+    minydef = floor(minydef * yrnd) / yrnd;
+    maxydef = ceil(maxydef  * yrnd) / yrnd;
+else
+    minydef = floor(minydef);
+    maxydef = ceil(maxydef);
+end
 if ~isempty(minydef) && ~isempty(maxydef)
     if minydef==maxydef
         minydef=-1;
@@ -141,21 +148,22 @@ if isempty(yscale_step) || numel(yscale_step)~=1 || any(yscale_step<=0)
 end
 
 Yticks = [];
+tol = yscale_step * 1e-9;  % floating-point tolerance for endpoint comparisons
 if yscale(2)<=0 || yscale(1)>=0
     Yticks = yscale(1);
     for ii=1:1000
         ytickcheck = Yticks(end)+yscale_step;
-        if ytickcheck>yscale(2)
+        if ytickcheck > yscale(2) + tol
             break;
         else
-            Yticks(numel(Yticks)+1) =ytickcheck;
+            Yticks(numel(Yticks)+1) = ytickcheck;
         end
     end
 elseif yscale(1)<0  && yscale(2)>0
     Yticks = 0;
     for ii=1:1000
         ytickcheck = Yticks(1)-yscale_step;
-        if ytickcheck<yscale(1)
+        if ytickcheck < yscale(1) - tol
             break;
         else
             Yticks = [ytickcheck,Yticks];
@@ -163,7 +171,7 @@ elseif yscale(1)<0  && yscale(2)>0
     end
     for ii=1:1000
         ytickcheck = Yticks(end)+yscale_step;
-        if ytickcheck>yscale(2)
+        if ytickcheck > yscale(2) + tol
             break;
         else
             Yticks = [Yticks,ytickcheck];

@@ -983,8 +983,15 @@ Ypert =15;
 ERP1 = ERP;
 ERP1.bindata = ERP.bindata(ChanArray,:,:);
 [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-minydef = floor(minydef);
-maxydef = ceil(maxydef);
+yrange_mag = max(abs([minydef, maxydef]));
+if yrange_mag > 0 && yrange_mag < 1
+    yrnd = 10^(-floor(log10(yrange_mag)));
+    minydef = floor(minydef * yrnd) / yrnd;
+    maxydef = ceil(maxydef  * yrnd) / yrnd;
+else
+    minydef = floor(minydef);
+    maxydef = ceil(maxydef);
+end
 if ~isempty(minydef) && ~isempty(maxydef)
     if minydef==maxydef
         minydef=-1;
@@ -1040,8 +1047,7 @@ qLineColorspec = get_colors(NumOverlay);
 %%xticks
 [timeticksdef stepX]= default_time_ticks_studio(ERP, qtimeRange);
 timeticksdef = str2num(char(timeticksdef));
-qtimeRangedef = round(qtimeRange/100)*100;
-qXticks = xtickstep+qtimeRangedef(1);
+qXticks = ceil(qtimeRange(1) / xtickstep) * xtickstep;
 for ii=1:1000
     xtickcheck = qXticks(end)+xtickstep;
     if xtickcheck>qtimeRange(2)
@@ -1160,7 +1166,10 @@ for Numofrows = 1:rowNums
                     end
                     yt1 = bindatatrs1 - bindataerrtrs.*Standerr;
                     yt2 = bindatatrs1 + bindataerrtrs.*Standerr;
-                    fill(waveview,[Xtimerangetrasf fliplr(Xtimerangetrasf)],[yt2 fliplr(yt1)], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
+                    valid = ~isnan(yt1) & ~isnan(yt2);
+                    if any(valid)
+                        fill(waveview,[Xtimerangetrasf(valid) fliplr(Xtimerangetrasf(valid))],[yt2(valid) fliplr(yt1(valid))], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
+                    end
                 end
                 if isxaxislabel==2
                     [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepXP);
@@ -1252,6 +1261,13 @@ for Numofrows = 1:rowNums
             end
 
             qYtickdecimal=1;
+            if ~isempty(qYticks) && numel(qYticks) >= 2
+                min_yspacing = min(abs(diff(sort(qYticks))));
+                if min_yspacing > 0
+                    auto_ydecimal = max(0, ceil(-log10(min_yspacing)));
+                    qYtickdecimal = max(qYtickdecimal, auto_ydecimal);
+                end
+            end
             nYTicks = length(props.YTick);
             for iCount = 1:nYTicks
                 if qPolarityWave==1
@@ -1303,7 +1319,7 @@ for Numofrows = 1:rowNums
             if ~isempty(props.XTick)
                 xtick_x = repmat(props.XTick, 2, 1);
                 xtick_y = repmat([xtick_bottom; tick_top]*0.5 + myX_Crossing, 1, length(props.XTick));
-                line(waveview,xtick_x, xtick_y, 'color', 'k','LineWidth',1);
+                line(waveview,xtick_x, xtick_y, 'color', 'k','LineWidth',1,'Clipping','off');
             end
             [x_xtick,y_xtick] = find(props.XTick==0);
             if ~isempty(y_xtick)
@@ -1329,7 +1345,8 @@ for Numofrows = 1:rowNums
                     'FontAngle', props.FontAngle, ...
                     'FontUnits', props.FontUnits,...
                     'FontName', fontnames, ...
-                    'Color',[0 0 0]);%'FontName', qXlabelfont, ...
+                    'Color',[0 0 0], ...
+                    'Clipping','off');%'FontName', qXlabelfont, ...
             end
             %%-----------------minor X---------------
             set(waveview,'xlim',[Xtimerange(1),Xtimerangetrasf(end)]);
@@ -1349,14 +1366,21 @@ for Numofrows = 1:rowNums
         else
         end
         try
+            range_len = Xtimerange(end) - Xtimerange(1);
+            % Extra left padding when epoch start is very close to zero
+            % (within 1% of stop time), where wide Y-axis labels get clipped.
+            extra_left = 0;
+            if Xtimerange(1) >= -0.01 * abs(Xtimerange(end))
+                extra_left = range_len / 20;
+            end
             if 2<columNum && columNum<5
-                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
+                set(waveview,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/20)]);
             elseif columNum==1
-                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
+                set(waveview,'xlim',[Xtimerange(1)-(range_len/20 + extra_left),XtimerangetrasfALL(end)+(range_len/40)]);
             elseif columNum==2
-                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);
+                set(waveview,'xlim',[Xtimerange(1)-(range_len/15 + extra_left),XtimerangetrasfALL(end)+(range_len/30)]);
             else
-                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+                set(waveview,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/10)]);
             end
         catch
 
@@ -1365,20 +1389,39 @@ for Numofrows = 1:rowNums
 
     if numel(OffSetY)==1 && OffSetY==0
         if ~qPolarityWave
-            YscalesNew =  sort(y_scale_def*(-1));
+            YscalesNew =  sort(qYScales*(-1));
         else
-            YscalesNew =  y_scale_def;
+            YscalesNew =  qYScales;
         end
-        set(waveview,'ylim',1.05*YscalesNew);
+        % Expand by 5% of range on each side (not 1.05* which leaves lower=0 for positive-only data)
+        yrange_new = diff(YscalesNew);
+        YscalesNew = [YscalesNew(1) - 0.05*yrange_new, YscalesNew(2) + 0.05*yrange_new];
+        % Ensure there is clearance below myX_Crossing for X-axis tick marks and labels.
+        % For positive-only data myX_Crossing (=0) sits at the bottom of ylim, clipping ticks.
+        min_clearance = 0.05 * diff(YscalesNew);
+        if myX_Crossing - YscalesNew(1) < min_clearance
+            YscalesNew(1) = myX_Crossing - min_clearance;
+        end
+        set(waveview,'ylim',YscalesNew);
     else
+        % Multi-row: use qYScales directly (no floor/ceil rounding of user-specified limits)
         if qPolarityWave
-            ylimleftedge = floor(y_scale_def(1));
-            ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
+            ylimleftedge  = qYScales(1);
+            ylimrightedge = qYScales(end) + OffSetY(1);
         else
-            ylimleftedge = -abs(ceil(y_scale_def(end)));
-            ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
+            ylimleftedge  = -abs(qYScales(end));
+            ylimrightedge = abs(qYScales(1)) + OffSetY(1);
         end
-        set(waveview,'ylim',[ylimleftedge,1.05*ylimrightedge]);
+        % Expand by 5% of total range on each side
+        yrange_total  = ylimrightedge - ylimleftedge;
+        ylimleftedge  = ylimleftedge  - 0.05*yrange_total;
+        ylimrightedge = ylimrightedge + 0.05*yrange_total;
+        % Ensure clearance below X-axis crossing for tick marks (positive-only data)
+        min_clearance = 0.05 * (ylimrightedge - ylimleftedge);
+        if myX_Crossing - ylimleftedge < min_clearance
+            ylimleftedge = myX_Crossing - min_clearance;
+        end
+        set(waveview,'ylim',[ylimleftedge, ylimrightedge]);
     end
 
 end%% end of rows

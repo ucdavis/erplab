@@ -446,8 +446,15 @@ varargout{1} = ERP_plotset_box;
             ERP1 = observe_ERPDAT.ERP;
             ERP1.bindata = ERP1.bindata(ChanArray,:,:);
             [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-            minydef = floor(minydef);
-            maxydef = ceil(maxydef);
+            yrange_mag = max(abs([minydef, maxydef]));
+            if yrange_mag > 0 && yrange_mag < 1
+                yrnd = 10^(-floor(log10(yrange_mag)));
+                minydef = floor(minydef * yrnd) / yrnd;
+                maxydef = ceil(maxydef  * yrnd) / yrnd;
+            else
+                minydef = floor(minydef);
+                maxydef = ceil(maxydef);
+            end
             if ~isempty(minydef) && ~isempty(maxydef)
                 if minydef==maxydef
                     minydef=-1;
@@ -501,8 +508,15 @@ varargout{1} = ERP_plotset_box;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
         
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-        minydef = floor(minydef);
-        maxydef = ceil(maxydef);
+        yrange_mag = max(abs([minydef, maxydef]));
+        if yrange_mag > 0 && yrange_mag < 1
+            yrnd = 10^(-floor(log10(yrange_mag)));
+            minydef = floor(minydef * yrnd) / yrnd;
+            maxydef = ceil(maxydef  * yrnd) / yrnd;
+        else
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+        end
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
                 minydef=-1;
@@ -562,8 +576,15 @@ varargout{1} = ERP_plotset_box;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
         
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-        minydef = floor(minydef);
-        maxydef = ceil(maxydef);
+        yrange_mag = max(abs([minydef, maxydef]));
+        if yrange_mag > 0 && yrange_mag < 1
+            yrnd = 10^(-floor(log10(yrange_mag)));
+            minydef = floor(minydef * yrnd) / yrnd;
+            maxydef = ceil(maxydef  * yrnd) / yrnd;
+        else
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+        end
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
                 minydef=-1;
@@ -621,8 +642,15 @@ varargout{1} = ERP_plotset_box;
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-        minydef = floor(minydef);
-        maxydef = ceil(maxydef);
+        yrange_mag = max(abs([minydef, maxydef]));
+        if yrange_mag > 0 && yrange_mag < 1
+            yrnd = 10^(-floor(log10(yrange_mag)));
+            minydef = floor(minydef * yrnd) / yrnd;
+            maxydef = ceil(maxydef  * yrnd) / yrnd;
+        else
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+        end
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
                 minydef=-1;
@@ -1358,8 +1386,15 @@ varargout{1} = ERP_plotset_box;
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-        minydef = floor(minydef);
-        maxydef = ceil(maxydef);
+        yrange_mag = max(abs([minydef, maxydef]));
+        if yrange_mag > 0 && yrange_mag < 1
+            yrnd = 10^(-floor(log10(yrange_mag)));
+            minydef = floor(minydef * yrnd) / yrnd;
+            maxydef = ceil(maxydef  * yrnd) / yrnd;
+        else
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+        end
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
                 minydef=-1;
@@ -1635,8 +1670,15 @@ varargout{1} = ERP_plotset_box;
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-        minydef = floor(minydef);
-        maxydef = ceil(maxydef);
+        yrange_mag = max(abs([minydef, maxydef]));
+        if yrange_mag > 0 && yrange_mag < 1
+            yrnd = 10^(-floor(log10(yrange_mag)));
+            minydef = floor(minydef * yrnd) / yrnd;
+            maxydef = ceil(maxydef  * yrnd) / yrnd;
+        else
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+        end
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
                 minydef=-1;
@@ -1906,8 +1948,15 @@ varargout{1} = ERP_plotset_box;
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
         [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
-        minydef = floor(minydef);
-        maxydef = ceil(maxydef);
+        yrange_mag = max(abs([minydef, maxydef]));
+        if yrange_mag > 0 && yrange_mag < 1
+            yrnd = 10^(-floor(log10(yrange_mag)));
+            minydef = floor(minydef * yrnd) / yrnd;
+            maxydef = ceil(maxydef  * yrnd) / yrnd;
+        else
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+        end
         if ~isempty(minydef) && ~isempty(maxydef)
             if minydef==maxydef
                 minydef=-1;
@@ -2189,8 +2238,15 @@ varargout{1} = ERP_plotset_box;
             [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)]);
             ERPTab_plotset.timet_step.String = num2str(xstep);
             [def, minydef, maxydef] = default_amp_ticks(observe_ERPDAT.ERP, [1:observe_ERPDAT.ERP.nbin]);
-            minydef = floor(minydef);
-            maxydef = ceil(maxydef);
+            yrange_mag = max(abs([minydef, maxydef]));
+            if yrange_mag > 0 && yrange_mag < 1
+                yrnd = 10^(-floor(log10(yrange_mag)));
+                minydef = floor(minydef * yrnd) / yrnd;
+                maxydef = ceil(maxydef  * yrnd) / yrnd;
+            else
+                minydef = floor(minydef);
+                maxydef = ceil(maxydef);
+            end
             if ~isempty(minydef) && ~isempty(maxydef)
                 if minydef==maxydef
                     minydef=-1;

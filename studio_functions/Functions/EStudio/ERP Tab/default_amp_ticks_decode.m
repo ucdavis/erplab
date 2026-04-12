@@ -35,7 +35,7 @@ end
 nMVPC = length(ALLMVPC);
 ymin = zeros(1,nMVPC);
 ymax = ymin;
-minpnts = 40; % minimum amuount of values for selecting ticks.
+minpnts = 40; % minimum amount of values for selecting ticks.
 for k=1:nMVPC
     ymin(k) = min(ALLMVPC(k).average_score(:));
     ymax(k) = max(ALLMVPC(k).average_score(:));
