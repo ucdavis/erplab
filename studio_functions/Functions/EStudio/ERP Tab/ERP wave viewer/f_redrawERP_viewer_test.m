@@ -481,8 +481,9 @@ try
     viewer_ERPDAT.Process_messg =1;
     OutputViewerpar = f_preparms_erpwaviewer(erpfilename,History);
     viewer_ERPDAT.Process_messg =2;
-catch
+catch ME
     viewer_ERPDAT.Process_messg =3;
+    fprintf(2,'Save Figure As error: %s\n', ME.message);
 end
 
 end

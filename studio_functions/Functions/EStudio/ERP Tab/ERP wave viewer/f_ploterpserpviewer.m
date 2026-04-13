@@ -844,7 +844,7 @@ NumOverlay = size(bindata,3);
 
 %%get y axis
 ERP1 = ERP;
-ERP1.bindata = ERP.bindata(qERPArray,:,:);
+ERP1.bindata = ERP.bindata(qchanArray,:,:);
 [def, minydef, maxydef] = default_amp_ticks(ERP1, qbinArray);
 yrange_mag = max(abs([minydef, maxydef]));
 if yrange_mag > 0 && yrange_mag < 1
