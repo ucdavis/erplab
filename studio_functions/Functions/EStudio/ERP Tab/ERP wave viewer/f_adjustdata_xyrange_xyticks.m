@@ -11,13 +11,8 @@ Xtimerangeadjust = [];
 Xticksadjust = [];
 
 if isempty(stepX)
-    stepX = ceil(Xtimerange(end)-Xtimerange(1));
+    stepX = Xtimerange(end) - Xtimerange(1);
 end
-
-timebin = 1000/fs;
-Timet_step_p = ceil(stepX/(1000/fs));
-
-
 
 %%if the number of columns is 1
 if NumColumns==1
@@ -33,9 +28,10 @@ catch
 end
 RowNums =  PosIndexs(1);
 %%if the number of columns is larger than 1.
+%%Gap is computed directly in ms so spacing stays proportional at any sample rate.
 bindatadjust = bindatatrs+offset(PosIndexs(1));
 Xtimerangeadjust = NaN(1,numel(Xtimerange));
-TimeAdjust = (ColumnNums-1)*(numel(Xtimerange)+Timet_step_p)*timebin;
+TimeAdjust = (ColumnNums-1)*((Xtimerange(end)-Xtimerange(1))+stepX);
 Xtimerangeadjust = Xtimerange+TimeAdjust;
 Xticksadjust = qXticks+TimeAdjust;
 end

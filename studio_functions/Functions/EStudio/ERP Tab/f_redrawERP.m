@@ -1027,15 +1027,20 @@ end
 
 
 %%gap between columns
-Xpert = 10;
+Xpert = 15;
 try
-    StepX = (ERP.times(end)-ERP.times(1))*(Xpert/100);
+    StepX = (qtimeRange(2)-qtimeRange(1))*(Xpert/100);
 catch
     beep;
     disp('ERP.times only has one element.');
     return;
 end
-StepXP = ceil(StepX/(1000/fs));
+if (qtimeRange(2)-qtimeRange(1)) < (1000/fs)
+    msgboxText = sprintf('The time axis range is too narrow to plot. It must span at least %.4g ms (one sample interval at %g Hz).', 1000/fs, fs);
+    errorfound(msgboxText, 'ERPLAB: Time range too narrow');
+    return;
+end
+StepXP = round(StepX/(1000/fs));
 
 qPolarityWave = positive_up;
 
@@ -1277,8 +1282,11 @@ for Numofrows = 1:rowNums
                     ytick_label= sprintf(['%.',num2str(qYtickdecimal),'f'],-qyticktras(iCount));
                 end
                 %                 end
-                if str2num(char(ytick_label)) ==0 || (str2num(char(ytick_label))<0.0001 && str2num(char(ytick_label))>0) || (str2num(char(ytick_label))>-0.0001 && str2num(char(ytick_label))<0)
-                    ytick_label = '';
+                label_val = str2num(char(ytick_label));
+                if (label_val < 0.0001 && label_val > 0) || (label_val > -0.0001 && label_val < 0)
+                    ytick_label = '';  % floating-point near-zero: always suppress
+                elseif label_val == 0 && any(qXtickstransf < myY_Crossing)
+                    ytick_label = '';  % zero: suppress only when time ticks exist to the left
                 end
                 text(waveview,myY_Crossing-2*abs(ytick_bottom),props.YTick(iCount),  ...
                     ytick_label, ...
@@ -1302,9 +1310,9 @@ for Numofrows = 1:rowNums
             end
             myX_Crossing = OffSetY(Numofrows);
             if countPlot ==1
-                xtick_bottom = -props.TickLength(2)*max(props.YLim);
-                if abs(xtick_bottom)/max(props.YLim) > ytick_bottomratio
-                    xtick_bottom = -ytick_bottomratio*max(props.YLim);
+                xtick_bottom = -props.TickLength(2)*diff(props.YLim);
+                if abs(xtick_bottom)/diff(props.YLim) > ytick_bottomratio
+                    xtick_bottom = -ytick_bottomratio*diff(props.YLim);
                 end
             else
                 try
