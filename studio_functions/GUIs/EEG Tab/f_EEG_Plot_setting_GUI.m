@@ -490,56 +490,20 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
         
-        try
-            chanlocs = observe_EEGDAT.EEG.chanlocs;
-            if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                msgboxText= char(strcat('Plot Setting > Channel order>Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                observe_EEGDAT.eeg_panel_message=4;
-                EStduio_gui_EEG_plotset.chanorder_number.Value=1;
-                EStduio_gui_EEG_plotset.chanorder_front.Value=0;
-                EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
-                EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
-                EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
-                msgboxText = ['Plot Setting > Channel order>Simple 10/20 system order: please do "chan locations" first in EEGLAB Tool panel.'];
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return
-            end
-        catch
+        chanlocs = observe_EEGDAT.EEG.chanlocs;
+        hasLocs = ~isempty(chanlocs) && isfield(chanlocs, 'X') && ~isempty(chanlocs(1).X);
+        if ~hasLocs
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
-            msgboxText = ['Plot Setting > Channel order>Simple 10/20 system order: It seems that chanloc for the current EEG is empty and please check it out'];
+            msgboxText = 'Plot Setting > Simple 10/20 system order: channel location data (X/Y coordinates) are needed. Please set channel locations first.';
             titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
+            estudio_warning(msgboxText, titlNamerro);
             return
         end
         
-        %%check if the channels belong to 10/20 system
-        [eloc, labels, theta, radius, indices] = readlocs( observe_EEGDAT.EEG.chanlocs);
-        [Simplabels,simplabelIndex,SamAll] =  Simplelabels(labels);
-        count = 0;
-        for ii = 1:length(Simplabels)
-            [xpos,ypos]= find(simplabelIndex==ii);
-            if ~isempty(ypos)  && numel(ypos)>= floor(length(observe_EEGDAT.EEG.chanlocs)/2)
-                count = count+1;
-                if count==1
-                    msgboxText= char(strcat('Plot Setting > Channel order>Simple 10/20 system order: We cannot use the "Simple 10/20 system order" with your data because your channel labels do not appear to be standard 10/20 names.'));
-                    titlNamerro = 'Warning for EEG Tab';
-                    estudio_warning(msgboxText,titlNamerro);
-                    EStduio_gui_EEG_plotset.chanorder_number.Value=1;
-                    EStduio_gui_EEG_plotset.chanorder_front.Value=0;
-                    EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
-                    EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
-                    EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
-                    break;
-                end
-            end
-        end
         
     end
 

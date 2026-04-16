@@ -959,55 +959,16 @@ varargout{1} = ERP_plotset_box;
         gridlayputarray = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
         
         if ERPTab_plotset.pagesel.Value==1
-            try
-                chanlocs = observe_ERPDAT.ERP.chanlocs;
-                if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                    MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
-                    estudioworkingmemory('f_ERP_proces_messg',MessageViewer);
-                    observe_ERPDAT.Process_messg=4;
-                end
-            catch
-                ERPTab_plotset.gridlayoutdef.Value = 1;
-                ERPTab_plotset.gridlayout_custom.Value = 0;
-                ERPTab_plotset.chanorder_front.Value = 0;
-                ERPTab_plotset.gridlayout_export.Enable ='off';
-                ERPTab_plotset.gridlayout_import.Enable ='off';
-                ERPTab_plotset.rowNum_set.Enable ='off';
-                ERPTab_plotset.columns.Enable ='off';
-            end
             if ERPTab_plotset.chanorder_front.Value==1
-                %%check if the channels belong to 10/20 system
-                [eloc, labels, theta, radius, indices] = readlocs( observe_ERPDAT.ERP.chanlocs);
-                [Simplabels,simplabelIndex,SamAll] =  Simplelabels(labels);
-                count = 0;
-                for ii = 1:length(Simplabels)
-                    [xpos,ypos]= find(simplabelIndex==ii);
-                    if ~isempty(ypos)  && numel(ypos)>= floor(length(observe_ERPDAT.ERP.chanlocs)/2)
-                        count = count+1;
-                        if count==1
-                            msgboxText= char(strcat('We cannot use the "Simple 10/20 system order" with your data because your channel labels do not appear to be standard 10/20 names.'));
-                            title      =  'Estudio: Plot Settings > Channel order>Simple 10/20 system order:';
-                            errorfound(msgboxText, title);
-                            break;
-                        end
-                    end
-                end
-                if count==1
-                    ERPTab_plotset.gridlayoutdef.Value = 1;
-                    ERPTab_plotset.gridlayout_custom.Value = 0;
-                    ERPTab_plotset.chanorder_front.Value = 0;
-                    ERPTab_plotset.gridlayout_export.Enable ='off';
-                    ERPTab_plotset.gridlayout_import.Enable ='off';
-                    ERPTab_plotset.rowNum_set.Enable ='off';
-                    ERPTab_plotset.columns.Enable ='off';
+                [eloc, labels11, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+                ERPTab_plotset.chanorderIndex = 2;
+                [chanindexnew, errmsg] = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(plotarray));
+                if ~isempty(chanindexnew)
+                    labelsdef = labels11(chanindexnew);
                 else
-                    [eloc, labels11, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
-                    ERPTab_plotset.chanorderIndex = 2;
-                    chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(plotarray));
-                    if ~isempty(chanindexnew)
-                        labelsdef = labels11(chanindexnew);
-                    else
-                        labelsdef =  labels11(plotarray);
+                    labelsdef = labels11(plotarray);
+                    if ~isempty(errmsg)
+                        fprintf('Plot Settings > Simple 10/20 system order: %s Displaying in original order.\n', errmsg);
                     end
                 end
             end

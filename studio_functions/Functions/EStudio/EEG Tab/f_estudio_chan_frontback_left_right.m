@@ -21,9 +21,7 @@ invalidchan = [];
 [checkindex,invalidchan] = checktheta(theta);
 checkindex1 = checktheta(radius);
 if checkindex || checkindex1
-    msgboxText = ['Please do channel location first before display the wave with front-back/left-right '];
-    title = 'Estudio: f_estudio_chan_frontback_left_right() inputs';
-    errorfound(sprintf(msgboxText), title);
+    errormessg = 'Channel location data (X/Y coordinates) are needed for spatial ordering. Please set channel locations first.';
     return
 end
 
@@ -71,7 +69,8 @@ for jj = 1:length(simplabelIndexNew_uq)
 end
 
 %%--------------------------check HEOG & VEOG------------------------------
-chanindexnew=[invalidchan,validechanNew];
+%%Channels with no position data (invalidchan) go last.
+chanindexnew=[validechanNew,invalidchan];
 [C,IA] = ismember_bc2('HEOG',labels);
 if IA~=0
     [xpos,ypos] = find(chanindexnew==IA);
