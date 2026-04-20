@@ -290,7 +290,17 @@ end
 waveview.YAxis.FontSize = qYlabelfontsize;
 waveview.YAxis.FontName = qYlabelfont;
 waveview.YAxis.Color = qYlabelcolor;
-ylabel(waveview,'Decoding Accuracy','FontSize',qYlabelfontsize,'FontWeight',...
+
+
+if strcmpi(ALLMVPC(MVPCArray(1)).DecodingUnit,'AUC')
+    ylabel_names = 'AUC';
+elseif strcmpi(ALLMVPC(MVPCArray(1)).DecodingUnit,'uV')
+    ylabel_names = 'Distance (\muV)';
+else
+    ylabel_names = 'Decoding Accuracy';
+end
+
+ylabel(waveview,ylabel_names,'FontSize',qYlabelfontsize,'FontWeight',...
     'normal','Color',qYlabelcolor,'FontName',qYlabelfont);
 waveview.YAxis.LineWidth=1;
 if ~isempty(hplot11)
@@ -349,7 +359,7 @@ if ~isempty(qFigureName)
                 print(fig_gui,'-djpeg',figFileName);
             case 4
                 print(fig_gui,'-dpng',figFileName);
-                
+
             case 5
                 print(fig_gui,'-dtiff',figFileName);
             case 6

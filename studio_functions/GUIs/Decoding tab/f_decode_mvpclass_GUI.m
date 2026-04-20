@@ -49,8 +49,8 @@ varargout{1} = box_decode_mvpclass;
         end
         %%--------------------channel and bin setting----------------------
         gui_decode_mvpclass.DataSelBox = uiextras.VBox('Parent', box_decode_mvpclass,'BackgroundColor',ColorB_def);
-        
-        
+
+
         ERP_history = '';
         [~, total_len] = size(ERP_history);
         total_len =1000;
@@ -72,13 +72,13 @@ varargout{1} = box_decode_mvpclass;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentMVPC_changed(~,~)
-        if observe_DECODE.Count_currentMVPC~=5
+        if observe_DECODE.Count_currentMVPC~=6
             return;
         end
         Enableflag = 'on';
         gui_decode_mvpclass.save_script.Enable = Enableflag;
-        
-        
+
+
         if isempty(observe_DECODE.ALLMVPC)
             datastr = '';
             gui_decode_mvpclass.uitableColumnName=[];
@@ -103,18 +103,34 @@ varargout{1} = box_decode_mvpclass;
                     catch
                         datastr{count,3} = [''];
                     end
-                    gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
-                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 90};
+                    try %%GH Apr 2026
+                        if strcmpi(MVPC.average_status,'grandaverage')
+                            datastr{count,4} = ['not applicable'];
+                        else
+                            if MVPC.mvpc_version==1
+                                datastr{count,4}  = num2str(MVPC.nCrossfolds);
+                            else
+                                datastr{count,4}  = num2str(MVPC.AvgPerClass(Numofclass));
+                            end
+
+                        end
+                    catch
+                        datastr{count,4} = [''];
+                    end
+
+
+                    gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class','# averages per class'};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 90 90};
                 end
             end
         end
         set(gui_decode_mvpclass.uitable,'Data',datastr);
-        observe_DECODE.Count_currentMVPC=6;
+        observe_DECODE.Count_currentMVPC=7;
     end
 
 %%----------------------reset parameters for this panel--------------------
     function Reset_best_panel_change(~,~)
-        if  observe_DECODE.Reset_Best_paras_panel~=5
+        if  observe_DECODE.Reset_Best_paras_panel~=6
             return;
         end
         Enableflag = 'on';
@@ -143,12 +159,29 @@ varargout{1} = box_decode_mvpclass;
                     catch
                         datastr{count,3} = [''];
                     end
-                    gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class'};
-                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 90};
+
+
+                    try %%GH Apr 2026
+                        if strcmpi(MVPC.average_status,'grandaverage')
+                            datastr{count,4} = ['not applicable'];
+                        else
+                            if MVPC.mvpc_version==1
+                                datastr{count,4}  = num2str(MVPC.nCrossfolds);
+                            else
+                                datastr{count,4}  = num2str(MVPC.AvgPerClass(Numofclass));
+                            end
+
+                        end
+                    catch
+                        datastr{count,4} = [''];
+                    end
+
+                    gui_decode_mvpclass.uitable.ColumnName={'MVPC name','Class name','# trials per class','# averages per class'};
+                    gui_decode_mvpclass.uitable.ColumnWidth = {100 70 90 90};
                 end
             end
         end
         set(gui_decode_mvpclass.uitable,'Data',datastr);
-        observe_DECODE.Reset_Best_paras_panel=6;
+        observe_DECODE.Reset_Best_paras_panel=7;
     end
 end

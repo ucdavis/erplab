@@ -98,7 +98,7 @@ varargout{1} = box_decode_history;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentMVPC_changed(~,~)
-        if observe_DECODE.Count_currentMVPC~=6
+        if observe_DECODE.Count_currentMVPC~=7
             return;
         end
         Enableflag = 'on';
@@ -121,7 +121,7 @@ varargout{1} = box_decode_history;
             ERP_history_display{count,1} = ERP_history{Numofrow};
         end
         set(gui_decode_history.uitable,'Data',ERP_history_display);
-        observe_DECODE.Count_currentMVPC=7;
+        observe_DECODE.Count_currentMVPC=8;
     end
 
 %%-------------show history to command window------------------------------
@@ -168,6 +168,6 @@ varargout{1} = box_decode_history;
             ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
         end
         set(gui_decode_history.uitable,'Data', ERP_history_display');
-        
+         observe_DECODE.Reset_Best_paras_panel=7;
     end
 end

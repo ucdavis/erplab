@@ -40,7 +40,7 @@
 %
 %        'Saveas'       - 'on'/'off'(def)
 %
-%        'Filepath'     - Path to save plots ('Saveas' must be 'on');
+%        'Figpath'     - Path to save plots ('Saveas' must be 'on');
 %                          default path: current working directory.
 %
 %        'Format'       -Format of saved file*: 'fig'(def)/'png'
@@ -94,38 +94,38 @@ if nargin<1
     return
 end
 if nargin == 1 %GUI
-    
+
     currdata = evalin('base','CURRENTMVPC');
-    
+
     if currdata == 0
         msgboxText =  'pop_plotconfusions() error: cannot work an empty dataset!!!';
         title      = 'ERPLAB: No MVPC data';
         errorfound(msgboxText, title);
         return
-        
     end
-    
+
     if ~iscell(ALLMVPC) && ~ischar(ALLMVPC)
-        
+
         def  = erpworkingmemory('pop_plotconfusions');
         if isempty(def)
-            def = {1 1 1 [] 1};
+            def = {1 1 1 [] 1,0,'',3};%%GH Jan 2026
             %def{1} = plot menu (1: tp confusion 2:mean confusion two
             %                           latency)
             %def{2} = colormap
             %def{3} = format (1: fig, 2: png);
             %def{4} = times in [];
             %def{5} = save(1/def) or no save
+
         end
-        
-        
-        
+
+
+
         %
         % Open plot confusion GUI
         %
         app = feval('plotConfusionGUI',ALLMVPC,currdata,def);
         waitfor(app,'FinishButton',1);
-        
+
         try
             answer = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding
             app.delete; %delete app from view
@@ -134,14 +134,14 @@ if nargin == 1 %GUI
             disp('User selected Cancel')
             return
         end
-        
-        
-        
+
+
+
         if isempty(answer)
             disp('User selected Cancel')
             return
         end
-        
+
         plot_menu    = answer{1}; %plot_menu
         plot_cmap     = answer{2};%plot_colormap
         tp =   answer{3}; % 0;1
@@ -150,8 +150,8 @@ if nargin == 1 %GUI
         savec = answer{6};
         %warnon    = answer {4};
         cmaps = {'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' };
-        frmts = {'fig','png'};
-        
+        frmts = {'fig','png','pdf','svg'};
+
         %         if optioni==1 % from files
         %             filelist    = mvpcset;
         %             disp(['pop_gaverager(): For file-List, user selected ', filelist])
@@ -159,9 +159,15 @@ if nargin == 1 %GUI
         %         else % from mvpcsets menu
         %             %mvpcset  = mvpcset;
         %         end
-        
+
         %def = {actualnset, optioni, mvpcset,stderror};
-        def = {plot_menu, plot_cmap,frmt, tp, savec};
+
+        savefile =  answer{7};
+        filepathname = answer{8};
+        Decimal = answer{9};
+
+
+        def = {plot_menu, plot_cmap,frmt, tp, savec,savefile,filepathname,Decimal};
         erpworkingmemory('pop_plotconfusions', def);
         %         if stderror==1
         %             stdsstr = 'on';
@@ -173,38 +179,46 @@ if nargin == 1 %GUI
         %         else
         %             warnon_str = 'off';
         %         end
-        
+
         if plot_menu == 1
             %single timepoint confusion matrix
             meas = 'timepoint';
-            
+
         elseif plot_menu==2
             %average across time window confusion matrix
-            
+
             meas = 'average';
-            
+
         end
-        
+
         if savec == 1
             savestr = 'on';
         else
             savestr = 'off';
         end
+
+        if savefile==1
+            Filesavestr = 'on';
+        else
+            Filesavestr = 'off';
+        end
+
         %
         % Somersault
         %
         ColorLimits = [];
         mvpccom =pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',currdata,'ColorLimits',ColorLimits,...
-            'filepath',pname, 'Colormap', cmaps{plot_cmap}, 'Format',frmts{frmt}, 'Saveas',savestr,'History', 'gui');
+            'Figpath',pname, 'Colormap', cmaps{plot_cmap}, 'Format',frmts{frmt}, 'FigSaveas',savestr,...
+            'FileSaveas',Filesavestr,'Filepath',filepathname,'Decimal',Decimal,'History', 'gui');%%GH Jan 2026
         pause(0.1);
         return;
     else
         fprintf('pop_plotconfusions() was called using a single (non-struct) input argument.\n\n');
     end
-    
-    
-    
-    
+
+
+
+
 end
 
 p = inputParser;
@@ -217,18 +231,23 @@ p.addParamValue('Type',[],@ischar);
 p.addParamValue('MVPCindex', 1);               % same as Erpsets
 p.addParamValue('Colormap', 'default', @ischar);
 p.addParamValue('Format', 'fig', @ischar);
-p.addParamValue('Filepath',pwd,@ischar);
-p.addParamValue('Saveas', 'off', @ischar);     % 'on', 'off'
+p.addParamValue('Figpath',pwd,@ischar);
+p.addParamValue('FigSaveas', 'off', @ischar);     % 'on', 'off'
 p.addParamValue('Warning', 'off', @ischar);    % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
 p.addParamValue('ColorLimits',[],@isnumeric);
+
+p.addParamValue('FileSaveas', 'off', @ischar);     % 'on', 'off' %%GH Jan 2026
+p.addParamValue('Filepath',pwd,@ischar);%%GH Jan 2026
+p.addParamValue('Decimal',3,@isnumeric);%%GH Jan 2026
+
 p.parse(ALLMVPC, varargin{:});
 mvpci = p.Results.MVPCindex;
 meas = p.Results.Type;
 tp = p.Results.Times;
 cmap = p.Results.Colormap;
-pname = p.Results.Filepath;
+pname = p.Results.Figpath;
 frmt = p.Results.Format;
 
 if isempty(meas)
@@ -241,7 +260,7 @@ if isempty(tp)
     return
 end
 
-if ismember_bc2({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.FigSaveas}, {'on','yes'})
     issaveas  = 1;
 else
     issaveas  = 0;
@@ -261,286 +280,348 @@ end
 
 
 if isempty(mvpci)
-    MVPC = ALLMVPC(end);
+    ALLMVPC = ALLMVPC(end);
 else
-    MVPC = ALLMVPC(mvpci);
+    ALLMVPC = ALLMVPC(mvpci);
 end
-
-cf_scores = MVPC.confusions.scores;
-cf_labels = MVPC.confusions.labels;
-cf_strings = convertCharsToStrings(cf_labels);
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Time conversions
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-orig_times = MVPC.times;
-epoch_window = [orig_times(1) orig_times(end)];
-fs = MVPC.srate;
-xxlim = tp;
+for Numofmvpc = 1:length(ALLMVPC)
+    MVPC = ALLMVPC(Numofmvpc);
+    cf_scores = MVPC.confusions.scores;
+    cf_labels = MVPC.confusions.labels;
+    cf_strings = convertCharsToStrings(cf_labels);
 
 
-if strcmpi(meas,'average')
-    if isempty(xxlim) | length(xxlim) <2
-        msgboxText =  'You have not specified a time range';
-        title = 'ERPLAB: latencies input';
-        errorfound(msgboxText, title);
-        %                 set(handles.radiobutton_yauto, 'Value',0)
-        %                 drawnow
-        return
+    %%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%% Time conversions
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    orig_times = MVPC.times;
+    epoch_window = [orig_times(1) orig_times(end)];
+    fs = MVPC.srate;
+    xxlim = tp;
+
+
+    if strcmpi(meas,'average')
+        if isempty(xxlim) | length(xxlim) <2
+            msgboxText =  'You have not specified a time range';
+            title = 'ERPLAB: latencies input';
+            errorfound(msgboxText, title);
+            %                 set(handles.radiobutton_yauto, 'Value',0)
+            %                 drawnow
+            return
+        end
+
     end
-    
-end
 
-if strcmpi(meas,'timepoint')
-    
-    if numel(xxlim) == 1
-        %only one timepoint
-        if xxlim < round(epoch_window(1),2)
+    if strcmpi(meas,'timepoint')
+        if numel(xxlim) == 1
+            %only one timepoint
+            if xxlim < round(epoch_window(1),2)
+                % Revert to default time range
+                tscale = epoch_window(1); %change from s to ms
+                aux_xxlim = tscale;
+                fprintf('\n%s\n', repmat('*',1,60));
+                fprintf('WARNING: Time %.3f ms was adjusted to %.3f ms \n', xxlim, epoch_window(1));
+                fprintf('WARNING: This adjustment was necessary due to sampling \n');
+                fprintf('%s\n\n', repmat('*',1,60));
+            elseif ~ismember(xxlim, round(orig_times,2))
+                %check that time is actually within the data
+                [value,ind] = closest(orig_times,xxlim);
+                aux_xxlim = value;
+
+                fprintf('\n%s\n', repmat('*',1,60));
+                fprintf('WARNING: Time %.3f ms was adjusted to %.3f ms \n', xxlim, aux_xxlim);
+                fprintf('WARNING: This adjustment was necessary due to sampling \n');
+                fprintf('%s\n\n', repmat('*',1,60));
+            else
+                aux_xxlim = xxlim;
+            end
+        else
+            %range of timepoints are input
+            if xxlim(1) < round(epoch_window(1),2)
+
+                % Revert to earliest time
+                fprintf('\n%s\n', repmat('*',1,60));
+                fprintf('WARNING: Lower limit %.3f ms was adjusted to %.3f ms \n', xxlim(1), epoch_window(1));
+                fprintf('WARNING: This adjustment was necessary due to sampling \n');
+                fprintf('%s\n\n', repmat('*',1,60));
+                xxlim(1) = epoch_window(1);
+            end
+
+            check_vals = ismember(xxlim, round(orig_times,2));
+            z = nnz(~check_vals);
+
+            if z > 0
+                %check that times are actually within the new
+                %resampling period
+
+                [value,ind] = closest(orig_times,xxlim);
+
+                tscale = mat2colon(value,'delimiter','off');
+
+                fprintf('\n%s\n', repmat('*',1,60));
+                fprintf('WARNING: Times %s ms were adjusted to %s ms \n', ['[' num2str(xxlim) ']'], ['[' num2str(tscale) ']']);
+                fprintf('WARNING: This adjustment was necessary due to sampling \n');
+                fprintf('%s\n\n', repmat('*',1,60));
+                aux_xxlim = value;
+            else
+                aux_xxlim = xxlim;
+            end
+
+
+        end
+
+    else
+        %aveerage across two timepoints
+        if xxlim(1) < round(epoch_window(1),2)
+
+
             % Revert to default time range
             tscale = epoch_window(1); %change from s to ms
-            aux_xxlim = tscale;
+            %aux_xxlim = tscale;
+
             fprintf('\n%s\n', repmat('*',1,60));
-            fprintf('WARNING: Time %.3f ms was adjusted to %.3f ms \n', xxlim, epoch_window(1));
+            fprintf('WARNING: Start time %.3f ms was adjusted to %.3f ms \n', xxlim(1), epoch_window(1));
             fprintf('WARNING: This adjustment was necessary due to sampling \n');
             fprintf('%s\n\n', repmat('*',1,60));
-        elseif ~ismember(xxlim, round(orig_times,2))
-            %check that time is actually within the data
-            [value,ind] = closest(orig_times,xxlim);
-            aux_xxlim = value;
-            
-            fprintf('\n%s\n', repmat('*',1,60));
-            fprintf('WARNING: Time %.3f ms was adjusted to %.3f ms \n', xxlim, aux_xxlim);
-            fprintf('WARNING: This adjustment was necessary due to sampling \n');
-            fprintf('%s\n\n', repmat('*',1,60));
-        else
-            aux_xxlim = xxlim;
-        end
-        
-        
-    else
-        %range of timepoints are input
-        if xxlim(1) < round(epoch_window(1),2)
-            
-            % Revert to earliest time
-            fprintf('\n%s\n', repmat('*',1,60));
-            fprintf('WARNING: Lower limit %.3f ms was adjusted to %.3f ms \n', xxlim(1), epoch_window(1));
-            fprintf('WARNING: This adjustment was necessary due to sampling \n');
-            fprintf('%s\n\n', repmat('*',1,60));
-            xxlim(1) = epoch_window(1);
-        end
-        
-        check_vals = ismember(xxlim, round(orig_times,2));
-        z = nnz(~check_vals);
-        
-        if z > 0
-            %check that times are actually within the new
+
+            aux_xxlim(1) = tscale;
+
+
+        elseif ~ismember(xxlim(1), round(orig_times,2))
+            %check that start time is actually within the new
             %resampling period
-            
-            [value,ind] = closest(orig_times,xxlim);
-            
-            tscale = mat2colon(value,'delimiter','off');
-            
+
+            [value,ind] = closest(orig_times,xxlim(1));
+
+            %                 set(app.TPspinner,'Value',value);
+            %                 app.TPspinner.Value = value;
             fprintf('\n%s\n', repmat('*',1,60));
-            fprintf('WARNING: Times %s ms were adjusted to %s ms \n', ['[' num2str(xxlim) ']'], ['[' num2str(tscale) ']']);
+            fprintf('WARNING: Start time %.3f ms was adjusted to %.3f ms \n', xxlim(1), value);
             fprintf('WARNING: This adjustment was necessary due to sampling \n');
             fprintf('%s\n\n', repmat('*',1,60));
-            aux_xxlim = value;
+
+            aux_xxlim(1) = value;
+
+
+
         else
-            aux_xxlim = xxlim;
+            aux_xxlim(1) = xxlim(1);
         end
-        
-        
+
+
+        if xxlim(2)> round(epoch_window(end),2)
+
+            tscale(2) = epoch_window(end);
+
+            fprintf('\n%s\n', repmat('*',1,60));
+            fprintf('WARNING: End time %.3f ms was adjusted to %.3f ms \n', xxlim(2), tscale(2));
+            fprintf('WARNING: This adjustment was necessary due to sampling \n');
+            fprintf('%s\n\n', repmat('*',1,60));
+
+            aux_xxlim(2)=  tscale(2);
+
+        elseif ~ismember(xxlim(2), round(orig_times,2))
+            %check that end time is actually within the new
+            %resampling period
+
+            [value,ind] = closest(orig_times,xxlim(2));
+
+            %                 set(app.TPspinner,'Value',value);
+            %                 app.TPspinner.Value = value;
+            fprintf('\n%s\n', repmat('*',1,60));
+            fprintf('WARNING: End time %.3f ms was adjusted to %.3f ms \n', xxlim(2), value);
+            fprintf('WARNING: This adjustment was necessary due to sampling \n');
+            fprintf('%s\n\n', repmat('*',1,60));
+
+            aux_xxlim(2) = value;
+
+        else
+            aux_xxlim(2) = xxlim(2);
+        end
     end
-    
-else
-    %aveerage across two timepoints
-    if xxlim(1) < round(epoch_window(1),2)
-        
-        
-        % Revert to default time range
-        tscale = epoch_window(1); %change from s to ms
-        %aux_xxlim = tscale;
-        
-        fprintf('\n%s\n', repmat('*',1,60));
-        fprintf('WARNING: Start time %.3f ms was adjusted to %.3f ms \n', xxlim(1), epoch_window(1));
-        fprintf('WARNING: This adjustment was necessary due to sampling \n');
-        fprintf('%s\n\n', repmat('*',1,60));
-        
-        aux_xxlim(1) = tscale;
-        
-        
-    elseif ~ismember(xxlim(1), round(orig_times,2))
-        %check that start time is actually within the new
-        %resampling period
-        
-        [value,ind] = closest(orig_times,xxlim(1));
-        
-        %                 set(app.TPspinner,'Value',value);
-        %                 app.TPspinner.Value = value;
-        fprintf('\n%s\n', repmat('*',1,60));
-        fprintf('WARNING: Start time %.3f ms was adjusted to %.3f ms \n', xxlim(1), value);
-        fprintf('WARNING: This adjustment was necessary due to sampling \n');
-        fprintf('%s\n\n', repmat('*',1,60));
-        
-        aux_xxlim(1) = value;
-        
-        
-        
-    else
-        aux_xxlim(1) = xxlim(1);
+
+
+
+    if strcmpi(meas,'average')
+        [xp1, xp2, checkw] = window2sample(MVPC, aux_xxlim(1:2) , fs, 'relaxed');
+
+        if checkw==1
+            msgboxText =  'Time window cannot be larger than epoch.';
+            title = 'ERPLAB';
+            errorfound(msgboxText, title);
+            return
+        elseif checkw==2
+            msgboxText =  'Too narrow time window (are the start and end times reversed?)';
+            title = 'ERPLAB';
+            errorfound(msgboxText, title);
+            return
+        end
     end
-    
-    
-    if xxlim(2)> round(epoch_window(end),2)
-        
-        tscale(2) = epoch_window(end);
-        
-        fprintf('\n%s\n', repmat('*',1,60));
-        fprintf('WARNING: End time %.3f ms was adjusted to %.3f ms \n', xxlim(2), tscale(2));
-        fprintf('WARNING: This adjustment was necessary due to sampling \n');
-        fprintf('%s\n\n', repmat('*',1,60));
-        
-        aux_xxlim(2)=  tscale(2);
-        
-    elseif ~ismember(xxlim(2), round(orig_times,2))
-        %check that end time is actually within the new
-        %resampling period
-        
-        [value,ind] = closest(orig_times,xxlim(2));
-        
-        %                 set(app.TPspinner,'Value',value);
-        %                 app.TPspinner.Value = value;
-        fprintf('\n%s\n', repmat('*',1,60));
-        fprintf('WARNING: End time %.3f ms was adjusted to %.3f ms \n', xxlim(2), value);
-        fprintf('WARNING: This adjustment was necessary due to sampling \n');
-        fprintf('%s\n\n', repmat('*',1,60));
-        
-        aux_xxlim(2) = value;
-        
-    else
-        aux_xxlim(2) = xxlim(2);
+
+    %reset tp
+    tp = aux_xxlim;
+
+    %obtain time-point indices
+    time_ind = [];
+    for i = 1:numel(tp)
+        time_ind(i) = find(tp(i) == orig_times);
     end
-end
 
 
+    avg_win = 0 ;
+    %choose measurment & plot
+    if strcmpi(meas,'timepoint')
+        if numel(time_ind) == 1
+            cf_scores = cf_scores(:,:,time_ind);
+            Npts = 1;
+        else
+            %multiple plots at 1 time point
+            cf_scores = cf_scores(:,:,time_ind);
+            Npts = numel(time_ind);
+        end
 
-if strcmpi(meas,'average')
-    [xp1, xp2, checkw] = window2sample(MVPC, aux_xxlim(1:2) , fs, 'relaxed');
-    
-    if checkw==1
-        msgboxText =  'Time window cannot be larger than epoch.';
-        title = 'ERPLAB';
-        errorfound(msgboxText, title);
-        return
-    elseif checkw==2
-        msgboxText =  'Too narrow time window (are the start and end times reversed?)';
-        title = 'ERPLAB';
-        errorfound(msgboxText, title);
-        return
-    end
-end
-
-%reset tp
-tp = aux_xxlim;
-
-%obtain time-point indices
-time_ind = [];
-for i = 1:numel(tp)
-    time_ind(i) = find(tp(i) == orig_times);
-end
-
-
-avg_win = 0 ;
-%choose measurment & plot
-if strcmpi(meas,'timepoint')
-    if numel(time_ind) == 1
-        cf_scores = cf_scores(:,:,time_ind);
+    elseif strcmpi(meas,'average')
+        idx = time_ind(1):time_ind(2);
+        cf_scores = cf_scores(:,:,idx);
+        cf_scores = squeeze(mean(cf_scores,3));
         Npts = 1;
+        avg_win = 1;
+    end
+
+    ColorLimits = p.Results.ColorLimits;%%GH July 2024
+    if isempty(ColorLimits) || numel(ColorLimits)~=2 || min(ColorLimits(:))>1 || max(ColorLimits(:))<0
+        ColorLimits = [];
+    end
+
+
+    %% plot
+    for pnt = 1:Npts
+
+        fig_gui=figure('Name',MVPC.mvpcname); %new figure for every plot
+        C = cf_scores(:,:,pnt);
+        %C = flipud(C); %flips element values in matrix to align with Bae&Luck 2018, but doesn't flip row labels
+        %cf_string2 = fliplr(cf_strings); % flips row labels
+
+        %swap rows and columns of matrix as per Steve
+        Cnew = permute(C,[2 1]);
+        Cnew = flipud(Cnew);
+        cf_string2 = fliplr(cf_strings); % flips row labels
+
+        h = heatmap(cf_strings,cf_string2,Cnew);
+        if ~strcmpi(cmap,'default')
+            h.Colormap = eval(cmap);
+        end
+        if ~isempty(ColorLimits) && numel(ColorLimits)==2
+            h.ColorLimits = ColorLimits;%%GH July 2024
+        end
+        %labels
+
+        if strcmpi(MVPC.DecodingMethod,'SVM')
+            if avg_win == 1
+                h.Title = ['Confusion Matrix across ', num2str(tp(1)),'ms-',num2str(tp(2)), 'ms (Average Decoding Accuracy)'];
+            else
+                h.Title = ['Confusion Matrix @ ', num2str(tp(pnt)), ' ms (Average Decoding Accuracy)'];
+
+            end
+
+            h.YLabel = 'Predicted Labels';
+            h.XLabel = 'True Labels';
+        else
+            if avg_win == 1
+                h.Title = ['Confusion Matrix across ', num2str(tp(1)),'ms-',num2str(tp(2)), 'ms (Average Distance)'];
+            else
+                h.Title = ['Confusion Matrix @ ', num2str(tp(pnt)), ' ms (Average Distance)'];
+
+            end
+            h.YLabel = 'Class';
+            h.XLabel = 'Class';
+        end
+
+
+        if issaveas == 1
+            if avg_win == 1
+                fname = [pname,filese,MVPC.mvpcname, '_ConfusionMatrix_', num2str(tp(1)),'-',num2str(tp(2)),'ms'];
+            else
+                fname = [pname,filesep,MVPC.mvpcname, '_ConfusionMatrix_', num2str(tp(pnt)) 'ms'];
+            end
+            % saveas(h, fname, frmt);
+            set(fig_gui, 'Renderer', 'painters');%%vector figure
+            set(fig_gui,'PaperType','<custom>');
+            % Set units to all be the same
+            set(fig_gui,'PaperUnits','inches');
+            set(fig_gui,'Units','inches');
+            if strcmpi(frmt,'fig')%%GH Jan 2026
+                saveas(fig_gui, [fname,'.fig'], frmt);
+            elseif strcmpi(frmt,'png')
+                print(fig_gui,'-dpng',[fname,'.png']);
+            elseif strcmpi(frmt,'pdf')
+
+                print(fig_gui,'-dpdf',[fname,'.pdf']);
+            else
+                print(fig_gui,'-dsvg',[fname,'.svg']);
+            end
+        end
+        clear h ;
+    end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%GH Jan 2026
+if ismember_bc2({p.Results.FileSaveas}, {'on','yes'})
+    fileissaveas  = 1;
+else
+    fileissaveas  = 0;
+end
+if fileissaveas==1
+    if strcmpi(p.Results.Warning,'on')
+        warnop = 1;
     else
-        %multiple plots at 1 time point
-        cf_scores = cf_scores(:,:,time_ind);
-        Npts = numel(time_ind);
+        warnop = 0;
     end
-    
-elseif strcmpi(meas,'average')
-    idx = time_ind(1):time_ind(2);
-    cf_scores = cf_scores(:,:,idx);
-    cf_scores = squeeze(mean(cf_scores,3));
-    Npts = 1;
-    avg_win = 1;
-end
 
-ColorLimits = p.Results.ColorLimits;%%GH July 2024
-if isempty(ColorLimits) || numel(ColorLimits)~=2 || min(ColorLimits(:))>1 || max(ColorLimits(:))<0
-    ColorLimits = [];
-end
-
-
-%% plot
-for pnt = 1:Npts
-    
-    figure('Name',MVPC.mvpcname); %new figure for every plot
-    C = cf_scores(:,:,pnt);
-    %C = flipud(C); %flips element values in matrix to align with Bae&Luck 2018, but doesn't flip row labels
-    %cf_string2 = fliplr(cf_strings); % flips row labels
-    
-    %swap rows and columns of matrix as per Steve
-    Cnew = permute(C,[2 1]);
-    Cnew = flipud(Cnew);
-    cf_string2 = fliplr(cf_strings); % flips row labels
-    
-    h = heatmap(cf_strings,cf_string2,Cnew);
-    if ~strcmpi(cmap,'default')
-        h.Colormap = eval(cmap);
+    decimalNum = p.Results.Decimal;
+    if isempty(decimalNum) || numel(decimalNum)~=1 || any(decimalNum(:)<1)
+        decimalNum=3;
     end
-    if ~isempty(ColorLimits) && numel(ColorLimits)==2
-        h.ColorLimits = ColorLimits;%%GH July 2024
-    end
-    %labels
-    
-    if strcmpi(MVPC.DecodingMethod,'SVM')
-        if avg_win == 1
-            h.Title = ['Confusion Matrix across ', num2str(tp(1)),'ms-',num2str(tp(2)), 'ms (Average Decoding Accuracy)'];
-        else
-            h.Title = ['Confusion Matrix @ ', num2str(tp(pnt)), ' ms (Average Decoding Accuracy)'];
-            
-        end
-        
-        h.YLabel = 'Predicted Labels';
-        h.XLabel = 'True Labels';
+    %choose measurment & plot
+    fileNames = p.Results.Filepath;
+    [pathstr, fileNames, ext] = fileparts(fileNames) ;
+
+    if strcmpi(ext,'.xls')
+        ext = '.xls';
+    elseif strcmpi(ext,'.xlsx')
+        ext = '.xlsx';
     else
-        if avg_win == 1
-            h.Title = ['Confusion Matrix across ', num2str(tp(1)),'ms-',num2str(tp(2)), 'ms (Average Distance)'];
-        else
-            h.Title = ['Confusion Matrix @ ', num2str(tp(pnt)), ' ms (Average Distance)'];
-            
-        end
-        h.YLabel = 'Class';
-        h.XLabel = 'Class';
+        ext = '.txt';
     end
-    
-    
-    if issaveas == 1
-        if avg_win == 1
-            fname = [pname '/ConfusionMatrix_', num2str(tp(1)),'-',num2str(tp(2)),'ms'];
-        else
-            fname = [pname '/ConfusionMatrix_', num2str(tp(pnt)) 'ms'];
-        end
-        saveas(h, fname, frmt);
-        
+    if isempty(fileNames)
+        fileNames = 'Confusion_matrix';
     end
-    clear h ;
+    fileNames = char(strcat(pathstr,filesep,fileNames,ext));
+    % try delete(fileNames);catch  end;
+
+    if exist(fileNames, 'file')~=0 && warnop==1
+        msgboxText =  ['This file that has the same name already exists.\n'...;
+            'Would you like to overwrite it?'];
+        title  = 'ERPLAB pop_exportconfusions: WARNING!';
+        button = askquest(sprintf(msgboxText), title);
+        if strcmpi(button,'no')
+            disp('User canceled')
+            return;
+        end
+    end
+
+    f_exportfile_confusion_matrix(ALLMVPC,[1:length(ALLMVPC)],meas,time_ind,fileNames,avg_win,tp,decimalNum);
+
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 skipfields = {'ALLMVPC','History'};
 
 
 fn_old      = fieldnames(p.Results);
-fn = {fn_old{1} fn_old{8} fn_old{9} fn_old{7} fn_old{5} fn_old{6} fn_old{4} fn_old{2} fn_old{3} fn_old{10}};
+fn = {fn_old{1} fn_old{8} fn_old{9} fn_old{7} fn_old{5} fn_old{6} fn_old{4} fn_old{2} fn_old{3} fn_old{10} fn_old{11} fn_old{12} fn_old{13} fn_old{14} fn_old{15}};
 explica = 0;
 
 if length(mvpci)==1 && mvpci(1)==1
@@ -554,7 +635,11 @@ else
 end
 
 if issaveas ~= 1
-    skipfields = [skipfields 'Filepath'];
+    skipfields = [skipfields {'Figpath','Format'}];
+end
+
+if fileissaveas~=1%%GH Jan 2026
+    skipfields = [skipfields {'Filepath','Decimal'}];
 end
 
 
@@ -573,7 +658,7 @@ for q=1:length(fn)
                     if all(cellfun(@isnumeric, fn2res))
                         %fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
                         fn2resstr =cell2mat(cellfun(@vect2colon,fn2res,'UniformOutput',false));
-                        
+
                     else
                         fn2resstr = '';
                         for kk=1:numel(fn2res)
@@ -583,10 +668,10 @@ for q=1:length(fn)
                             else
                                 fn2resstr = [fn2resstr ' ' vect2colon(auxcont, 'Delimiter', 'on')];
                             end
-                            
+
                         end
                         fn2resstr(end) = []; %take out last comma
-                        
+
                     end
                     fnformat = '{%s}';
                 elseif isnumeric(fn2res)
@@ -598,13 +683,13 @@ for q=1:length(fn)
                     fn2resstr = vect2colon(fn2res, 'Sort','on');
                     fnformat = '%s';
                 end
-                
+
                 %                 if strcmpi(fn2com,'BESTindex')
                 %                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
                 %                 else
                 mvpccom = sprintf( ['%s, ''%s'', ' fnformat], mvpccom, fn2com, fn2resstr);
                 %                 end
-                
+
                 %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
             end
         end

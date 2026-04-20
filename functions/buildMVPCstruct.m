@@ -5,12 +5,12 @@ mvpc = []; %empty mvpa
 if nargin < 1
     mvpc.mvpcname = '';
     mvpc.filename = '';
-    mvpc.filepath = ''; 
+    mvpc.filepath = '';
     mvpc.electrodes = 1:length(ALLBEST.chanlocs);
-    mvpc.chanlocs = ALLBEST.chanlocs;     
+    mvpc.chanlocs = ALLBEST.chanlocs;
     mvpc.nClasses = ALLBEST.nbin; % # of bins
-    mvpc.chance = 1/mvpc.header.nClasses; %chance
-    mvpc.classlabels = ALLBEST.bindesc; 
+    mvpc.chance = 1/mvpc.nClasses; %chance
+    mvpc.classlabels = ALLBEST.bindesc;
     mvpc.nIter = 0;
     mvpc.nCrossfolds = 0; %[] if tw.
     mvpc.srate = ALLBEST.srate; %updated fs
@@ -25,27 +25,29 @@ if nargin < 1
     mvpc.epoch.pre = ALLBEST.times(1); % Set epoch start in ms (from imported data)
     mvpc.epoch.post = ALLBEST.times(end); % Set epoch end in ms (from imported data)
     mvpc.times = ALLBEST.times; %timepoints actually decoded
-    mvpc.mvpc_version = 1; 
-    
+    mvpc.mvpc_version = 2;
+    mvpc.AvgPerClass = [];%%GH Sep 2025
+    % mvpc.regularization = [];%%GH Oct 2025
+    mvpc.TGM  = [];%%GH Dec. 2025
 else
-    try 
-        mvpc.mvpcname = ALLBEST.mvpcname;% if data went through decoding GUI 
+    try
+        mvpc.mvpcname = ALLBEST.mvpcname;% if data went through decoding GUI
     catch
-        mvpc.mvpcname = ALLBEST.bestname; 
+        mvpc.mvpcname = ALLBEST.bestname;
     end
     mvpc.filename = ALLBEST.filename;
-    mvpc.filepath = ALLBEST.filepath;  
-    mvpc.electrodes = relevantChans; 
-    mvpc.chanlocs = ALLBEST.chanlocs(relevantChans); 
+    mvpc.filepath = ALLBEST.filepath;
+    mvpc.electrodes = relevantChans;
+    mvpc.chanlocs = ALLBEST.chanlocs(relevantChans);
     mvpc.nClasses = ALLBEST.nbin; % # of bins
-    if method == 1
-        mvpc.chance = 1/mvpc.nClasses; %chance
-    elseif method == 2
+    if method <3
+        mvpc.chance = 1/mvpc.nClasses; %chance level
+    elseif method == 3
         mvpc.chance = 0; %0 uV for crossnobis
-    end  
-    mvpc.classlabels = ALLBEST.bindesc; 
+    end
+    mvpc.classlabels = ALLBEST.bindesc;
     mvpc.nIter = nIter;
-    mvpc.nCrossfolds = nCrossBlocks; %[] if tw. 
+    mvpc.nCrossfolds = nCrossBlocks; %[] if tw.
     mvpc.srate = ALLBEST.srate; %updated fs
     mvpc.pnts = ALLBEST.pnts;
     if classcoding == 1
@@ -56,13 +58,17 @@ else
         mvpc.classcoding.OneVsAll='yes';
     else
         mvpc.classcoding.OneVsOne ='no';
-        mvpc.classcoding.OneVsAll = 'no'; 
+        mvpc.classcoding.OneVsAll = 'no';
     end
-    if method == 1
+    if method <3
         mvpc.DecodingUnit= 'proportion correct'; % if svm='%correct', crossnobis: "uV" for crossnobis
-        mvpc.DecodingMethod = 'SVM';
-    elseif method == 2
-        mvpc.DecodingUnit = 'uV'; 
+        if method==1
+            mvpc.DecodingMethod = 'SVM';
+        else
+            mvpc.DecodingMethod = 'LDA';%%GH Sep 2025
+        end
+    elseif method == 3
+        mvpc.DecodingUnit = 'uV';
         mvpc.DecodingMethod = 'Crossnobis';
     end
     mvpc.average_status = 'single_subject';
@@ -72,8 +78,8 @@ else
     mvpc.epoch.pre = DataTimes(1); % Set epoch start (from imported data)
     mvpc.epoch.post = DataTimes(2); % Set epoch end (from imported data)
     mvpc.times = ALLBEST.times; %timepoints actually decoded
-    mvpc.mvpc_version = 1; 
-  
-    
-    
+    mvpc.mvpc_version = 2;%%GH Sep 2025
+    mvpc.AvgPerClass = [];%%GH Sep 2025
+    % mvpc.regularization = [];%%GH Oct 2025
+    mvpc.TGM  = [];%%GH Dec. 2025
 end

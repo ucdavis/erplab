@@ -58,16 +58,16 @@ varargout{1} = box_mvpcset_gui;
         vBox = uiextras.VBox('Parent', box_mvpcset_gui, 'Spacing', 5,'BackgroundColor',ColorB_def); % VBox for everything
         panelshbox = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         panelsv2box = uiextras.VBox('Parent',panelshbox,'Spacing',5,'BackgroundColor',ColorB_def);
-        
+
         %%-----------------------ERPset display---------------------------------------
         BESTlistName =  getMVPCsets();
         Edit_label = 'off';
-        
+
         Mvpcsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
             2,'String', BESTlistName,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         try Mvpcsetops.butttons_datasets.Value=1; catch end;
         set(vBox, 'Sizes', 150);
-        
+
         %%---------------------Options for MVPCsets-----------------------------------------------------
         Mvpcsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Mvpcsetops.dupeselected = uicontrol('Parent', Mvpcsetops.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
@@ -76,19 +76,19 @@ varargout{1} = box_mvpcset_gui;
             'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.suffix = uicontrol('Parent', Mvpcsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
-        
+
+
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Mvpcsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-      
+
         Mvpcsetops.mvpc_Export = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Export', ...
             'Callback', @mvpc_Export,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.refresh_mvpcset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
             'Callback', @refresh_mvpcset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
+
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        
+
         Mvpcsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
             'Callback', @save_mvpc,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save a Copy', ...
@@ -125,13 +125,13 @@ varargout{1} = box_mvpcset_gui;
         end
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Duplicate');
         observe_DECODE.Process_messg =1;
-        
+
         MVPCArray= Mvpcsetops.butttons_datasets.Value;
         if isempty(MVPCArray)
             MVPCArray = length(observe_DECODE.ALLMVPC);
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
-        
+
         ALLMVPC = observe_DECODE.ALLMVPC;
         [ALLMVPC, mvpcom] = pop_duplicatmvpc( ALLMVPC, 'MVPCArray',MVPCArray,...
             'History', 'gui');
@@ -142,7 +142,7 @@ varargout{1} = box_mvpcset_gui;
         end
         mvpch(mvpcom);
         observe_DECODE.ALLMVPC = ALLMVPC;
-        
+
         BESTlistName =  getMVPCsets();
         Mvpcsetops.butttons_datasets.String = BESTlistName;
         Mvpcsetops.butttons_datasets.Min = 1;
@@ -179,7 +179,7 @@ varargout{1} = box_mvpcset_gui;
         end
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Rename');
         observe_DECODE.Process_messg =1;
-        
+
         MVPCArray= Mvpcsetops.butttons_datasets.Value;
         if isempty(MVPCArray) || any(MVPCArray>length(observe_DECODE.ALLMVPC))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -225,22 +225,22 @@ varargout{1} = box_mvpcset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Add Suffix');
         observe_DECODE.Process_messg =1;
-        
+
         MVPCArray= Mvpcsetops.butttons_datasets.Value;
         if isempty(MVPCArray)
             MVPCArray = length(observe_DECODE.ALLMVPC);
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
-        
+
         suffixstr = f_EEG_suffix_gui('Suffix',2);
         if isempty(suffixstr)
             observe_DECODE.Process_messg =2;
             return;
         end
-        
+
         ALLMVPC = observe_DECODE.ALLMVPC(MVPCArray);
         [ALLMVPC, BESTCOM] = pop_suffixmvpc( ALLMVPC, 'suffixstr',suffixstr,...
             'Saveas', 'off', 'History', 'gui');
@@ -278,13 +278,13 @@ varargout{1} = box_mvpcset_gui;
             return;
         elseif serror==2 && ~isempty(msgwrng)
         end
-        
+
         MVPCArray= Mvpcsetops.butttons_datasets.Value;
         if isempty(MVPCArray)
             MVPCArray = length(observe_DECODE.ALLMVPC);
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
-        
+
         def  = estudioworkingmemory('pop_mvpc2text');
         if isempty(def)
             def = {1,1E-3, 0,[pwd,filesep,'MVPCValue.txt',3],'proportion correct'};
@@ -294,7 +294,7 @@ varargout{1} = box_mvpcset_gui;
             %precision
             %filename
         end
-        
+
         %
         % Call GUI
         %
@@ -304,14 +304,14 @@ varargout{1} = box_mvpcset_gui;
         pathName =[pwd];
         %         end
         pathName = [pathName,filesep,'MVPCValue.txt'];
-        
+
         try defpath = def{4}; catch defpath = ''; end
         if isempty(defpath)
             def{4} = pathName;
         end
         app = feval('mvpc2textGUI',observe_DECODE.ALLMVPC(MVPCArray),def);
         waitfor(app,'FinishButton',1);
-        
+
         try
             answer = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding
             app.delete; %delete app from view
@@ -319,7 +319,7 @@ varargout{1} = box_mvpcset_gui;
         catch
             return
         end
-        
+
         istime    = answer{1};
         tunit     = answer{2};
         transpa   = answer{3};
@@ -332,7 +332,7 @@ varargout{1} = box_mvpcset_gui;
         else
             time = 'off';
         end
-        
+
         if transpa
             tra = 'on';
         else
@@ -340,15 +340,15 @@ varargout{1} = box_mvpcset_gui;
         end
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Export');
         observe_DECODE.Process_messg =1;
-        
+
         ALLMVPC= observe_DECODE.ALLMVPC(MVPCArray);
         [MVPC, mvpccom] = pop_mvpc2text(ALLMVPC, filename, 'time', time, 'timeunit', tunit, ...
             'transpose', tra,'DecodingUnit',DecodingUnit,'History', 'gui','Tooltype','estudio','precision',precision);
         mvpch(mvpccom);
-        
+
         observe_DECODE.Process_messg =2;
         observe_DECODE.Count_currentMVPC = 6;
-        
+
     end
 %%-------------------------------fresh ------------------------------------
     function refresh_mvpcset(~,~)
@@ -357,7 +357,7 @@ varargout{1} = box_mvpcset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Refresh');
         observe_DECODE.Process_messg =1;
         try
@@ -375,7 +375,7 @@ varargout{1} = box_mvpcset_gui;
         catch
             CURRENTMVPC = 1;
         end
-        
+
         if isempty(ALLMVPC) && ~isempty(ALLMVPC)
             ALLMVPC = MVPC;
             CURRENTMVPC =1;
@@ -392,10 +392,10 @@ varargout{1} = box_mvpcset_gui;
         end
         observe_DECODE.ALLMVPC= ALLMVPC;
         try observe_DECODE.ALLMVPC(CURRENTMVPC) = MVPC;catch  end
-        
+
         observe_DECODE.MVPC= MVPC;
         observe_DECODE.CURRENTMVPC= CURRENTMVPC;
-        
+
         assignin('base','CURRENTMVPC',CURRENTMVPC);
         assignin('base','MVPC',MVPC);
         assignin('base','ALLMVPC',ALLMVPC);
@@ -420,10 +420,10 @@ varargout{1} = box_mvpcset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Load');
         observe_DECODE.Process_messg =1;
-        
+
         [filename, filepath] = uigetfile({'*.mvpc'}, ...
             'Load MVPCsets', ...
             'MultiSelect', 'on');
@@ -431,7 +431,7 @@ varargout{1} = box_mvpcset_gui;
             observe_DECODE.Process_messg =2;
             return;
         end
-        
+
         [MVPC,ALLMVPC,mvpccom] = pop_loadmvpc( 'filename', filename, 'filepath', filepath,...
             'UpdateMainGui', 'off','History','gui','Tooltype','estudio');
         if isempty(mvpccom)
@@ -440,7 +440,7 @@ varargout{1} = box_mvpcset_gui;
         end
         mvpch(mvpccom);
         observe_DECODE.ALLMVPC = ALLMVPC;
-        
+
         MVPClistName =  getMVPCsets();
         if isempty(observe_DECODE.ALLMVPC)
             Edit_label = 'off';
@@ -469,7 +469,7 @@ varargout{1} = box_mvpcset_gui;
         assignin('base','MVPC',observe_DECODE.MVPC);
         assignin('base','ALLMVPC',observe_DECODE.ALLMVPC);
         assignin('base','CURRENTMVPC',observe_DECODE.CURRENTMVPC);
-        
+
         [serror, msgwrng] = f_checkmvpc( observe_DECODE.ALLMVPC,MVPCArray);
         if serror==1 && ~isempty(msgwrng)
             msgboxText =  ['MVPCsets> Load:We only plot accuracy results for the first selected MVPCset becuase',32,msgwrng];
@@ -502,7 +502,7 @@ varargout{1} = box_mvpcset_gui;
             return;
         end
         mvpch(LASTCOM);
-        
+
         if isempty(ALLMVPC)
             observe_DECODE.ALLMVPC = [];
             observe_DECODE.MVPC = [];
@@ -559,7 +559,7 @@ varargout{1} = box_mvpcset_gui;
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Clear');
         observe_DECODE.Process_messg =1;
         %MVPCArray = Mvpcsetops.butttons_datasets.Value;
-        
+
         ALLMVPC = observe_DECODE.ALLMVPC;
         MVPCArray = 1:length(ALLMVPC);
         [ALLMVPC,LASTCOM] = pop_deletemvpcset(ALLMVPC,'MVPCsets', MVPCArray, 'Saveas', 'off','History', 'gui' );
@@ -568,7 +568,7 @@ varargout{1} = box_mvpcset_gui;
             return;
         end
         mvpch(LASTCOM);
-        
+
         if isempty(ALLMVPC)
             observe_DECODE.ALLMVPC = [];
             observe_DECODE.MVPC = [];
@@ -623,10 +623,10 @@ varargout{1} = box_mvpcset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Save');
         observe_DECODE.Process_messg =1;
-        
+
         %         pathNamedef =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathNamedef)
         pathNamedef =  [cd,filesep];
@@ -636,7 +636,7 @@ varargout{1} = box_mvpcset_gui;
             MVPCArray = length(observe_DECODE.ALLMVPC);
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
-        
+
         for Numoferp = 1:length(MVPCArray)
             MVPC = observe_DECODE.ALLMVPC(MVPCArray(Numoferp));
             pathName = MVPC.filepath;
@@ -662,7 +662,7 @@ varargout{1} = box_mvpcset_gui;
                 end
             end
         end
-        
+
         observe_DECODE.Count_currentMVPC = 1;
         observe_DECODE.Process_messg =2;
     end
@@ -680,18 +680,18 @@ varargout{1} = box_mvpcset_gui;
         end
         estudioworkingmemory('f_Decode_proces_messg','MVPCsets>Save a Copy');
         observe_DECODE.Process_messg =1;
-        
+
         %         pathName =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathName)
         pathName =  [cd,filesep];
         %         end
-        
+
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || any(MVPCArray(:)>length(observe_DECODE.ALLMVPC))
             MVPCArray = length(observe_DECODE.ALLMVPC);
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
-        
+
         Answer = f_MVPC_save_as_GUI(observe_DECODE.ALLMVPC,MVPCArray,'_copy',1,pathName);
         if isempty(Answer)
             return;
@@ -710,10 +710,10 @@ varargout{1} = box_mvpcset_gui;
             [pathstr, erpfilename, ext] = fileparts(filename);
             ext = '.mvpc';
             erpFilename = char(strcat(erpfilename,ext));
-            
+
             [MVPC, issave, MVPCCOM] = pop_savemymvpc(MVPC, 'mvpcname', MVPC.mvpcname,...
                 'filename', erpFilename, 'filepath',MVPC.filepath,'History','script','Tooltype','estudio','gui','save');
-            
+
             if Numoferp==1
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 fprintf(['*MVPCsets>Save a Copy*',32,32,32,32,datestr(datetime('now')),'\n']);
@@ -728,7 +728,7 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.butttons_datasets.String = MVPClistName;
         Mvpcsetops.butttons_datasets.Min = 1;
         Mvpcsetops.butttons_datasets.Max = length(MVPClistName)+1;
-        
+
         try
             MVPCArray =  [length(observe_DECODE.ALLMVPC)-numel(MVPCArray)+1:length(observe_DECODE.ALLMVPC)];
             Mvpcsetops.butttons_datasets.Value = MVPCArray;
@@ -740,7 +740,7 @@ varargout{1} = box_mvpcset_gui;
         end
         observe_DECODE.MVPC = observe_DECODE.ALLMVPC(observe_DECODE.CURRENTMVPC);
         estudioworkingmemory('MVPCArray',MVPCArray);
-        
+
         Mvpcsetops.butttons_datasets.Value = MVPCArray;
         observe_DECODE.Count_currentMVPC = 1;
         observe_DECODE.Process_messg =2;
@@ -754,7 +754,7 @@ varargout{1} = box_mvpcset_gui;
         if ~isempty(messgStr)
             observe_DECODE.Count_currentMVPC=eegpanelIndex+1;%%call the functions from the other panel
         end
-        
+
         %         pathName =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathName)
         pathName =[pwd,filesep];
@@ -764,7 +764,7 @@ varargout{1} = box_mvpcset_gui;
         if isequal(sel_path1,0)
             sel_path1 = cd;
         end
-        
+
         cd(sel_path1);
         erpcom  = sprintf('cd("%s',sel_path1);
         erpcom = [erpcom,'");'];
@@ -780,10 +780,10 @@ varargout{1} = box_mvpcset_gui;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        
+
         MVPCArray = source.Value;
         estudioworkingmemory('MVPCArray',MVPCArray);
-        
+
         Current_ERP_selected=MVPCArray(1);
         observe_DECODE.CURRENTMVPC = Current_ERP_selected;
         observe_DECODE.MVPC = observe_DECODE.ALLMVPC(Current_ERP_selected);
@@ -814,7 +814,7 @@ varargout{1} = box_mvpcset_gui;
             MVPClistName =  getMVPCsets();
             Mvpcsetops.butttons_datasets.String = MVPClistName;
             Mvpcsetops.butttons_datasets.Value = MVPCArray;
-            
+
             Mvpcsetops.butttons_datasets.Min=1;
             Mvpcsetops.butttons_datasets.Max=length(MVPClistName)+1;
             estudioworkingmemory('MVPCArray',MVPCArray);
@@ -852,7 +852,7 @@ varargout{1} = box_mvpcset_gui;
         Mvpcsetops.butttons_datasets.Enable = Edit_label;
         Mvpcsetops.append.Enable = Edit_label;
         Mvpcsetops.mvpc_Export.Enable = Edit_label;
-        
+        Mvpcsetops.clearall.Enable=Edit_label;
         assignin('base','MVPC',observe_DECODE.MVPC);
         assignin('base','ALLMVPC',observe_DECODE.ALLMVPC);
         assignin('base','CURRENTMVPC',observe_DECODE.CURRENTMVPC);

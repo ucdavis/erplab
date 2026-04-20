@@ -494,7 +494,7 @@ if ~isempty(messgStr)
 end
 
 pathstr = pwd;
-namedef =['decoding_accuracy.pdf'];
+namedef =['decoding_results.pdf'];
 [erpfilename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
     'Save as',[fullfile(pathstr,namedef)]);
 
@@ -894,7 +894,14 @@ end
 waveview.YAxis.FontSize = qYlabelfontsize;
 waveview.YAxis.FontName = qYlabelfont;
 waveview.YAxis.Color = qYlabelcolor;
-ylabel(waveview,'Decoding Accuracy','FontSize',qYlabelfontsize,'FontWeight',...
+if strcmpi(ALLMVPC(MVPCArray(1)).DecodingUnit,'AUC')
+    ylabel_names = 'AUC';
+elseif strcmpi(ALLMVPC(MVPCArray(1)).DecodingUnit,'uV')
+    ylabel_names = 'Distance (\muV)';
+else
+    ylabel_names = 'Decoding Accuracy';
+end
+ylabel(waveview,ylabel_names,'FontSize',qYlabelfontsize,'FontWeight',...
     'normal','Color',qYlabelcolor,'FontName',qYlabelfont);
 waveview.YAxis.LineWidth=1;
 if ~isempty(hplot11)
@@ -913,3 +920,5 @@ if ~isempty(hplot11)
     set(h_legend,'NumColumns',qLegcolumns,'FontName', qFontLeg, 'Color', [1 1 1], 'position', p,'FontSize',qFontSizeLeg);
 end
 end
+
+

@@ -360,6 +360,7 @@ comAvgMVPC = ['[MVPC] = pop_mvpcaverager(ALLMVPC);'];
 comDelMVPC = ['[ALLMVPC] = pop_deletemvpcset(ALLMVPC);'];
 comViewMVPC = ['mvpcviewerGUI(ALLMVPC);'];
 comPlotCF  = ['pop_plotconfusions(ALLMVPC)'];
+comPlotTGM = ['pop_plotempgenerMatrix(ALLMVPC)'];
 comExportMVPC =['[MVPC] = pop_mvpc2text(MVPC);'];
 %comDelMVPC =
 
@@ -610,6 +611,7 @@ uimenu(MVPCmenu,'Label','ERP Decoding','CallBack',comSpatDecode,'userdata','star
 uimenu(MVPCmenu,'Label','Average across MVPCsets (Grand Average)','CallBack',comAvgMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Plot MVPC Results','CallBack',comViewMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Plot Confusion Matrix','CallBack',comPlotCF,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Plot/Export temporal generalization matrix','CallBack',comPlotTGM,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Clear MVPCset(s)','CallBack',comDelMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');

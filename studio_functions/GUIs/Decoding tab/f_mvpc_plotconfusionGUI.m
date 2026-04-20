@@ -19,13 +19,13 @@ gui_mvpc_confusion = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot Confusion Matrices', 'Padding', 5,...
+    MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot/Export Confusion Matrices', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel  tool_link
 elseif nargin == 1
-    MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Confusion Matrices',...
+    MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot/Export Confusion Matrices',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Confusion Matrices',...
+    MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot/Export Confusion Matrices',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
 end
 
@@ -47,17 +47,17 @@ varargout{1} = MVPC_confusion_box_gui;
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         gui_mvpc_confusion.DataSelBox = uiextras.VBox('Parent', MVPC_confusion_box_gui,'BackgroundColor',ColorB_def);
-        
+
         %%Parameters
         gui_mvpc_confusion.weigavg_title = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', gui_mvpc_confusion.weigavg_title,...
             'String','Value to plot:','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
-        
+
         gui_mvpc_confusion.measure_method = uicontrol('Style','popupmenu','Parent', gui_mvpc_confusion.weigavg_title,...
             'String',{'Timepoint Confusion Matrix','Average Confusion Matrix between two latencies'},'Enable','off','callback',@measure_method,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_confusion.measure_method.KeyPressFcn = @mvpc_graverage_presskey;
         set(gui_mvpc_confusion.weigavg_title,'Sizes',[90 -1]);
-        
+
         %%Latecies
         gui_mvpc_confusion.latency_title = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_mvpc_confusion.latency_title,...
@@ -66,7 +66,7 @@ varargout{1} = MVPC_confusion_box_gui;
             'String','','Enable','off','callback',@measure_latency,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_confusion.measure_latency.KeyPressFcn = @mvpc_graverage_presskey;
         set(gui_mvpc_confusion.latency_title,'Sizes',[90 -1]);
-        
+
         %%latency example
         gui_mvpc_confusion.latency_title2 = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_mvpc_confusion.latency_title2,...
@@ -87,7 +87,7 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.measure_color = uicontrol('Style','popupmenu','Parent', gui_mvpc_confusion.color_title,...
             'String',{'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' },'Enable','off','callback',@measure_color,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_confusion.measure_color.KeyPressFcn = @mvpc_graverage_presskey;
-        
+
         set(gui_mvpc_confusion.color_title,'Sizes',[80 -1]);
         %%default parameters
         def = estudioworkingmemory('pop_plotconfusions');
@@ -96,7 +96,7 @@ varargout{1} = MVPC_confusion_box_gui;
             measure_method=1;
         end
         gui_mvpc_confusion.measure_method.Value = measure_method;
-        
+
         try measure_latency =def{4} ; catch  measure_latency = [];end
         if ~isempty(measure_latency) && gui_mvpc_confusion.measure_method.Value ==2
             if numel(measure_latency)~=2
@@ -104,7 +104,7 @@ varargout{1} = MVPC_confusion_box_gui;
             end
         end
         gui_mvpc_confusion.measure_latency.String = num2str(measure_latency);
-        
+
         try measure_color = def{2};  catch  measure_color=1; end
         if isempty(measure_color) || numel(measure_color)~=1 || any(measure_color(:)<1) || any(measure_color(:)>8)
             measure_color=1;
@@ -114,11 +114,11 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.paras{2} = str2num(gui_mvpc_confusion.measure_latency.String);
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
         %%Color limits
-        try limitauto =def{6}; catch limitauto =1; end
+        try limitauto =def{9}; catch limitauto =1; end
         if isempty(limitauto) || numel(limitauto)~=1 || (limitauto~=0 && limitauto~=1)
             limitauto=1;
         end
-        try colorlimit = def{7}; catch colorlimit = []; end
+        try colorlimit = def{10}; catch colorlimit = []; end
         if numel(colorlimit)~=2 || min(colorlimit(:))>1 || max(colorlimit(:))<0
             colorlimit = [];
         end
@@ -137,8 +137,8 @@ varargout{1} = MVPC_confusion_box_gui;
         set(gui_mvpc_confusion.color_limitstitle,'Sizes',[110 60 30 60]);
         gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
         gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
-        
-        
+
+
         gui_mvpc_confusion.location_title1 = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',gui_mvpc_confusion.location_title1);
         gui_mvpc_confusion.location_title = uiextras.HBox('Parent', gui_mvpc_confusion.DataSelBox,'BackgroundColor',ColorB_def);
@@ -146,9 +146,9 @@ varargout{1} = MVPC_confusion_box_gui;
             'String','Cancel','callback',@average_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
         gui_mvpc_confusion.export_ops  = uicontrol('Style','pushbutton','Parent',gui_mvpc_confusion.location_title,'Enable','off',...
             'String','Export','callback',@average_export,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
-        
+
         gui_mvpc_confusion.run = uicontrol('Style','pushbutton','Parent',gui_mvpc_confusion.location_title,'Enable','off',...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
+            'String','Plot','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         set(gui_mvpc_confusion.DataSelBox,'Sizes',[30, 25,35,30,20,5,30]);
     end
 
@@ -216,7 +216,7 @@ varargout{1} = MVPC_confusion_box_gui;
         if isempty(color_limimax) || numel(color_limimax)~=1
             gui_mvpc_confusion.color_limimax.String = '';
         end
-        
+
     end
 
 
@@ -301,7 +301,7 @@ varargout{1} = MVPC_confusion_box_gui;
             measure_method=1;
         end
         gui_mvpc_confusion.measure_method.Value = measure_method;
-        
+
         try measure_latency =gui_mvpc_confusion.paras{2} ; catch  measure_latency = [];end
         if ~isempty(measure_latency) && (any(measure_latency(:)<observe_DECODE.MVPC.times(1)) || any(measure_latency(:)>observe_DECODE.MVPC.times(end)))
             measure_latency = [];
@@ -312,19 +312,19 @@ varargout{1} = MVPC_confusion_box_gui;
             end
         end
         gui_mvpc_confusion.measure_latency.String = num2str(measure_latency);
-        
+
         try measure_color = gui_mvpc_confusion.paras{3};  catch  measure_color=1; end
         if isempty(measure_color) || numel(measure_color)~=1 || any(measure_color(:)<1) || any(measure_color(:)>8)
             measure_color=1;
         end
         gui_mvpc_confusion.measure_color.Value = measure_color;
-        
+
         try color_limiauto = gui_mvpc_confusion.paras{4}; catch color_limiauto=1; end
         if isempty(color_limiauto) || numel(color_limiauto)~=1 || (color_limiauto~=0 && color_limiauto~=1)
             color_limiauto=1;
         end
         gui_mvpc_confusion.color_limiauto.Value=color_limiauto;
-        
+
         if gui_mvpc_confusion.color_limiauto.Value==1
             colorlimits = [0 1];
         else
@@ -363,7 +363,7 @@ varargout{1} = MVPC_confusion_box_gui;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        
+
         measure_latency = str2num(gui_mvpc_confusion.measure_latency.String);
         if isempty(measure_latency)
             gui_mvpc_confusion.measure_latency.String = '';
@@ -387,7 +387,7 @@ varargout{1} = MVPC_confusion_box_gui;
                 return;
             end
         end
-        
+
         MVPCArray= estudioworkingmemory('MVPCArray');
         if isempty(MVPCArray) || (~isempty(MVPCArray) && any(MVPCArray(:)>length(observe_DECODE.ALLMVPC)))
             MVPCArray = length(observe_DECODE.ALLMVPC);
@@ -395,81 +395,148 @@ varargout{1} = MVPC_confusion_box_gui;
             observe_DECODE.CURRENTMVPC = MVPCArray;
             estudioworkingmemory('MVPCArray',MVPCArray);
         end
-        
-        %         pathName =  estudioworkingmemory('EEG_save_folder');
-        %         if isempty(pathName)
-        pathName =[pwd,filesep];
-        %         end
-        
-        defx =  estudioworkingmemory('pop_exportconfusions');
-        def = {1,[],3,[pathName,filesep,'Confusion_matrix']};
-        if isempty(defx)
-            defx = def;
+
+        if gui_mvpc_confusion.color_limiauto.Value==1
+            colorlimits = [0 1];  color_limiauto=1;
+        else
+            colorlimits= [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
+            color_limiauto=0;
         end
-        try defx{2} = measure_latency;catch end
-        try PathNames=defx{4};catch PathNames=[pathName,filesep,'Confusion_matrix']; end
-        [pathstr, erpfilename, ext] = fileparts(PathNames) ;
-        if isempty(pathstr)
-            pathstr = pathName;
+        if isempty(colorlimits) || numel(colorlimits)~=2 || min(colorlimits(:))>1 || max(colorlimits(:))<0
+            colorlimits = [];
+            gui_mvpc_confusion.color_limimin.String = '';
+            gui_mvpc_confusion.color_limimax.String = '';
+            msgboxText =  ['Plot Confusion Matrices>RUN - Color limits are invalid.'];
+            titlNamerro = 'Warning for Pattern Classification Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
-        if isempty(erpfilename)
-            erpfilename = 'confusion_matrix';
+
+
+        def  = estudioworkingmemory('pop_plotconfusions');
+        if isempty(def)
+            def = {1 1 1 [] 1,0,'',3,1,[0 1]};%%GH Jan 2026
+            %def{1} = plot menu (1: tp confusion 2:mean confusion two
+            %                           latency)
+            %def{2} = colormap
+            %def{3} = format (1: fig, 2: png);
+            %def{4} = times in [];
+            %def{5} = save(1/def) or no save
         end
-        pathName = [pathstr,filesep,erpfilename];
-        try defx{4} = pathName;catch end
-        estudioworkingmemory('pop_exportconfusions',defx);
+        def{9} = color_limiauto;def{10} = colorlimits;
+
+        plot_menu = gui_mvpc_confusion.measure_method.Value;
+
+        def{1} = plot_menu;
+
+        plot_cmap = gui_mvpc_confusion.measure_color.Value;
+        def{2} = plot_cmap;
+        def{4} = measure_latency;
+
+
         estudioworkingmemory('f_Decode_proces_messg','Plot Confusion Matrices>Export');
         observe_DECODE.Process_messg =1;
-        
-        
-        def  = estudioworkingmemory('pop_exportconfusions');
-        ALLMVPC= observe_DECODE.ALLMVPC;
+
+
         %
         % Open plot confusion GUI
         %
-        app = feval('Save_Confusion_file_GUI',observe_DECODE.ALLMVPC,MVPCArray,def);
-        waitfor(app,'Finishbutton',1);
+        app = feval('plotConfusionGUI',observe_DECODE.ALLMVPC,MVPCArray(1),def);
+        waitfor(app,'FinishButton',1);
+
         try
-            answer = app.Output; %NO you don't want to output BEST, you want to output the parameters to run decoding
+            answer = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding
             app.delete; %delete app from view
-            pause(0.1); %wait for app to leave
+            pause(0.5); %wait for app to leave
         catch
+            observe_DECODE.Count_currentMVPC=4;
+            disp('User selected Cancel')
             return
         end
+
+
+
         if isempty(answer)
-            observe_DECODE.Process_messg =2;
+            disp('User selected Cancel')
             return
         end
-        
-        plot_menu =   answer{1}; % 0;1
-        tp = answer{2};
-        decimalNum = answer{3};
-        fileNames = answer{4};
-        
+
+        plot_menu    = answer{1}; %plot_menu
+        plot_cmap     = answer{2};%plot_colormap
+        tp =   answer{3}; % 0;1
+        pname = answer{4};
+        frmt = answer{5};
+        savec = answer{6};
+        %warnon    = answer {4};
+        cmaps = {'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' };
+        frmts = {'fig','png','pdf','svg'};
+
+        %         if optioni==1 % from files
+        %             filelist    = mvpcset;
+        %             disp(['pop_gaverager(): For file-List, user selected ', filelist])
+        %             ALLMVPC = {ALLMVPC, filelist}; % truco
+        %         else % from mvpcsets menu
+        %             %mvpcset  = mvpcset;
+        %         end
+
         %def = {actualnset, optioni, mvpcset,stderror};
-        def = {plot_menu, tp, decimalNum, fileNames};
-        estudioworkingmemory('pop_exportconfusions', def);
-        
+
+        savefile =  answer{7};
+        filepathname = answer{8};
+        Decimal = answer{9};
+
+
+        def = {plot_menu, plot_cmap,frmt, tp, savec,savefile,filepathname,Decimal,color_limiauto,colorlimits};
+        estudioworkingmemory('pop_plotconfusions', def);
+        %         if stderror==1
+        %             stdsstr = 'on';
+        %         else
+        %             stdsstr = 'off';
+        %         end
+        %         if warnon==1
+        %             warnon_str = 'on';
+        %         else
+        %             warnon_str = 'off';
+        %         end
+
         if plot_menu == 1
             %single timepoint confusion matrix
             meas = 'timepoint';
+
         elseif plot_menu==2
             %average across time window confusion matrix
+
             meas = 'average';
+
         end
-        
+
+        if savec == 1
+            savestr = 'on';
+        else
+            savestr = 'off';
+        end
+
+        if savefile==1
+            Filesavestr = 'on';
+        else
+            Filesavestr = 'off';
+        end
+
         %
         % Somersault
         %
-        MVPCCOM=pop_exportconfusions(ALLMVPC,MVPCArray, 'Times',tp,'Type',meas,...
-            'fileNames',fileNames,'decimalNum',decimalNum,'History', 'gui','Tooltype','estudio');
-        
+        ALLMVPC = observe_DECODE.ALLMVPC;
+        ColorLimits = [];
+        MVPCCOM =pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',MVPCArray,'ColorLimits',ColorLimits,...
+            'Figpath',pname, 'Colormap', cmaps{plot_cmap}, 'Format',frmts{frmt}, 'FigSaveas',savestr,...
+            'FileSaveas',Filesavestr,'Filepath',filepathname,'Decimal',Decimal,'History', 'gui');%%GH Jan 2026
+
+
         if isempty(MVPCCOM)
             observe_DECODE.Process_messg =2;
             return;
         end
         mvpch(MVPCCOM);
-        observe_DECODE.Count_currentMVPC=5;
+        observe_DECODE.Count_currentMVPC=4;
         gui_mvpc_confusion.run.BackgroundColor =  [1 1 1];
         gui_mvpc_confusion.run.ForegroundColor = [0 0 0];
         MVPC_confusion_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -492,7 +559,7 @@ varargout{1} = MVPC_confusion_box_gui;
             observe_DECODE.Count_currentMVPC=1;
             return;
         end
-        
+
         measure_latency = str2num(gui_mvpc_confusion.measure_latency.String);
         if isempty(measure_latency)
             gui_mvpc_confusion.measure_latency.String = '';
@@ -542,7 +609,7 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
         gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
         gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
-        
+
         ALLMVPC = observe_DECODE.ALLMVPC;
         plot_menu = gui_mvpc_confusion.measure_method.Value;
         if plot_menu == 1
@@ -562,16 +629,33 @@ varargout{1} = MVPC_confusion_box_gui;
         end
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf(['Plot Confusion Matrices',32,32,32,32,datestr(datetime('now')),'\n']);
-        for Numofmvpc = 1:numel(MVPCArray)
-            MVPCCOM= pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',MVPCArray(Numofmvpc),...
-                'Colormap', cmaps{plot_cmap}, 'History', 'script','Tooltype','estudio','ColorLimits',colorlimits);
-        end
+        % for Numofmvpc = 1:numel(MVPCArray)
+        MVPCCOM= pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',MVPCArray,...
+            'Colormap', cmaps{plot_cmap}, 'History', 'script','Tooltype','estudio','ColorLimits',colorlimits);
+        % end
         fprintf([MVPCCOM]);
         fprintf( ['\n',repmat('-',1,100) '\n']);
         mvpch(MVPCCOM);
-        def = {plot_menu, plot_cmap,1, tp, 1,color_limiauto,colorlimits};
+
+
+        try def  = estudioworkingmemory('pop_plotconfusions'); catch def = []; end
+        if isempty(def)
+            def = {1 1 1 [] 1,0,'',3,1,[0 1]};%%GH Jan 2026
+            %def{1} = plot menu (1: tp confusion 2:mean confusion two
+            %                           latency)
+            %def{2} = colormap
+            %def{3} = format (1: fig, 2: png);
+            %def{4} = times in [];
+            %def{5} = save(1/def) or no save
+        end
+        try def{1} = plot_menu; catch  def{1} =1; end
+        try def{2} = plot_cmap; catch  def{2} =1; end
+        try def{4} = tp; catch  def{4} =1; end
+        try def{9} = color_limiauto; catch  def{9} =1; end
+        try def{10} = colorlimits; catch  def{10} =[0 1]; end
         estudioworkingmemory('pop_plotconfusions', def);
         observe_DECODE.Count_currentMVPC=5;
+        observe_DECODE.Process_messg =2;
     end
 
 
@@ -677,21 +761,20 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_confusion.paras{3} = gui_mvpc_confusion.measure_color.Value;
         gui_mvpc_confusion.paras{4} = gui_mvpc_confusion.color_limiauto.Value;
         gui_mvpc_confusion.paras{5} = [str2num(gui_mvpc_confusion.color_limimin.String),str2num(gui_mvpc_confusion.color_limimax.String)];
-        
+
         if gui_mvpc_confusion.measure_method.Value == 1
             text_instruct = '(e.g., 300 to plot confusion matrix at 300ms or 100:50:350 to plot at 100,...,350 ms)' ;
         else
             text_instruct = '(e.g., 200 250 to plot average confusion matrix across 200 to 250 ms)';
         end
         gui_mvpc_confusion.latency_exp.String = text_instruct;
-        
+
         %         pathName =  estudioworkingmemory('EEG_save_folder');
         %         if isempty(pathName)
         pathName =[pwd,filesep];
         %         end
-        
-        def = {1,[],3,[pathName,filesep,'Confusion_matrix']};
-        estudioworkingmemory('pop_exportconfusions',def);
+        def = {1 1 1 [] 1,0,'',3,1,[0 1]};%%GH Jan 2026
+        estudioworkingmemory('pop_plotconfusions', def);
         observe_DECODE.Reset_Best_paras_panel=5;
     end
 

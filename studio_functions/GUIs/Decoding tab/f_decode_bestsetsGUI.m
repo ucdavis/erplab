@@ -941,7 +941,14 @@ varargout{1} = box_bestset_gui;
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
-        if ViewerFlag==1
+
+        MVPA_sum_avg_trial =  estudioworkingmemory('MVPA_sum_avg_trial');
+
+        if isempty(MVPA_sum_avg_trial) || (MVPA_sum_avg_trial~=0 && MVPA_sum_avg_trial~=1)
+            MVPA_sum_avg_trial=0;estudioworkingmemory('MVPA_sum_avg_trial',0);
+        end
+
+        if ViewerFlag==1 || MVPA_sum_avg_trial==1
             Edit_label = 'off';
             Bestsetops.loadbutton.Enable='off';
         else
@@ -962,7 +969,9 @@ varargout{1} = box_bestset_gui;
         assignin('base','BEST',observe_DECODE.BEST);
         assignin('base','ALLBEST',observe_DECODE.ALLBEST);
         assignin('base','CURRENTBEST',observe_DECODE.CURRENTBEST);
-        observe_DECODE.Count_currentbest = 2;
+        if MVPA_sum_avg_trial==0
+            observe_DECODE.Count_currentbest = 2;
+        end
     end
 
 %%------------------get the names of BESTsets-------------------------------

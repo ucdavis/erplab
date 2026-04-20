@@ -1,7 +1,7 @@
 % PURPOSE: retrieves ERPLAB's command history
-% 
+%
 % FORMAT
-% 
+%
 % erph
 %
 % INPUTS
@@ -20,7 +20,7 @@
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -40,9 +40,27 @@
 
 function erph
 try
-        ALLERPCOM = evalin('base', 'ALLERPCOM');
+    ALLERPCOM = evalin('base', 'ALLERPCOM');
 catch
-        ALLERPCOM = '';
+    ALLERPCOM = '';
 end
-disp(char(ALLERPCOM))
+
+
+try %%March 2026 GH
+    ALLMVPCCOM = evalin('base', 'ALLMVPCCOM');
+catch
+    ALLMVPCCOM = '';
+end
+
+if  ~isempty(ALLERPCOM) && ~isempty(ALLMVPCCOM) %%March 2026 GH
+    ALLCOM = char([ALLERPCOM,ALLMVPCCOM]);
+elseif isempty(ALLERPCOM) && ~isempty(ALLMVPCCOM)
+    ALLCOM = ALLMVPCCOM;
+elseif ~isempty(ALLERPCOM) && isempty(ALLMVPCCOM)
+    ALLCOM = ALLERPCOM;
+else
+    ALLCOM = ALLERPCOM;
+end
+
+disp(char(ALLCOM))
 return

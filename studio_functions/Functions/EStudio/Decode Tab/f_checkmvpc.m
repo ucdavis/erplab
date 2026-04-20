@@ -1,4 +1,4 @@
-% PURPOSE  : This function is to exmaine if the parameters are the same across different MVPCsets
+% PURPOSE  : This function is to examine if the parameters are the same across different MVPCsets
 
 % FORMAT   :
 %
@@ -54,7 +54,7 @@ if numel(MVPCArray)==1
 end
 
 for j = 1:numel(MVPCArray)
-    
+
     MVPCT = ALLMVPC(MVPCArray(j));
     if j>1
         % basic test for number of points
@@ -63,66 +63,78 @@ for j = 1:numel(MVPCArray)
             serror = 1;
             break
         end
-        
+
         %%start time of epoch
         if pre_startpnt~=MVPCT.times(1)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different starting time of the epoch', MVPCArray(j-1), MVPCArray(j));
             serror = 1;
             break
         end
-        
+
         %%end time of epoch
         if pre_endpnt~=MVPCT.times(end)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different stop time of the epoch',MVPCArray(j-1), MVPCArray(j));
             serror = 1;
             break
         end
-        
-        
-        
+
+
+
         % basic test for number of channels (for now...)
         if  pre_nchan ~= size(MVPCT.electrodes,2)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of channels!', MVPCArray(j-1), MVPCArray(j));
             serror = 2;
             break
         end
-        
+
         % basic test for number of bins (for now...)
         if pre_nClasses  ~= MVPCT.nClasses
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of classes!', MVPCArray(j-1), MVPCArray(j));
             serror = 2;
             break
         end
-        
+
         if pre_nIter  ~= MVPCT.nIter
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of Iterations!',MVPCArray(j-1), MVPCArray(j));
             serror = 2;
             break
         end
-        
+
         if pre_nCrossfolds  ~= MVPCT.nCrossfolds
             msgwrng =  sprintf('MVPCsets #%g and #%g have different number of Cross folds!', MVPCArray(j-1), MVPCArray(j));
             serror = 2;
             break
         end
-        
-        
+
+
         %%basic test for data type (for now...)
         if ~strcmpi(pre_dtype, MVPCT.DecodingMethod)
             msgwrng =  sprintf('MVPCsets #%g and #%g have different decoding methods ', MVPCArray(j-1), MVPCArray(j));
             serror = 2;
             break
         end
-        
+
         %%sampling rate
         if pre_srate~=MVPCT.srate
             msgwrng =  sprintf('MVPCsets #%g and #%g have different sampling rates', MVPCArray(j-1), MVPCArray(j));
             serror = 2;
             break
         end
+
+        if ~strcmpi(Pre_equalTrials, MVPCT.equalTrials)%%GH Oct 2025
+            msgwrng =  sprintf('MVPCsets #%g and #%g have different equalTrials methods (see ALLMVPC.equalTrials)', j-1, j);
+            serror = 2;
+            break
+        end
         
+        if ~strcmpi(pre_DecodingUnit, MVPCT.DecodingUnit)%%GH Oct 2025
+            msgwrng =  sprintf('MVPCsets #%g and #%g have different Decoding Units (see ALLMVPC.DecodingUnit)', j-1, j);
+            serror = 2;
+            break
+        end
+
     end
-    
+
     pre_nchan  = size(MVPCT.electrodes,2);
     pre_pnts   = MVPCT.pnts;
     pre_nCrossfolds = MVPCT.nCrossfolds;
@@ -132,6 +144,8 @@ for j = 1:numel(MVPCArray)
     pre_srate = MVPCT.srate;
     pre_startpnt = MVPCT.times(1);
     pre_endpnt = MVPCT.times(end);
+    Pre_equalTrials = MVPCT.equalTrials;
+    pre_DecodingUnit= MVPCT.DecodingUnit;%%
 end
 
 end

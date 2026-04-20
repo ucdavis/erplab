@@ -59,20 +59,20 @@ MVPC = preloadMVPC;
 try
     ALLMVPC = evalin('base', 'ALLMVPC');
     preindex = length(ALLMVPC);
-    
+
 catch
     disp('WARNING: ALLMVPC structure was not found. ERPLAB will create an empty one.')
     ALLMVPC = [];
     %ALLERP   = buildERPstruct([]);
     preindex = 0;
-    
+
 end
 
 if nargin <1
     help pop_loadmvpc
-    
+
     return
-    
+
 end
 
 if nargin == 1
@@ -87,7 +87,7 @@ if nargin == 1
                 disp('User selected Cancel')
                 return
             end
-            
+
             %
             % test current directory
             %
@@ -96,16 +96,16 @@ if nargin == 1
             filepath = cd;
         end
     end
-    
+
     %
     % Somersault
     %
-    
+
     [MVPC, ALLMVPC] = pop_loadmvpc('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on', 'multiload', 'off','History','gui');
     return
-    
-    
-    
+
+
+
 end
 
 
@@ -196,44 +196,39 @@ if loadfrom == 1 || loadfrom == 0
             fprintf('Loading %s\n', fullname);
             L   = load(fullname, '-mat');
             MVPC = L.MVPC;
-            %             if i == 1
-            %                 BEST = L.BEST;
-            %             else
-            %                 BEST(i) = L.BEST;
-            %             end
+
         else
             MVPC = evalin('base', 'MVPC');
-            
+
         end
-        
-        
+        MVPC = f_checkmvpc_str(MVPC);
         if i == 1 && isempty(ALLMVPC)
             ALLMVPC = MVPC;
-            
         else
+            ALLMVPC = f_checkmvpc_str(ALLMVPC);
             ALLMVPC(i+preindex) = MVPC;
-            
         end
-        
+
     end
 elseif loadfrom == 2
     % if loaded from GUI decoding toolbox
-    
+
     if isempty(ALLMVPC)
+        ALLMVPC2 = f_checkmvpc_str(ALLMVPC2);
         ALLMVPC = ALLMVPC2;
     else
-        
+        ALLMVPC = f_checkmvpc_str(ALLMVPC);
         for i= 1:nfile
-            ALLMVPC(i+preindex) = ALLMVPC2(i);
+            MVPC = ALLMVPC2(i);
+            MVPC = f_checkmvpc_str(MVPC);
+            ALLMVPC(i+preindex) = MVPC;
         end
-        
     end
-    
-    
+
 end
 
 if nargout==1 && multiload==1
-    
+
     MVPC = ALLMVPC(end);
 end
 

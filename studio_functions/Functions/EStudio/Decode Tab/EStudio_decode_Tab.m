@@ -31,7 +31,7 @@ EStudio_gui_erp_totl.decode_settingLayout = uiextras.VBox('Parent', EStudio_gui_
 EStudio_gui_erp_totl.decode_panel{1} = f_decode_bestsetsGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(1) = 310;
 EStudio_gui_erp_totl.decode_panel{2} = f_decode_MVPA_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.decode_panelSizes(2) = 530;
+EStudio_gui_erp_totl.decode_panelSizes(2) = 640;
 EStudio_gui_erp_totl.decode_panel{3} = f_decode_mvpcsetsGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(3) = 310;
 EStudio_gui_erp_totl.decode_panel{4} = f_MVPCset_plot_setting_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -41,12 +41,14 @@ EStudio_gui_erp_totl.decode_panel{5} = f_mvpc_grandaverageGUI(EStudio_gui_erp_to
 EStudio_gui_erp_totl.decode_panelSizes(5) = 160;
 EStudio_gui_erp_totl.decode_panel{6} = f_mvpc_plotconfusionGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(6) = 210;
-EStudio_gui_erp_totl.decode_panel{7} = f_decode_mvpclass_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.decode_panelSizes(7) = 190;
-EStudio_gui_erp_totl.decode_panel{8} = f_decode_history_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panel{7} = f_mvpc_plotempgenrmatrixGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(7) = 180;
+EStudio_gui_erp_totl.decode_panel{8} = f_decode_mvpclass_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(8) = 190;
+EStudio_gui_erp_totl.decode_panel{9} = f_decode_history_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.decode_panelSizes(9) = 190;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
-    'Average Across MVPCsets (Grand Average), Plot Confusion Matrices, MVPCset Classes, and History panels.']);
+    'Average Across MVPCsets (Grand Average), Plot/Export Confusion Matrices,Plot/Export Temporal Generalization Matrix, MVPCset Classes, and History panels.']);
 set(EStudio_gui_erp_totl.decode_settingLayout, 'Heights', EStudio_gui_erp_totl.decode_panelSizes);
 EStudio_gui_erp_totl.panel_decode_scroll.Heights = sum(EStudio_gui_erp_totl.decode_panelSizes);
 

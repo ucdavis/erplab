@@ -39,14 +39,20 @@
 %                                 value of 1 decodes every timepoint.
 %                           Def: [1]
 %
-%        'EqualizeTrials'  - (Optional) Equalizing the amount of trials per ERP.
-%                            - 'classes': Across classes within BESTset
-%                            - 'best': Across BESTsets (if more than 1 BESTset)
-%                            - 'floor': Using Common Floor Value
+%        'TrialsAVGs'  - (Optional) methods for  the amount of trials per ERP.
+%                            - 'EqtrlEqagclasses': Across classes within  BESTset for Equal Trials, Equal AVGs  for SVM/LDA
+%                            - 'EqtrlEqagbest': Across BESTsets (if more than 1 BESTset)  for Equal Trials, Equal AVGs for SVM/LDA
+%                            - 'EqtrlEqagfloor': Using Common Floor Value for Equal Trials, Equal AVGs  for SVM/LDA
+%                            - 'EqtrlMaxagclasses': Across classes within
+%                            BESTset for Equal Trials, Max AVGs  for SVM/LDA
+%                            - 'EqtrlMaxagbest': Across BESTsets (if more than 1 BESTset)  for Equal Trials, Max AVGs  for SVM/LDA
+%                            - 'EqtrlMaxagfloor': Using Common Floor Value
+%                            for Equal Trials, Max AVGs  for SVM/LDA
+%                            -'EqualTrialsMaxAVGs' per ERP,but each condition  may have different number of subfolds for SVM/LDA
 %
 %        'FloorValue'   - (Optional) Equalize amount of trials per ERP across all
 %                           classes (and BESTsets) to this value. If
-%                           specified, overides the 'EqualizeTrials'
+%                           specified, overides the 'TrialsAVGs'
 %                           argument.
 %
 %
@@ -82,9 +88,10 @@
 % EXAMPLE  :
 %
 %  MVPC = pop_decoding(BEST,'Classes',[1:4],'Channels',[1:27 33:64], 'nIter', 10, 'nCrossblocks',3, ...
-%         'DecodeTimes',[-500,1496], 'Decode_Every_Npoint',5,'EqualizeTrials','classes',...
+%         'DecodeTimes',[-500,1496], 'Decode_Every_Npoint',5,'TrialsAVGs','EqualTrialsMaxAVGs',...
 %         'Method','SVM', 'classcoding','OneVsAll', ...
-%         'ParCompute','on', 'BetaWeights', "off");
+%         'ParCompute','on', 'BetaWeights', "off"，...
+% 'Regularization',0,'OutcomeMetric','ACC','Normalization','off','TGM','off');
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -92,7 +99,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022
+% 2022 && 2025
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -116,9 +123,9 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [MVPC,bestcom] = pop_decoding(ALLBEST, varargin)
+function [MVPC,bestcom,ALLMVPC_out] = pop_decoding(ALLBEST, varargin)
 bestcom = '';
-
+ALLMVPC_out = [];
 % check Signal Processing Toolbox (SPT)
 if exist('filtfilt','file')~= 2
     msgboxText =  'ERROR: You currently do not have the Signal Processing Toolbox installed. Please contact your system administration or MATLAB to install "Signal Processing Toolbox" to your MATLAB version';
@@ -159,7 +166,7 @@ if nargin<1
 end
 
 if nargin == 1 %GUI
-    
+
     if isstruct(ALLBEST)
         if ~isbeststruct(ALLBEST(1))
             ALLBEST = [];
@@ -169,15 +176,15 @@ if nargin == 1 %GUI
             %nbinx = ALLBEST(1).nbin;
             %nchanx = ALLBEST(1).nbchan;
         end
-        
+
     else
         ALLBEST = [];
         % nbinx = 1;
         % nchanx = 1;
     end
-    
+
     cbesti = evalin('base','CURRENTBEST'); %current BEST index
-    
+
     %working memory
     def = erpworkingmemory('pop_decoding');
     %def = []; %for now, def always empty, always default to "load from hard drive".
@@ -188,12 +195,12 @@ if nargin == 1 %GUI
         else
             inp1 = 0; %from bestset menu
             bestseti = 1:length(ALLBEST);
-            
+
         end
-        
+
         %decodeClassInd = 1:numel(ALLBEST(indexBEST(1)).binwise_data)
-        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 1 2 0 []};
-        
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 1 2 0 [] [] 1 0};
+
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset)
         %def2 = bestset index (see above)
         %def3 = chanArray
@@ -202,17 +209,20 @@ if nargin == 1 %GUI
         %def6 = epochTimes (1:all, 2: pre, 3: post, 4:custom) (Def = 1/all)
         %def7 = decodeTimes ([start,end]; def = []); % IN MS!
         %def8 = decode_every_Npoint (1 = every point)
-        %def9 = Equalize Trials (0: don't equalize/ 1:equalize across bins/ 2: eqalize across
-        %   bins & best (def)/ 3: Common Floor)
+        %def9 = Equalize Trials ( 1:equalize across bins/ 2: eqalize across
+        %   bins & best (def)/ 3: Common Floor/ 4. Unequated-trials/ 5.Equated-trials)
         %def10 = Common  Floor Value (def: 1);
         %def11 = classifer (1: SVM / 2: Crossnobis - def: SVM)
         %def12 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
         %def13 = parCompute (def = 0)
         %def14 = DecodeClasses ;
-        
+        %def15 = regularizationValue;
+        %def16 = outcomemetric;
+        %def17 = normalization;
+
         %DEFUNCT = output filename (def = filename.mvpa in pwd) *DEFUNCT
         %DEFUNCT = output path (def = cd); *DEFUNCT
-        
+
     else
         %if working memory is NOT empty
         if ~isempty(ALLBEST)
@@ -225,12 +235,12 @@ if nargin == 1 %GUI
                 else
                     def{2} = bestset_list;
                 end
-                
+
             end
         end
-        
+
     end
-    
+
     %% Call GUI for decoding parameters parameters
     %app = feval('decodingGUI', ALLBEST, filename, filepath, cbesti); %cludgy way
     app = feval('decodingGUI', ALLBEST, def, cbesti); %cludgy way
@@ -243,7 +253,7 @@ if nargin == 1 %GUI
         disp('User selected Cancel')
         return
     end
-    
+
     %parse arguments
     if isempty(ALLBEST) %if no BESTset was passed to GUI
         ALLBEST = decoding_res{1}; %use the GUI output
@@ -258,7 +268,7 @@ if nargin == 1 %GUI
     epoch_times = decoding_res{7};
     decodeTimes = decoding_res{8}; %in s
     decode_every_Npoint = decoding_res{9};
-    equalizeTrials = decoding_res{10};
+    TrialsAVGs = decoding_res{10};
     floorValue = decoding_res{11};
     selected_method = decoding_res{12};
     classcoding = decoding_res{13};
@@ -266,40 +276,53 @@ if nargin == 1 %GUI
     %     path_out = decoding_res{14};
     ParCompute = decoding_res{14};
     decodeClasses = decoding_res{15};
+    regularization_Value = decoding_res{16};
+    Outcome_metric = decoding_res{17};%%1. ACC; 2. AUC
     BetaWeights = 0;
-    
+    Normalization_par = decoding_res{18};
+    TGM_Par = decoding_res{19};
     %save in working memory
     %Steve decided that equalize trials should always be defaulted if using
     %the GUI
-    
+
     def = {inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
-        decodeTimes, decode_every_Npoint, 2, floorValue, ...
-        selected_method, classcoding, ParCompute,decodeClasses};
+        decodeTimes, decode_every_Npoint, TrialsAVGs, floorValue, ...
+        selected_method, classcoding, ParCompute,decodeClasses,regularization_Value,Outcome_metric,Normalization_par,TGM_Par};
     erpworkingmemory('pop_decoding',def);
-    
+
     %for input into sommersault, change decodeTimes to ms
     decodeTimes = decodeTimes* 1000;
-    
-    if equalizeTrials == 1
-        seqtr = 'classes';
+
+    if TrialsAVGs == 1%%GH Sep 2025
+        seqtr = 'EqtrlMaxagclasses';%%Equal trials, Max AVGs
         floorValue = [];
-    elseif equalizeTrials == 2
-        seqtr = 'best';
+    elseif TrialsAVGs == 2
+        seqtr = 'EqtrlMaxagbest';%%Equal trials, Max AVGs
         floorValue = [];
-    elseif equalizeTrials == 3
-        seqtr = 'floor';
+    elseif TrialsAVGs == 3
+        seqtr = 'EqtrlMaxagfloor';%%Equal trials, Max AVGs
+    elseif TrialsAVGs == 4%%GH Sep 2025
+        seqtr = 'EqtrlEqagclasses';%%Equal trials, Equal AVGs
+        floorValue = [];
+    elseif TrialsAVGs == 5
+        seqtr = 'EqtrlEqagbest';%%Equal trials, Equal AVGs
+        floorValue = [];
+    elseif TrialsAVGs == 6
+        seqtr = 'EqtrlEqagfloor';%%Equal trials, Equal AVGs
     else
-        seqtr ='none';
+        seqtr ='MaxTrialsEqualAVGs';%%Max trials, Equal AVGs
         floorValue = [];
     end
-    
+
     if selected_method == 1 %svm
         smethod = 'SVM';
-        
-    elseif selected_method == 2
+    elseif selected_method == 2 %svm
+        smethod = 'LDA';
+    elseif selected_method == 3
         smethod = 'Crossnobis';
+        seqtr ='MaxTrialsEqualAVGs';%% the default one for this algorithm
     end
-    
+
     if classcoding == 1
         strcoding = 'OneVsOne';
     elseif classcoding == 2
@@ -307,36 +330,50 @@ if nargin == 1 %GUI
     else
         strcoding = 'none';
     end
-    
+
     if ParCompute
         spar = 'on';
     else
         spar = 'off';
     end
-    
+
     if BetaWeights == 1
         sbeta = 'on';
     else
         sbeta = 'off';
     end
-    
+
     if isempty(decodeClasses)
         %across all classes in BESTset(s)
         decodeClasses = 1:numel(ALLBEST(indexBEST(1)).binwise_data);
     end
-    
-    
-    
+    if Outcome_metric==1
+        MetricStr = 'ACC';
+    else
+        MetricStr = 'AUC';
+    end
+    if Normalization_par==1
+        Normalization_str = 'on';
+    else
+        Normalization_str = 'off';
+    end
+    if TGM_Par==1
+        TGM_Str = 'on';
+    else
+        TGM_Str = 'off';
+    end
+
     [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'Classes', decodeClasses, ...
         'Channels', relevantChans, ...
         'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
         'DecodeTimes', decodeTimes, 'Decode_Every_Npoint',decode_every_Npoint,  ...
-        'EqualizeTrials', seqtr, 'FloorValue',floorValue,'Method', smethod, ...
-        'classcoding',strcoding, 'Saveas','on', 'ParCompute',spar, 'BetaWeights', sbeta, 'History','gui');
-    
+        'TrialsAVGs', seqtr, 'FloorValue',floorValue,'Method', smethod, ...
+        'classcoding',strcoding, 'Saveas','on', 'ParCompute',spar, 'BetaWeights', sbeta,...
+        'Regularization',regularization_Value,'OutcomeMetric',MetricStr,'Normalization',Normalization_str,'TGM',TGM_Str,'History','gui');
+
     pause(0.1);
     return
-    
+
 end
 
 %
@@ -358,7 +395,7 @@ p.addParamValue('nCrossblocks',3, @isnumeric); % total number of crossblock vali
 %p.addParamValue('SampleTimes',[]); %array of epoch sampling times in ms, i.e. EEG.times (def: all times)
 p.addParamValue('DecodeTimes',[],@isnumeric); %[start end](in ms)
 p.addParamValue('Decode_Every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
-p.addParamValue('EqualizeTrials', 'none', @ischar); % def: equalize trials across bins & BESTsets (2)
+p.addParamValue('TrialsAVGs', 'MaxTrialsEqualAVGs', @ischar); % def: equalize trials across bins & BESTsets (2)
 p.addParamValue('FloorValue', [], @isnumeric);
 p.addParamValue('Method','SVM',@ischar); %method (1:SVM/2:Crossnobis);
 p.addParamValue('classcoding','OneVsAll',@ischar); % SVMcoding(1:oneVsone/2:oneVsall);
@@ -367,6 +404,12 @@ p.addParamValue('ParCompute','off', @ischar); %attempt parallization across CPU 
 p.addParamValue('BetaWeights', 'off', @ischar); %betaweight switch
 p.addParamValue('History','script');
 p.addParamValue('Tooltype','erplab',@ischar); %%GH, June 2024
+p.addParamValue('Regularization',[],@isnumeric); %%GH, August 2025
+p.addParamValue('OutcomeMetric','AUC',@ischar); %%GH, August 2025
+p.addParamValue('Normalization','off',@ischar); %%GH, August 2025
+p.addParamValue('TGM','off',@ischar); %%GH, Dec. 2025
+
+
 % Parsing
 p.parse(ALLBEST, varargin{:});
 idx_bestset = p.Results.BESTindex;
@@ -376,7 +419,7 @@ nIter = p.Results.nIter;
 nCrossblocks = p.Results.nCrossblocks;
 decodeTimes = p.Results.DecodeTimes;
 Decode_every_Npoint = p.Results.Decode_Every_Npoint;
-equalize_trials = p.Results.EqualizeTrials;
+equalize_trials = p.Results.TrialsAVGs;
 floor_value = p.Results.FloorValue;
 smethod = p.Results.Method;
 strcoding = p.Results.classcoding;
@@ -384,7 +427,9 @@ strcoding = p.Results.classcoding;
 % pathname_out = p.Results.path_out;
 sParCompute = p.Results.ParCompute;
 BetaWeights = p.Results.BetaWeights;
-
+OutcomeMetric =  p.Results.OutcomeMetric;
+Regularization = p.Results.Regularization;
+TGM_str = p.Results.TGM;
 
 %if user is scripting command
 if isempty(decodeClasses)
@@ -440,14 +485,14 @@ if issaveas == 1
         disp('User selected cancel');
         return
     end
-    
+
     ALLBEST = res{1};
     % file_out = {ALLBEST.filename};
     % file_path = {ALLBEST.filepath};
-    
+
     %after using the save multple files,
     %don't automatically assume they want to save
-    
+
 end
 
 %create/update the times field in each BESTset
@@ -465,9 +510,9 @@ end
 
 original_times = ALLBEST(1).times; %take first BESTset as standard
 if isempty(decodeTimes)
-    
+
     decodeTimes = [ALLBEST(1).xmin*1000 ALLBEST(1).xmax*1000]; %convert s to ms
-    
+
 end
 
 fs = ALLBEST(1).srate;
@@ -516,9 +561,7 @@ if ms2sample(latdiffms(1),fs)~=0 %JLC.10/16/2013
     fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', latency(1), original_times(decoding_times_index(1)));
     fprintf('WARNING: This adjustment was necessary due to sampling \n');
     fprintf('%s\n\n', repmat('*',1,60));
-    
     start_epoch = original_times(decoding_times_index(1));
-    
 end
 
 if ms2sample(latdiffms(2),fs)~=0 %JLC.10/16/2013
@@ -528,7 +571,7 @@ if ms2sample(latdiffms(2),fs)~=0 %JLC.10/16/2013
     fprintf('WARNING: This adjustment was necessary due to sampling \n');
     fprintf('%s\n\n', repmat('*',1,60));
     end_epoch = original_times(decoding_times_index(end));
-    
+
 end
 
 if (start_epoch ~= original_times(decoding_times_index(1))) | ...
@@ -540,6 +583,36 @@ if (start_epoch ~= original_times(decoding_times_index(1))) | ...
     fprintf('%s\n\n', repmat('*',1,60));
 end
 
+
+Normalization_str = p.Results.Normalization;
+if strcmpi(Normalization_str, 'on') || strcmpi(Normalization_str,'yes')
+    normalization_set = 1;
+else
+    normalization_set = 0;
+end
+
+if strcmpi(TGM_str, 'on') || strcmpi(TGM_str,'yes')
+    TGM_set = 1;
+else
+    TGM_set = 0;
+end
+
+if strcmpi(smethod,'SVM')
+    if isempty(Regularization) || numel(Regularization)~=1 || any(Regularization<0)
+        Regularization = 1;
+    end
+
+elseif  strcmpi(smethod,'LDA')
+    if isempty(Regularization) || numel(Regularization)~=1 || any(Regularization<0) || any(Regularization>1)
+        Regularization = 0;
+    end
+
+else
+    Regularization = [];
+    equalize_trials = 'MaxTrialsEqualAVGs';%%GH Sep 2025
+    normalization_set = 0;%%GH Sep 2025
+    TGM_set = 0;
+end
 
 decodeTimes = [original_times(decoding_times_index(1)) original_times(decoding_times_index(end))];
 
@@ -564,28 +637,28 @@ for b = 1:k
         new_fs = (ntimes/epochtime) *1000;
         ALLBEST(b).srate = new_fs;
     end
-    
+
     for i = 1:bins
         ALLBEST(b).binwise_data(i).data = ALLBEST(b).binwise_data(i).data(:,decoding_times_index,:);
     end
-    
-    
+
+
     %% logic for choosing the classes and chance prior to equalizing trials
-    
-    
+
+
     %select chosen classes
     ALLBEST(b).binwise_data = ALLBEST(b).binwise_data(decodeClasses);
     ALLBEST(b).bindesc = ALLBEST(b).bindesc(decodeClasses);
-    
+
     if isempty(ALLBEST(b).original_bin) %quick fix for issue where original_bin is not transferred when combining bins - DRG 5/9/24
     else
         ALLBEST(b).original_bin = ALLBEST(b).original_bin(decodeClasses);
     end
-    
+
     ALLBEST(b).n_trials_per_bin = ALLBEST(b).n_trials_per_bin(decodeClasses);
     ALLBEST(b).nbin = numel(decodeClasses);
-    
-    
+
+
 end
 
 
@@ -599,82 +672,153 @@ nsubs = numel(ALLBEST);
 if ~isempty(floor_value)
     %in case user only supplies the floor value
     % we will assume they meant to floor
-    equalize_trials = 'floor';
+    if ~strcmpi(equalize_trials,'EqtrlMaxagfloor') && ~strcmpi(equalize_trials,'EqtrlEqagfloor')
+        equalize_trials = 'EqtrlMaxagfloor';%%
+    end
 end
 
-if nsubs == 1 && strcmpi(equalize_trials,'best')
+if nsubs == 1 && (strcmpi(equalize_trials,'EqtrlMaxagbest') || strcmpi(equalize_trials,'EqtrlEqagbest'))
     %cannot equalize trials across BESTset if only one BESTset
-    equalize_trials = 'classes';
+    if  strcmpi(equalize_trials,'EqtrlEqagbest')
+        equalize_trials = 'EqtrlEqagclasses';%%qual trials, equal AVGs
+    else
+        equalize_trials = 'EqtrlMaxagclasses';%%qual trials, max AVGs
+    end
 end
 
-if strcmpi(equalize_trials,'best') % equalize across best files
-    
+
+
+if strcmpi(equalize_trials,'EqtrlEqagbest') %%Equal trials, Equal AVGs
+
     trials_acr_best = [ALLBEST(:).n_trials_per_bin];
-    minCnt = min(trials_acr_best);
+    minCnt = min(trials_acr_best(:));
     %nPerBinBlock = floor(minCnt/nCrossblocks);
-    
+
     for s = 1:nsubs
         for tr = 1:nbins
             ALLBEST(s).n_trials_per_bin(tr) = minCnt;
         end
     end
-    
-    
-elseif strcmpi(equalize_trials,'classes') %equalize bins within best files
-    
+
+elseif strcmpi(equalize_trials,'EqtrlEqagclasses') %%Equal trials, Equal AVGs
+
     for s = 1:nsubs
         trials_acr_sub = ALLBEST(s).n_trials_per_bin;
-        minCnt = min(trials_acr_sub);
-        
+        minCnt = min(trials_acr_sub(:));
         for tr = 1:nbins
             ALLBEST(s).n_trials_per_bin(tr) = minCnt;
         end
-        
     end
-elseif strcmpi(equalize_trials,'floor')
-    
-    
+elseif strcmpi(equalize_trials,'EqtrlEqagfloor') %%Equal trials, Equal AVGs
     %use common floor_value
     for s = 1:nsubs
-        
         %check floor value validity
-        if strcmpi(smethod,'SVM')
+        if strcmpi(smethod,'SVM') || strcmpi(smethod,'LDA')
             test_val = floor(min(ALLBEST(s).n_trials_per_bin)/nCrossblocks);
         else
             test_val = min(ALLBEST(s).n_trials_per_bin);
         end
-        
         if floor_value > test_val
             msgboxTest = sprintf('You selected an invalid floor %i. The value exceeds the max the number of trials within cross-validation blocks',floor_value);
             title = 'ERPLAB: Cross-Validation error';
             errorfound(msgboxTest, title);
-            
             return
         end
-        
         if floor_value < 1
             msgboxTest = sprintf('You selected an invalid floor %i. You cannot go less than 1 trial per ERP',floor_value);
             title = 'ERPLAB: Cross-Validation error';
             errorfound(msgboxTest, title);
             return
         end
-        
-        
         for tr = 1:nbins
-            if strcmpi(smethod,'SVM')
+            if strcmpi(smethod,'SVM') || strcmpi(smethod,'LDA')
                 ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks;
             else
-                ALLBEST(s).n_trials_per_bin(tr) = floor_value; %crossnobis
+                % ALLBEST(s).n_trials_per_bin(tr) = floor_value; %crossnobis
             end
         end
     end
-    
+
+    %%---------------------------Equal trials, Max AVGs------------------------
+elseif strcmpi(equalize_trials,'EqtrlMaxagclasses')%%across classes
+    %%determine the minimal number of trials for each class across
+
+    if strcmpi(smethod,'SVM') || strcmpi(smethod,'LDA')
+        for Numofbest = 1:numel(ALLBEST)%%the minimal number of trials for each classes across bestsets
+            n_trials_per_bin=  ALLBEST(Numofbest).n_trials_per_bin;
+            Classes_trials_min = min(n_trials_per_bin(:));
+            test_val = floor(Classes_trials_min/nCrossblocks);
+            Classes_acrossbest_min_block = floor(n_trials_per_bin./test_val);
+            for Numofbin = 1:nbins
+                ALLBEST(Numofbest).n_trials_per_bin(Numofbin) = Classes_acrossbest_min_block(Numofbin)*test_val;
+            end
+        end
+    end
+
+elseif  strcmpi(equalize_trials,'EqtrlMaxagbest')%%acorss bests
+    %%determine the minimal number of trials for each class across
+    %%bestsets
+    Classes_acrossbest = [];
+    for Numofbest = 1:numel(ALLBEST)
+        n_trials_per_bin=  ALLBEST(Numofbest).n_trials_per_bin;
+        Classes_acrossbest = [Classes_acrossbest;n_trials_per_bin];
+    end
+    Classes_acrossbest_min = min(Classes_acrossbest,[],1);
+    min_trials = min(Classes_acrossbest_min(:));%%minimal trial across bins across bestsets
+    if strcmpi(smethod,'SVM') || strcmpi(smethod,'LDA')
+        test_val = floor(min_trials/nCrossblocks);
+        Classes_acrossbest_min_block = floor(Classes_acrossbest_min./test_val);
+
+        for Numofbest = 1:numel(ALLBEST)%%the minimal number of trials for each classes across bestsets
+            for Numofbin = 1:nbins
+                ALLBEST(Numofbest).n_trials_per_bin(Numofbin) = Classes_acrossbest_min_block(Numofbin)*test_val;
+            end
+        end
+    end
+
+elseif strcmpi(equalize_trials,'EqtrlMaxagfloor')%%Floor
+    %%determine the minimal number of trials for each class across
+    %%bestsets
+    Classes_acrossbest = [];
+    for Numofbest = 1:numel(ALLBEST)
+        n_trials_per_bin=  ALLBEST(Numofbest).n_trials_per_bin;
+        Classes_acrossbest = [Classes_acrossbest;n_trials_per_bin];
+    end
+    Classes_acrossbest_min = min(Classes_acrossbest,[],1);
+
+    min_trials = min(Classes_acrossbest_min(:));%%minimal trial across bins across bestsets
+    if strcmpi(smethod,'SVM') || strcmpi(smethod,'LDA')
+        test_val = floor(min_trials/nCrossblocks);
+    else
+        test_val = min_trials;
+    end
+
+    if floor_value > test_val
+        msgboxTest = sprintf('You selected an invalid floor %i. The value exceeds the max the number of trials within cross-validation blocks',floor_value);
+        title = 'ERPLAB: Cross-Validation error';
+        errorfound(msgboxTest, title);
+        return
+    end
+    if floor_value < 1
+        msgboxTest = sprintf('You selected an invalid floor %i. You cannot go less than 1 trial per ERP',floor_value);
+        title = 'ERPLAB: Cross-Validation error';
+        errorfound(msgboxTest, title);
+        return
+    end
+
+    %use common floor_value
+    if strcmpi(smethod,'SVM') || strcmpi(smethod,'LDA')
+        Classes_acrossbest_min_block = floor(Classes_acrossbest_min./test_val);
+        for s = 1:nsubs
+            %check floor value validity
+            for tr = 1:nbins
+                ALLBEST(s).n_trials_per_bin(tr) = floor_value * Classes_acrossbest_min_block(tr);
+            end
+        end
+    end
     %error check this floor_value
-    
-    
-    
-else
-    if strcmpi(smethod,'SVM')
+elseif  strcmpi(equalize_trials,'MaxTrialsEqualAVGs')
+    if strcmpi(smethod,'SVM')  || strcmpi(smethod,'LDA')
         fprintf('\n%s\n', repmat('*',1,60));
         fprintf('WARNING: You have disabled the option for equating the number of trials across classes. \n');
         fprintf('WARNING: This is almost always a very bad idea.  \n');
@@ -682,6 +826,13 @@ else
         fprintf('WARNING: In addition, you should report that you disabled it in your Method section, which will likely cause your paper to be rejected  \n');
         fprintf('%s\n\n', repmat('*',1,60));
     end
+    OutcomeMetric = 'AUC';
+
+else
+    msgboxTest = ['You should use correct parameter for "TrialsAVGs".'];
+    title = 'ERPLAB: Decoding analysis';
+    errorfound(msgboxTest, title);
+    return;
 end
 
 
@@ -697,15 +848,17 @@ if ParCompute == 1
     end
     %display num of parallel workers
     fprintf('ERPLAB will use %i parallel workers (Max # Workers - 1) for decoding...\n',ParWorkers);
-    
+
 else
     ParWorkers = 0; %makes parfor run without workers, even if pool is open.
 end
 
 if strcmpi(smethod,'SVM')
     method = 1;
+elseif strcmpi(smethod,'LDA')
+    method = 2;
 else
-    method = 2; %crossnobis
+    method = 3; %crossnobis
 end
 
 if strcmpi(strcoding,'OneVsOne')
@@ -715,7 +868,9 @@ elseif strcmpi(strcoding,'OneVsAll')
 else
     classcoding = 0; %any not-multinomial pattern classification (binary decoders, crossnobis, etc)
 end
-
+if method == 2%%LDA
+    classcoding =2;%% one VS All for LDA
+end
 
 %% Enter algorithm
 Tooltype = p.Results.Tooltype;%%GH, June 2024
@@ -723,12 +878,13 @@ if isempty(Tooltype)%%GH, June 2024
     Tooltype = 'erplab';
 end
 
-if method == 1 %SVM
-    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,BetaWeights,Tooltype);
-elseif method == 2 %crossnobis
-    [MVPC, ALLMVPC] = crossnobis(ALLBEST,nIter,0,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,Tooltype);
+% normalization_set=0;
+if method == 1 || method == 2 %SVM  or LDA
+    [MVPC, ALLMVPC_out] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,BetaWeights,Tooltype,OutcomeMetric,Regularization,normalization_set,TGM_set);
+elseif method == 3 %crossnobis
+    [MVPC, ALLMVPC_out] = crossnobis(ALLBEST,nIter,0,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,Tooltype);
 end
-
+ALLMVPC = ALLMVPC_out;
 
 %
 %History
@@ -737,8 +893,6 @@ end
 
 
 skipfields = {'ALLBEST', 'Saveas','History'};
-
-
 fn      = fieldnames(p.Results);
 explica = 0;
 if length(idx_bestset)==1 && idx_bestset(1)==1
@@ -751,15 +905,15 @@ else
     inputvari = inputname(1);
 end
 
-if method == 2
+if method == 3
     %crossfolds don't matter in crossnobis
-    skipfields = [skipfields 'ALLBEST' 'nCrossblocks']; % SL
+    skipfields = [skipfields {'ALLBEST','nCrossblocks','OutcomeMetric','Regularization'}]; %GH
 end
 
+if method >1
+    skipfields = [skipfields {'classcoding'}];
+end
 
-% if strcmpi(smethod,'Crossnobis')
-%     skipfields = [skipfields 'classcoding'];
-% end
 
 bestcom = sprintf( 'MVPC = pop_decoding( %s ', inputvari);
 for q=1:length(fn)
@@ -776,7 +930,6 @@ for q=1:length(fn)
                     if all(cellfun(@isnumeric, fn2res))
                         %fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
                         fn2resstr =cell2mat(cellfun(@vect2colon,fn2res,'UniformOutput',false));
-                        
                     else
                         fn2resstr = '';
                         for kk=1:numel(fn2res)
@@ -786,10 +939,9 @@ for q=1:length(fn)
                             else
                                 fn2resstr = [fn2resstr ' ' vect2colon(auxcont, 'Delimiter', 'on')];
                             end
-                            
                         end
                         fn2resstr(end) = []; %take out last comma
-                        
+
                     end
                     fnformat = '{%s}';
                 elseif isnumeric(fn2res)
@@ -801,13 +953,13 @@ for q=1:length(fn)
                     fn2resstr = vect2colon(fn2res, 'Sort','on');
                     fnformat = '%s';
                 end
-                
+
                 %                 if strcmpi(fn2com,'BESTindex')
                 %                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
                 %                 else
                 bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
                 %                 end
-                
+
                 %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
             end
         end
@@ -856,7 +1008,7 @@ if issaveas == 1
     else
         msgwrng = 'ERPLAB Warning: Your changes were not saved';
     end
-    
+
     try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
 end
 
