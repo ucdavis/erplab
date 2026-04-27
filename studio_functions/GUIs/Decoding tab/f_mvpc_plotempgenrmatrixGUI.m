@@ -330,7 +330,7 @@ varargout{1} = MVPC_confusion_box_gui;
         end
         if any(measure_latency(:)<observe_DECODE.MVPC.times(1)) || any(measure_latency(:)>observe_DECODE.MVPC.times(end))
             gui_mvpc_temporalgenermatrix.measure_latency.String = '';
-            msgboxText =  ['Plot Temporal Generalization Matrix>Export - The latency should be between ',32,num2tr(observe_DECODE.MVPC.times(1)),32,'and',32,num2tr(observe_DECODE.MVPC.times(2))];
+            msgboxText =  ['Plot Temporal Generalization Matrix>Export - The latency should be between ',32,num2tr(observe_DECODE.MVPC.times(1)),32,'and',32,num2str(observe_DECODE.MVPC.times(2))];
             titlNamerro = 'Warning for Pattern Classification Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
