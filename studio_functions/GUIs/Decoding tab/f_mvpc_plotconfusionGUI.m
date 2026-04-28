@@ -521,6 +521,10 @@ varargout{1} = MVPC_confusion_box_gui;
             Filesavestr = 'off';
         end
 
+        if isempty(filepathname)
+            filepathname = pwd;
+        end
+
         %
         % Somersault
         %

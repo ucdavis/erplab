@@ -442,13 +442,14 @@ if isempty(pathName)
     pathName =cd;
 end
 title = 'Select one folder for saving files in following procedures';
-select_path = uiputfile(pathName,title);
+select_path = uigetdir(pathName, title);
 
-if isequal(select_path,0)
+if isequal(select_path, 0)
     select_path = cd;
 end
-handles.pathName= select_path;
+handles.pathName = select_path;
 handles.edit_path.String = select_path;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_reset.

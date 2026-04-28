@@ -855,7 +855,7 @@ varargout{1} = box_bestset_gui;
         %         if isempty(pathName)
         pathName =[pwd,filesep];
         %         end
-        title = 'Select one forlder for saving files in following procedures';
+        title = 'Select one folder for saving files in following procedures';
         sel_path1 = uigetdir(pathName,title);
         if isequal(sel_path1,0)
             sel_path1 = cd;

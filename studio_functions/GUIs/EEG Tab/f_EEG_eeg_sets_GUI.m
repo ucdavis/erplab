@@ -1225,7 +1225,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
             [pathstr, filename, ext] = fileparts(filename);
             filename = [filename '.set'];
-            checkfileindex = checkfilexists([EEG.filepath,filename]);
+            checkfileindex = checkfilexists(fullfile(EEG.filepath,filename));
             if checkfileindex==1
                 [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',[EEG.filepath,filesep]);
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);

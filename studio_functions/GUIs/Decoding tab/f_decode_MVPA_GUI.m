@@ -1481,8 +1481,22 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.mvpa_run.BackgroundColor =  [0.5137    0.7569    0.9176];
         Docode_do_mvpa.mvpa_run.ForegroundColor = [1 1 1];
 
+        % Disable all panel controls while options dialog is open
+        estudioworkingmemory('f_Decode_proces_messg','Multivariate Pattern Classification>Options');
+        observe_DECODE.Process_messg = 1;
+        allControls = findall(Docode_do_mvpa.vBox_decode, 'Type', 'UIControl');
+        savedEnable = {allControls.Enable};
+        set(allControls, 'Enable', 'off');
+
         app = feval('estudio_decode_mvpa_ops', observe_DECODE.BEST,Docode_do_mvpa.paras_ops); %cludgy way
         waitfor(app,'Finishbutton',1);
+
+        % Restore panel controls regardless of dialog outcome
+        for ii = 1:numel(allControls)
+            try; allControls(ii).Enable = savedEnable{ii}; catch; end
+        end
+        observe_DECODE.Process_messg = 2;
+
         try
             decoding_res = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding
             app.delete; %delete app from view
