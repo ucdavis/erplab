@@ -1071,6 +1071,7 @@ ax.Position = [left bottom ax_width ax_height];
 %%--------------Plot ERPwave-----------------
 stdalpha = qTransparency;
 countPlot = 0;
+TimeAdjustOut = 0;
 for Numofrows = 1:Numrows
     for Numofcolumns = 1:Numcolumns
         try
@@ -1139,6 +1140,7 @@ for Numofrows = 1:Numrows
                     [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numcolumns,PosIndexs,StepXP);
                 else
                     [bindatatrs,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numcolumns,PosIndexs,StepX,fs);
+                    TimeAdjustOut = Xtimerangetrasf(1) - Xtimerange(1);
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
@@ -1431,7 +1433,7 @@ for Numofrows = 1:Numrows
                 catch
                     xpercentage = 50;
                 end
-                xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
+                xpos_LABEL = (qtimeRange(2)-qtimeRange(1))*xpercentage/100 + qtimeRange(1) + TimeAdjustOut;
                 labelcbe =  strrep(char(labelcbe),'_','\_');
                 try
                     labelcbe = regexp(labelcbe, '\;', 'split');
@@ -1447,19 +1449,20 @@ for Numofrows = 1:Numrows
             %             disp(['Data at',32,'R',num2str(Numofrows),',','C',num2str(Numofcolumns), 32,'is empty!']);
         end
         try
-            range_len = Xtimerange(end) - Xtimerange(1);
+            range_len = qtimeRange(2) - qtimeRange(1);
             extra_left = 0;
-            if Xtimerange(1) >= -0.01 * abs(Xtimerange(end))
+            if qtimeRange(1) >= -0.01 * abs(qtimeRange(2))
                 extra_left = range_len / 20;
             end
+            right_edge = XtimerangetrasfALL(end) + max(0, qtimeRange(2) - Xtimerange(end));
             if 2<Numcolumns && Numcolumns<5
-                set(hbig,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/20)]);
+                set(hbig,'xlim',[qtimeRange(1)-(range_len/10 + extra_left),right_edge+(range_len/20)]);
             elseif Numcolumns==1
-                set(hbig,'xlim',[Xtimerange(1)-(range_len/20 + extra_left),XtimerangetrasfALL(end)+(range_len/40)]);
+                set(hbig,'xlim',[qtimeRange(1)-(range_len/20 + extra_left),right_edge+(range_len/40)]);
             elseif Numcolumns==2
-                set(hbig,'xlim',[Xtimerange(1)-(range_len/15 + extra_left),XtimerangetrasfALL(end)+(range_len/30)]);
+                set(hbig,'xlim',[qtimeRange(1)-(range_len/15 + extra_left),right_edge+(range_len/30)]);
             else
-                set(hbig,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/10)]);
+                set(hbig,'xlim',[qtimeRange(1)-(range_len/10 + extra_left),right_edge+(range_len/10)]);
             end
         catch
             

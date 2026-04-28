@@ -1073,7 +1073,7 @@ qtimes = ERP.times(latsamp1(1):latsamp1(2));
 if isempty(latsamp) || any(latsamp<=0)
     labelxrange = 0;
 else
-    labelxrange = qtimes(latsamp)-qtimes(1);
+    labelxrange = qtimes(latsamp)-qtimeRange(1);
 end
 if labelxrange<=0
     CBELabels = [1 100 1];
@@ -1111,6 +1111,7 @@ fontnames = 'Helvetica';
 
 hplot = [];
 countPlot = 0;
+TimeAdjustOut = 0;
 for Numofrows = 1:rowNums
     for Numofcolumns = 1:columNum
         try
@@ -1180,6 +1181,7 @@ for Numofrows = 1:rowNums
                     [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepXP);
                 else
                     [bindatatrs,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepX,fs);
+                    TimeAdjustOut = Xtimerangetrasf(1) - Xtimerange(1);
                 end
                 hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
                     'Color', qLineColorspec(Numofoverlay,:));
@@ -1364,7 +1366,7 @@ for Numofrows = 1:rowNums
             ypercentage =100;
             ypos_LABEL = (qYScalestras(end)-qYScalestras(1))*(ypercentage)/100+qYScalestras(1);
             xpercentage = CBELabels(1);
-            xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
+            xpos_LABEL = (qtimeRange(2)-qtimeRange(1))*xpercentage/100 + qtimeRange(1) + TimeAdjustOut;
             labelcbe =  strrep(char(labelcbe),'_','\_');
             try
                 labelcbe = regexp(labelcbe, '\;', 'split');
@@ -1374,21 +1376,23 @@ for Numofrows = 1:rowNums
         else
         end
         try
-            range_len = Xtimerange(end) - Xtimerange(1);
+            range_len = qtimeRange(2) - qtimeRange(1);
             % Extra left padding when epoch start is very close to zero
             % (within 1% of stop time), where wide Y-axis labels get clipped.
             extra_left = 0;
-            if Xtimerange(1) >= -0.01 * abs(Xtimerange(end))
+            if qtimeRange(1) >= -0.01 * abs(qtimeRange(2))
                 extra_left = range_len / 20;
             end
+            % Right edge: extend beyond last data point if qtimeRange exceeds data
+            right_edge = XtimerangetrasfALL(end) + max(0, qtimeRange(2) - Xtimerange(end));
             if 2<columNum && columNum<5
-                set(waveview,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/20)]);
+                set(waveview,'xlim',[qtimeRange(1)-(range_len/10 + extra_left),right_edge+(range_len/20)]);
             elseif columNum==1
-                set(waveview,'xlim',[Xtimerange(1)-(range_len/20 + extra_left),XtimerangetrasfALL(end)+(range_len/40)]);
+                set(waveview,'xlim',[qtimeRange(1)-(range_len/20 + extra_left),right_edge+(range_len/40)]);
             elseif columNum==2
-                set(waveview,'xlim',[Xtimerange(1)-(range_len/15 + extra_left),XtimerangetrasfALL(end)+(range_len/30)]);
+                set(waveview,'xlim',[qtimeRange(1)-(range_len/15 + extra_left),right_edge+(range_len/30)]);
             else
-                set(waveview,'xlim',[Xtimerange(1)-(range_len/10 + extra_left),XtimerangetrasfALL(end)+(range_len/10)]);
+                set(waveview,'xlim',[qtimeRange(1)-(range_len/10 + extra_left),right_edge+(range_len/10)]);
             end
         catch
 

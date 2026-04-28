@@ -964,7 +964,7 @@ varargout{1} = ERP_plotset_box;
                 ERPTab_plotset.chanorderIndex = 2;
                 [chanindexnew, errmsg] = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(plotarray));
                 if ~isempty(chanindexnew)
-                    labelsdef = labels11(chanindexnew);
+                    labelsdef = labels11(plotarray(chanindexnew));
                 else
                     labelsdef = labels11(plotarray);
                     if ~isempty(errmsg)
