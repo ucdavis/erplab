@@ -697,10 +697,10 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         else
 
         end
-        if observe_ERPDAT.Process_messg ~=4
+        if observe_ERPDAT.Process_messg == 2 || observe_ERPDAT.Process_messg == 3
             pause(0.1);
             EStudio_gui_erp_totl.Process_messg.String = '';
-            EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];
+            EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;
         end
     end
 

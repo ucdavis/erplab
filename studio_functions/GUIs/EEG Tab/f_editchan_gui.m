@@ -638,6 +638,7 @@ classdef f_editchan_gui < matlab.apps.AppBase
                 [EEG2, chaninfo, urchans, LASTCOM] =pop_chanedit(EEG1);
 
             end
+            figure(app.UIFigure);
             EEG1.chanlocs = EEG2.chanlocs;
             app.EEG           = EEG1;
             app.locfile       = '';
