@@ -6,10 +6,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v12.20
+## ERPLAB v13.00
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/12.20/erplab12.20.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
+  <a href="https://github.com/ucdavis/erplab/releases/download/13.00/erplab13.00.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
@@ -24,6 +24,39 @@ This download contains both [ERPLAB Studio](https://github.com/ucdavis/erplab/wi
 [Click here](https://github.com/ucdavis/erplab/wiki/Compatability-and-Required-Toolboxes) for information about required Matlab toolboxes and compatibility with different versions of Matlab, EEGLAB, Windows, MacOS, and Linux.
 
 We encourage most users to use this latest major version.
+
+### ERPLAB v13.00 Release Notes
+
+*Changes since previous release:*
+
+New decoding features (thanks @guanghuizhang0328):
+- Added temporal generalization decoding to ERPLAB Classic and Studio: models trained at each time point are tested across all other time points, producing a full time×time generalization matrix.
+- Added the ability to plot time generalized decoding matrices via a new menu option in ERPLAB Classic and in the Studio pattern classification tab.
+- Added LDA (Linear Discriminant Analysis) and updated Crossnobis distance decoding methods alongside SVM in the Classic decoding GUI.
+- Added AUC (area under curve) as a metric for decoding results in Classic and Studio. 
+
+Numerous improvements for ERP plotting in Studio, including:
+- More consistent and flexible automatic spacing between plots 
+- Improved support for plotting simulated waveforms
+- Improved support for plotting arbitrarily small/large time windows and voltage scales
+- Improved default axis labeling
+- Faster performance for plotting many bins/channels
+- Updated behavior for plotting using "Simple 10/20 system order" channel arrangement
+- Fixed standard error plotting issues for time windows larger than epoch size
+
+Moved ERPLAB's internal working-state files out of the plugin installation directory and into a per-user storage location. This prevents permission errors and avoids runtime files being written into shared or read-only plugin folders. (thanks @StefKirsch)
+
+Reworked the ERP simulation panel in Studio with improved interface options, updated behavior for “compare with real data” option, smarter parameter checking and defaults, and more consistency between the advanced GUI and Studio versions.
+
+Updated and refactored the channel locations GUI in Studio, fixing various bugs, allowing a wider range of file types for saving/loading channel location files, adding better history logging for channel location operations, more user-friendly GUI window stacking, and improved behavior when missing channel location data.
+
+Added an updated file-save GUI when creating ERPsets from EEGsets, allowing more flexibility in maintaining vs. resetting file paths.
+
+Added additional parameter saving for scalp map creation, filtering, and artifact detection settings in Studio, so selections are preserved across sessions.
+
+Fixed issues with appending ERPset files, including an issue with files saved using a .mat extension instead of .erp in some cases, and an issue with data quality metrics not being properly appended.
+
+Various other minor bug fixes and GUI improvements throughout ERPLAB Studio. 
 
 ### ERPLAB v12.20 Release Notes
 
