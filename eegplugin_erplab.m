@@ -4,7 +4,7 @@
 % University of California, Davis,
 % Davis, CA
 % 2007-2025
-% Version 12.20
+% Version 13.00
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -115,8 +115,8 @@ end
 %
 
 matlabRelease;
-if ans.Release == 'R2025a'
-     warndlg(sprintf('Matlab version 2025a currently does not work with some functions in ERPLAB. We recommend using an earlier version.'),'!! Warning !!', 'modal')
+if ismember(ans.Release, {'R2025a', 'R2025b', 'R2026a'})
+     warndlg(sprintf('Matlab version %s currently does not work with some functions in ERPLAB. We recommend using an earlier version.', char(ans.Release)),'!! Warning !!', 'modal')
      clear ans;
 end
 
