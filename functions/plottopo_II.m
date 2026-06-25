@@ -724,7 +724,7 @@ for P=0:datasets-1, %  for each data epoch
         for c=1:chans, %%%%%%%% for each data channel %%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 if P>0 % subsequent pages (Axes specified)
-                        axes(Axes(c))
+                        axes(Axes(c));
                         hold on;                      % plot down left side of page first
                         axis('off')
                 else   % first page, specify axes
@@ -894,7 +894,7 @@ end; % P / epoch
 %
 ax = axes('Units','Normal','Position', ...
         [0.85 0.1 axwidth axheight]); % FIX!!!!
-axes(ax)
+axes(ax);
 axis('off');
 if xmin <=0
         figure(curfig);p=plot([0 0],[ymn ymx],'color', axislcolor); % draw vert axis at zero
