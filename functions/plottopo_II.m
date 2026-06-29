@@ -144,7 +144,7 @@
 % same
 %
 % Revision 1.34  2004/09/08 02:09:39  scott
-% insert figure(curfig) before plotting commands to squelch Matlab 7.0.0 bug -sm
+% insert set(0,'CurrentFigure',curfig) before plotting commands to squelch Matlab 7.0.0 bug -sm
 %
 % Revision 1.33  2004/04/06 17:21:38  arno
 % draw full vertical lines
@@ -451,7 +451,7 @@ fprintf('Plotting data using axis size [%g,%g]\n',axwidth,axheight);
 %%%%%%%%%%%%% Extend the size of the plotting area in the window %%%%%%%%%%%%
 %
 curfig = gcf;
-h=figure(curfig);
+set(0,'CurrentFigure',curfig); h=curfig; % avoid figure(curfig): raises/shows the figure and gets slower as the figure fills with objects
 set(h,'PaperUnits','normalized'); % use percentages to avoid US/A4 difference
 set(h,'PaperPosition',[0.0235308 0.0272775 0.894169 0.909249]); % equivalent
 orient portrait
@@ -612,7 +612,7 @@ xlabel = 'Time (ms)';
 % clf;   % clear the current figure
 
 % print plottitle over (left) subplot 1
-figure(curfig); h=gca;title(g.title,'FontSize',TITLEFONTSIZE); % title plot
+set(0,'CurrentFigure',curfig); h=gca;title(g.title,'FontSize',TITLEFONTSIZE); % title plot
 hold on
 msg = ['Plotting %d traces of %d frames with colors: '];
 
@@ -724,7 +724,7 @@ for P=0:datasets-1, %  for each data epoch
         for c=1:chans, %%%%%%%% for each data channel %%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 if P>0 % subsequent pages (Axes specified)
-                        axes(Axes(c));
+                        set(curfig,'CurrentAxes',Axes(c)); % avoid axes(h): raises/shows the figure
                         hold on;                      % plot down left side of page first
                         axis('off')
                 else   % first page, specify axes
@@ -894,12 +894,12 @@ end; % P / epoch
 %
 ax = axes('Units','Normal','Position', ...
         [0.85 0.1 axwidth axheight]); % FIX!!!!
-axes(ax);
+set(curfig,'CurrentAxes',ax); % avoid axes(h): raises/shows the figure
 axis('off');
 if xmin <=0
-        figure(curfig);p=plot([0 0],[ymn ymx],'color', axislcolor); % draw vert axis at zero
+        set(0,'CurrentFigure',curfig);p=plot([0 0],[ymn ymx],'color', axislcolor); % draw vert axis at zero
 else
-        figure(curfig);p=plot([xmin xmin],[ymn ymx],'color', axislcolor); % draw vert axis at zero
+        set(0,'CurrentFigure',curfig);p=plot([xmin xmin],[ymn ymx],'color', axislcolor); % draw vert axis at zero
 end
 if g.ydir == -1
         set(gca, 'ydir', 'reverse');
@@ -907,14 +907,14 @@ end;
 axis([xmin xmax ymn ymx]);        % set axis values
 hold on
 %set(p, 'Clipping','off');        % center text
-figure(curfig);p=plot([xmin xmax],[0 0],'color',axislcolor); % draw horizontal axis
+set(0,'CurrentFigure',curfig);p=plot([xmin xmax],[0 0],'color',axislcolor); % draw horizontal axis
 axis([xmin xmax ymin ymax]);        % set axis values
 %
 %%%%%%%%%%%%%%%%%%%% plot vertical lines (optional) %%%%%%%%%%%%%%%%%
 %
 if ~isnan(g.vert)
         for v = g.vert
-                figure(curfig);plot([v v],[vmin vmax],'color',vertcolor); % draw vertical lines
+                set(0,'CurrentFigure',curfig);plot([v v],[vmin vmax],'color',vertcolor); % draw vertical lines
         end
 end
 %
@@ -925,7 +925,7 @@ if ~isnan(g.hori)
         hmin = xmean-0.2*(xmean-xmin);
         hmax = hmin*-1; %xmean+0.3*(xmax-xmean);
         for v = g.hori
-                figure(curfig);plot([hmin hmax],[v v], 'color',horicolor); % draw horizontal lines
+                set(0,'CurrentFigure',curfig);plot([hmin hmax],[v v], 'color',horicolor); % draw horizontal lines
         end
 end
 
@@ -935,29 +935,29 @@ end
 %%%%%%%%%%%%%%%%%%%%% Plot negative-up %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 signx = xmin-0.15*xdiff;
-figure(curfig);axis('off');h=text(double(signx),double(ymin),num2str(ymin,3)); % text ymin
+set(0,'CurrentFigure',curfig);axis('off');h=text(double(signx),double(ymin),num2str(ymin,3)); % text ymin
 set(h,'FontSize',TICKFONTSIZE);               % choose font size
 set(h,'HorizontalAlignment','right','Clipping','off');
 set(h,'Color',axislcolor);
 
-figure(curfig);axis('off');h=text(double(signx), double(ymax),['+' num2str(ymax,3)]);  % text +ymax
+set(0,'CurrentFigure',curfig);axis('off');h=text(double(signx), double(ymax),['+' num2str(ymax,3)]);  % text +ymax
 set(h,'FontSize',TICKFONTSIZE);         % choose font size
 set(h,'HorizontalAlignment','right','Clipping','off');
 
 ytick = g.ydir*(-ymax-0.3*ydiff);
-figure(curfig);tick = [int2str(xmin)]; h=text(double(xmin),double(ytick),tick);
+set(0,'CurrentFigure',curfig);tick = [int2str(xmin)]; h=text(double(xmin),double(ytick),tick);
 set(h,'FontSize',TICKFONTSIZE);         % choose font size
 set(h,'HorizontalAlignment','center',...
         'Clipping','off');  % center text
 set(h,'Color',axislcolor);
 
-tick = [xlabel]; figure(curfig);h=text(double(xmin+xdiff/2),double(ytick-0.5*g.ydir*ydiff),tick);
+tick = [xlabel]; set(0,'CurrentFigure',curfig);h=text(double(xmin+xdiff/2),double(ytick-0.5*g.ydir*ydiff),tick);
 set(h,'FontSize',TICKFONTSIZE);         % choose font size
 set(h,'HorizontalAlignment','center',...
         'Clipping','off');  % center text
 set(h,'Color',axislcolor);
 
-tick = [int2str(xmax)]; figure(curfig);h=text(double(xmax),double(ytick),tick);
+tick = [int2str(xmax)]; set(0,'CurrentFigure',curfig);h=text(double(xmax),double(ytick),tick);
 set(h,'FontSize',TICKFONTSIZE);         % choose font size
 set(h,'HorizontalAlignment','center',...
         'Clipping','off');  % center text
@@ -987,6 +987,6 @@ axcopy_modified(gcf, com);
 %
 orient tall
 % curfig = gcf;
-% h=figure(curfig);
+% h=set(0,'CurrentFigure',curfig);
 % set(h,'PaperPosition',[0.2 0.3 7.6 10]); % stretch out the plot on the page
 

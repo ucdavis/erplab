@@ -65,7 +65,7 @@ else
    comstr = double(['copyaxis_modified(''' char(command_dbl) ''')']); 
 end;
 for a=1:length(hndl)             % make all axes visible
-    allobjs = findobj('parent',hndl(a));
+    allobjs = get(hndl(a),'Children'); % direct children only; findobj('parent',...) rescans the whole figure and is O(n^2) over many axes
     for index = 1:length(allobjs)
         if isempty(get(allobjs(index), 'ButtonDownFcn'))
             set(allobjs(index), 'ButtonDownFcn', char(comstr));
@@ -73,9 +73,9 @@ for a=1:length(hndl)             % make all axes visible
     end;
 end
 if ~strcmpi(get(fig, 'type'), 'axes')
-    figure(fig);
+    set(0,'CurrentFigure',fig); % avoid figure(fig): raises/shows the figure and gets progressively slower as the figure fills with more axes/objects
 else
-    figure(get(fig, 'parent'));
+    set(0,'CurrentFigure',get(fig, 'parent'));
 end;
 if exist('command') ~= 1
     set(hndl(a),'ButtonDownFcn','copyaxis_modified');

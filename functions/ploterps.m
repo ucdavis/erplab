@@ -40,7 +40,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -324,7 +324,10 @@ end
 % Create figure
 %
 hbig = figure('Name',['<<',fname, '>>  Interactive (Click on figure for larger image)'],...
-    'NumberTitle','on', 'Tag', ftag);erplab_figtoolbar(hbig);
+    'NumberTitle','on', 'Tag', ftag);
+if strcmpi(get(hbig,'Visible'),'on') % skip icon I/O and toolbar construction for figures nobody will see
+    erplab_figtoolbar(hbig);
+end
 set(hbig, 'Renderer', 'painters');
 drawnow
 
@@ -429,6 +432,23 @@ else
         if isempty(pboxplot)
                 pboxplot = 1;
         end
+        %
+        % Pre-compute each grid cell's axes Position once via subplot(), instead of
+        % calling subplot() once per channel below. MATLAB's subplot() registers a
+        % layout listener that re-validates all existing subplots in the figure on
+        % every new call, so its cost grows with the number of subplots already in
+        % the figure (quadratic total cost over many channels). holdch mode always
+        % reuses the same single (1,2)-grid cell, so it is left on subplot() as-is.
+        %
+        if ~holdch
+                calibAxes = gobjects(1, row*col);
+                calibPos  = cell(1, row*col);
+                for calibIdx = 1:row*col
+                        calibAxes(calibIdx) = subplot(row, col, calibIdx);
+                        calibPos{calibIdx}  = get(calibAxes(calibIdx), 'Position');
+                end
+                delete(calibAxes);
+        end
         for i=1:nch
                 if holdch
                         ich  = 1;
@@ -458,7 +478,11 @@ else
                 end
                 
                 labelch = strrep(labelch,'_','\_'); % trick for dealing with '_'. JLC
-                sp(ich) = subplot(row, col, pboxplot(ich));
+                if holdch
+                        sp(ich) = subplot(row, col, pboxplot(ich)); % holdch always reuses the same cell
+                else
+                        sp(ich) = axes('Position', calibPos{pboxplot(ich)}); % use pre-calibrated position; avoids per-call subplot() listener overhead
+                end
                 
                 if pstyle==1 || pstyle==2
                         colorpl = [.7 .9 .7]; % Original
