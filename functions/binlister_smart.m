@@ -102,9 +102,10 @@ end
 %
 [BIN, nwrongbins] = decodebdf(bdfilename);
 if nwrongbins == 0
-        % allowMixedSigns=true: allows codes with different signs (~) in
-        % the same {}, needed for checkBINfnc's mixed-sign branch.
-        [BIN, isparsenum] = bdf2struct(BIN, 1);
+        % allowMixedSigns=false (the default): a {} with mixed required and
+        % prohibited codes collapses to all-negated, matching every other
+        % binlister implementation.
+        [BIN, isparsenum] = bdf2struct(BIN);
         if isparsenum == 0
                 return
         end
@@ -940,7 +941,9 @@ while ip > 0 && prehi > 0
                 end
 
         else
-                % Mixed-sign sequencer (e.g. {~21;22}): requires time spec
+                % Mixed-sign sequencer (e.g. {~21;22}): requires time spec.
+                % Currently unreachable (eventsign is always uniform within one
+                % {}); left in place in case mixed-sign support is added later.
                 if size(B.prehome(prehi).timecode, 1) ~= 1
                         error('''timecode'' not unique across ''eventcodes'' of current ''prehome''');
                 end
@@ -1050,7 +1053,8 @@ while ip <= numel(itemCodes) && posthi <= numel(B.posthome)
                 end
 
         else
-                % Mixed-sign posthome sequencer
+                % Mixed-sign posthome sequencer. Currently unreachable: see
+                % note on the prehome mixed-sign branch above.
                 currentTimeWindowOrig = unique(B.posthome(posthi).timecode, 'rows');
                 if size(currentTimeWindowOrig, 1) ~= 1
                         error('''timecode'' not unique across ''eventcodes'' of current ''posthome''');
