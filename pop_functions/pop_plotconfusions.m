@@ -541,7 +541,7 @@ for Numofmvpc = 1:length(ALLMVPC)
 
         if issaveas == 1
             if avg_win == 1
-                fname = [pname,filese,MVPC.mvpcname, '_ConfusionMatrix_', num2str(tp(1)),'-',num2str(tp(2)),'ms'];
+                fname = [pname,filesep,MVPC.mvpcname, '_ConfusionMatrix_', num2str(tp(1)),'-',num2str(tp(2)),'ms'];
             else
                 fname = [pname,filesep,MVPC.mvpcname, '_ConfusionMatrix_', num2str(tp(pnt)) 'ms'];
             end
