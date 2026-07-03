@@ -8,7 +8,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -104,8 +104,8 @@ handles = painterplab(handles);
 %
 handles = setfonterplab(handles);
 
-tooltip1  = ['<html><i>If you are going to estimate power spectrum at some point later then<br>increase the size of your epochs''s window a 5% (of the originally planned width)<br>'...
-        'on each side. This strategy offsets the minimal weight applied to the<br>end of the epoch due to the Hamming window function.'];
+tooltip1  = ['If you are going to estimate power spectrum at some point later then' char(10) 'increase the size of your epochs''s window a 5% (of the originally planned width)' char(10) ...
+        'on each side. This strategy offsets the minimal weight applied to the' char(10) 'end of the epoch due to the Hamming window function.'];
 
 set(handles.edit_hint, 'tooltip',tooltip1);
 

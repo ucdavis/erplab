@@ -8,7 +8,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -618,7 +618,7 @@ erpok = 1;
 
 % from Dataset
 if iseegstruct(ERPLAB1) && isfield(ERPLAB1, 'EVENTLIST')
-        currdatastr = ['<html>Current dataset  :<i>' ERPLAB1.setname '</i>'];
+        currdatastr = ['Current dataset  : ' ERPLAB1.setname];
         if isempty(ERPLAB1.epoch) % continuous
                 set(handles.radiobutton_fromcurrentdata, 'String', currdatastr )
                 set(handles.radiobutton_tocurrentdata, 'String', currdatastr)
@@ -651,7 +651,7 @@ end
 
 % from ERPset
 if iserpstruct(ERPLAB2) && isfield(ERPLAB2, 'EVENTLIST') && ~isempty(ERPLAB2.EVENTLIST)
-        currdatastr = ['<html>Current ERPset  :<i>' ERPLAB2.erpname '</i>'];
+        currdatastr = ['Current ERPset  : ' ERPLAB2.erpname];
         set(handles.radiobutton_fromcurrentERP, 'String', currdatastr )
 elseif iserpstruct(ERPLAB2) && isfield(ERPLAB2, 'EVENTLIST') && isempty(ERPLAB2.EVENTLIST)
         set(handles.radiobutton_fromcurrentERP, 'String', 'Current ERPset : EVENTLIST is empty' )
