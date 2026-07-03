@@ -902,11 +902,14 @@ while ip > 0 && prehi > 0
                         currentIdx      = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
                                           (itemTimes - iLogitemTime) <= currentTimeWindow(2) & notIgnored;
                         currentCodes    = itemCodes(currentIdx);
-                        currentTimesRel = itemTimes(currentIdx) - iLogitemTime;
 
                         if thisPreSign
-                                if any(ismember(currentCodes, B.prehome(prehi).eventcode))
-                                        preTimeLimit = max(currentTimesRel(ismember(currentCodes, B.prehome(prehi).eventcode)));
+                                matchedIdx = find(currentIdx & ismember(itemCodes, B.prehome(prehi).eventcode));
+                                if ~isempty(matchedIdx)
+                                        [preTimeLimit, relPos] = max(itemTimes(matchedIdx) - iLogitemTime);
+                                        % Anchor ip to the matched event, so a subsequent untimed
+                                        % sequencer checks adjacency to this match, not to home.
+                                        ip = matchedIdx(relPos) - 1;
                                         prehi = prehi - 1;
                                 else
                                         return
@@ -915,6 +918,10 @@ while ip > 0 && prehi > 0
                                 if any(ismember(currentCodes, B.prehome(prehi).eventcode))
                                         return
                                 else
+                                        % A negated match has no specific matched event to anchor to,
+                                        % but still counts as one step in the sequence, so ip still
+                                        % advances (matching neobinlister2's reference behavior).
+                                        ip = ip - 1;
                                         prehi = prehi - 1;
                                 end
                         end
@@ -1005,11 +1012,14 @@ while ip <= numel(itemCodes) && posthi <= numel(B.posthome)
                         currentIdx      = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
                                           (itemTimes - iLogitemTime) <= currentTimeWindow(2) & notIgnored;
                         currentCodes    = itemCodes(currentIdx);
-                        currentTimesRel = itemTimes(currentIdx) - iLogitemTime;
 
                         if thisPostSign
-                                if any(ismember(currentCodes, B.posthome(posthi).eventcode))
-                                        postTimeLimit = min(currentTimesRel(ismember(currentCodes, B.posthome(posthi).eventcode)));
+                                matchedIdx = find(currentIdx & ismember(itemCodes, B.posthome(posthi).eventcode));
+                                if ~isempty(matchedIdx)
+                                        [postTimeLimit, relPos] = min(itemTimes(matchedIdx) - iLogitemTime);
+                                        % Anchor ip to the matched event, so a subsequent untimed
+                                        % sequencer checks adjacency to this match, not to home.
+                                        ip = matchedIdx(relPos) + 1;
                                         posthi = posthi + 1;
                                 else
                                         return
@@ -1018,6 +1028,10 @@ while ip <= numel(itemCodes) && posthi <= numel(B.posthome)
                                 if any(ismember(currentCodes, B.posthome(posthi).eventcode))
                                         return
                                 else
+                                        % A negated match has no specific matched event to anchor to,
+                                        % but still counts as one step in the sequence, so ip still
+                                        % advances (matching neobinlister2's reference behavior).
+                                        ip = ip + 1;
                                         posthi = posthi + 1;
                                 end
                         end
