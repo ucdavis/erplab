@@ -131,9 +131,7 @@ for ch =1:nchan
 end
 
 set(handles.listboxchan1,'String', listch)
-label1 = '<HTML><left>Send file rather than individual equations';
-label2 = '<HTML><left>(creates compact history)';
-set(handles.checkbox_sendfile2history, 'string',[label1 '<br>' label2])
+set(handles.checkbox_sendfile2history, 'string', 'Send file rather than individual equations (creates compact history)')
 handles.listch = listch;
 
 %

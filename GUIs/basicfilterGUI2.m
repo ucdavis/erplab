@@ -2595,9 +2595,7 @@ else
             set(handles.edit_boundary, 'string', boundary);
         end
         
-        label1 = '<HTML><left>Apply filter to segments defined';
-        label2 = '<HTML><left>by boundary events (Strongly Recommended)';
-        set(handles.checkbox_boundary, 'string',[label1 '<br>' label2]);
+        set(handles.checkbox_boundary, 'string', 'Apply filter to segments defined by boundary events (Strongly Recommended)');
         set(handles.checkbox_removedc, 'Value', remove_dc)
         typedata = 'continuous EEG';
         minboundarysamdist = boundarydistance(ERPLAB.event);
@@ -2607,9 +2605,7 @@ else
         set(handles.edit_boundary, 'string', '');
         set(handles.edit_boundary,'Enable', 'off');
         %set(handles.edit_boundary,'BackgroundColor', [0.75 0.75 0.75]);
-        label1 = '<HTML><font color=#808080 ><left>Apply filter to segments defined</font>';
-        label2 = '<HTML><font color=#808080 ><left>by boundary events (Strongly Recommended)</font>';
-        set(handles.checkbox_boundary, 'string',[label1 '<br>' label2]);
+        set(handles.checkbox_boundary, 'string', 'Apply filter to segments defined by boundary events (Strongly Recommended)');
         set(handles.text_boundary,'Enable', 'off');
         set(handles.checkbox_removedc, 'String', 'Remove mean value (DC bias) before filtering (not usually appropriate for baseline-corrected data)')
         set(handles.checkbox_removedc, 'Value', remove_dc)
