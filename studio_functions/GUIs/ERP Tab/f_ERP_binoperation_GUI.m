@@ -690,7 +690,7 @@ varargout{1} = ERP_bin_operation_gui;
             binopDataor =  gui_erp_bin_operation.edit_bineq.Data;
             for ii = 1:100
                 binopDataorcell = char(binopDataor{ii,1});
-                aa = '<html><font color="red">The number of bins should be the same for the selected ERPsets!';
+                aa = 'Warning: The number of bins must be the same across selected sets';
                 if isempty(binopDataorcell) || strcmpi(binopDataorcell,aa)
                     dsnames{ii,1} = '';
                 else

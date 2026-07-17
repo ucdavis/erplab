@@ -1369,7 +1369,7 @@ end
 
 ColumnName{1} = '#Bin';
 for Numofsel_chan = 1:numel(ChanArray)
-    ColumnName{Numofsel_chan+1} = ['<html><font size= >',num2str(ChanArray(Numofsel_chan)),'.',32,chanLabels{ChanArray(Numofsel_chan)}];
+    ColumnName{Numofsel_chan+1} = [num2str(ChanArray(Numofsel_chan)),'.',32,chanLabels{ChanArray(Numofsel_chan)}];
     
 end
 line_colors_ldg = get_colors(Num_plot);

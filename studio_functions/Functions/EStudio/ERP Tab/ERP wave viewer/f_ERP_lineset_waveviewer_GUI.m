@@ -118,7 +118,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.line_customtable.Data = lineset_str;
         gui_erplinset_waveviewer.line_customtable.ColumnEditable = [false, true,true,true];
         gui_erplinset_waveviewer.line_customtable.FontSize = FonsizeDefault;
-        gui_erplinset_waveviewer.line_customtable.ColumnName = {'<html><font size=3 >#','<html><font size= 3>Color','<html><font size=3 >Style', '<html><font size=3 >Width'};
+        gui_erplinset_waveviewer.line_customtable.ColumnName = {'#','Color','Style','Width'};
         gui_erplinset_waveviewer.line_customtable.Enable = DataEnable;
         gui_erplinset_waveviewer.line_customtable.BackgroundColor = [1 1 1;1 1 1];
         gui_erplinset_waveviewer.line_customtable.RowName = [];

@@ -838,7 +838,7 @@ varargout{1} = ERP_chan_operation_gui;
             chanopDataor =  gui_erp_chan_operation.edit_bineq.Data;
             for ii = 1:100
                 chanopDataorcell = char(chanopDataor{ii,1});
-                aa= '<html><font color="red">The number of channles should be the same for the selected ERPsets!';
+                aa= 'Warning: The number of channels must be the same across selected sets';
                 if isempty(chanopDataorcell) || strcmpi(aa,chanopDataorcell)
                     dsnames{ii,1} = '';
                 else

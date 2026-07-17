@@ -835,7 +835,7 @@ varargout{1} = EEG_chan_operation_gui;
                 Enable_label = 'off';
                 for ii = 1:100
                     if ii==1
-                        dsnames{ii,1} = '<html><font color="red">The number of channels should be the same for the selected EEGsets!';
+                        dsnames{ii,1} = 'Warning: The number of channels must be the same across selected sets';
                     else
                         dsnames{ii,1} = '';
                     end
@@ -847,7 +847,7 @@ varargout{1} = EEG_chan_operation_gui;
                 chanopDataor =  gui_eegtab_chan_optn.edit_bineq.Data;
                 for ii = 1:100
                     chanopDataorcell = char(chanopDataor{ii,1});
-                    aa  = '<html><font color="red">The number of channels should be the same for the selected EEGsets!';
+                    aa  = 'Warning: The number of channels must be the same across selected sets';
                     if isempty(chanopDataorcell) || strcmpi(chanopDataorcell,aa)
                         dsnames{ii,1} = '';
                     else
