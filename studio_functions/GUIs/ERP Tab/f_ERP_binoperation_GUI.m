@@ -77,21 +77,14 @@ varargout{1} = ERP_bin_operation_gui;
 
         %%%----------------Mode-----------------------------------
         gui_erp_bin_operation.mode_1 = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_bin_operation.mode_modify_title = uicontrol('Style','text','Parent',gui_erp_bin_operation.mode_1 ,...
-            'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         gui_erp_bin_operation.mode_modify = uicontrol('Style','radiobutton','Parent',gui_erp_bin_operation.mode_1 ,...
-            'String','Modify Existing ERPset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_erp_bin_operation.mode_modify.String =  '<html>Modify Existing ERPset<br />(recursive updating)</html>';
+            'String','Modify existing ERPset (recursive updating)','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_bin_operation.Paras{2} = gui_erp_bin_operation.mode_modify.Value;
         gui_erp_bin_operation.mode_modify.KeyPressFcn = @erp_binop_presskey;
-        set(gui_erp_bin_operation.mode_1,'Sizes',[55 -1]);
         %%--------------For create a new ERPset----------------------------
         gui_erp_bin_operation.mode_2 = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_erp_bin_operation.mode_2);
         gui_erp_bin_operation.mode_create = uicontrol('Style','radiobutton','Parent',gui_erp_bin_operation.mode_2 ,...
-            'String',{'', ''},'callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_erp_bin_operation.mode_create.String =  '<html>Create New ERPset<br />(independent transformations)</html>';
-        set(gui_erp_bin_operation.mode_2,'Sizes',[55 -1]);
+            'String','New ERPset (independent transformations)','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_bin_operation.mode_create.KeyPressFcn = @erp_binop_presskey;
 
 
@@ -108,7 +101,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.note_title = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_erp_bin_operation.note_title,...
             'String','Note: Operates on all bins and channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        set(gui_erp_bin_operation.DataSelBox,'Sizes',[130,30,35,35,30 30]);
+        set(gui_erp_bin_operation.DataSelBox,'Sizes',[130,30,25,25,30 30]);
         estudioworkingmemory('ERPTab_binop',0);
     end
 

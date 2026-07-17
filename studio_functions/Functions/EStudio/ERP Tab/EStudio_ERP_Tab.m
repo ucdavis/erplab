@@ -41,7 +41,7 @@ disp('ERP Tab: Launching ERPsets, Bin & Channel Selection, Plot Settings, Plot S
 EStudio_gui_erp_totl.panel{5} = f_ERP_edit_channel_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(5) = 170;
 EStudio_gui_erp_totl.panel{6} = f_ERP_chanoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(6) = 330;
+EStudio_gui_erp_totl.panelSizes(6) = 340;
 EStudio_gui_erp_totl.panel{7} = f_erp_informtion_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(7) = 410;
 EStudio_gui_erp_totl.panel{8} = f_ERP_resample_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -49,7 +49,7 @@ EStudio_gui_erp_totl.panelSizes(8) = 190;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Edit/Delete Channels & Locations, Channel Operation, ERP & Bin Information, Sampling Rate & Epoch,...']);
 EStudio_gui_erp_totl.panel{9} = f_ERP_binoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(9) = 310;
+EStudio_gui_erp_totl.panelSizes(9) = 290;
 EStudio_gui_erp_totl.panel{10} = f_ERP_filtering_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(10) = 230;
 EStudio_gui_erp_totl.panel{11} =  f_ERP_baselinecorr_detrend_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);

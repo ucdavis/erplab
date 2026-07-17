@@ -84,8 +84,6 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.equations_modified = false;  % True if user edits after loading file
 
         gui_eegtab_chan_optn.equation_selection = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_eegtab_chan_optn.eq_editor = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_load = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
             'String','Load EQ','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_save = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
@@ -94,31 +92,32 @@ varargout{1} = EEG_chan_operation_gui;
             'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
 
         gui_eegtab_chan_optn.asst_locaInfo = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.eq_editor = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
+            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.ref_asst = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
-            'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        gui_eegtab_chan_optn.locaInfor = uicontrol('Style','checkbox','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
-            'String','','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_eegtab_chan_optn.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
-        gui_eegtab_chan_optn.Paras{2} = gui_eegtab_chan_optn.locaInfor.Value;
-        set(gui_eegtab_chan_optn.asst_locaInfo,'Sizes',[105 180]);
+            'String','Reference Assist','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+
         %%%----------------Mode-----------------------------------
         gui_eegtab_chan_optn.mode_1 = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_eegtab_chan_optn.mode_modify_title = uicontrol('Style','text','Parent',gui_eegtab_chan_optn.mode_1 ,...
-            'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         gui_eegtab_chan_optn.mode_modify = uicontrol('Style','radiobutton','Parent',gui_eegtab_chan_optn.mode_1 ,...
-            'String','Modify Existing ERPset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Modify existing dataset (recursive updating)','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_eegtab_chan_optn.mode_modify.KeyPressFcn=  @eeg_chanop_presskey;
-        gui_eegtab_chan_optn.mode_modify.String =  '<html>Modify Existing dataset<br />(recursive updating)</html>';
-        set(gui_eegtab_chan_optn.mode_1,'Sizes',[55 -1]);
         gui_eegtab_chan_optn.Paras{3} =gui_eegtab_chan_optn.mode_modify.Value;
         %%--------------For create a new ERPset----------------------------
         gui_eegtab_chan_optn.mode_2 = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_eegtab_chan_optn.mode_2,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.mode_create = uicontrol('Style','radiobutton','Parent',gui_eegtab_chan_optn.mode_2 ,...
-            'String',{'', ''},'callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','New dataset (independent transformations)','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_eegtab_chan_optn.mode_create.KeyPressFcn=  @eeg_chanop_presskey;
-        gui_eegtab_chan_optn.mode_create.String =  '<html>Create New dataset<br />(independent transformations)</html>';
-        set(gui_eegtab_chan_optn.mode_2,'Sizes',[55 -1]);
+
+        uiextras.Empty('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+
+        gui_eegtab_chan_optn.loca_info_row = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', gui_eegtab_chan_optn.loca_info_row,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.locaInfor = uicontrol('Style','checkbox','Parent',gui_eegtab_chan_optn.loca_info_row,...
+            'String','Try to preserve location information','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', gui_eegtab_chan_optn.loca_info_row,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.Paras{2} = gui_eegtab_chan_optn.locaInfor.Value;
+        set(gui_eegtab_chan_optn.loca_info_row,'Sizes',[-1 220 -1]);
 
         %%-----------------Run---------------------------------------------
         gui_eegtab_chan_optn.run_title = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
@@ -131,7 +130,7 @@ varargout{1} = EEG_chan_operation_gui;
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         set(gui_eegtab_chan_optn.run_title,'Sizes',[15 105  30 105 15]);
 
-        set(gui_eegtab_chan_optn.DataSelBox,'Sizes',[130,30,35,35,35,30]);
+        set(gui_eegtab_chan_optn.DataSelBox,'Sizes',[130,30,30,25,25,10,25,30]);
     end
 
 %%**************************************************************************%%

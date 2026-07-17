@@ -77,8 +77,6 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.equations_modified = false;  % True if user edits after loading file
 
         gui_erp_chan_operation.equation_selection = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_chan_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
-            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.eq_load = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
             'String','Load EQ','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.eq_save = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
@@ -87,32 +85,32 @@ varargout{1} = ERP_chan_operation_gui;
             'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
 
         gui_erp_chan_operation.asst_locaInfo = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_erp_chan_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.asst_locaInfo,...
+            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.ref_asst = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.asst_locaInfo,...
-            'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        gui_erp_chan_operation.locaInfor = uicontrol('Style','checkbox','Parent',gui_erp_chan_operation.asst_locaInfo,...
-            'String','Load Eq.','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_erp_chan_operation.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
-        gui_erp_chan_operation.Paras{2} =gui_erp_chan_operation.locaInfor.Value;
-        set(gui_erp_chan_operation.asst_locaInfo,'Sizes',[105 180]);
-        gui_erp_chan_operation.locaInfor.KeyPressFcn= @erp_chanop_presskey;
+            'String','Reference Assist','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         %%%----------------Mode-----------------------------------
         gui_erp_chan_operation.mode_1 = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_chan_operation.mode_modify_title = uicontrol('Style','text','Parent',gui_erp_chan_operation.mode_1 ,...
-            'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         gui_erp_chan_operation.mode_modify = uicontrol('Style','radiobutton','Parent',gui_erp_chan_operation.mode_1 ,...
-            'String','Modify Existing ERPset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Modify existing ERPset (recursive updating)','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_chan_operation.mode_modify.KeyPressFcn= @erp_chanop_presskey;
-        gui_erp_chan_operation.mode_modify.String =  '<html>Modify Existing ERPset<br />(recursive updating)</html>';
-        set(gui_erp_chan_operation.mode_1,'Sizes',[55 -1]);
         gui_erp_chan_operation.Paras{3} = gui_erp_chan_operation.mode_modify.Value;
         %%--------------For create a new ERPset----------------------------
         gui_erp_chan_operation.mode_2 = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_erp_chan_operation.mode_2,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.mode_create = uicontrol('Style','radiobutton','Parent',gui_erp_chan_operation.mode_2 ,...
-            'String',{'', ''},'callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_erp_chan_operation.mode_create.String =  '<html>Create New ERPset<br />(independent transformations)</html>';
+            'String','New ERPset (independent transformations)','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_chan_operation.mode_create.KeyPressFcn= @erp_chanop_presskey;
-        set(gui_erp_chan_operation.mode_2,'Sizes',[55 -1]);
+
+        uiextras.Empty('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
+
+        gui_erp_chan_operation.loca_info_row = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', gui_erp_chan_operation.loca_info_row,'BackgroundColor',ColorB_def);
+        gui_erp_chan_operation.locaInfor = uicontrol('Style','checkbox','Parent',gui_erp_chan_operation.loca_info_row,...
+            'String','Try to preserve location information','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', gui_erp_chan_operation.loca_info_row,'BackgroundColor',ColorB_def);
+        gui_erp_chan_operation.locaInfor.KeyPressFcn= @erp_chanop_presskey;
+        gui_erp_chan_operation.Paras{2} =gui_erp_chan_operation.locaInfor.Value;
+        set(gui_erp_chan_operation.loca_info_row,'Sizes',[-1 220 -1]);
         %%-----------------Run---------------------------------------------
         gui_erp_chan_operation.run_title = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
@@ -123,7 +121,7 @@ varargout{1} = ERP_chan_operation_gui;
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);
-        set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30]);
+        set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,30,25,25,10,25,30]);
 
         estudioworkingmemory('ERPTab_chanop',0);
     end
