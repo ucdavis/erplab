@@ -83,13 +83,13 @@ disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
 EStudio_gui_erp_totl.eegpanel{21} = f_EEG_baselinecorr_detrend_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(21) = 220;
 EStudio_gui_erp_totl.eegpanel{22} = f_EEG_dq_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(22) = 240;
+EStudio_gui_erp_totl.eegpanelSizes(22) = 285;
 EStudio_gui_erp_totl.eegpanel{23} = f_EEG_avg_erp_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(23) = 300;
+EStudio_gui_erp_totl.eegpanelSizes(23) = 315;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Baseline Correction & Linear Detrend (Epoched EEG), Compute Data Quality Metrics (Epoched EEG), Compute Averaged ERPs (Epoched EEG),...']);
 EStudio_gui_erp_totl.eegpanel{24} = f_EEG_extr_best_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(24) = 360;
+EStudio_gui_erp_totl.eegpanelSizes(24) = 380;
 EStudio_gui_erp_totl.eegpanel{25} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(25) = 190;
 EStudio_gui_erp_totl.eegpanel{26} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);

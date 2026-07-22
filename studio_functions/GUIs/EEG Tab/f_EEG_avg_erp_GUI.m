@@ -90,44 +90,44 @@ varargout{1} = Eegtab_box_avg_erp;
         end
         %%Round to arlier time sample (recommended)
         EEG_avg_erp.movewindow_title1 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_avg_erp.movewindow_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_avg_erp.movewindow_title1,'HorizontalAlignment','center','FontWeight','bold',...
             'String','Epochs to Include in ERP Average:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
-        
+        uicontrol('Style','pushbutton','Parent',EEG_avg_erp.movewindow_title1,...
+            'String','?','callback',@avg_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+        set(EEG_avg_erp.movewindow_title1,'Sizes',[-1 220 25]);
+
         %%all epochs
         EEG_avg_erp.movewindow_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.all_marks = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.movewindow_title,'HorizontalAlignment','left',...
-            'callback',@all_marks,'String','Include All epochs (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.all_marks.KeyPressFcn=  @eeg_avg_erp_presskey;
-        uiextras.Empty('Parent', EEG_avg_erp.movewindow_title ,'BackgroundColor',ColorB_def);
-        set(EEG_avg_erp.movewindow_title,'Sizes',[270,-1]);
-        
+
         %%exclude marked epochs
         EEG_avg_erp.windowstep_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.excld_marks = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.windowstep_title,'HorizontalAlignment','left',...
-            'callback',@excld_marks,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_avg_erp.excld_marks.String = '<html>Exclude epochs marked during artifact<br />detection (highly recommended)</html>';
+            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.excld_marks.KeyPressFcn=  @eeg_avg_erp_presskey;
-        uiextras.Empty('Parent',EEG_avg_erp.windowstep_title ,'BackgroundColor',ColorB_def);
-        set(EEG_avg_erp.windowstep_title,'Sizes',[260,-1]);
-        
+
         %%marked epochs
         EEG_avg_erp.eventcode_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.marked_epochs = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@marked_epochs,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_avg_erp.marked_epochs.String = '<html>Include ONLY epochs marked with artifact<br />detection (be cautious!)</html>';
-        uiextras.Empty('Parent', EEG_avg_erp.eventcode_title );
-        set(EEG_avg_erp.eventcode_title,'Sizes',[260,-1]);
+            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.all_marks.Value = Valueround1;
         EEG_avg_erp.excld_marks.Value = Valueround2;
         EEG_avg_erp.marked_epochs.Value = Valueround3;
-        
-        
+
+
+        uiextras.Empty('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
+
         %%selection for invalid epochs
         EEG_avg_erp.invalidepoch_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_avg_erp.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_avg_erp.invalidepoch = uicontrol('Style','checkbox','Parent',EEG_avg_erp.invalidepoch_title ,'HorizontalAlignment','left',...
-            'callback',@invalidepoch,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_avg_erp.invalidepoch.String = '<html>Exclude epochs with either "boundary"<br />or invalid events (highly recommended)</html>';
+            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', EEG_avg_erp.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_avg_erp.invalidepoch.KeyPressFcn=  @eeg_avg_erp_presskey;
+        set(EEG_avg_erp.invalidepoch_title,'Sizes',[-1 230 -1]);
         excbound=1;
         EEG_avg_erp.invalidepoch.Value = excbound;
         
@@ -160,8 +160,12 @@ varargout{1} = Eegtab_box_avg_erp;
         end
         
         EEG_avg_erp.para_title1 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_avg_erp.para_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_avg_erp.para_title1,'HorizontalAlignment','center','FontWeight','bold',...
             'String','Data Quality Quantification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+        uicontrol('Style','pushbutton','Parent',EEG_avg_erp.para_title1,...
+            'String','?','callback',@dq_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+        set(EEG_avg_erp.para_title1,'Sizes',[-1 220 25]);
         %%Default Parameters
         EEG_avg_erp.para_title2 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.def_para = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.para_title2,'HorizontalAlignment','left',...
@@ -215,7 +219,7 @@ varargout{1} = Eegtab_box_avg_erp;
         uiextras.Empty('Parent',  EEG_avg_erp.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_avg_erp.detar_run_title,'Sizes',[15 105  30 105 15]);
         
-        set(EEG_avg_erp.DataSelBox,'Sizes',[20 25 30 30 30 20 25 25 25 30]);
+        set(EEG_avg_erp.DataSelBox,'Sizes',[25 25 30 30 5 30 25 25 25 25 30]);
         estudioworkingmemory('EEGTab_avg_erp',0);
         estudioworkingmemory('EEGTab_eeg2erp',0);
     end
@@ -224,6 +228,22 @@ varargout{1} = Eegtab_box_avg_erp;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%--------------------------------panel help--------------------------------
+    function avg_help(~,~)
+        msgbox(sprintf([...
+            'Epochs to Include in ERP Average\n\n' ...
+            '- All (ignore artifact detections): include every epoch, regardless of artifact marks.\n\n' ...
+            '- Only epochs without flagged artifacts (recommended): exclude epochs flagged during artifact detection.\n\n' ...
+            '- Only epochs WITH flagged artifacts: include ONLY flagged epochs. Use with caution - this is typically for reviewing rejected data, not for standard analysis.\n\n' ...
+            'Exclude epochs with boundary events (recommended): excludes epochs that contain a boundary event or an event otherwise disabled during processing (events with enable flag set to 0).']), ...
+            'Compute Averaged ERPs - Help', 'help');
+    end
+
+%%--------------------------------data quality help-------------------------
+    function dq_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio:-Data-Quality-Metrics', '-browser');
+    end
 
 %%--------------------------------default parameters-----------------------
     function def_para(Source,~)

@@ -94,8 +94,12 @@ varargout{1} = Eegtab_box_dq_epoch;
         end
         
         EEG_dq_epoch.para_title1 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_dq_epoch.para_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_dq_epoch.para_title1,'HorizontalAlignment','center','FontWeight','bold',...
             'String','Data Quality Quantification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+        uicontrol('Style','pushbutton','Parent',EEG_dq_epoch.para_title1,...
+            'String','?','callback',@dq_metrics_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+        set(EEG_dq_epoch.para_title1,'Sizes',[-1 220 25]);
         %%Default Parameters
         EEG_dq_epoch.para_title2 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.def_para = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.para_title2,'HorizontalAlignment','left',...
@@ -144,37 +148,45 @@ varargout{1} = Eegtab_box_dq_epoch;
         end
         %%Round to arlier time sample (recommended)
         EEG_dq_epoch.movewindow_title1 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_dq_epoch.movewindow_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_dq_epoch.movewindow_title1,'HorizontalAlignment','center','FontWeight','bold',...
             'String','Epochs to Include in DQ metrics:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
-        
+        uicontrol('Style','pushbutton','Parent',EEG_dq_epoch.movewindow_title1,...
+            'String','?','callback',@dq_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+        set(EEG_dq_epoch.movewindow_title1,'Sizes',[-1 220 25]);
+
         %%all epochs
         EEG_dq_epoch.movewindow_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.all_marks = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.movewindow_title,'HorizontalAlignment','left',...
-            'callback',@all_marks,'String','Include All epochs (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.all_marks.KeyPressFcn=  @eeg_shiftcodes_presskey;
-        uiextras.Empty('Parent', EEG_dq_epoch.movewindow_title ,'BackgroundColor',ColorB_def);
-        set(EEG_dq_epoch.movewindow_title,'Sizes',[270,-1]);
-        
+
         %%exclude marked epochs
         EEG_dq_epoch.windowstep_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.excld_marks = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.windowstep_title,'HorizontalAlignment','left',...
-            'callback',@excld_marks,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_dq_epoch.excld_marks.String = '<html>Exclude epochs marked during artifact<br />detection (highly recommended)</html>';
+            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.excld_marks.KeyPressFcn=  @eeg_shiftcodes_presskey;
-        uiextras.Empty('Parent',EEG_dq_epoch.windowstep_title ,'BackgroundColor',ColorB_def);
-        set(EEG_dq_epoch.windowstep_title,'Sizes',[260,-1]);
-        
+
         %%marked epochs
         EEG_dq_epoch.eventcode_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.marked_epochs = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@marked_epochs,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_dq_epoch.marked_epochs.String = '<html>Include ONLY epochs marked with artifact<br />detection (be cautious!)</html>';
-        uiextras.Empty('Parent', EEG_dq_epoch.eventcode_title );
-        set(EEG_dq_epoch.eventcode_title,'Sizes',[260,-1]);
+            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.all_marks.Value = Valueround1;
         EEG_dq_epoch.excld_marks.Value = Valueround2;
         EEG_dq_epoch.marked_epochs.Value = Valueround3;
-        
+
+        uiextras.Empty('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+
+        %%selection for invalid epochs
+        EEG_dq_epoch.invalidepoch_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_dq_epoch.invalidepoch_title,'BackgroundColor',ColorB_def);
+        EEG_dq_epoch.invalidepoch = uicontrol('Style','checkbox','Parent',EEG_dq_epoch.invalidepoch_title ,'HorizontalAlignment','left',...
+            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', EEG_dq_epoch.invalidepoch_title,'BackgroundColor',ColorB_def);
+        EEG_dq_epoch.invalidepoch.KeyPressFcn=  @eeg_shiftcodes_presskey;
+        set(EEG_dq_epoch.invalidepoch_title,'Sizes',[-1 230 -1]);
+        EEG_dq_epoch.invalidepoch.Value = 1;
+
         %%-----------------------Cancel and Run----------------------------
         EEG_dq_epoch.detar_run_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_dq_epoch.detar_run_title,'BackgroundColor',ColorB_def);
@@ -186,13 +198,29 @@ varargout{1} = Eegtab_box_dq_epoch;
         uiextras.Empty('Parent',  EEG_dq_epoch.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_dq_epoch.detar_run_title,'Sizes',[15 105  30 105 15]);
         
-        set(EEG_dq_epoch.DataSelBox,'Sizes',[20 25 25 20 25 30 30 30]);
+        set(EEG_dq_epoch.DataSelBox,'Sizes',[25 25 25 25 25 30 30 5 30 30]);
         estudioworkingmemory('EEGTab_dq_epoch',0);
     end
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%--------------------------------panel help--------------------------------
+    function dq_help(~,~)
+        msgbox(sprintf([...
+            'Epochs to Include in DQ metrics\n\n' ...
+            '- All (ignore artifact detections): include every epoch, regardless of artifact marks.\n\n' ...
+            '- Only epochs without flagged artifacts (recommended): exclude epochs flagged during artifact detection.\n\n' ...
+            '- Only epochs WITH flagged artifacts: include ONLY flagged epochs. Use with caution - this is typically for reviewing rejected data, not for standard analysis.\n\n' ...
+            'Exclude epochs with boundary events (recommended): excludes epochs that contain a boundary event or an event otherwise disabled during processing (events with enable flag set to 0).']), ...
+            'Compute Data Quality Metrics - Help', 'help');
+    end
+
+%%--------------------------------data quality help-------------------------
+    function dq_metrics_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio:-Data-Quality-Metrics', '-browser');
+    end
 
 %%--------------------------------default parameters-----------------------
     function def_para(Source,~)
@@ -331,6 +359,25 @@ varargout{1} = Eegtab_box_dq_epoch;
     end
 
 
+%%-------------exclude epochs with boundary events--------------------------
+    function invalidepoch(Source,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=16
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_dq_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        EEG_dq_epoch.dq_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_dq_epoch.dq_cancel.ForegroundColor = [1 1 1];
+        EEG_dq_epoch.dq_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_dq_epoch.dq_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_dq_epoch',1);
+    end
+
+
 %%%----------------------Preview-------------------------------------------
     function dq_cancel(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -433,7 +480,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         onlyart=EEG_dq_epoch.marked_epochs.Value;
         incart   = 0;
         incIndx  = 0;
-        excbound = 1; % exclude epochs having boundary events
+        excbound = EEG_dq_epoch.invalidepoch.Value; % exclude epochs having boundary events
         Tspectrum  = 0;   % total power spectrum
         Espectrum  = 0;  % evoked power spectrum
         iswindowed = 0;
@@ -586,6 +633,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             EEG_dq_epoch.all_marks.Enable= 'off';
             EEG_dq_epoch.excld_marks.Enable= 'off';
             EEG_dq_epoch.marked_epochs.Enable= 'off';
+            EEG_dq_epoch.invalidepoch.Enable= 'off';
             EEG_dq_epoch.dq_run.Enable= 'off';
             EEG_dq_epoch.dq_cancel.Enable= 'off';
             
@@ -609,6 +657,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.all_marks.Enable= 'on';
         EEG_dq_epoch.excld_marks.Enable= 'on';
         EEG_dq_epoch.marked_epochs.Enable= 'on';
+        EEG_dq_epoch.invalidepoch.Enable= 'on';
         EEG_dq_epoch.dq_run.Enable= 'on';
         EEG_dq_epoch.dq_cancel.Enable= 'on';
         if EEG_dq_epoch.def_para.Value==1

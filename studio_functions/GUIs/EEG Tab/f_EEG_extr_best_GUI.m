@@ -65,44 +65,43 @@ varargout{1} = Eegtab_box_best;
         
         %%Round to arlier time sample (recommended)
         EEG_extr_best.movewindow_title1 = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_extr_best.movewindow_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_extr_best.movewindow_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Epochs to Include into BESTset:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
-        
+            'String','Epochs to Include in BESTset:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+        uicontrol('Style','pushbutton','Parent',EEG_extr_best.movewindow_title1,...
+            'String','?','callback',@best_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+        set(EEG_extr_best.movewindow_title1,'Sizes',[-1 220 25]);
+
         %%all epochs
         EEG_extr_best.movewindow_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_extr_best.all_marks = uicontrol('Style','radiobutton','Parent',EEG_extr_best.movewindow_title,'HorizontalAlignment','left',...
-            'callback',@all_marks,'String','Include all epochs (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_extr_best.all_marks.KeyPressFcn=  @EEG_extr_best_presskey;
-        uiextras.Empty('Parent', EEG_extr_best.movewindow_title ,'BackgroundColor',ColorB_def);
-        set(EEG_extr_best.movewindow_title,'Sizes',[270,-1]);
-        
+
         %%exclude marked epochs
         EEG_extr_best.windowstep_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_extr_best.excld_marks = uicontrol('Style','radiobutton','Parent',EEG_extr_best.windowstep_title,'HorizontalAlignment','left',...
-            'callback',@excld_marks,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_extr_best.excld_marks.String = '<html>Exclude epochs marked during artifact<br />detection (highly recommended)</html>';
+            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_extr_best.excld_marks.KeyPressFcn=  @EEG_extr_best_presskey;
-        uiextras.Empty('Parent',EEG_extr_best.windowstep_title ,'BackgroundColor',ColorB_def);
-        set(EEG_extr_best.windowstep_title,'Sizes',[260,-1]);
-        
+
         %%marked epochs
         EEG_extr_best.eventcode_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_extr_best.marked_epochs = uicontrol('Style','radiobutton','Parent',EEG_extr_best.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@marked_epochs,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_extr_best.marked_epochs.String = '<html>Include ONLY epochs marked with artifact<br />detection (be cautious!)</html>';
-        uiextras.Empty('Parent', EEG_extr_best.eventcode_title );
-        set(EEG_extr_best.eventcode_title,'Sizes',[260,-1]);
+            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_extr_best.all_marks.Value = 0;
         EEG_extr_best.excld_marks.Value = 1;
         EEG_extr_best.marked_epochs.Value = 0;
-        
-        
+
+        uiextras.Empty('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
+
         %%selection for invalid epochs
         EEG_extr_best.invalidepoch_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EEG_extr_best.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.invalidepoch = uicontrol('Style','checkbox','Parent',EEG_extr_best.invalidepoch_title ,'HorizontalAlignment','left',...
-            'callback',@invalidepoch,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_extr_best.invalidepoch.String = '<html>Exclude epochs with either "boundary"<br />or invalid events (highly recommended)</html>';
+            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', EEG_extr_best.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.invalidepoch.KeyPressFcn=  @EEG_extr_best_presskey;
+        set(EEG_extr_best.invalidepoch_title,'Sizes',[-1 230 -1]);
         excbound=1;
         EEG_extr_best.invalidepoch.Value = excbound;
         
@@ -134,8 +133,9 @@ varargout{1} = Eegtab_box_best;
         uicontrol('Style', 'text','Parent',EEG_extr_best.tranf_title2,...
             'String','Hz','FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         set(EEG_extr_best.tranf_title2,'Sizes',[15 105  30 100 20]);
-        
-        
+
+        uiextras.Empty('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
+
         %%-----------------------Cancel and Run----------------------------
         EEG_extr_best.detar_run_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_extr_best.detar_run_title,'BackgroundColor',ColorB_def);
@@ -148,7 +148,7 @@ varargout{1} = Eegtab_box_best;
         set(EEG_extr_best.detar_run_title,'Sizes',[15 105  30 105 15]);
         
         
-        set(EEG_extr_best.DataSelBox,'Sizes',[20 25 30 30 30 100 30 25 30]);
+        set(EEG_extr_best.DataSelBox,'Sizes',[25 25 30 30 5 30 100 30 25 10 30]);
         EEG_extr_best.binsel = [];
         EEG_extr_best.freqband = {'',''};
     end
@@ -156,6 +156,17 @@ varargout{1} = Eegtab_box_best;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%--------------------------------panel help--------------------------------
+    function best_help(~,~)
+        msgbox(sprintf([...
+            'Epochs to Include in BESTset\n\n' ...
+            '- All (ignore artifact detections): include every epoch, regardless of artifact marks.\n\n' ...
+            '- Only epochs without flagged artifacts (recommended): exclude epochs flagged during artifact detection.\n\n' ...
+            '- Only epochs WITH flagged artifacts: include ONLY flagged epochs. Use with caution - this is typically for reviewing rejected data, not for standard analysis.\n\n' ...
+            'Exclude epochs with boundary events (recommended): excludes epochs that contain a boundary event or an event otherwise disabled during processing (events with enable flag set to 0).']), ...
+            'Extract Bin-Epoched Single Trials (BEST) - Help', 'help');
+    end
 
 %%---------------------------all epochs------------------------------------
     function all_marks(Source,~)
