@@ -55,7 +55,7 @@ EStudio_gui_erp_totl.panelSizes(10) = 230;
 EStudio_gui_erp_totl.panel{11} =  f_ERP_baselinecorr_detrend_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(11) = 220;
 EStudio_gui_erp_totl.panel{12} = f_ERP_grandaverageGUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(12) = 260;
+EStudio_gui_erp_totl.panelSizes(12) = 240;
 disp([32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,...
     'Bin Operations, Filtering, Baseline Correction & Linear Detrend, Average Across ERPsets (Grand Average),...']);
 EStudio_gui_erp_totl.panel{13} = f_ERP_append_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
