@@ -289,7 +289,7 @@ if frdm==0 %JLC
 end
 handles.frdm = frdm;
 word = 'positive';
-set(handles.togglebutton_y_axis_polarity, 'String', sprintf('<HTML><center><b>%s</b> is up', word));
+set(handles.togglebutton_y_axis_polarity, 'String', sprintf('%s is up', word), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
 set(handles.togglebutton_y_axis_polarity, 'Enable', enablepolabutt);
 handles.ydir = 'normal';
 %set(handles.checkbox_butterflybin,'Value', 0)
@@ -1630,7 +1630,7 @@ ylim   = str2num(get(handles.edit_ylim, 'String' ));
 xlim   = str2num(get(handles.edit_xlim, 'String' ));
 
 if isempty(xlim) || isempty(ylim)
-        set(hObject, 'string', sprintf('<HTML><center><b>%s</b> is up', 'positive'));
+        set(hObject, 'string', sprintf('%s is up', 'positive'), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
         set(hObject, 'Value', 1)
         return
 end
@@ -1643,7 +1643,7 @@ else
         %set(handles.axes1,'ydir','normal');
         handles.ydir = 'normal';
 end
-set(hObject, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
+set(hObject, 'string', sprintf('%s is up', word), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
 
 %Update handles structure
 guidata(hObject, handles);

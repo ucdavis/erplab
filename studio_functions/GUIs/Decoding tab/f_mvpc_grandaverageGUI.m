@@ -69,20 +69,10 @@ varargout{1} = MVPC_grdavg_box_gui;
         gui_mvpc_grdavg.cbdatq_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_mvpc_grdavg.sem_checkbox = uicontrol('Style','checkbox','Parent', gui_mvpc_grdavg.cbdatq_title,'Enable','off',...
             'String','','Value',avg_def,'callback',@sem_checkbox,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        gui_mvpc_grdavg.sem_checkbox.String =  '<html>Compute point-by-point standard error of mean </html>';
+        gui_mvpc_grdavg.sem_checkbox.String =  'Compute point-by-point SEM';
         gui_mvpc_grdavg.sem_checkbox.KeyPressFcn = @mvpc_graverage_presskey;
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
-        try warning_checbox =avg_def{5};  catch   warning_checbox=0;end
-        if isempty(warning_checbox) || numel(warning_checbox)~=1 || (warning_checbox~=0 && warning_checbox~=1)
-            warning_checbox=0;
-        end
-        gui_mvpc_grdavg.warning_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_mvpc_grdavg.warning_checbox = uicontrol('Style','checkbox','Parent', gui_mvpc_grdavg.warning_title,'Enable','off',...
-            'String','','Value',warning_checbox,'callback',@warning_checbox,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        gui_mvpc_grdavg.warning_checbox.String =  '<html>Warning (to command line) if there are<br />any difference in decoding parameters</html>';
-        gui_mvpc_grdavg.warning_checbox.KeyPressFcn = @mvpc_graverage_presskey;
-        gui_mvpc_grdavg.paras{3} = gui_mvpc_grdavg.warning_checbox.Value;
-        
+
         gui_mvpc_grdavg.location_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',gui_mvpc_grdavg.location_title);
         gui_mvpc_grdavg.cancel  = uicontrol('Style','pushbutton','Parent',gui_mvpc_grdavg.location_title,'Enable','off',...
@@ -92,7 +82,7 @@ varargout{1} = MVPC_grdavg_box_gui;
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',gui_mvpc_grdavg.location_title);
         set(gui_mvpc_grdavg.location_title,'Sizes',[20 95 30 95 20]);
-        set(gui_mvpc_grdavg.DataSelBox,'Sizes',[30,30,30,30]);
+        set(gui_mvpc_grdavg.DataSelBox,'Sizes',[30,30,30]);
     end
 
 %%**************************************************************************%%
@@ -178,18 +168,6 @@ varargout{1} = MVPC_grdavg_box_gui;
         gui_mvpc_grdavg.cancel.ForegroundColor = [1 1 1];
     end
 
-    function warning_checbox(~,~)
-        if isempty(observe_DECODE.MVPC)
-            observe_DECODE.Count_currentMVPC=1;
-            return;
-        end
-        gui_mvpc_grdavg.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        gui_mvpc_grdavg.run.ForegroundColor = [1 1 1];
-        MVPC_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        gui_mvpc_grdavg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_mvpc_grdavg.cancel.ForegroundColor = [1 1 1];
-    end
-
 
 %%--------------------------------cancel-----------------------------------
     function average_cancel(~,~)
@@ -211,13 +189,6 @@ varargout{1} = MVPC_grdavg_box_gui;
         end
         gui_mvpc_grdavg.sem_checkbox.Value = sem_checkbox;
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
-        
-        warning_checbox = gui_mvpc_grdavg.paras{3};
-        if isempty(warning_checbox) || numel(warning_checbox)~=1 || (warning_checbox~=0 && warning_checbox~=1)
-            warning_checbox=0;
-        end
-        gui_mvpc_grdavg.warning_checbox.Value = warning_checbox;
-        gui_mvpc_grdavg.paras{3} = gui_mvpc_grdavg.warning_checbox.Value;
         gui_mvpc_grdavg.run.BackgroundColor =  [1 1 1];
         gui_mvpc_grdavg.run.ForegroundColor = [0 0 0];
         MVPC_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -233,8 +204,7 @@ varargout{1} = MVPC_grdavg_box_gui;
         end
         MVPCArray = str2num(gui_mvpc_grdavg.mvpc_edit.String);
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
-        gui_mvpc_grdavg.paras{3} = gui_mvpc_grdavg.warning_checbox.Value;
-        
+
         if isempty(MVPCArray) ||  numel(MVPCArray)<2
             msgboxText =  ['Average Across MVPCsets (Grand Average)  - Two MVPCsets,at least,were selected'];
             titlNamerro = 'Warning for Pattern Classification Tab';
@@ -255,21 +225,16 @@ varargout{1} = MVPC_grdavg_box_gui;
         
         gui_mvpc_grdavg.paras{1} = str2num(gui_mvpc_grdavg.mvpc_edit.String);
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
-        gui_mvpc_grdavg.paras{3} = gui_mvpc_grdavg.warning_checbox.Value;
-        
+
         stderror = gui_mvpc_grdavg.sem_checkbox.Value;
-        warnon = gui_mvpc_grdavg.warning_checbox.Value;
+        warnon = 1; % always warn (to command line) of decoding-parameter differences across sets
         if stderror==1
             stdsstr = 'on';
         else
             stdsstr = 'off';
         end
-        if warnon==1
-            warnon_str = 'on';
-        else
-            warnon_str = 'off';
-        end
-        
+        warnon_str = 'on';
+
         estudioworkingmemory('pop_mvpcaverager',{[],0,'',stderror,warnon});
         
         
@@ -346,7 +311,6 @@ varargout{1} = MVPC_grdavg_box_gui;
         gui_mvpc_grdavg.mvpc_edit.Enable = enableFlag;
         gui_mvpc_grdavg.mvpc_browse.Enable = enableFlag;
         gui_mvpc_grdavg.sem_checkbox.Enable = enableFlag;
-        gui_mvpc_grdavg.warning_checbox.Enable = enableFlag;
         gui_mvpc_grdavg.cancel.Enable = enableFlag;
         gui_mvpc_grdavg.run.Enable = enableFlag;
         if ~isempty(observe_DECODE.MVPC)
@@ -396,8 +360,6 @@ varargout{1} = MVPC_grdavg_box_gui;
         gui_mvpc_grdavg.paras{1} = str2num(gui_mvpc_grdavg.mvpc_edit.String);
         gui_mvpc_grdavg.sem_checkbox.Value = 1;
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
-        gui_mvpc_grdavg.warning_checbox.Value = 0;
-        gui_mvpc_grdavg.paras{3} = gui_mvpc_grdavg.warning_checbox.Value;
         observe_DECODE.Reset_Best_paras_panel=4;
     end
 

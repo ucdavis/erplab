@@ -31,14 +31,14 @@ EStudio_gui_erp_totl.decode_settingLayout = uiextras.VBox('Parent', EStudio_gui_
 EStudio_gui_erp_totl.decode_panel{1} = f_decode_bestsetsGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(1) = 310;
 EStudio_gui_erp_totl.decode_panel{2} = f_decode_MVPA_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.decode_panelSizes(2) = 640;
+EStudio_gui_erp_totl.decode_panelSizes(2) = 639;
 EStudio_gui_erp_totl.decode_panel{3} = f_decode_mvpcsetsGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(3) = 310;
 EStudio_gui_erp_totl.decode_panel{4} = f_MVPCset_plot_setting_GUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(4) = 310;
 disp('Pattern Classification: Launching BESTsets, Multivariate Pattern Classification, MVPCsets, Plot Settings (MVPCsets)...');
 EStudio_gui_erp_totl.decode_panel{5} = f_mvpc_grandaverageGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.decode_panelSizes(5) = 160;
+EStudio_gui_erp_totl.decode_panelSizes(5) = 130;
 EStudio_gui_erp_totl.decode_panel{6} = f_mvpc_plotconfusionGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.decode_panelSizes(6) = 210;
 EStudio_gui_erp_totl.decode_panel{7} = f_mvpc_plotempgenrmatrixGUI(EStudio_gui_erp_totl.decode_settingLayout,EStudio_gui_erp_totl.panel_fonts);

@@ -166,34 +166,19 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.Paras{6} = classtrialType;
         Docode_do_mvpa.trialsAVGs_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.trialsAVGs_title,...
-            'String','#Trials & #AVGs','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Number of trials and averages:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
 
-        %%Equal Trials, Max AVGs # 1 2 3
+        %%Equal Trials, Max Averages # 1 2 3
         Docode_do_mvpa.eq_trials_maxavg_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eq_trials_maxavg = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.eq_trials_maxavg_title,'Value',1,...
-            'String','Equal Trials, Max AVGs','callback',@eq_trials_max_avg,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Equal Trials, Max Averages','callback',@eq_trials_max_avg,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eq_trials_maxavg.KeyPressFcn=  @decode_mvpc_presskey;
-        Docode_do_mvpa.eq_trials_maxavg.String =  '<html>Equal Trials,<br />Max AVGs</html>';
-        % uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_maxavg_title);
-        %%Equal trials, Equal AVGs # 4 5 6
-        % Docode_do_mvpa.eqtrials_eqavgs_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
-        Docode_do_mvpa.eqtrials_eqavgs = uicontrol('Style', 'radiobutton','Parent',  Docode_do_mvpa.eq_trials_maxavg_title,'Value',0,...
-            'String','Equal Trials, Equal AVGs','callback',@eqtrials_eqavgs,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
 
+        %%Equal trials, Equal Averages # 4 5 6
+        Docode_do_mvpa.eqtrials_eqavgs_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
+        Docode_do_mvpa.eqtrials_eqavgs = uicontrol('Style', 'radiobutton','Parent',  Docode_do_mvpa.eqtrials_eqavgs_title,'Value',0,...
+            'String','Equal Trials, Equal Averages','callback',@eqtrials_eqavgs,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eqtrials_eqavgs.KeyPressFcn=  @decode_mvpc_presskey;
-        % uiextras.Empty('Parent', Docode_do_mvpa.eqtrials_eqavgs_title);
-        % set(Docode_do_mvpa.eqtrials_eqavgs_title,'Sizes',[160 -1]);
-        Docode_do_mvpa.eqtrials_eqavgs.String =  '<html>Equal Trials,<br />Equal AVGs</html>';
-
-        set(Docode_do_mvpa.eq_trials_maxavg_title,'Sizes',[-1 -1]);
-
-        %%Equal trials, Equal AVGs # 4 5 6
-        % Docode_do_mvpa.eqtrials_eqavgs_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
-        % Docode_do_mvpa.eqtrials_eqavgs = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.eqtrials_eqavgs_title,'Value',0,...
-        %     'String','Equal Trials, Equal AVGs','callback',@eqtrials_eqavgs,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        % Docode_do_mvpa.eqtrials_eqavgs.KeyPressFcn=  @decode_mvpc_presskey;
-        % uiextras.Empty('Parent', Docode_do_mvpa.eqtrials_eqavgs_title);
-        % set(Docode_do_mvpa.eqtrials_eqavgs_title,'Sizes',[160 -1]);
 
         %%across Classes
         Docode_do_mvpa.eq_trials_acrclass_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -272,7 +257,7 @@ varargout{1} = box_bestset_gui;
         %%Max Trials, Equal AVGs
         Docode_do_mvpa.max_trials_equalavg_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.max_trials_equalavg = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.max_trials_equalavg_title,'Value',0,...
-            'String','Max Trials, Equal AVGs','callback',@Maxtrials_equalavg,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Max Trials, Equal Averages','callback',@Maxtrials_equalavg,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.max_trials_equalavg.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.max_trials_equalavg_title);
         set(Docode_do_mvpa.max_trials_equalavg_title,'Sizes',[160 -1]);
@@ -337,9 +322,7 @@ varargout{1} = box_bestset_gui;
         %%Table is to display the bin descriptions
         Docode_do_mvpa.bindecps_title2 = uiextras.HBox('Parent',Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.table_bins=  uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.bindecps_title2,'Value',0,...
-            'String','Show Summary of AVGs and Trials','callback',@sum_avg_trials,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', Docode_do_mvpa.bindecps_title2);
-        set(Docode_do_mvpa.bindecps_title2,'Sizes',[200 -1]);
+            'String','Show summary of trials and averages','callback',@sum_avg_trials,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         estudioworkingmemory('MVPA_sum_avg_trial',0);
         % Docode_do_mvpa.table_bins = uitable(  ...
         %     'Parent'        , Docode_do_mvpa.bindecps_title2,...
@@ -358,7 +341,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.mvpa_run = uicontrol('Style','pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
             'String','Run','callback',@mvpa_run,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
 
-        set(Docode_do_mvpa.vBox_decode,'Sizes',[20 15 25 20 25 25 25 25 25 25 35 25 16 16 25 15 15 15 15 15 15 25 30]);
+        set(Docode_do_mvpa.vBox_decode,'Sizes',[20 15 25 20 25 25 25 25 25 20 18 18 25 16 16 25 15 15 15 15 18 15 25 30]);
         try  Docode_do_mvpa.paras_ops = MVPCA_panelparas{2}; catch  Docode_do_mvpa.paras_ops = [];end
         if isempty(Docode_do_mvpa.paras_ops )
             Docode_do_mvpa.paras_ops = {1,2,1,[],1,0, 0};
