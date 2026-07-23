@@ -39,7 +39,7 @@ EStudio_gui_erp_totl.panel{4} = f_ERP_plot_scalp_GUI(EStudio_gui_erp_totl.settin
 EStudio_gui_erp_totl.panelSizes(4) = 390;
 disp('ERP Tab: Launching ERPsets, Bin & Channel Selection, Plot Settings, Plot Scalp Maps,...');
 EStudio_gui_erp_totl.panel{5} = f_ERP_edit_channel_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(5) = 170;
+EStudio_gui_erp_totl.panelSizes(5) = 200;
 EStudio_gui_erp_totl.panel{6} = f_ERP_chanoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(6) = 340;
 EStudio_gui_erp_totl.panel{7} = f_erp_informtion_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);

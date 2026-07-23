@@ -59,19 +59,18 @@ varargout{1} = EStudio_erp_box_edit_chan;
 
         %%%----------------Mode-----------------------------------
         ERP_tab_edit_chan.mode_1 = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
-        ERP_tab_edit_chan.mode_modify_title = uicontrol('Style','text','Parent',ERP_tab_edit_chan.mode_1 ,...
-            'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', ERP_tab_edit_chan.mode_1,'BackgroundColor',ColorB_def);
         ERP_tab_edit_chan.mode_modify = uicontrol('Style','radiobutton','Parent',ERP_tab_edit_chan.mode_1 ,...
             'String','Modify existing ERPset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        %         ERP_tab_edit_chan.mode_modify.String =  '<html>Modify existing ERPset<br />(recursive updating)</html>';
-        set(ERP_tab_edit_chan.mode_1,'Sizes',[55 -1]);
+        uiextras.Empty('Parent', ERP_tab_edit_chan.mode_1,'BackgroundColor',ColorB_def);
+        set(ERP_tab_edit_chan.mode_1,'Sizes',[-1 160 -1]);
         %%--------------For create a new ERPset----------------------------
         ERP_tab_edit_chan.mode_2 = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  ERP_tab_edit_chan.mode_2,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', ERP_tab_edit_chan.mode_2,'BackgroundColor',ColorB_def);
         ERP_tab_edit_chan.mode_create = uicontrol('Style','radiobutton','Parent',ERP_tab_edit_chan.mode_2 ,...
             'String','Create new ERPset','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        %         ERP_tab_edit_chan.mode_create.String =  '<html>Create new ERPset<br />(independent transformations)</html>';
-        set(ERP_tab_edit_chan.mode_2,'Sizes',[55 -1]);
+        uiextras.Empty('Parent', ERP_tab_edit_chan.mode_2,'BackgroundColor',ColorB_def);
+        set(ERP_tab_edit_chan.mode_2,'Sizes',[-1 160 -1]);
 
         %%Select channels that will be deleted and renamed
         ERP_tab_edit_chan.select_chan_title = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
@@ -86,17 +85,18 @@ varargout{1} = EStudio_erp_box_edit_chan;
         %%Delete selected channels && Rename selected channels
         ERP_tab_edit_chan.delete_rename = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         ERP_tab_edit_chan.delete_chan = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.delete_rename ,...
-            'String','Delete chan','callback',@delete_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Delete channel(s)','callback',@delete_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         ERP_tab_edit_chan.rename_chan = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.delete_rename ,...
-            'String','Rename chan','callback',@rename_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Rename channel(s)','callback',@rename_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+
+        uiextras.Empty('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
 
         %%Add/edit chan locations
-        ERP_tab_edit_chan.edit_chanlocs = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.delete_rename,...
-            'String','Add/edit chanlocs','callback',@edit_chanlocs,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        %         set(ERP_tab_edit_chan.interpolate_epoch_title,'Sizes',[160 -1]);
-        ERP_tab_edit_chan.edit_chanlocs.String = '<html>    Add or edit   <br />chan locations</html>';
+        ERP_tab_edit_chan.edit_chanlocs_title = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
+        ERP_tab_edit_chan.edit_chanlocs = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.edit_chanlocs_title,...
+            'String','Add or edit channel locations','callback',@edit_chanlocs,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         ERP_tab_edit_chan.edit_chanlocs.HorizontalAlignment='Center';
-        set(ERP_tab_edit_chan.DataSelBox,'sizes',[30 30 30 40])
+        set(ERP_tab_edit_chan.DataSelBox,'sizes',[30 30 30 30 10 30])
         estudioworkingmemory('ERPTab_editchan',0);
     end
 

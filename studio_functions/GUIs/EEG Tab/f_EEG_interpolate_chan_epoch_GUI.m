@@ -62,19 +62,20 @@ varargout{1} = box_interpolate_chan_epoch;
         
         %%%----------------Mode-----------------------------------
         Eegtab_EEG_interpolate_chan_epoch.mode_1 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
-        Eegtab_EEG_interpolate_chan_epoch.mode_modify_title = uicontrol('Style','text','Parent',Eegtab_EEG_interpolate_chan_epoch.mode_1 ,...
-            'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_1,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.mode_modify = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.mode_1 ,...
             'String','Modify existing dataset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mode_modify.KeyPressFcn = @eeg_interpolatechan_presskey;
-        set(Eegtab_EEG_interpolate_chan_epoch.mode_1,'Sizes',[55 -1]);
+        uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_1,'BackgroundColor',ColorB_def);
+        set(Eegtab_EEG_interpolate_chan_epoch.mode_1,'Sizes',[-1 160 -1]);
         %%--------------For create a new ERPset----------------------------
         Eegtab_EEG_interpolate_chan_epoch.mode_2 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  Eegtab_EEG_interpolate_chan_epoch.mode_2,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_2,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.mode_create = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.mode_2 ,...
             'String','Create new dataset','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_2,'BackgroundColor',ColorB_def);
+        set(Eegtab_EEG_interpolate_chan_epoch.mode_2,'Sizes',[-1 160 -1]);
         Eegtab_EEG_interpolate_chan_epoch.mode_create.KeyPressFcn = @eeg_interpolatechan_presskey;
-        set(Eegtab_EEG_interpolate_chan_epoch.mode_2,'Sizes',[55 -1]);
         Eegtab_EEG_interpolate_chan_epoch.Parameters{1} = Eegtab_EEG_interpolate_chan_epoch.mode_modify.Value;
         
         erplabInterpolateElectrodes=  estudioworkingmemory('pop_erplabInterpolateElectrodes');
@@ -106,17 +107,20 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.Parameters{2} = str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         
         
+        uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_method_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_methods= uicontrol('Style','text','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_method_title,...
+            'String','Interpolation method:','FontSize',FontSize_defualt,'HorizontalAlignment','center','FontWeight','bold','Enable','on','BackgroundColor',ColorB_def); % 2F
+
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_methods= uicontrol('Style','text','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1,...
-            'String','Interpolation methods:','FontSize',FontSize_defualt,'Enable','on','BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1 ,...
-            'String','Inverse distance','callback',@interpolate_inverse,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',~InterpValue); % 2F
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.String =  '<html> Inverse <br />distances</html>';
+            'String','Inverse distances','callback',@interpolate_inverse,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',~InterpValue); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.KeyPressFcn = @eeg_interpolatechan_presskey;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1,...
-            'String','Spherical ','callback',@interpolate_spherical,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',InterpValue); % 2F
+            'String','Spherical','callback',@interpolate_spherical,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',InterpValue); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.KeyPressFcn = @eeg_interpolatechan_presskey;
-        set(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1,'Sizes',[100 80 -1]);
+        set(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1,'Sizes',[-1 -1]);
         Eegtab_EEG_interpolate_chan_epoch.Parameters{3} = Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value;
         
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add2 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
@@ -196,7 +200,7 @@ varargout{1} = box_interpolate_chan_epoch;
         set(Eegtab_EEG_interpolate_chan_epoch.advanced_run_title,'Sizes',[10,-1,30,-1,10]);
         
         %%resize each row
-        set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[30 30 25 30 25 30 30 20 30])
+        set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[30 30 25 8 20 30 25 30 30 20 30])
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
     end
 %%**************************************************************************%%

@@ -59,19 +59,18 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         
         %%%----------------Mode-----------------------------------
         EStduio_eegtab_EEG_edit_chan.mode_1 = uiextras.HBox('Parent', EStduio_eegtab_EEG_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
-        EStduio_eegtab_EEG_edit_chan.mode_modify_title = uicontrol('Style','text','Parent',EStduio_eegtab_EEG_edit_chan.mode_1 ,...
-            'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        uiextras.Empty('Parent', EStduio_eegtab_EEG_edit_chan.mode_1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_edit_chan.mode_modify = uicontrol('Style','radiobutton','Parent',EStduio_eegtab_EEG_edit_chan.mode_1 ,...
             'String','Modify existing dataset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        %         EStduio_eegtab_EEG_edit_chan.mode_modify.String =  '<html>Modify existing dataset<br />(recursive updating)</html>';
-        set(EStduio_eegtab_EEG_edit_chan.mode_1,'Sizes',[55 -1]);
+        uiextras.Empty('Parent', EStduio_eegtab_EEG_edit_chan.mode_1,'BackgroundColor',ColorB_def);
+        set(EStduio_eegtab_EEG_edit_chan.mode_1,'Sizes',[-1 160 -1]);
         %%--------------For create a new ERPset----------------------------
         EStduio_eegtab_EEG_edit_chan.mode_2 = uiextras.HBox('Parent', EStduio_eegtab_EEG_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  EStduio_eegtab_EEG_edit_chan.mode_2,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EStduio_eegtab_EEG_edit_chan.mode_2,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_edit_chan.mode_create = uicontrol('Style','radiobutton','Parent',EStduio_eegtab_EEG_edit_chan.mode_2 ,...
             'String','Create new dataset','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        %         EStduio_eegtab_EEG_edit_chan.mode_create.String =  '<html>Create new dataset<br />(independent transformations)</html>';
-        set(EStduio_eegtab_EEG_edit_chan.mode_2,'Sizes',[55 -1]);
+        uiextras.Empty('Parent', EStduio_eegtab_EEG_edit_chan.mode_2,'BackgroundColor',ColorB_def);
+        set(EStduio_eegtab_EEG_edit_chan.mode_2,'Sizes',[-1 160 -1]);
         
         
         %%Select channels that will be deleted and renamed
@@ -88,22 +87,22 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         %%Delete selected channels && Rename selected channels
         EStduio_eegtab_EEG_edit_chan.delete_rename = uiextras.HBox('Parent', EStduio_eegtab_EEG_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_edit_chan.delete_chan = uicontrol('Style','pushbutton','Parent',EStduio_eegtab_EEG_edit_chan.delete_rename ,...
-            'String','Delete chan','callback',@delete_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Delete channel(s)','callback',@delete_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         EStduio_eegtab_EEG_edit_chan.rename_chan = uicontrol('Style','pushbutton','Parent',EStduio_eegtab_EEG_edit_chan.delete_rename ,...
-            'String','Rename chan','callback',@rename_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        
+            'String','Rename channel(s)','callback',@rename_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+
+        uiextras.Empty('Parent', EStduio_eegtab_EEG_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
+
         %%Add/edit chan locations
-        %         EStduio_eegtab_EEG_edit_chan.edit_chanlocs_title = uiextras.HBox('Parent', EStduio_eegtab_EEG_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
-        EStduio_eegtab_EEG_edit_chan.edit_chanlocs = uicontrol('Style','pushbutton','Parent',EStduio_eegtab_EEG_edit_chan.delete_rename,...
-            'String','Add/edit chanlocs','callback',@edit_chanlocs,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        %         set(EStduio_eegtab_EEG_edit_chan.interpolate_epoch_title,'Sizes',[160 -1]);
-        EStduio_eegtab_EEG_edit_chan.edit_chanlocs.String = '<html>    Add or edit   <br />chan locations</html>';
+        EStduio_eegtab_EEG_edit_chan.edit_chanlocs_title = uiextras.HBox('Parent', EStduio_eegtab_EEG_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_edit_chan.edit_chanlocs = uicontrol('Style','pushbutton','Parent',EStduio_eegtab_EEG_edit_chan.edit_chanlocs_title,...
+            'String','Add or edit channel locations','callback',@edit_chanlocs,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         EStduio_eegtab_EEG_edit_chan.edit_chanlocs.HorizontalAlignment='Center';
         uicontrol('Style','text','Parent',EStduio_eegtab_EEG_edit_chan.DataSelBox,...
             'String','See also Chan Locations button in EEGLAB Tools',...
             'FontSize',FontSize_defualt-1,'HorizontalAlignment','center',...
             'BackgroundColor',ColorB_def,'ForegroundColor',[0.4 0.4 0.4]);
-        set(EStduio_eegtab_EEG_edit_chan.DataSelBox,'sizes',[30 30 30 40 20])
+        set(EStduio_eegtab_EEG_edit_chan.DataSelBox,'sizes',[30 30 30 30 10 30 20])
         estudioworkingmemory('EEGTab_editchan',0);
     end
 
