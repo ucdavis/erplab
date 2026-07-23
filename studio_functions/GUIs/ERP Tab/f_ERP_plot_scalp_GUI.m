@@ -63,7 +63,7 @@ varargout{1} = ERP_plot_scalp_gui;
         
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------bin and latency setting----------------------
-        gui_erp_scalp_map.ERPscalpops = uiextras.VBox('Parent', ERP_plot_scalp_gui,'BackgroundColor',ColorB_def);
+        gui_erp_scalp_map.ERPscalpops = uiextras.VBox('Parent', ERP_plot_scalp_gui,'BackgroundColor',ColorB_def,'Spacing',3);
         
         
         %%%------------BIN TO PLOT---------------------
@@ -79,20 +79,6 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.measurement_title1 = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.measurement_exp = uicontrol('Style', 'text','Parent', gui_erp_scalp_map.measurement_title1,...
             'String','(min max pairs e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
-        gui_erp_scalp_map.bin_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
-        gui_erp_scalp_map.bin_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.bin_plot_title,...
-            'String','Bin(s)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
-        set(gui_erp_scalp_map.bin_plot,'HorizontalAlignment','left');
-        gui_erp_scalp_map.bin_plot_edit = uicontrol('Style','edit','Parent',gui_erp_scalp_map.bin_plot_title,...
-            'String','','callback',@scalp_bin_edit,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        try binArray = ERPTab_plotscalp{1}; catch binArray = [];ERPTab_plotscalp{1} = [];end
-        gui_erp_scalp_map.bin_plot_edit.String = num2str(binArray);
-        
-        gui_erp_scalp_map.bin_plot_edit.KeyPressFcn=  @erp_scalps_presskey;
-        gui_erp_scalp_map.bin_plot_opt = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.bin_plot_title,...
-            'String','Browse','callback',@scalp_bin_op,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        set(gui_erp_scalp_map.bin_plot_title ,'Sizes',[60 150 60]);
         
         %%%------------Latency TO PLOT---------------------
         gui_erp_scalp_map.latency_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
@@ -112,7 +98,21 @@ varargout{1} = ERP_plot_scalp_gui;
             end
         end
         gui_erp_scalp_map.latency_plot_edit.String = Latencystr;
-        
+
+        gui_erp_scalp_map.bin_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
+        gui_erp_scalp_map.bin_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.bin_plot_title,...
+            'String','Bin(s)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
+        set(gui_erp_scalp_map.bin_plot,'HorizontalAlignment','left');
+        gui_erp_scalp_map.bin_plot_edit = uicontrol('Style','edit','Parent',gui_erp_scalp_map.bin_plot_title,...
+            'String','','callback',@scalp_bin_edit,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+        try binArray = ERPTab_plotscalp{1}; catch binArray = [];ERPTab_plotscalp{1} = [];end
+        gui_erp_scalp_map.bin_plot_edit.String = num2str(binArray);
+
+        gui_erp_scalp_map.bin_plot_edit.KeyPressFcn=  @erp_scalps_presskey;
+        gui_erp_scalp_map.bin_plot_opt = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.bin_plot_title,...
+            'String','Browse','callback',@scalp_bin_op,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+        set(gui_erp_scalp_map.bin_plot_title ,'Sizes',[60 140 65]);
+
         %%----------------------------------Map Type------------------------------
         gui_erp_scalp_map.map_type_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_type_title,...
@@ -153,29 +153,55 @@ varargout{1} = ERP_plot_scalp_gui;
         end
         gui_erp_scalp_map.map_type_2d_type_outside.Value = mapoutside;
         set(gui_erp_scalp_map.map_type, 'ColumnSizes',[50 130 90],'RowSizes',[25 30]);
-        
+
+        %%view (only relevant for 3D map type, so lives as the last row of Map Type)
+        gui_erp_scalp_map.map_extras_view = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_extras_view,...
+            'String','View','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left');
+        morimenu = {'front', 'back', 'right', 'left', 'top',...
+            'frontleft', 'frontright', 'backleft', 'backright',...
+            'custom'};
+        gui_erp_scalp_map.map_extras_view_ops = uicontrol('Style', 'popupmenu','Parent',gui_erp_scalp_map.map_extras_view,...
+            'String',morimenu,'callback',@map_extras_view_ops,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        gui_erp_scalp_map.map_extras_view_ops.KeyPressFcn=  @erp_scalps_presskey;
+        gui_erp_scalp_map.map_extras_view_location = uicontrol('Style', 'edit','Parent',gui_erp_scalp_map.map_extras_view,...
+            'String','','callback',@map_extras_view_location,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        gui_erp_scalp_map.map_extras_view_location.KeyPressFcn=  @erp_scalps_presskey;
+        set(gui_erp_scalp_map.map_extras_view,'Sizes',[70 100 100]);
+        if map2d==1
+            gui_erp_scalp_map.map_extras_view_ops.Value=1;
+            ERPTab_plotscalp{7}=1;
+        else
+            try mapextrc = ERPTab_plotscalp{7}; catch mapextrc=1;ERPTab_plotscalp{7} = 1;end
+            if isempty(mapextrc) || numel(mapextrc)~=1 || any(mapextrc<1) || any(mapextrc>10)
+                mapextrc=1;
+                ERPTab_plotscalp{7}=1;
+            end
+            gui_erp_scalp_map.map_extras_view_ops.Value=mapextrc;
+        end
+
         %%----------------------------------Bar scale------------------------------
         gui_erp_scalp_map.bar_scale_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.bar_scale_title,...
             'String','Color Bar Scale:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
+
         gui_erp_scalp_map.bar_scale = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.max_min = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.bar_scale,...
             'String','Max-Min','callback',@bar_scale_max_min,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.max_min.KeyPressFcn=  @erp_scalps_presskey;
-        gui_erp_scalp_map.custom_option = uicontrol('Style', 'radiobutton','Parent',gui_erp_scalp_map.bar_scale,...
-            'String','Custom (min max:e.g.uv)','callback',@bar_scale_custom_opt,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        gui_erp_scalp_map.custom_option.KeyPressFcn=  @erp_scalps_presskey;
-        set(gui_erp_scalp_map.bar_scale ,'Sizes',[100 170]);
-        
-        gui_erp_scalp_map.bar_scale_2 = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
-        gui_erp_scalp_map.abs_max = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.bar_scale_2,...
+        gui_erp_scalp_map.abs_max = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.bar_scale,...
             'String','Abs Max','callback',@bar_scale_abs_max,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.abs_max.KeyPressFcn=  @erp_scalps_presskey;
+        set(gui_erp_scalp_map.bar_scale ,'Sizes',[100 170]);
+
+        gui_erp_scalp_map.bar_scale_2 = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
+        gui_erp_scalp_map.custom_option = uicontrol('Style', 'radiobutton','Parent',gui_erp_scalp_map.bar_scale_2,...
+            'String','Custom range:','callback',@bar_scale_custom_opt,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_scalp_map.custom_option.KeyPressFcn=  @erp_scalps_presskey;
         gui_erp_scalp_map.bar_scale_custom_option_edit = uicontrol('Style', 'edit','Parent',gui_erp_scalp_map.bar_scale_2,...
             'String',' ','callback',@bar_scale_custom_edit,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_scalp_map.bar_scale_custom_option_edit.KeyPressFcn=  @erp_scalps_presskey;
-        set(gui_erp_scalp_map.bar_scale_2 ,'Sizes',[100 170]);
+        set(gui_erp_scalp_map.bar_scale_2 ,'Sizes',[140 130]);
         try barscale = ERPTab_plotscalp{6}; catch barscale=1;ERPTab_plotscalp{65} = 1;end
         if isempty(barscale) || (numel(barscale)~=1 && numel(barscale)~=2)
             barscale=1;
@@ -205,40 +231,8 @@ varargout{1} = ERP_plot_scalp_gui;
             gui_erp_scalp_map.abs_max.Value=0;
             gui_erp_scalp_map.custom_option.Value=0;
         end
-        
-        %%----------------------------------Map Extras------------------------------
-        gui_erp_scalp_map.map_extras_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
-        uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_extras_title,...
-            'String','Map Extras:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        %%view
-        gui_erp_scalp_map.map_extras_view = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
-        uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_extras_view,...
-            'String','View','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left');
-        morimenu = {'front', 'back', 'right', 'left', 'top',...
-            'frontleft', 'frontright', 'backleft', 'backright',...
-            'custom'};
-        gui_erp_scalp_map.map_extras_view_ops = uicontrol('Style', 'popupmenu','Parent',gui_erp_scalp_map.map_extras_view,...
-            'String',morimenu,'callback',@map_extras_view_ops,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        gui_erp_scalp_map.map_extras_view_ops.KeyPressFcn=  @erp_scalps_presskey;
-        gui_erp_scalp_map.map_extras_view_location = uicontrol('Style', 'edit','Parent',gui_erp_scalp_map.map_extras_view,...
-            'String','','callback',@map_extras_view_location,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        gui_erp_scalp_map.map_extras_view_location.KeyPressFcn=  @erp_scalps_presskey;
-        set(gui_erp_scalp_map.map_extras_view,'Sizes',[70 100 100]);
-        if map2d==1
-            gui_erp_scalp_map.map_extras_view_ops.Value=1;
-            ERPTab_plotscalp{7}=1;
-        else
-            try mapextrc = ERPTab_plotscalp{7}; catch mapextrc=1;ERPTab_plotscalp{7} = 1;end
-            if isempty(mapextrc) || numel(mapextrc)~=1 || any(mapextrc<1) || any(mapextrc>10)
-                mapextrc=1;
-                ERPTab_plotscalp{7}=1;
-            end
-            gui_erp_scalp_map.map_extras_view_ops.Value=mapextrc;
-        end
-        
-        %%Extras
+
         gui_erp_scalp_map.map_extras_cmap_display= uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
-        
         gui_erp_scalp_map.map_extras_cmap = uicontrol('Style', 'text','Parent',  gui_erp_scalp_map.map_extras_cmap_display,...
             'String','Colormap','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_scalp_map.map_extras_cmap,'HorizontalAlignment','left');
@@ -250,18 +244,18 @@ varargout{1} = ERP_plot_scalp_gui;
             clormap=1;
         end
         gui_erp_scalp_map.map_extras_cmap_ops.Value = clormap;
-        
         gui_erp_scalp_map.map_extras_cmap_ops.KeyPressFcn=  @erp_scalps_presskey;
+        uiextras.Empty('Parent', gui_erp_scalp_map.map_extras_cmap_display,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.map_extras_cmapb_disp = uicontrol('Style', 'checkbox','Parent', gui_erp_scalp_map.map_extras_cmap_display,...
-            'callback',@dispbar,'String','Display color scale bar','Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        gui_erp_scalp_map.map_extras_cmapb_disp.String =  '<html>Display Color<br />Scale Bar</html>';
+            'callback',@dispbar,'String','Display color bar','Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.map_extras_cmapb_disp.KeyPressFcn=  @erp_scalps_presskey;
-        set(gui_erp_scalp_map.map_extras_cmap_display ,'Sizes',[70 90 110]);
         try dispbar = ERPTab_plotscalp{9}; catch dispbar=0;ERPTab_plotscalp{9} = 0;end
         if isempty(dispbar) || numel(dispbar)~=1 || (dispbar~=0 && dispbar~=1)
             dispbar=0;ERPTab_plotscalp{9} = 0;
         end
         gui_erp_scalp_map.map_extras_cmapb_disp.Value = dispbar;
+        set(gui_erp_scalp_map.map_extras_cmap_display ,'Sizes',[55 70 15 -1]);
+
         %%-----------------Run---------------------------------------------
         gui_erp_scalp_map.run_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         
@@ -273,7 +267,7 @@ varargout{1} = ERP_plot_scalp_gui;
         
         gui_erp_scalp_map.run = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.run_title,...
             'String','Plot','callback',@apply_run,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        set(gui_erp_scalp_map.ERPscalpops,'Sizes',[25 20 25,25,25 55 20 30 25 20 25 30 30]);
+        set(gui_erp_scalp_map.ERPscalpops,'Sizes',[25 20 25 25 25 55 25 20 30 25 25 30]);
         
         estudioworkingmemory('ERPTab_topos',0);
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
@@ -464,7 +458,7 @@ varargout{1} = ERP_plot_scalp_gui;
                 end
             case {1,3} % insta, instalapla
                 if size(latencyArray,1)>1
-                    msgboxText =  'Plot Scalp Maps>latency>For you must specify as many latencies as maps you would like to plot.You cannot use semicolon-separated values.';
+                    msgboxText =  'Plot Scalp Maps>latency>You must specify as many latencies as maps you would like to plot. You cannot use semicolon-separated values.';
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
                     return
@@ -1022,7 +1016,7 @@ varargout{1} = ERP_plot_scalp_gui;
                 end
             case {1,3} % insta, instalapla
                 if size(latencyArray,1)>1
-                    msgboxText =  'Plot Scalp Maps - For you must specify as many latencies as maps you would like to plot.You cannot use semicolon-separated values.';
+                    msgboxText =  'Plot Scalp Maps - You must specify as many latencies as maps you would like to plot. You cannot use semicolon-separated values.';
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
                     return
@@ -1210,7 +1204,7 @@ varargout{1} = ERP_plot_scalp_gui;
                 end
             case {1,3} % insta, instalapla
                 if size(latencyArray,1)>1
-                    msgboxText =  'Plot Scalp Maps - For you must specify as many latencies as maps you would like to plot.You cannot use semicolon-separated values.';
+                    msgboxText =  'Plot Scalp Maps - You must specify as many latencies as maps you would like to plot. You cannot use semicolon-separated values.';
                     titlNamerro = 'Warning for ERP Tab';
                     estudio_warning(msgboxText,titlNamerro);
                     observe_ERPDAT.Process_messg =2;
