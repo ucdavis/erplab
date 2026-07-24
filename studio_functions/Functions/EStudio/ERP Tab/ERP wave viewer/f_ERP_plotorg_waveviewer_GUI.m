@@ -1721,7 +1721,15 @@ varargout{1} = box_erpwave_viewer_plotorg;
             AllabelArray = chanStr;
         end
         
-        def =  ERP_layoutstringGUI(columFormat,GridinforData,plotBox,AllabelArray);
+        app_layoutstring = feval('ERP_layoutstringGUI',columFormat,GridinforData,plotBox,AllabelArray);
+        waitfor(app_layoutstring,'Finishbutton',1);
+        try
+            def = app_layoutstring.output;
+            app_layoutstring.delete; %delete app from view
+            pause(0.1); %wait for app to leave
+        catch
+            def = [];
+        end
         if isempty(def)
             estudioworkingmemory('MyViewer_plotorg',0);
             gui_plotorg_waveviewer.apply.BackgroundColor =  [1,1,1];
