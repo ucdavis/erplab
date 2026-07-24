@@ -1389,16 +1389,16 @@ for Numofsub = 1:numel(ERPArray)
     for Numofbin = 1:numel(BinArray)
         count = count+1;
         Data_display1(count,:) = Data_display(Numofbin,:,Numofsub);
-        Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(0),'f'], BinArray(Numofbin));
+        Data_display_tra{count,1} = sprintf('%.0f', BinArray(Numofbin));
     end
 end
 
 for Numofone = 1:size(Data_display1,1)
     for Numoftwo = 1:size(Data_display1,2)
         if ~isnan(Data_display1(Numofone,Numoftwo))
-            Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
+            Data_display_tra{Numofone,Numoftwo+1} = sprintf('%.*f', Resolution, Data_display1(Numofone,Numoftwo));
         else
-            Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="black">NaN'];
+            Data_display_tra{Numofone,Numoftwo+1} = 'NaN';
         end
     end
 end
@@ -1409,13 +1409,8 @@ handles.ERP_M_T_Viewer_table.ColumnName = ColumnName;
 
 
 if numel(ChanArray)<12
-    ColumnWidth = {};
-    for Numofchan =1:numel(ChanArray)+1
-        ColumnWidth{Numofchan} = handles.ERP_M_T_Viewer.Position(3)/(numel(ChanArray)+1);
-    end
+    ColumnWidth = repmat({'auto'}, 1, numel(ChanArray)+1);
     handles.ERP_M_T_Viewer_table.ColumnWidth = ColumnWidth;
-elseif numel(ChanArray) ==1
-    handles.ERP_M_T_Viewer_table.ColumnWidth = {handles.ERP_M_T_Viewer.Position(3)};
 end
 
 
