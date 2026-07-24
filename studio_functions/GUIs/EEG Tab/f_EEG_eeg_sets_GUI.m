@@ -1513,7 +1513,12 @@ estudioworkingmemory('Startimes',0);%%set default value
                 end
                 if ~isempty(ERP_markdisable)
                     for ii = ERP_markdisable
-                        EEGlistName{ii,1} = str2html( char(strcat(num2str(ii),'.',32, ALLEEG(ii).setname)),'italic', 1, 'colour', '#A0A0A0');
+                        if EEGtypeFlag(ii)==1
+                            typeLabel = 'continuous';
+                        else
+                            typeLabel = 'epoched';
+                        end
+                        EEGlistName{ii,1} = sprintf('%d. (%s, unselectable) %s', ii, typeLabel, ALLEEG(ii).setname);
                     end
                 end
             end
