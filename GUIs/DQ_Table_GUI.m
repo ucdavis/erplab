@@ -1,1340 +1,1021 @@
-function varargout = DQ_Table_GUI(varargin)
-% DQ_TABLE_GUI MATLAB code for DQ_Table_GUI.fig
-%      DQ_TABLE_GUI, by itself, creates a new DQ_TABLE_GUI or raises the existing
-%      singleton*.
+% DQ_Table_GUI
+% "ERPLAB Data Quality Measures - Table Viewer" - shows per-channel/per-time-window
+% Data Quality measures for an ERPset, with optional color-heatmap or outlier
+% highlighting.
 %
-%      H = DQ_TABLE_GUI returns the handle to a new DQ_TABLE_GUI or the handle to
-%      the existing singleton*.
+% NOTE: Migrated from GUIDE (.fig) to a programmatic uifigure-based classdef
+% app. Original .fig archived outside ERPLAB.
+% Migrated to .m: July 2026 by Kurt Winsler
 %
-%      DQ_TABLE_GUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in DQ_TABLE_GUI.M with the given input arguments.
-%
-%      DQ_TABLE_GUI('Property','Value',...) creates a new DQ_TABLE_GUI or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before DQ_Table_GUI_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to DQ_Table_GUI_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
+% Calling convention unchanged from the original (non-modal - opens and
+% returns immediately, no output captured by any caller):
+%   DQ_Table_GUI(ERP, ALLERP, current_ERP, guiwin_num)
+%   DQ_Table_GUI(ERP, ALLERP, current_ERP, guiwin_num, 'EEG')
 
-% Edit the above text to modify the response to pushbutton_help DQ_Table_GUI
+classdef DQ_Table_GUI < matlab.apps.AppBase
 
-% Last Modified by GUIDE v2.5 14-Mar-2024 12:22:31
-
-% Begin initialization code - DO NOT EDIT
-gui_Singleton = 0;
-gui_State = struct('gui_Name',       mfilename, ...
-    'gui_Singleton',  gui_Singleton, ...
-    'gui_OpeningFcn', @DQ_Table_GUI_OpeningFcn, ...
-    'gui_OutputFcn',  @DQ_Table_GUI_OutputFcn, ...
-    'gui_LayoutFcn',  [] , ...
-    'gui_Callback',   []);
-if nargin && ischar(varargin{1})
-    gui_State.gui_Callback = str2func(varargin{1});
-end
-
-if nargout
-    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
-else
-    gui_mainfcn(gui_State, varargin{:});
-end
-% End initialization code - DO NOT EDIT
-
-
-% --- Executes just before DQ_Table_GUI is made visible.
-function DQ_Table_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to DQ_Table_GUI (see VARARGIN)
-
-% Choose default command line output for DQ_Table_GUI
-handles.output = [];
-
-% check input ERPset DQ
-ERP = varargin{1};
-ALLERP = varargin{2};
-current_ERP = varargin{3};
-guiwin_num = varargin{4};
-if numel(varargin) >= 5 && strcmpi(varargin{5}, 'EEG')
-    datatype = 'EEG';
-else
-    datatype = 'ERP';
-end
-
-%GUI positions (for multiple DQ tables)
-
-if guiwin_num ~= 1
-    offset_GUI = 25 * randi([1 10],1); %offset by
-    % %set(hObject, 'Units', 'normalized');
-    figureposition = get(handles.figure1, 'Position');
-    set(hObject, 'Position', ...
-        [ figureposition(1)-offset_GUI figureposition(2)-offset_GUI  ...
-        figureposition(3) figureposition(4)])
-end
-
-
-%check contents
-
-try
-    assert(exist('ERP','var')==1)
-    assert(isempty(ERP)==0)
-    assert(isfield(ERP,'dataquality'))
-    assert(strcmp(ERP.dataquality(1).type,'empty')==0)
-catch
-    beep
-    warning('Data Quality not present in current ERPset?')
-    delete(hObject);
-    return
-end
-
-% Update GUI with ERPSET info
-n_erp = numel(ALLERP);
-
-if n_erp == 0
-    %for the case of showing aSME preavg
-    erp_names = ERP.erpname;
-    handles.text_ERPSET_title.String = 'Selected EEGset:';
-    handles.text_ERPSET_title.FontSize = 12;
-    handles.text11.Visible = 0;
-    handles.newerpwin.Visible = 0;
-    handles.pushbutton_selERP.Visible = 0;
-    handles.active_erpset.Style = 'text';
-    if numel(erp_names) > 15
-        handles.active_erpset.FontSize = 12.0;
-        set(handles.active_erpset,'FontUnits', 'normalized');
-    end
-    %update handles
-    guidata(hObject, handles);
-
-else
-
-    for i = 1:n_erp
-        erp_names{i} = ALLERP(i).erpname;
+    properties (Access = public)
+        UIFigure              matlab.ui.Figure
+        Panel1                matlab.ui.container.Panel
+        Panel2                matlab.ui.container.Panel
+        LabelERPsetTitle      matlab.ui.control.Label
+        DropdownActiveErpset  matlab.ui.control.DropDown
+        LabelDQType           matlab.ui.control.Label
+        DropdownDQType        matlab.ui.control.DropDown
+        CheckboxSDCorrection  matlab.ui.control.CheckBox
+        LabelBin              matlab.ui.control.Label
+        PopupBin              matlab.ui.control.DropDown
+        LabelTimeWindows      matlab.ui.control.Label
+        DQTable               matlab.ui.control.Table
+        LabelStdFromMean      matlab.ui.control.Label
+        CheckboxHeatmap       matlab.ui.control.CheckBox
+        CheckboxTextLabels    matlab.ui.control.CheckBox
+        CheckboxOutliers      matlab.ui.control.CheckBox
+        LabelChannels         matlab.ui.control.Label
+        EditChannels          matlab.ui.control.EditField
+        EditStdWindow         matlab.ui.control.EditField
+        ButtonBrowseChan      matlab.ui.control.Button
+        LabelOpenNewWin       matlab.ui.control.Label
+        DropdownNewErpWin     matlab.ui.control.DropDown
+        ButtonSelectERP       matlab.ui.control.Button
+        LabelExport           matlab.ui.control.Label
+        ButtonMat             matlab.ui.control.Button
+        ButtonXls             matlab.ui.control.Button
+        ButtonHelp            matlab.ui.control.Button
+        ButtonDone            matlab.ui.control.Button
     end
 
-    % Set labels based on whether data came from EEGsets or ERPsets
-    if strcmpi(datatype, 'EEG')
-        handles.text_ERPSET_title.String  = 'Selected EEGset:';
-        handles.text11.String             = 'Open new EEGset Window';
-        handles.pushbutton_selERP.String  = 'Select EEGset';
-    else
-        handles.text_ERPSET_title.String  = 'Selected ERPset:';
-        handles.text11.String             = 'Open new ERPset Window';
-        handles.pushbutton_selERP.String  = 'Select ERPset';
+    properties (Access = private)
+        ERP
+        ALLERP
+        orig_data
+        orig_RowName
+        orig_indxlistch
+        indxlistch
+        listch
+        heatmap_on = 0
+        outliers_on = 0
     end
 
-end
-
-%ERPSET_title_str = ['ERPSET - ' erp_names(current_ERP)];
-handles.active_erpset.String = erp_names;
-handles.active_erpset.Value = current_ERP;
-
-%AMS: Multiple ERPset options
-handles.newerpwin.String = erp_names;
-handles.newerpwin.Value = current_ERP;
-
-
-
-n_dq = numel(ERP.dataquality);
-for i=1:n_dq
-    type_names{i} = ERP.dataquality(i).type;
-end
-
-handles.popupmenu_DQ_type.String = type_names;
-%handles.popupmenu_DQ_type.Value = n_dq;
-%default to aSME (if available) or end of list
-
-where_aSME = strcmpi('aSME',type_names);
-where_aSME_corr = strcmpi('aSME (Corrected)',type_names);
-
-if any(where_aSME)
-    indx_type = find(where_aSME);
-    
-elseif any(where_aSME_corr)
-    indx_type = find(where_aSME_corr);
-else
-    indx_type = n_dq;
-end
-handles.popupmenu_DQ_type.Value = indx_type;
-
-
-try
-    [n_elec, n_tw, n_bin] = size(ERP.dataquality(indx_type).data); %default to aSME (or last metric)
-catch
-    [n_elec, n_tw, n_bin] = size(ERP.dataquality.data); %if only one measure
-end
-
-if n_elec == 0
-    % if the dq data is of zero size, then the 3rd dim may be mis-sized.
-    % So set to default of ERP.nbin instead.
-    n_bin = ERP.nbin;
-end
-
-n_bin_names = numel(ERP.bindescr);
-if n_bin_names == n_bin
-    
-    for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+    properties (Constant, Access = private)
+        PointwiseStr = {'Point-wise SEM', 'Point-wise SEM, GrandAvg RMS', ...
+            'Point-wise SEM Pool ERPSETs, RMS GrandAvg Combine','Point-wise SEM Pool ERPSETs, mean GrandAvg combine',...
+            'Point-wise SEM (Corrected), GrandAvg RMS', ...
+            'Point-wise SEM Pool ERPSETs(Corrected), RMS GrandAvg Combine',...
+            'Point-wise SEM Pool ERPSETs(Corrected), mean GrandAvg combine'};
+        OutlierColor = [1 0 0];
     end
-else
-    % if not every bin has a bin description, leave then off
-    for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i)];
-    end
-end
 
-
-handles.popupmenu_bin.String = bin_names;
-
-% handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-selected_bin = handles.popupmenu_bin.Value;
-
-table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
-
-pSEM = 0;
-
-pointwise_str = {'Point-wise SEM', 'Point-wise SEM, GrandAvg RMS', ...
-    'Point-wise SEM Pool ERPSETs, RMS GrandAvg Combine','Point-wise SEM Pool ERPSETs, mean GrandAvg combine',...
-    'Point-wise SEM (Corrected), GrandAvg RMS', ...
-    'Point-wise SEM Pool ERPSETs(Corrected), RMS GrandAvg Combine',...
-    'Point-wise SEM Pool ERPSETs(Corrected), mean GrandAvg combine'};
-
-handles.pointwise_str = pointwise_str;
-
-if isempty(table_data) %check if potentially pointwise SEM
-    if any(strcmpi(pointwise_str, ERP.dataquality(selected_DQ_type).type)) && isempty(ERP.binerror) == 0
-        table_data = ERP.binerror(:,:,selected_bin);
-        pSEM = 1;
-        
-        %     elseif strcmp(ERP.dataquality(selected_DQ_type).type,'Point-wise SEM (Corrected)') && isempty(ERP.binerror) == 0
-        %         table_data = ERP.binerror(:,:,selected_bin);
-        %         pSEM = 1;
-        %
-        
-    else
-        
-        % Data empty here.
-        table_data = nan(1);
-        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
-    end
-    
-    
-end
-
-handles.dq_table.Data = table_data;
-handles.orig_data = table_data;
-
-% electrode labels from ERPset, iff present and number matches
-if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
-    for i=1:n_elec
-        elec_labels{i} = ERP.chanlocs(i).labels;
-    end
-else
-    
-    for i=1:ERP.nchan
-        elec_labels{i} = i;
-    end
-end
-handles.dq_table.RowName = elec_labels;
-handles.orig_RowName = elec_labels;
-
-% Time-window labels
-if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0  && handles.checkbox_text_labels.Value == 1
-    tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
-elseif isempty(ERP.dataquality(selected_DQ_type).times)
-    tw_labels = [];
-else
-    for i=1:n_tw
-        tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
-    end
-end
-if n_tw == 0 %no ERP.dataquality.data?
-    
-    if pSEM == 1
-        tw_labels = [];
-    else
-        tw_labels = 'No data here. Perhaps it was cleared?';
-    end
-    
-end
-handles.dq_table.ColumnName = tw_labels;
-
-% Set font size of DQ Table
-desired_fontsize = erpworkingmemory('fontsizeGUI');
-try
-    handles.dq_table.FontSize = desired_fontsize;
-catch
-    handles.dq_table.FontSize =11;
-end
-handles.heatmap_on = 0;
-
-%
-% Prepare List of current Channels
-%
-nchan  = ERP.nchan; % Total number of channels
-if ~isfield(ERP.chanlocs,'labels')
-    for e=1:nchan
-        ERP.chanlocs(e).labels = ['Ch' num2str(e)];
-    end
-end
-listch = {''};
-for ch =1:nchan
-    listch{ch} = [num2str(ch) ' = ' ERP.chanlocs(ch).labels ];
-end
-handles.listch     = listch;
-
-chanArray = 1:ERP.nchan; %default
-handles.indxlistch = chanArray; %default
-handles.orig_indxlistch = chanArray;
-set(handles.chwindow, 'String', vect2colon(chanArray, 'Delimiter', 'off'));
-
-
-% Set outliers text window off
-set(handles.stdwindow,'Enable','Off');
-set(handles.chwindow,'Enable','Off');
-set(handles.chbutton,'Enable','Off');
-set(handles.sdcorrection,'Enable','Off');
-set(handles.sdcorrection,'Visible','Off');
-
-%set outliers value in handles off initially
-handles.outliers_on = 0;
-
-% Update handles structure
-handles.ERP = ERP;
-
-if n_erp == 0
-    %case of aSME preavg
-    handles.ALLERP = ERP;
-else
-    handles.ALLERP = ALLERP;
-end
-handles.checkbox_heatmap.BackgroundColor = [0.94  0.94 0.94];
-handles.checkbox_outliers.BackgroundColor = [0.94  0.94 0.94];
-handles.checkbox_text_labels.BackgroundColor = [0.94  0.94 0.94];
-handles.chbutton.BackgroundColor = [0.94  0.94 0.94];
-handles.text13.BackgroundColor = [0.94  0.94 0.94];
-handles.text6.BackgroundColor = [0.94  0.94 0.94];
-handles.text_ERPSET_title.BackgroundColor = [0.94  0.94 0.94];
-handles.text_DQ_type.BackgroundColor = [0.94  0.94 0.94];
-handles.text9.BackgroundColor = [0.94  0.94 0.94];
-handles.pushbutton_mat.BackgroundColor = [1 1 1];
-handles.pushbutton_xls.BackgroundColor = [1 1 1];
-handles.text11.BackgroundColor = [0.94  0.94 0.94];
-handles.pushbutton_selERP.BackgroundColor = [1 1 1];
-handles.pushbutton_help.BackgroundColor = [1 1 1];
-handles.pushbutton_done.BackgroundColor = [1 1 1];
-handles.chbutton.BackgroundColor = [1 1 1];
-handles.text12.BackgroundColor = [0.94  0.94 0.94];
-handles.stdwindow.BackgroundColor = [1 1 1];
-handles.chwindow.BackgroundColor = [1 1 1];
-
-guidata(hObject, handles);
-
-% UIWAIT makes DQ_Table_GUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
-
-% --- Outputs from this function are returned to the command line.
-function varargout = DQ_Table_GUI_OutputFcn(hObject, eventdata, handles)
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get default command line output from handles structure
-varargout{1} = [];
-
-
-% --- Executes during object creation, after setting all properties.
-function text_ERPSET_title_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to text_ERPSET_title (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes on selection change in popupmenu_DQ_type.
-function popupmenu_DQ_type_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu_DQ_type (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_DQ_type contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu_DQ_type
-% handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-selected_bin = handles.popupmenu_bin.Value;
-pointwise_str = handles.pointwise_str;
-% Check data exists, plot
-if isempty(handles.ERP.dataquality(selected_DQ_type).data)
-    
-    % if pointwise SEM, use ERP.binerror
-    if any(strcmpi(pointwise_str, handles.ERP.dataquality(selected_DQ_type).type)) && isempty(handles.ERP.binerror) == 0
-        table_data = handles.ERP.binerror(:,:,selected_bin);
-    else
-        %     elseif strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM (Corrected)') && isempty(handles.ERP.binerror) == 0
-        %         table_data = handles.ERP.binerror(:,:,selected_bin);
-        %     else
-        %
-        
-        
-        % Data empty here.
-        table_data = nan(1);
-        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
-    end
-    
-else
-    % data is present and correct
-    
-    
-    if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(handles.ERP.binerror) == 0
-        table_data = handles.ERP.dataquality(selected_DQ_type).data.SD_bias(:,:,selected_bin); %SD (Divided by N-1)
-        set(handles.sdcorrection,'Enable','On');
-        set(handles.sdcorrection,'Visible','On');
-    else
-        table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
-        set(handles.sdcorrection,'Enable','Off');
-        set(handles.sdcorrection,'Visible','Off');
-    end
-    
-end
-
-handles.dq_table.Data = table_data;
-handles.orig_data = table_data;
-
-
-% Time-window labels
-clear tw_labels
-ERP = handles.ERP;
-n_dq = numel(ERP.dataquality);
-if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(handles.ERP.binerror) == 0
-    [n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type).data.SD_bias);
-else
-    [n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type).data);
-end
-
-if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0 && handles.checkbox_text_labels.Value == 1
-    tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
-elseif isempty(ERP.dataquality(selected_DQ_type).times)
-    tw_labels = [];
-elseif n_tw == 0  % some data problem, no tw here
-    tw_labels{1} = 'No data here - measure cleared?';
-else
-    for i=1:n_tw
-        tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
-    end
-end
-handles.dq_table.ColumnName = tw_labels;
-
-
-if handles.heatmap_on
-    redraw_heatmap(hObject, eventdata, handles);
-end
-
-if handles.outliers_on
-    clear_heatmap(hObject, eventdata, handles);
-    handles.heatmap_on = 0;
-    
-    redraw_outliers(hObject, eventdata, handles);
-    set(handles.checkbox_outliers,'Value',1);
-end
-
-
-% Update handles structure
-guidata(hObject, handles);
-
-
-
-% --- Executes during object creation, after setting all properties.
-function popupmenu_DQ_type_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu_DQ_type (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on selection change in popupmenu_bin.
-function popupmenu_bin_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu_bin (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_bin contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu_bin
-% handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-selected_bin = handles.popupmenu_bin.Value;
-pointwise_str = handles.pointwise_str;
-% Check data exists, plot
-if isempty(handles.ERP.dataquality(selected_DQ_type).data)
-    
-    % if pointwise SEM, use ERP.binerror
-    if any(strcmpi(pointwise_str,handles.ERP.dataquality(selected_DQ_type).type)) && isempty(handles.ERP.binerror) == 0
-        table_data = handles.ERP.binerror(:,:,selected_bin);
-    else
-        
-        % Data empty here.
-        table_data = nan(1);
-        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
-    end
-    
-else
-    % data is present and correct
-    table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
-end
-
-
-handles.dq_table.Data = table_data;
-handles.orig_data = table_data;
-
-
-%if user switches bin and both heatmap & outliers on,
-%use shortcircuit to clear outliers and redraw heatmap only
-if handles.heatmap_on %|| handles.outliers_on
-    clear_outliers(hObject, eventdata, handles);
-    redraw_heatmap(hObject, eventdata, handles);
-    %turn outliers off
-    handles.outliers = 0;
-    set(handles.checkbox_outliers,'Value',0);
-    
-end
-
-%if only outliers on, then clear heatmap and redraw outliers
-if handles.outliers_on
-    clear_heatmap(hObject, eventdata, handles);
-    handles.heatmap_on = 0;
-    
-    redraw_outliers(hObject, eventdata, handles);
-    set(handles.checkbox_outliers,'Value',1);
-end
-
-
-% Update handles structure
-guidata(hObject, handles);
-
-
-% --- Executes during object creation, after setting all properties.
-function popupmenu_bin_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu_bin (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in checkbox_text_labels.
-function checkbox_text_labels_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_text_labels (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_text_labels
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-selected_bin = handles.popupmenu_bin.Value;
-
-% if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(handles.ERP.binerror) == 0
-%     table_data = handles.ERP.dataquality(selected_DQ_type).data.SD_bias(:,:,selected_bin);
-% else
-%     table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
-%
-% end
-% handles.dq_table.Data = table_data;
-% handles.orig_data = table_data;
-
-% Time-window labels
-clear tw_labels
-ERP = handles.ERP;
-n_dq = numel(ERP.dataquality);
-%[n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type).data);
-if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(handles.ERP.binerror) == 0
-    [n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type).data.SD_bias);
-else
-    [n_elec, n_tw, n_bin] = size(ERP.dataquality(selected_DQ_type).data);
-end
-if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0 && handles.checkbox_text_labels.Value == 1
-    tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
-elseif isempty(ERP.dataquality(selected_DQ_type).times)
-    tw_labels = [];
-elseif n_tw == 0  % some data problem, no tw here
-    tw_labels{1} = 'No data here - measure cleared?';
-else
-    for i=1:n_tw
-        tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
-    end
-end
-handles.dq_table.ColumnName = tw_labels;
-
-if handles.heatmap_on
-    redraw_heatmap(hObject, eventdata, handles);
-end
-
-
-% Update handles structure
-guidata(hObject, handles);
-
-
-% --- Executes on button press in pushbutton_xls.
-function pushbutton_xls_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_xls (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-empty_filename = [];
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-%sd_correction = handles.sdcorrection.Value;
-save_data_quality(handles.ERP,empty_filename,'xlsx',selected_DQ_type)
-
-
-
-% --- Executes on button press in pushbutton_mat.
-function pushbutton_mat_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_mat (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-empty_filename = [];
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-save_data_quality(handles.ERP,empty_filename,'mat',selected_DQ_type)
-
-
-% --- Executes on button press in pushbutton_help.
-function pushbutton_help_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_help (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-web https://github.com/lucklab/erplab/wiki/ERPLAB-Data-Quality-Metrics -browser
-
-
-% --- Executes on button press in pushbutton_done.
-function pushbutton_done_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_done (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-%figure1_CloseRequestFcn(hObject,eventdata,handles)
-delete(handles.figure1);
-
-
-% --- Executes when user attempts to close figure1.
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: delete(hObject) closes the figure
-delete(hObject);
-
-
-% --- Executes on button press in checkbox_heatmap.
-function checkbox_heatmap_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_heatmap (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_heatmap
-heatmap_on = get(hObject,'Value');
-
-if heatmap_on == 1
-    
-    %if heatmap_on, then outliers not possible so clear outliers
-    clear_outliers(hObject, eventdata, handles);
-    handles.outliers_on = 0;
-    set(handles.checkbox_outliers, 'Value', 0);
-    
-    redraw_heatmap(hObject, eventdata, handles);
-    handles.heatmap_on = 1;
-else
-    clear_heatmap(hObject, eventdata, handles);
-    handles.heatmap_on = 0;
-    
-    %if outliers is on, then keep outliers active
-    if handles.outliers_on == 1
-        redraw_outliers(hOBject, eventdata,handles);
-    end
-    
-end
-% Update handles structure
-guidata(hObject, handles);
-
-
-function redraw_heatmap(hObject, eventdata, handles)
-
-color_map = viridis;
-data = handles.dq_table.Data;
-try
-    data_min = min(data(:));
-catch
-    disp('Cannot show text-labels while color heatmap is activated')
-    return
-end
-range_val = max(data(:)) - data_min;
-range_colormap = size(color_map,1); % as in, 256 shades?
-val_increase_per_shade = range_val / range_colormap;
-
-% Use this @ anonymous function to make HTML tag in box in loop below
-colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
-
-
-for cell = 1:numel(data)
-    data_here = data(cell);
-    shades_up_here = round((data_here - data_min) / val_increase_per_shade);
-    if shades_up_here < 1
-        shades_up_here = 1;
-    end
-    if shades_up_here > range_colormap
-        shades_up_here = range_colormap;
-    end
-    RGB_here = color_map(shades_up_here,:);
-    hex_color_here = ['#' dec2hex(round(255*RGB_here(1)),2) dec2hex(round(255*RGB_here(2)),2) dec2hex(round(255*RGB_here(3)),2)];
-    data2{cell} = colergen(hex_color_here,num2str(data_here));
-end
-
-data2 = reshape(data2,size(data));
-
-handles.dq_table.Data = data2;
-
-
-
-function clear_heatmap(hObject, eventdata, handles)
-handles.dq_table.Data = handles.orig_data;
-
-
-% --- Executes when entered data in editable cell(s) in dq_table.
-function dq_table_CellEditCallback(hObject, eventdata, handles)
-% hObject    handle to dq_table (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
-%	Indices: row and column indices of the cell(s) edited
-%	PreviousData: previous data for the cell(s) edited
-%	EditData: string(s) entered by the user
-%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
-%	Error: error string when failed to convert EditData to appropriate value for Data
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on selection change in newerpwin.
-function newerpwin_Callback(hObject, eventdata, handles)
-% hObject    handle to newerpwin (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns newerpwin contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from newerpwin
-
-
-% --- Executes during object creation, after setting all properties.
-function newerpwin_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to newerpwin (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in pushbutton_selERP.
-function pushbutton_selERP_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_selERP (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-selected_erpset = handles.newerpwin.Value;
-sel_ERP = handles.ALLERP(selected_erpset);
-DQ_Table_GUI(sel_ERP, handles.ALLERP, selected_erpset,2);
-
-
-% --- Executes on button press in checkbox_outliers.
-function checkbox_outliers_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_outliers (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_outliers
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_heatmap
-outliers_on = get(hObject,'Value'); % this is not the same as handles.outliers_on
-
-if outliers_on == 1
-    set(handles.stdwindow,'Enable','On');
-    set(handles.chwindow,'Enable','On');
-    set(handles.chbutton,'Enable','On');
-else
-    set(handles.stdwindow,'Enable','Off');
-    set(handles.chwindow,'Enable','Off');
-    set(handles.chbutton,'Enable','Off');
-end
-
-%updated the handles object for outliers to be in sync with hObject
-if outliers_on == 1
-    handles.outliers_on = 1;
-else
-    handles.outliers_on = 0;
-end
-
-
-if handles.outliers_on == 1
-    
-    %if heatmap is currently on, stop it and turn its states off
-    %before applying outliers fxn
-    
-    if handles.heatmap_on == 1
-        clear_heatmap(hObject, eventdata, handles);
-        handles.heatmap_on = 0;
-        set(handles.checkbox_heatmap, 'Value', 0);
-        
-        %handles.outliers_on = 1;
-        redraw_outliers(hObject, eventdata, handles);
-        
-    else
-        %handles.outliers_on = 1;
-        clear_outliers(hObject, eventdata, handles);
-        %guidata(hObject, handles);
-        redraw_outliers(hObject, eventdata, handles);
-        
-        
-    end
-    
-else %but if outliers is off, and heatmap is wanted, you can do it
-    
-    %     if handles.heatmap_on ==1
-    %
-    %         clear_outliers(hObject, eventdata, handles);
-    %         redraw_heatmap(hObject, eventdata, handles);
-    %         handles.outliers_on = 0;
-    %
-    %     else
-    %         clear_outliers(hObject, eventdata, handles);
-    %         handles.outliers_on = 0;
-    %
-    %     end
-    
-    %also, redraw initial data/channels without outliers
-    clear_outliers(hObject, eventdata, handles)
-    
-end
-
-
-% %if heatmap is currently on, stop it and turn its states off
-% %before applying outliers fxn
-% if handles.heatmap_on == 1
-%
-%     clear_heatmap(hObject, eventdata, handles);
-%     handles.heatmap_on = 0;
-%     set(handles.checkbox_heatmap, 'Value', 0);
-%
-%     if outliers_on == 1
-%         handles.outliers_on = 1;
-%         redraw_outliers(hObject, eventdata, handles);
-%     else
-%
-%         set(handles.stdwindow,'Enable','Off');
-%         set(handles.chwindow,'Enable','Off');
-%         set(handles.chbutton,'Enable','Off');
-%         clear_outliers(hObject, eventdata, handles);
-%         handles.outliers_on = 0;
-%
-%     end
-%
-% else
-%
-%      if outliers_on == 1
-%         handles.outliers_on = 1;
-%         redraw_outliers(hObject, eventdata, handles);
-%      else
-%         set(handles.stdwindow,'Enable','Off');
-%         set(handles.chwindow,'Enable','Off');
-%         set(handles.chbutton,'Enable','Off');
-%         clear_outliers(hObject, eventdata, handles);
-%         handles.outliers_on = 0;
-%
-%      end
-%
-% end
-% Update handles structure
-guidata(hObject, handles);
-
-function redraw_outliers(hObject, eventdata, handles)
-handles = guidata(hObject); %get the most updated handles struct
-data = handles.dq_table.Data;
-
-if iscell(data)
-    %in case of new std from stdwindow
-    data = handles.orig_data;
-end
-
-%either default(all) or from chbutton
-chans_to_use = handles.indxlistch;
-data = data(chans_to_use,:);
-n_elec = length(chans_to_use);
-ERPtouse = handles.ERP.chanlocs;
-
-for i=1:n_elec
-    curr_chanInd = chans_to_use(i);
-    elec_labels{i} = ERPtouse(curr_chanInd).labels;
-end
-
-%save new labels to handles
-handles.dq_table.RowName = elec_labels;
-
-%compute outliers as X standard deviations from mean across channels
-
-col_means = mean(data,1);
-col_std = std(data,0,1);
-chosen_std = str2double((handles.stdwindow.String));
-
-% Use this @ anonymous function to make HTML tag in box in loop below
-colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
-
-for cell = 1:numel(data)
-    
-    data_here = data(cell);
-    [d_row,d_col] = ind2sub(size(data),cell);
-    
-    neg_thresh = col_means(d_col) - (chosen_std*col_std(d_col));
-    pos_thresh = col_means(d_col) + (chosen_std*col_std(d_col));
-    
-    if data_here < neg_thresh || data_here > pos_thresh
-        hex_color_here = ['#' dec2hex(255,2) dec2hex(0,2) dec2hex(0,2)];
-        data2{cell} = colergen(hex_color_here,num2str(data_here));
-    else
-        data2{cell} = num2str(data_here);
-        
-    end
-    
-end
-
-data2= reshape(data2,size(data));
-handles.dq_table.Data = data2;
-
-function clear_outliers(hObject, eventdata, handles)
-%handles = guidata(hObject);
-handles.dq_table.Data = handles.orig_data;
-handles.dq_table.RowName = handles.orig_RowName;
-handles.indxlistch = handles.orig_indxlistch;
-
-
-% Re-Prepare List of current Channels
-chanArray = handles.orig_indxlistch; %default
-%handles.indxlistch = chanArray; %default
-set(handles.chwindow, 'String', vect2colon(chanArray, 'Delimiter', 'off'));
-% Update handles structure
-guidata(hObject, handles);
-
-
-
-
-
-function stdwindow_Callback(hObject, eventdata, handles)
-% hObject    handle to stdwindow (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-newstd = get(hObject,'String');
-handles.stdwindow.String= newstd;
-redraw_outliers(hObject, eventdata, handles);
-
-guidata(hObject, handles);
-
-
-
-
-% Hints: get(hObject,'String') returns contents of stdwindow as text
-%        str2double(get(hObject,'String')) returns contents of stdwindow as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function stdwindow_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to stdwindow (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function chwindow_Callback(hObject, eventdata, handles)
-% hObject    handle to chwindow (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of chwindow as text
-%        str2double(get(hObject,'String')) returns contents of chwindow as a double
-
-ch = get(hObject,'string');
-nch = length(handles.listch);
-
-ch_val = eval(ch);
-
-if ~isempty(ch)
-    
-    %     testch = regexpi(ch,':') ;
-    %
-    %     if isempty(testch)
-    %
-    %         try
-    %             ch_val = eval(ch);
-    %             handles.listch(ch_val); %attempt to index
-    %
-    %         catch
-    %             msgboxText =  'Invalid channel input: please enter channels as integers, with a space between each number, or ch1:chN array syntax';
-    %             title = 'ERPLAB: channel GUI input';
-    %             errorfound(msgboxText, title);
-    %
-    %         end
-    %     else
-    %         ch_val = eval(ch);
-    %
-    %     end
-    %
-    
-    tf = checkchannels(ch_val, nch, 1);
-    
-    if tf
-        return
-    end
-    
-    
-    %     if length(ch_val) > length(handles.orig_indxlistch)
-    %         msgboxText =  'Exceeded Number of Available Channels';
-    %         title = 'ERPLAB: channel GUI input';
-    %         errorfound(msgboxText, title);
-    %         return
-    %     end
-    %
-    set(handles.chwindow, 'String', vect2colon(ch_val, 'Delimiter', 'off'));
-    handles.indxlistch = ch_val;
-    % Update handles structure
-    guidata(hObject, handles);
-    redraw_outliers(hObject, eventdata, handles);
-    guidata(hObject, handles);
-    
-else
-    msgboxText =  'Not valid channel';
-    title = 'ERPLAB: channel GUI input';
-    errorfound(msgboxText, title);
-    return
-end
-
-
-
-% --- Executes during object creation, after setting all properties.
-function chwindow_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to chwindow (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in chbutton.
-function chbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to chbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-listch = handles.listch; %true channels list as labels
-indxlistch = handles.indxlistch; %true array of channel indexs
-indxlistch = indxlistch(indxlistch<=length(listch)); % true array of channel index if less than expected labels
-titlename = 'Select Channel(s)';
-if get(hObject, 'Value')
-    if ~isempty(listch)
-        ch = browsechanbinGUI(listch, indxlistch, titlename);
-        if ~isempty(ch)
-            set(handles.chwindow, 'String', vect2colon(ch, 'Delimiter', 'off'));
-            handles.indxlistch = ch;
-            % Update handles structure
-            guidata(hObject, handles);
-            redraw_outliers(hObject, eventdata, handles);
-            guidata(hObject, handles);
-            
-            
-        else
-            disp('User selected Cancel')
-            return
+    methods (Access = private)
+
+        function startupFcn(app, varargin)
+            ERP          = varargin{1};
+            ALLERP       = varargin{2};
+            current_ERP  = varargin{3};
+            guiwin_num   = varargin{4};
+            if numel(varargin) >= 5 && strcmpi(varargin{5}, 'EEG')
+                datatype = 'EEG';
+            else
+                datatype = 'ERP';
+            end
+
+            if guiwin_num ~= 1
+                offset_GUI = 25 * randi([1 10],1);
+                figpos = app.UIFigure.Position;
+                app.UIFigure.Position = [figpos(1)-offset_GUI, figpos(2)-offset_GUI, figpos(3), figpos(4)];
+            end
+
+            try
+                assert(isempty(ERP)==0)
+                assert(isfield(ERP,'dataquality'))
+                assert(strcmp(ERP.dataquality(1).type,'empty')==0)
+            catch
+                beep
+                warning('Data Quality not present in current ERPset?')
+                delete(app.UIFigure);
+                return
+            end
+
+            n_erp = numel(ALLERP);
+            if n_erp == 0
+                % case of showing aSME preavg
+                erp_names = ERP.erpname;
+                app.LabelERPsetTitle.Text = 'Selected EEGset:';
+                app.LabelOpenNewWin.Visible = 'off';
+                app.DropdownNewErpWin.Visible = 'off';
+                app.ButtonSelectERP.Visible = 'off';
+                app.DropdownActiveErpset.Items = {erp_names};
+                app.DropdownActiveErpset.ItemsData = 1;
+                app.DropdownActiveErpset.Value = 1;
+                app.DropdownActiveErpset.Enable = 'off';
+            else
+                erp_names = cell(1,n_erp);
+                for i = 1:n_erp
+                    erp_names{i} = ALLERP(i).erpname;
+                end
+                if strcmpi(datatype, 'EEG')
+                    app.LabelERPsetTitle.Text  = 'Selected EEGset:';
+                    app.LabelOpenNewWin.Text   = 'Open new EEGset Window';
+                    app.ButtonSelectERP.Text   = 'Select EEGset';
+                else
+                    app.LabelERPsetTitle.Text  = 'Selected ERPset:';
+                    app.LabelOpenNewWin.Text   = 'Open new ERPset Window';
+                    app.ButtonSelectERP.Text   = 'Select ERPset';
+                end
+                app.DropdownActiveErpset.Items     = erp_names;
+                app.DropdownActiveErpset.ItemsData = 1:n_erp;
+                app.DropdownActiveErpset.Value     = current_ERP;
+                app.DropdownNewErpWin.Items        = erp_names;
+                app.DropdownNewErpWin.ItemsData    = 1:n_erp;
+                app.DropdownNewErpWin.Value        = current_ERP;
+            end
+
+            n_dq = numel(ERP.dataquality);
+            type_names = cell(1,n_dq);
+            for i=1:n_dq
+                type_names{i} = ERP.dataquality(i).type;
+            end
+            app.DropdownDQType.Items     = type_names;
+            app.DropdownDQType.ItemsData = 1:n_dq;
+
+            where_aSME      = strcmpi('aSME', type_names);
+            where_aSME_corr = strcmpi('aSME (Corrected)', type_names);
+            if any(where_aSME)
+                indx_type = find(where_aSME,1);
+            elseif any(where_aSME_corr)
+                indx_type = find(where_aSME_corr,1);
+            else
+                indx_type = n_dq;
+            end
+            app.DropdownDQType.Value = indx_type;
+
+            try
+                [n_elec, n_tw, n_bin] = size(ERP.dataquality(indx_type).data);
+            catch
+                [n_elec, n_tw, n_bin] = size(ERP.dataquality.data);
+            end
+            if n_elec == 0
+                n_bin = ERP.nbin;
+            end
+
+            n_bin_names = numel(ERP.bindescr);
+            bin_names = cell(1,n_bin);
+            if n_bin_names == n_bin
+                for i=1:n_bin
+                    bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+                end
+            else
+                for i=1:n_bin
+                    bin_names{i} = ['BIN ' num2str(i)];
+                end
+            end
+            app.PopupBin.Items     = bin_names;
+            app.PopupBin.ItemsData = 1:n_bin;
+            app.PopupBin.Value     = 1;
+
+            selected_DQ_type = app.DropdownDQType.Value;
+            selected_bin     = app.PopupBin.Value;
+            table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+
+            pSEM = 0;
+            if isempty(table_data)
+                if any(strcmpi(app.PointwiseStr, ERP.dataquality(selected_DQ_type).type)) && isempty(ERP.binerror) == 0
+                    table_data = ERP.binerror(:,:,selected_bin);
+                    pSEM = 1;
+                else
+                    table_data = nan(1);
+                    disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
+                end
+            end
+
+            app.DQTable.Data = table_data;
+            app.orig_data = table_data;
+
+            if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
+                elec_labels = cell(1,n_elec);
+                for i=1:n_elec
+                    elec_labels{i} = ERP.chanlocs(i).labels;
+                end
+            else
+                elec_labels = cell(1,ERP.nchan);
+                for i=1:ERP.nchan
+                    elec_labels{i} = i;
+                end
+            end
+            app.DQTable.RowName = elec_labels;
+            app.orig_RowName = elec_labels;
+
+            % Time-window labels. Point-wise measures (pSEM) have one column
+            % per sample point rather than per time-window, so label each
+            % column with its latency instead of a window range.
+            if pSEM == 1
+                tw_labels = cell(1, size(table_data,2));
+                for i = 1:numel(tw_labels)
+                    tw_labels{i} = num2str(round(ERP.times(i)));
+                end
+            elseif isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0 && app.CheckboxTextLabels.Value == 1
+                tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
+            elseif isempty(ERP.dataquality(selected_DQ_type).times)
+                tw_labels = [];
+            elseif n_tw == 0
+                tw_labels = 'No data here. Perhaps it was cleared?';
+            else
+                tw_labels = cell(1,n_tw);
+                for i=1:n_tw
+                    tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
+                end
+            end
+            app.DQTable.ColumnName = tw_labels;
+
+            desired_fontsize = erpworkingmemory('fontsizeGUI');
+            try
+                app.DQTable.FontSize = desired_fontsize;
+            catch
+                app.DQTable.FontSize = 11;
+            end
+            app.heatmap_on = 0;
+
+            app.prepareChannelList(ERP);
+            app.orig_indxlistch = app.indxlistch;
+
+            app.EditStdWindow.Enable       = 'off';
+            app.EditChannels.Enable        = 'off';
+            app.ButtonBrowseChan.Enable    = 'off';
+            app.CheckboxSDCorrection.Enable = 'off';
+            app.CheckboxSDCorrection.Visible = 'off';
+
+            app.outliers_on = 0;
+            app.ERP = ERP;
+            if n_erp == 0
+                app.ALLERP = ERP;
+            else
+                app.ALLERP = ALLERP;
+            end
         end
-    else
-        msgboxText =  'No channel information was found';
-        title = 'ERPLAB: ploterp GUI input';
-        errorfound(msgboxText, title);
-        return
+
+        % --- shared "Prepare List of current Channels" logic ---
+        function prepareChannelList(app, ERP)
+            nchan = ERP.nchan;
+            if ~isfield(ERP.chanlocs,'labels')
+                for e=1:nchan
+                    ERP.chanlocs(e).labels = ['Ch' num2str(e)];
+                end
+            end
+            listch = cell(1,nchan);
+            for ch = 1:nchan
+                listch{ch} = [num2str(ch) ' = ' ERP.chanlocs(ch).labels];
+            end
+            app.listch = listch;
+
+            chanArray = 1:ERP.nchan;
+            app.indxlistch = chanArray;
+            app.EditChannels.Value = vect2colon(chanArray, 'Delimiter', 'off');
+        end
+
+        % --- Selected DQ Measure changed ---
+        function dqTypeChanged(app, ~)
+            selected_DQ_type = app.DropdownDQType.Value;
+            selected_bin     = app.PopupBin.Value;
+
+            pSEM = 0;
+            if isempty(app.ERP.dataquality(selected_DQ_type).data)
+                if any(strcmpi(app.PointwiseStr, app.ERP.dataquality(selected_DQ_type).type)) && isempty(app.ERP.binerror) == 0
+                    table_data = app.ERP.binerror(:,:,selected_bin);
+                    pSEM = 1;
+                else
+                    table_data = nan(1);
+                    disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
+                end
+            else
+                if strcmp(app.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(app.ERP.binerror) == 0
+                    table_data = app.ERP.dataquality(selected_DQ_type).data.SD_bias(:,:,selected_bin);
+                    app.CheckboxSDCorrection.Enable = 'on';
+                    app.CheckboxSDCorrection.Visible = 'on';
+                else
+                    table_data = app.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+                    app.CheckboxSDCorrection.Enable = 'off';
+                    app.CheckboxSDCorrection.Visible = 'off';
+                end
+            end
+
+            app.DQTable.Data = table_data;
+            app.orig_data = table_data;
+
+            ERP = app.ERP;
+            if strcmp(app.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(app.ERP.binerror) == 0
+                [~, n_tw, ~] = size(ERP.dataquality(selected_DQ_type).data.SD_bias);
+            else
+                [~, n_tw, ~] = size(ERP.dataquality(selected_DQ_type).data);
+            end
+            if pSEM == 1
+                tw_labels = cell(1, size(table_data,2));
+                for i = 1:numel(tw_labels)
+                    tw_labels{i} = num2str(round(ERP.times(i)));
+                end
+            elseif isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0 && app.CheckboxTextLabels.Value == 1
+                tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
+            elseif isempty(ERP.dataquality(selected_DQ_type).times)
+                tw_labels = [];
+            elseif n_tw == 0
+                tw_labels = {'No data here - measure cleared?'};
+            else
+                tw_labels = cell(1,n_tw);
+                for i=1:n_tw
+                    tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
+                end
+            end
+            app.DQTable.ColumnName = tw_labels;
+
+            if app.heatmap_on
+                app.refreshHeatmap();
+            end
+            if app.outliers_on
+                app.clearHeatmapStyle();
+                app.heatmap_on = 0;
+                app.refreshOutliers();
+                app.CheckboxOutliers.Value = 1;
+            end
+        end
+
+        % --- Selected BIN changed ---
+        function binChanged(app, ~)
+            selected_DQ_type = app.DropdownDQType.Value;
+            selected_bin     = app.PopupBin.Value;
+
+            if isempty(app.ERP.dataquality(selected_DQ_type).data)
+                if any(strcmpi(app.PointwiseStr, app.ERP.dataquality(selected_DQ_type).type)) && isempty(app.ERP.binerror) == 0
+                    table_data = app.ERP.binerror(:,:,selected_bin);
+                else
+                    table_data = nan(1);
+                    disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
+                end
+            else
+                table_data = app.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+            end
+
+            app.DQTable.Data = table_data;
+            app.orig_data = table_data;
+
+            % if user switches bin and both heatmap & outliers on,
+            % use shortcircuit to clear outliers and redraw heatmap only
+            if app.heatmap_on
+                app.clearOutliersStyle();
+                app.refreshHeatmap();
+                app.outliers_on = 0;
+                app.CheckboxOutliers.Value = 0;
+            end
+
+            % if only outliers on, then clear heatmap and redraw outliers
+            if app.outliers_on
+                app.clearHeatmapStyle();
+                app.heatmap_on = 0;
+                app.refreshOutliers();
+                app.CheckboxOutliers.Value = 1;
+            end
+        end
+
+        % --- Text labels checkbox changed ---
+        function textLabelsChanged(app, ~)
+            selected_DQ_type = app.DropdownDQType.Value;
+            ERP = app.ERP;
+
+            pSEM = isempty(ERP.dataquality(selected_DQ_type).data) && ...
+                any(strcmpi(app.PointwiseStr, ERP.dataquality(selected_DQ_type).type)) && ...
+                isempty(ERP.binerror) == 0;
+
+            if strcmp(app.ERP.dataquality(selected_DQ_type).type,'SD Across Trials') && isempty(app.ERP.binerror) == 0
+                [~, n_tw, ~] = size(ERP.dataquality(selected_DQ_type).data.SD_bias);
+            else
+                [~, n_tw, ~] = size(ERP.dataquality(selected_DQ_type).data);
+            end
+            if pSEM
+                tw_labels = cell(1, size(app.DQTable.Data,2));
+                for i = 1:numel(tw_labels)
+                    tw_labels{i} = num2str(round(ERP.times(i)));
+                end
+            elseif isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0 && app.CheckboxTextLabels.Value == 1
+                tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
+            elseif isempty(ERP.dataquality(selected_DQ_type).times)
+                tw_labels = [];
+            elseif n_tw == 0
+                tw_labels = {'No data here - measure cleared?'};
+            else
+                tw_labels = cell(1,n_tw);
+                for i=1:n_tw
+                    tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
+                end
+            end
+            app.DQTable.ColumnName = tw_labels;
+
+            if app.heatmap_on
+                app.refreshHeatmap();
+            end
+        end
+
+        % --- Export buttons ---
+        function exportXls(app, ~)
+            selected_DQ_type = app.DropdownDQType.Value;
+            save_data_quality(app.ERP, [], 'xlsx', selected_DQ_type)
+        end
+
+        function exportMat(app, ~)
+            selected_DQ_type = app.DropdownDQType.Value;
+            save_data_quality(app.ERP, [], 'mat', selected_DQ_type)
+        end
+
+        function showHelp(app, ~)
+            web https://github.com/lucklab/erplab/wiki/ERPLAB-Data-Quality-Metrics -browser
+        end
+
+        function doneBtn(app, ~)
+            delete(app.UIFigure);
+        end
+
+        % --- Color heatmap checkbox ---
+        function heatmapToggled(app, ~)
+            heatmap_on = app.CheckboxHeatmap.Value;
+
+            if heatmap_on == 1
+                % if heatmap_on, then outliers not possible so clear outliers
+                app.clearOutliersStyle();
+                app.outliers_on = 0;
+                app.CheckboxOutliers.Value = 0;
+                app.EditStdWindow.Enable    = 'off';
+                app.EditChannels.Enable     = 'off';
+                app.ButtonBrowseChan.Enable = 'off';
+
+                app.refreshHeatmap();
+                app.heatmap_on = 1;
+            else
+                app.clearHeatmapStyle();
+                app.heatmap_on = 0;
+
+                % if outliers is on, then keep outliers active
+                if app.outliers_on == 1
+                    app.refreshOutliers();
+                end
+            end
+        end
+
+        function refreshHeatmap(app)
+            color_map = viridis;
+            data = app.DQTable.Data;
+            if ~isnumeric(data) || isempty(data)
+                disp('Cannot show text-labels while color heatmap is activated')
+                return
+            end
+            data_min = min(data(:));
+            range_val = max(data(:)) - data_min;
+            range_colormap = size(color_map,1); % as in, 256 shades?
+            val_increase_per_shade = range_val / range_colormap;
+
+            % Clear styles AND fully cycle Data (empty, then restore) before
+            % restyling -- removeStyle alone left stale per-cell styles from
+            % a previous mode visible on some cells for wide tables; forcing
+            % the table through an empty state invalidates any leftover
+            % per-cell style/position association.
+            removeStyle(app.DQTable);
+            app.DQTable.Data = {};
+            drawnow;
+            app.DQTable.Data = data;
+            drawnow;
+            shade_idx = round((data - data_min) / val_increase_per_shade);
+            shade_idx = max(1, min(range_colormap, shade_idx));
+            % Batch all cells sharing the same shade into one addStyle call
+            % each, instead of one call per cell -- calling addStyle
+            % per-cell is far too slow for wide tables (e.g. point-wise
+            % measures with one column per sample point).
+            for shade = unique(shade_idx(:))'
+                [r, c] = find(shade_idx == shade);
+                addStyle(app.DQTable, uistyle('BackgroundColor', color_map(shade,:)), 'cell', [r c]);
+            end
+        end
+
+        function clearHeatmapStyle(app)
+            removeStyle(app.DQTable);
+        end
+
+        % --- Open new ERPset/EEGset window ---
+        function selectERPBtn(app, ~)
+            selected_erpset = app.DropdownNewErpWin.Value;
+            sel_ERP = app.ALLERP(selected_erpset);
+            DQ_Table_GUI(sel_ERP, app.ALLERP, selected_erpset, 2);
+        end
+
+        % --- Outliers checkbox ---
+        function outliersToggled(app, ~)
+            outliers_on = app.CheckboxOutliers.Value;
+
+            if outliers_on == 1
+                app.EditStdWindow.Enable    = 'on';
+                app.EditChannels.Enable     = 'on';
+                app.ButtonBrowseChan.Enable = 'on';
+            else
+                app.EditStdWindow.Enable    = 'off';
+                app.EditChannels.Enable     = 'off';
+                app.ButtonBrowseChan.Enable = 'off';
+            end
+
+            app.outliers_on = outliers_on;
+
+            if app.outliers_on == 1
+                % if heatmap is currently on, stop it and turn its state off
+                % before applying outliers fxn
+                if app.heatmap_on == 1
+                    app.clearHeatmapStyle();
+                    app.heatmap_on = 0;
+                    app.CheckboxHeatmap.Value = 0;
+                    app.refreshOutliers();
+                else
+                    app.clearOutliersStyle();
+                    app.refreshOutliers();
+                end
+            else
+                % outliers off - redraw initial data/channels without outliers
+                app.clearOutliersStyle();
+            end
+        end
+
+        function refreshOutliers(app)
+            data = app.orig_data;
+            chans_to_use = app.indxlistch;
+            data = data(chans_to_use,:);
+            n_elec = length(chans_to_use);
+            ERPtouse = app.ERP.chanlocs;
+
+            elec_labels = cell(1,n_elec);
+            for i=1:n_elec
+                elec_labels{i} = ERPtouse(chans_to_use(i)).labels;
+            end
+
+            % Clear styles AND fully cycle Data (empty, then repopulate)
+            % before restyling -- removeStyle alone left stale per-cell
+            % styles from a previous mode visible on some cells for wide
+            % tables; forcing the table through an empty state invalidates
+            % any leftover per-cell style/position association.
+            removeStyle(app.DQTable);
+            app.DQTable.Data = {};
+            drawnow;
+            app.DQTable.RowName = elec_labels;
+            app.DQTable.Data = data;
+            drawnow;
+
+            col_means = mean(data,1);
+            col_std   = std(data,0,1);
+            chosen_std = str2double(app.EditStdWindow.Value);
+
+            neg_thresh = col_means - chosen_std*col_std;
+            pos_thresh = col_means + chosen_std*col_std;
+            % Batch every outlier cell into a single addStyle call instead
+            % of one call per cell -- far too slow for wide tables (e.g.
+            % point-wise measures with one column per sample point).
+            [r, c] = find(data < neg_thresh | data > pos_thresh);
+            if ~isempty(r)
+                addStyle(app.DQTable, uistyle('BackgroundColor', app.OutlierColor), 'cell', [r c]);
+            end
+        end
+
+        function clearOutliersStyle(app)
+            removeStyle(app.DQTable);
+            app.DQTable.Data = app.orig_data;
+            app.DQTable.RowName = app.orig_RowName;
+            app.indxlistch = app.orig_indxlistch;
+            app.EditChannels.Value = vect2colon(app.orig_indxlistch, 'Delimiter', 'off');
+        end
+
+        function stdWindowChanged(app, ~)
+            app.refreshOutliers();
+        end
+
+        function chWindowChanged(app, ~)
+            ch = app.EditChannels.Value;
+            nch = length(app.listch);
+
+            ch_val = eval(ch); % allows MATLAB range syntax (e.g. 1:5, [1 3 5])
+
+            if ~isempty(ch)
+                tf = app.checkchannels(ch_val, nch, 1);
+                if tf
+                    return
+                end
+                app.EditChannels.Value = vect2colon(ch_val, 'Delimiter', 'off');
+                app.indxlistch = ch_val;
+                app.refreshOutliers();
+            else
+                msgboxText =  'Not valid channel';
+                title = 'ERPLAB: channel GUI input';
+                errorfound(msgboxText, title);
+                return
+            end
+        end
+
+        function browseChannelsBtn(app, ~)
+            listch = app.listch;
+            indxlistch = app.indxlistch;
+            indxlistch = indxlistch(indxlistch<=length(listch));
+            titlename = 'Select Channel(s)';
+            if ~isempty(listch)
+                ch = browsechanbinGUI(listch, indxlistch, titlename);
+                if ~isempty(ch)
+                    app.EditChannels.Value = vect2colon(ch, 'Delimiter', 'off');
+                    app.indxlistch = ch;
+                    app.refreshOutliers();
+                else
+                    disp('User selected Cancel')
+                    return
+                end
+            else
+                msgboxText =  'No channel information was found';
+                title = 'ERPLAB: ploterp GUI input';
+                errorfound(msgboxText, title);
+                return
+            end
+        end
+
+        % --- Selected ERPset dropdown changed ---
+        function activeErpsetChanged(app, ~)
+            newactive = app.DropdownActiveErpset.Value;
+            ERPs = app.ALLERP;
+            ERP = ERPs(newactive);
+
+            n_dq = numel(ERP.dataquality);
+            type_names = cell(1,n_dq);
+            for i=1:n_dq
+                type_names{i} = ERP.dataquality(i).type;
+            end
+            app.DropdownDQType.Items     = type_names;
+            app.DropdownDQType.ItemsData = 1:n_dq;
+            app.DropdownDQType.Value     = n_dq;
+
+            [n_elec, n_tw, n_bin] = size(ERP.dataquality(n_dq).data);
+            if n_elec == 0
+                n_bin = ERP.nbin;
+            end
+
+            n_bin_names = numel(ERP.bindescr);
+            bin_names = cell(1,n_bin);
+            if n_bin_names == n_bin
+                for i=1:n_bin
+                    bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+                end
+            else
+                for i=1:n_bin
+                    bin_names{i} = ['BIN ' num2str(i)];
+                end
+            end
+            app.PopupBin.Items     = bin_names;
+            app.PopupBin.ItemsData = 1:n_bin;
+
+            selected_DQ_type = app.DropdownDQType.Value;
+            selected_bin     = app.PopupBin.Value;
+
+            table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+            app.DQTable.Data = table_data;
+            app.orig_data = table_data;
+
+            if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
+                elec_labels = cell(1,n_elec);
+                for i=1:n_elec
+                    elec_labels{i} = ERP.chanlocs(i).labels;
+                end
+            else
+                elec_labels = cell(1,ERP.nchan);
+                for i=1:ERP.nchan
+                    elec_labels{i} = i;
+                end
+            end
+            app.DQTable.RowName = elec_labels;
+
+            if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0 && app.CheckboxTextLabels.Value == 1
+                tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
+            elseif isempty(ERP.dataquality(selected_DQ_type).times)
+                tw_labels = [];
+            else
+                tw_labels = cell(1,n_tw);
+                for i=1:n_tw
+                    tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
+                end
+            end
+            if n_tw == 0
+                tw_labels = 'No data here. Perhaps it was cleared?';
+            end
+            app.DQTable.ColumnName = tw_labels;
+
+            desired_fontsize = erpworkingmemory('fontsizeGUI');
+            app.DQTable.FontSize = desired_fontsize;
+            app.heatmap_on = app.CheckboxHeatmap.Value;
+
+            app.prepareChannelList(ERP);
+
+            app.EditStdWindow.Enable    = 'off';
+            app.EditChannels.Enable     = 'off';
+            app.ButtonBrowseChan.Enable = 'off';
+
+            app.ERP = ERP;
+            app.ALLERP = ERPs;
+
+            % clear all previously set options
+            app.CheckboxOutliers.Value = 0;
+            app.CheckboxTextLabels.Value = 0;
+            app.EditStdWindow.Enable    = 'off';
+            app.EditChannels.Enable     = 'off';
+            app.ButtonBrowseChan.Enable = 'off';
+
+            if app.heatmap_on == 1
+                app.clearOutliersStyle();
+                app.outliers_on = 0;
+                app.CheckboxOutliers.Value = 0;
+                app.refreshHeatmap();
+                app.heatmap_on = 1;
+            else
+                app.clearHeatmapStyle();
+                app.heatmap_on = 0;
+                if app.outliers_on == 1
+                    app.refreshOutliers();
+                end
+            end
+        end
+
+        % --- Apply SD Correction checkbox ---
+        function sdCorrectionToggled(app, ~)
+            selected_DQ_type = app.DropdownDQType.Value;
+            selected_bin     = app.PopupBin.Value;
+
+            if app.CheckboxSDCorrection.Value == 1
+                table_data = app.ERP.dataquality(selected_DQ_type).data.SD_unbias(:,:,selected_bin); % SD (Gurland & Tripathi, 1971)
+            else
+                table_data = app.ERP.dataquality(selected_DQ_type).data.SD_bias(:,:,selected_bin); % SD (Divided by N-1)
+            end
+            app.DQTable.Data = table_data;
+            app.orig_data = table_data;
+        end
+    end
+
+    methods (Static, Access = private)
+        function tf = checkchannels(chx, nchan, showmsg)
+            if nargin<3
+                showmsg = 1;
+            end
+            tf = 0; % no problem by default
+
+            if ~mod(chx, 1) == 0
+                if showmsg
+                    msgboxText =  'Invalid channel indexing.';
+                    title = 'ERPLAB: basicfilterGUI() error:';
+                    errorfound(msgboxText, title);
+                end
+                tf = 1;
+            end
+
+            if isempty(chx)
+                if showmsg
+                    msgboxText =  'Invalid channel indexing.';
+                    title = 'ERPLAB: basicfilterGUI() error:';
+                    errorfound(msgboxText, title);
+                end
+                tf = 1;
+                return
+            end
+            if ~isempty(find(chx>nchan, 1))
+                if showmsg
+                    msgboxText =  ['You only have %g channels,\n'...
+                        'so you cannot specify indices greater than this.'];
+                    title = 'ERPLAB: basicfilterGUI() error:';
+                    errorfound(sprintf(msgboxText, nchan), title);
+                end
+                tf = 1;
+                return
+            end
+            if ~isempty(find(chx<1, 1))
+                if showmsg
+                    msgboxText =  'You cannot use zero or a negative number as a channel indexing';
+                    title = 'ERPLAB: basicfilterGUI() error:';
+                    errorfound(msgboxText, title);
+                end
+                tf = 1;
+                return
+            end
+            if length(chx)>length(unique_bc2(chx))
+                if showmsg
+                    msgboxText =  ['Repeated channels are not allowed.\n'...
+                        'Therefore, ERPLAB will get rid of them.'];
+                    title = 'ERPLAB: basicfilterGUI() error:';
+                    errorfound(sprintf(msgboxText), title, [1 1 0], [0 0 0], 0)
+                end
+                tf = 0;
+                return
+            end
+        end
+    end
+
+    % --- Component initialization ---
+    methods (Access = private)
+
+        function createComponents(app)
+            % Layout positions below are on a 758x641 design grid, scaled by
+            % SX/SY to the panel's actual 1010x770 display size (non-uniform
+            % per axis). FontSize is left unscaled -- it's an absolute value
+            % independent of the layout grid.
+            SX = 1010/758; SY = 770/641;
+            P  = @(x,y,w,h) [round(x*SX) round(y*SY) round(w*SX) round(h*SY)];
+            FS = @(sz) sz;
+
+            FIG_W = round(758*SX); FIG_H = round(641*SY);
+            GRAY  = [0.94 0.94 0.94];
+            WHITE = [1 1 1];
+
+            app.UIFigure = uifigure('Visible', 'off');
+            app.UIFigure.Position = [100 100 FIG_W FIG_H];
+            app.UIFigure.Name     = 'ERPLAB Data Quality Measures - Table Viewer';
+            app.UIFigure.Resize   = 'off';
+            app.UIFigure.Color    = GRAY;
+
+            % --- Panel1: Data Quality Measures ---
+            app.Panel1 = uipanel(app.UIFigure);
+            app.Panel1.Title = 'Data Quality Measures';
+            app.Panel1.Position = P(11, 132, 740, 498);
+            app.Panel1.BackgroundColor = GRAY;
+
+            app.LabelERPsetTitle = uilabel(app.Panel1);
+            app.LabelERPsetTitle.Position = P(27, 462, 124, 16);
+            app.LabelERPsetTitle.Text = 'Selected ERPSET:';
+            app.LabelERPsetTitle.FontSize = FS(12);
+            app.LabelERPsetTitle.BackgroundColor = GRAY;
+
+            app.DropdownActiveErpset = uidropdown(app.Panel1);
+            app.DropdownActiveErpset.Position = P(165, 457, 275, 24);
+            app.DropdownActiveErpset.FontSize = FS(12);
+            app.DropdownActiveErpset.ValueChangedFcn = createCallbackFcn(app, @activeErpsetChanged, true);
+
+            app.LabelDQType = uilabel(app.Panel1);
+            app.LabelDQType.Position = P(27, 434, 159, 16);
+            app.LabelDQType.Text = 'Selected DQ Measure:';
+            app.LabelDQType.FontSize = FS(12);
+            app.LabelDQType.BackgroundColor = GRAY;
+
+            app.DropdownDQType = uidropdown(app.Panel1);
+            app.DropdownDQType.Position = P(165, 429, 177, 24);
+            app.DropdownDQType.FontSize = FS(13);
+            app.DropdownDQType.BackgroundColor = WHITE;
+            app.DropdownDQType.ValueChangedFcn = createCallbackFcn(app, @dqTypeChanged, true);
+
+            app.CheckboxSDCorrection = uicheckbox(app.Panel1);
+            app.CheckboxSDCorrection.Position = P(344, 435, 122, 17);
+            app.CheckboxSDCorrection.Text = 'Apply SD Correction';
+            app.CheckboxSDCorrection.FontSize = FS(12);
+            app.CheckboxSDCorrection.ValueChangedFcn = createCallbackFcn(app, @sdCorrectionToggled, true);
+
+            app.LabelBin = uilabel(app.Panel1);
+            app.LabelBin.Position = P(27, 411, 180, 17);
+            app.LabelBin.Text = 'Selected BIN:';
+            app.LabelBin.FontSize = FS(12);
+
+            app.PopupBin = uidropdown(app.Panel1);
+            app.PopupBin.Position = P(165, 405, 177, 24);
+            app.PopupBin.FontSize = FS(13);
+            app.PopupBin.BackgroundColor = WHITE;
+            app.PopupBin.ValueChangedFcn = createCallbackFcn(app, @binChanged, true);
+
+            app.LabelTimeWindows = uilabel(app.Panel1);
+            app.LabelTimeWindows.Position = P(276, 381, 117, 17);
+            app.LabelTimeWindows.Text = 'Time-windows';
+            app.LabelTimeWindows.FontSize = FS(12);
+            app.LabelTimeWindows.BackgroundColor = GRAY;
+
+            app.DQTable = uitable(app.Panel1);
+            app.DQTable.Position = P(27, 22, 699, 357);
+            app.DQTable.ColumnEditable = false;
+            app.DQTable.FontSize = FS(10);
+
+            % --- Panel2: Display options (nested inside Panel1) ---
+            app.Panel2 = uipanel(app.Panel1);
+            app.Panel2.Title = 'Display options';
+            app.Panel2.Position = P(482, 382, 245, 101);
+            app.Panel2.BackgroundColor = GRAY;
+
+            app.CheckboxHeatmap = uicheckbox(app.Panel2);
+            app.CheckboxHeatmap.Position = P(12, 62, 140, 20);
+            app.CheckboxHeatmap.Text = 'Color heatmap';
+            app.CheckboxHeatmap.FontSize = FS(13);
+            app.CheckboxHeatmap.ValueChangedFcn = createCallbackFcn(app, @heatmapToggled, true);
+
+            app.CheckboxOutliers = uicheckbox(app.Panel2);
+            app.CheckboxOutliers.Position = P(124, 67, 79, 17);
+            app.CheckboxOutliers.Text = 'Outliers';
+            app.CheckboxOutliers.FontSize = FS(13);
+            app.CheckboxOutliers.ValueChangedFcn = createCallbackFcn(app, @outliersToggled, true);
+
+            app.CheckboxTextLabels = uicheckbox(app.Panel2);
+            app.CheckboxTextLabels.Position = P(12, 36, 104, 18);
+            app.CheckboxTextLabels.Text = 'Text labels';
+            app.CheckboxTextLabels.FontSize = FS(13);
+            app.CheckboxTextLabels.ValueChangedFcn = createCallbackFcn(app, @textLabelsChanged, true);
+
+            app.LabelStdFromMean = uilabel(app.Panel2);
+            app.LabelStdFromMean.Position = P(102, 46, 98, 16);
+            app.LabelStdFromMean.Text = 'Std from mean';
+            app.LabelStdFromMean.FontSize = FS(11);
+            app.LabelStdFromMean.BackgroundColor = GRAY;
+
+            app.EditStdWindow = uieditfield(app.Panel2, 'text');
+            app.EditStdWindow.Position = P(202, 48, 28, 16);
+            app.EditStdWindow.Value = '2';
+            app.EditStdWindow.FontSize = FS(14);
+            app.EditStdWindow.BackgroundColor = WHITE;
+            app.EditStdWindow.ValueChangedFcn = createCallbackFcn(app, @stdWindowChanged, true);
+
+            app.LabelChannels = uilabel(app.Panel2);
+            app.LabelChannels.Position = P(119, 27, 58, 16);
+            app.LabelChannels.Text = 'Channels';
+            app.LabelChannels.FontSize = FS(11);
+            app.LabelChannels.BackgroundColor = GRAY;
+
+            app.EditChannels = uieditfield(app.Panel2, 'text');
+            app.EditChannels.Position = P(184, 28, 46, 17);
+            app.EditChannels.Value = 'All';
+            app.EditChannels.FontSize = FS(14);
+            app.EditChannels.BackgroundColor = WHITE;
+            app.EditChannels.ValueChangedFcn = createCallbackFcn(app, @chWindowChanged, true);
+
+            app.ButtonBrowseChan = uibutton(app.Panel2, 'push');
+            app.ButtonBrowseChan.Position = P(183, 7, 46, 16);
+            app.ButtonBrowseChan.Text = 'Browse';
+            app.ButtonBrowseChan.FontSize = FS(11);
+            app.ButtonBrowseChan.BackgroundColor = WHITE;
+            app.ButtonBrowseChan.ButtonPushedFcn = createCallbackFcn(app, @browseChannelsBtn, true);
+
+            % --- Top-level figure controls ---
+            app.LabelOpenNewWin = uilabel(app.UIFigure);
+            app.LabelOpenNewWin.Position = P(262, 63, 151, 16);
+            app.LabelOpenNewWin.Text = 'Open New ERPset Window';
+            app.LabelOpenNewWin.HorizontalAlignment = 'center';
+            app.LabelOpenNewWin.FontSize = FS(12);
+            app.LabelOpenNewWin.BackgroundColor = GRAY;
+
+            app.DropdownNewErpWin = uidropdown(app.UIFigure);
+            app.DropdownNewErpWin.Position = P(263, 42, 151, 20);
+            app.DropdownNewErpWin.FontSize = FS(14);
+
+            app.ButtonSelectERP = uibutton(app.UIFigure, 'push');
+            app.ButtonSelectERP.Position = P(413, 42, 121, 17);
+            app.ButtonSelectERP.Text = 'Select ERPset';
+            app.ButtonSelectERP.FontSize = FS(12);
+            app.ButtonSelectERP.BackgroundColor = WHITE;
+            app.ButtonSelectERP.ButtonPushedFcn = createCallbackFcn(app, @selectERPBtn, true);
+
+            app.LabelExport = uilabel(app.UIFigure);
+            app.LabelExport.Position = P(13, 67, 201, 23);
+            app.LabelExport.Text = 'Export these values, writing to:';
+            app.LabelExport.HorizontalAlignment = 'center';
+            app.LabelExport.FontSize = FS(12);
+            app.LabelExport.BackgroundColor = GRAY;
+
+            app.ButtonMat = uibutton(app.UIFigure, 'push');
+            app.ButtonMat.Position = P(32, 32, 84, 35);
+            app.ButtonMat.Text = '.. Mat file';
+            app.ButtonMat.FontSize = FS(11);
+            app.ButtonMat.BackgroundColor = WHITE;
+            app.ButtonMat.ButtonPushedFcn = createCallbackFcn(app, @exportMat, true);
+
+            app.ButtonXls = uibutton(app.UIFigure, 'push');
+            app.ButtonXls.Position = P(117, 32, 84, 35);
+            app.ButtonXls.Text = '..Excel';
+            app.ButtonXls.FontSize = FS(11);
+            app.ButtonXls.BackgroundColor = WHITE;
+            app.ButtonXls.ButtonPushedFcn = createCallbackFcn(app, @exportXls, true);
+
+            app.ButtonHelp = uibutton(app.UIFigure, 'push');
+            app.ButtonHelp.Position = P(557, 32, 84, 35);
+            app.ButtonHelp.Text = '?';
+            app.ButtonHelp.FontSize = FS(20);
+            app.ButtonHelp.BackgroundColor = WHITE;
+            app.ButtonHelp.ButtonPushedFcn = createCallbackFcn(app, @showHelp, true);
+
+            app.ButtonDone = uibutton(app.UIFigure, 'push');
+            app.ButtonDone.Position = P(643, 32, 84, 35);
+            app.ButtonDone.Text = 'Done';
+            app.ButtonDone.FontSize = FS(14);
+            app.ButtonDone.BackgroundColor = WHITE;
+            app.ButtonDone.ButtonPushedFcn = createCallbackFcn(app, @doneBtn, true);
+
+            app.UIFigure.Visible = 'on';
+        end
+    end
+
+    % --- App creation and deletion ---
+    methods (Access = public)
+
+        function app = DQ_Table_GUI(varargin)
+            createComponents(app)
+            registerApp(app, app.UIFigure)
+            runStartupFcn(app, @(app)startupFcn(app, varargin{:}))
+            if nargout == 0
+                clear app
+            end
+        end
+
+        function delete(app)
+            delete(app.UIFigure)
+        end
     end
 end
-
-
-% --- Executes during object creation, after setting all properties.
-function pushbutton_selERP_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to pushbutton_selERP (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes on selection change in active_erpset.
-function active_erpset_Callback(hObject, eventdata, handles)
-% hObject    handle to active_erpset (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-newactive = get(hObject,'Value');
-ERPs = handles.ALLERP;
-ERP = ERPs(newactive);
-
-n_dq = numel(ERP.dataquality);
-for i=1:n_dq
-    type_names{i} = ERP.dataquality(i).type;
-end
-
-handles.popupmenu_DQ_type.String = type_names;
-handles.popupmenu_DQ_type.Value = n_dq;
-
-
-[n_elec, n_tw, n_bin] = size(ERP.dataquality(n_dq).data);
-
-if n_elec == 0
-    % if the dq data is of zero size, then the 3rd dim may be mis-sized.
-    % So set to default of ERP.nbin instead.
-    n_bin = ERP.nbin;
-end
-
-n_bin_names = numel(ERP.bindescr);
-if n_bin_names == n_bin
-    
-    for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
-    end
-else
-    % if not every bin has a bin description, leave then off
-    for i=1:n_bin
-        bin_names{i} = ['BIN ' num2str(i)];
-    end
-end
-
-
-handles.popupmenu_bin.String = bin_names;
-
-% handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-selected_bin = handles.popupmenu_bin.Value;
-
-table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
-handles.dq_table.Data = table_data;
-handles.orig_data = table_data;
-
-% electrode labels from ERPset, iff present and number matches
-if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
-    for i=1:n_elec
-        elec_labels{i} = ERP.chanlocs(i).labels;
-    end
-else
-    
-    for i=1:ERP.nchan
-        elec_labels{i} = i;
-    end
-end
-handles.dq_table.RowName = elec_labels;
-
-% Time-window labels
-if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0  && handles.checkbox_text_labels.Value == 1
-    tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
-elseif isempty(ERP.dataquality(selected_DQ_type).times)
-    tw_labels = [];
-else
-    for i=1:n_tw
-        tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
-    end
-end
-if n_tw == 0
-    tw_labels = 'No data here. Perhaps it was cleared?';
-end
-handles.dq_table.ColumnName = tw_labels;
-
-% Set font size of DQ Table
-desired_fontsize = erpworkingmemory('fontsizeGUI');
-handles.dq_table.FontSize = desired_fontsize;
-handles.heatmap_on = handles.checkbox_heatmap.Value;
-
-%
-% Prepare List of current Channels
-%
-nchan  = ERP.nchan; % Total number of channels
-if ~isfield(ERP.chanlocs,'labels')
-    for e=1:nchan
-        ERP.chanlocs(e).labels = ['Ch' num2str(e)];
-    end
-end
-listch = {''};
-for ch =1:nchan
-    listch{ch} = [num2str(ch) ' = ' ERP.chanlocs(ch).labels ];
-end
-handles.listch     = listch;
-
-chanArray = 1:ERP.nchan; %default
-handles.indxlistch = chanArray; %default
-set(handles.chwindow, 'String', vect2colon(chanArray, 'Delimiter', 'off'));
-
-
-
-% Set outliers text window off
-set(handles.stdwindow,'Enable','Off');
-set(handles.chwindow,'Enable','Off');
-set(handles.chbutton,'Enable','Off');
-
-% Update handles structure
-handles.ERP = ERP;
-handles.ALLERP = ERPs;
-
-
-%clear all perviously set options
-set(handles.checkbox_outliers,'Value',0);
-% set(handles.checkbox_heatmap,'Value',0);
-set(handles.checkbox_text_labels,'Value',0);
-set(handles.stdwindow,'Enable','Off');
-set(handles.chwindow,'Enable','Off');
-set(handles.chbutton,'Enable','Off');
-
-%check to see if outliers is on prior to switching active erpset?
-%checkbox_outliers_Callback(hObject, eventdata, handles)
-
-heatmap_on = handles.heatmap_on ;
-if heatmap_on == 1
-    
-    %if heatmap_on, then outliers not possible so clear outliers
-    clear_outliers(hObject, eventdata, handles);
-    handles.outliers_on = 0;
-    set(handles.checkbox_outliers, 'Value', 0);
-    redraw_heatmap(hObject, eventdata, handles);
-    handles.heatmap_on = 1;
-else
-    clear_heatmap(hObject, eventdata, handles);
-    handles.heatmap_on = 0;
-    
-    %if outliers is on, then keep outliers active
-    if handles.outliers_on == 1
-        redraw_outliers(hOBject, eventdata,handles);
-    end
-end
-
-guidata(hObject, handles);
-
-% Hints: contents = cellstr(get(hObject,'String')) returns active_erpset contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from active_erpset
-
-
-% --- Executes during object creation, after setting all properties.
-function active_erpset_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to active_erpset (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-%--------------------------------------------------------------------------
-function tf = checkchannels(chx, nchan, showmsg)
-
-if nargin<3
-    showmsg = 1;
-end
-tf = 0; % no problem by default
-
-if ~mod(chx, 1) == 0
-    if showmsg
-        msgboxText =  'Invalid channel indexing.';
-        title = 'ERPLAB: basicfilterGUI() error:';
-        errorfound(msgboxText, title);
-    end
-    tf = 1; %
-    
-end
-
-if isempty(chx)
-    if showmsg
-        msgboxText =  'Invalid channel indexing.';
-        title = 'ERPLAB: basicfilterGUI() error:';
-        errorfound(msgboxText, title);
-    end
-    tf = 1; %
-    return
-end
-if ~isempty(find(chx>nchan))
-    if showmsg
-        msgboxText =  ['You only have %g channels,\n'...
-            'so you cannot specify indices greater than this.'];
-        title = 'ERPLAB: basicfilterGUI() error:';
-        errorfound(sprintf(msgboxText, nchan), title);
-    end
-    tf = 1; %
-    return
-end
-if ~isempty(find(chx<1))
-    if showmsg
-        msgboxText =  'You cannot use zero or a negative number as a channel indexing';
-        title = 'ERPLAB: basicfilterGUI() error:';
-        errorfound(msgboxText, title);
-    end
-    tf = 1; %
-    return
-end
-if length(chx)>length(unique_bc2(chx))
-    if showmsg
-        msgboxText =  ['Repeated channels are not allowed.\n'...
-            'Therefore, ERPLAB will get rid of them.'];
-        title = 'ERPLAB: basicfilterGUI() error:';
-        errorfound(sprintf(msgboxText), title, [1 1 0], [0 0 0], 0)
-    end
-    tf = 0; %
-    return
-end
-
-
-% --- Executes on button press in sdcorrection.
-function sdcorrection_Callback(hObject, eventdata, handles)
-% hObject    handle to sdcorrection (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-selected_DQ_type = handles.popupmenu_DQ_type.Value;
-selected_bin = handles.popupmenu_bin.Value;
-
-if handles.sdcorrection.Value == 1
-    table_data = handles.ERP.dataquality(selected_DQ_type).data.SD_unbias(:,:,selected_bin); %SD (Gurland & Tripathi, 1971)
-else
-    table_data = handles.ERP.dataquality(selected_DQ_type).data.SD_bias(:,:,selected_bin); %SD (N-1)
-end
-handles.dq_table.Data = table_data;
-handles.orig_data = table_data;
-
-%update handles struct
-guidata(hObject, handles);
-
-% Hint: get(hObject,'Value') returns toggle state of sdcorrection
-
-
-% --- Executes during object creation, after setting all properties.
-function checkbox_outliers_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to checkbox_outliers (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
