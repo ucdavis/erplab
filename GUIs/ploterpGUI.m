@@ -9,7 +9,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -499,7 +499,7 @@ if yyscale(1)>yyscale(2)
         if ~get(handles.togglebutton_y_axis_polarity, 'Value')
                 word = 'negative';
                 set(handles.togglebutton_y_axis_polarity, 'Value',1);
-                set(handles.togglebutton_y_axis_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
+                set(handles.togglebutton_y_axis_polarity, 'string', sprintf('%s is up', word), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
         end
 end
 
@@ -580,7 +580,7 @@ if get(hObject, 'Value')
 else
         word = 'positive';
 end
-set(hObject, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
+set(hObject, 'string', sprintf('%s is up', word), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
 
 %--------------------------------------------------------------------------
 function pbox = squareplot(chanArray, hObject, eventdata, handles)
@@ -1636,14 +1636,14 @@ if strcmpi(datatype, 'ERP')
                 word = 'negative';
                 set(handles.togglebutton_y_axis_polarity, 'Value', 1);
         end
-        set(handles.togglebutton_y_axis_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));        
+        set(handles.togglebutton_y_axis_polarity, 'string', sprintf('%s is up', word), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
         set(handles.text_X_range, 'String', 'Time range (min max, in ms)');
         set(handles.checkbox_autotimeticks, 'String', 'auto time-ticks');
 else
         word = 'positive';
         set(handles.togglebutton_y_axis_polarity, 'Value', 0);
-        set(handles.togglebutton_y_axis_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
-        set(handles.togglebutton_y_axis_polarity, 'Enable', 'off');        
+        set(handles.togglebutton_y_axis_polarity, 'string', sprintf('%s is up', word), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
+        set(handles.togglebutton_y_axis_polarity, 'Enable', 'off');
         set(handles.text_X_range, 'String', 'Freq range (min max, in Hz)');
         set(handles.checkbox_autotimeticks, 'String', 'auto freq-ticks');
 end
@@ -2060,7 +2060,7 @@ if yyscale(1)>yyscale(2)
         if ~get(handles.togglebutton_y_axis_polarity, 'Value')
                 word = 'negative';
                 set(handles.togglebutton_y_axis_polarity, 'Value',1);
-                set(handles.togglebutton_y_axis_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
+                set(handles.togglebutton_y_axis_polarity, 'string', sprintf('%s is up', word), 'FontWeight', 'bold', 'HorizontalAlignment', 'center');
         end
 end
 
@@ -2141,7 +2141,15 @@ linewidth = handles.linewidth;
 %
 % Call GUI
 %
-answer = linespecGUI(defspec, nbin, linewidth);
+app = feval('linespecGUI', defspec, nbin, linewidth);
+waitfor(app, 'Finishbutton', 1);
+try
+        answer = app.output;
+        app.delete;
+        pause(0.1);
+catch
+        return
+end
 if isempty(answer)
         return
 end
