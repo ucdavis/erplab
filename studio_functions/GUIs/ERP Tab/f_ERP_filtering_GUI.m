@@ -282,6 +282,11 @@ varargout{1} = ERP_filtering_box;
         typef = 0;
 
         if source.Value == 0
+            lastlocutoff = str2num(gui_erp_filtering.hp_halfamp.String);
+            if ~isempty(lastlocutoff) && lastlocutoff > 0
+                estudioworkingmemory('ERPTab_filter_lastHP', lastlocutoff);
+            end
+            gui_erp_filtering.hp_halfamp.String = '0';
             gui_erp_filtering.hp_halfamp.Enable ='off';
             gui_erp_filtering.hp_halfpow.Enable ='off';
             gui_erp_filtering.hp_halfpow.String = '---';
@@ -291,7 +296,12 @@ varargout{1} = ERP_filtering_box;
         else
             locutoff = str2num(gui_erp_filtering.hp_halfamp.String);
             if isempty(locutoff) || locutoff <= 0
-                locutoff = 0.1;
+                lastlocutoff = estudioworkingmemory('ERPTab_filter_lastHP');
+                if ~isempty(lastlocutoff) && lastlocutoff > 0
+                    locutoff = lastlocutoff;
+                else
+                    locutoff = 0.1;
+                end
                 gui_erp_filtering.hp_halfamp.String = num2str(locutoff);
             end
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder,0,locutoff,fs);
@@ -340,6 +350,11 @@ varargout{1} = ERP_filtering_box;
         end
         
         if source.Value == 0
+            lasthicutoff = str2num(gui_erp_filtering.lp_halfamp.String);
+            if ~isempty(lasthicutoff) && lasthicutoff > 0
+                estudioworkingmemory('ERPTab_filter_lastLP', lasthicutoff);
+            end
+            gui_erp_filtering.lp_halfamp.String = '0';
             gui_erp_filtering.lp_halfamp.Enable ='off';
             gui_erp_filtering.lp_halfpow.Enable ='off';
             gui_erp_filtering.lp_halfpow.String = '---';
@@ -349,7 +364,12 @@ varargout{1} = ERP_filtering_box;
         else
             hicutoff = str2num(gui_erp_filtering.lp_halfamp.String);
             if isempty(hicutoff) || hicutoff <= 0
-                hicutoff = floor((fs/2-1)*5/10);
+                lasthicutoff = estudioworkingmemory('ERPTab_filter_lastLP');
+                if ~isempty(lasthicutoff) && lasthicutoff > 0
+                    hicutoff = lasthicutoff;
+                else
+                    hicutoff = floor((fs/2-1)*5/10);
+                end
                 gui_erp_filtering.lp_halfamp.String = num2str(hicutoff);
             end
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,0, fs);
@@ -1254,6 +1274,14 @@ varargout{1} = ERP_filtering_box;
                 gui_erp_filtering.hp_halfamp.String = '0';
             end
             if isempty(hicutoff)
+                hicutoff = 0;
+                gui_erp_filtering.lp_halfamp.String = '0';
+            end
+            if gui_erp_filtering.hp_tog.Value == 0
+                locutoff = 0;
+                gui_erp_filtering.hp_halfamp.String = '0';
+            end
+            if gui_erp_filtering.lp_tog.Value == 0
                 hicutoff = 0;
                 gui_erp_filtering.lp_halfamp.String = '0';
             end
