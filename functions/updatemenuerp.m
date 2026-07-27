@@ -20,7 +20,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -107,7 +107,7 @@ elseif overw==0 || overw==-1
         if iscell(erpn)
             erpn = '';
         end
-        menutitle   = ['<Html><FONT color="black" >Erpset ' num2str(indexerp) ': ' erpn '</font>'];
+        menutitle   = ['Erpset ' num2str(indexerp) ': ' erpn];
         set( ERPSETMENU(indexerp), 'Label', menutitle);
         set( ERPSETMENU(indexerp), 'CallBack', ferp );
         set( ERPSETMENU(indexerp), 'Enable', 'on' );

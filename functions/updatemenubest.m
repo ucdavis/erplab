@@ -72,7 +72,7 @@ elseif overw == 0 || overw == -1
         if iscell(bestn)
             bestn = '';
         end
-        menutitle   = ['<Html><FONT color="black" >BESTset ' num2str(indexbest) ': ' bestn '</font>'];
+        menutitle   = ['BESTset ' num2str(indexbest) ': ' bestn];
         set( BESTSETMENU(indexbest), 'Label', menutitle);
         set( BESTSETMENU(indexbest), 'CallBack', fbest );
         set( BESTSETMENU(indexbest), 'Enable', 'on' );

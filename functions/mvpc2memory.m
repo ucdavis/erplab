@@ -7,19 +7,20 @@ nmvpcset = length(mvpcm);
 for s = 1:nmvpcset
     
     if s == nmvpcset-indx+1 %bottomup to topdown counting
-        set(mvpcm(s),'checked','on'); 
-        menutitle = ['<Html><b>MVPCset' ...
-            num2str(nmvpcset-s+1) ': ' MVPC.mvpcname '</b>'];
-        set(mvpcm(s), 'Label', menutitle); 
-        
+        set(mvpcm(s),'checked','on');
+        set(mvpcm(s),'ForegroundColor','#0072BD');
+        menutitle = ['MVPCset ' ...
+            num2str(nmvpcset-s+1) ': ' MVPC.mvpcname];
+        set(mvpcm(s), 'Label', menutitle);
+
     else
         set(mvpcm(s),'checked','off');
+        set(mvpcm(s),'ForegroundColor','k');
         currname = get(mvpcm(s),'Label');
-        menutitle = regexprep(currname,'<b>|</b>','', 'ignorecase');
-        menutitle = regexprep(menutitle, '\s+', ' ');
+        menutitle = regexprep(currname, '\s+', ' ');
         menutitle = regexprep(menutitle,'MVPCset \d+',['MVPCset ' num2str(nmvpcset-s+1)], 'ignorecase');
         set( mvpcm(s), 'Label', menutitle);
-        
+
     end
     
     

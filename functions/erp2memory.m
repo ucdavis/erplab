@@ -20,7 +20,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -45,14 +45,15 @@ nerpset = length(erpm);
 for s=1:nerpset
     if s == nerpset-indx+1 % bottom-up to top-down counting
         set(erpm(s), 'checked', 'on' );
-        menutitle   = ['<Html><b>Erpset '...
-            num2str(nerpset-s+1) ': ' ERP.erpname '</b>'];
+        set(erpm(s), 'ForegroundColor', '#0072BD');
+        menutitle   = ['Erpset '...
+            num2str(nerpset-s+1) ': ' ERP.erpname];
         set( erpm(s), 'Label', menutitle);
     else
         set(erpm(s), 'checked', 'off' );
+        set(erpm(s), 'ForegroundColor', 'k');
         currname = get(erpm(s),'Label');
-        menutitle = regexprep(currname,'<b>|</b>','', 'ignorecase');
-        menutitle = regexprep(menutitle, '\s+', ' ');
+        menutitle = regexprep(currname, '\s+', ' ');
         menutitle = regexprep(menutitle,'Erpset \d+',['Erpset ' num2str(nerpset-s+1)], 'ignorecase');
         set( erpm(s), 'Label', menutitle);
     end

@@ -7,19 +7,20 @@ nbestset = length(bestm);
 for s = 1:nbestset
     
     if s == nbestset-indx+1 %bottomup to topdown counting
-        set(bestm(s),'checked','on'); 
-        menutitle = ['<Html><b>BESTset' ...
-            num2str(nbestset-s+1) ': ' BEST.bestname '</b>'];
-        set(bestm(s), 'Label', menutitle); 
-        
+        set(bestm(s),'checked','on');
+        set(bestm(s),'ForegroundColor','#0072BD');
+        menutitle = ['BESTset ' ...
+            num2str(nbestset-s+1) ': ' BEST.bestname];
+        set(bestm(s), 'Label', menutitle);
+
     else
         set(bestm(s),'checked','off');
+        set(bestm(s),'ForegroundColor','k');
         currname = get(bestm(s),'Label');
-        menutitle = regexprep(currname,'<b>|</b>','', 'ignorecase');
-        menutitle = regexprep(menutitle, '\s+', ' ');
+        menutitle = regexprep(currname, '\s+', ' ');
         menutitle = regexprep(menutitle,'BESTset \d+',['BESTset ' num2str(nbestset-s+1)], 'ignorecase');
         set( bestm(s), 'Label', menutitle);
-        
+
     end
     
     

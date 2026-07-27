@@ -72,7 +72,7 @@ elseif overw == 0 || overw == -1
         if iscell(mvpcn)
             mvpcn = '';
         end
-        menutitle   = ['<Html><FONT color="black" >MVPCset ' num2str(indexmvpc) ': ' mvpcn '</font>'];
+        menutitle   = ['MVPCset ' num2str(indexmvpc) ': ' mvpcn];
         set( MVPCSETMENU(indexmvpc), 'Label', menutitle);
         set( MVPCSETMENU(indexmvpc), 'CallBack', fmvpc );
         set( MVPCSETMENU(indexmvpc), 'Enable', 'on' );
