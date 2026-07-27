@@ -8,7 +8,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -104,11 +104,7 @@ end
 
 set(handles.ELwarning,'Value', rwwarn);
 set(handles.checkbox_alphanum,'Value', alphanum);
-if multieeg==1
-    set(handles.pushbutton_advanced, 'Enable', 'off')
-else
-    set(handles.pushbutton_advanced, 'Enable', 'on')
-end
+handles.multieeg = multieeg;
 
 %
 % Name & version
@@ -125,9 +121,9 @@ if multieeg==1
     set(handles.pushbutton_browse,'Enable','off');
     set(handles.edit_elname,'Enable','off');
     set(handles.edit_elname,'String','Export to text file is unavailable when multiple EEGsets are selected');
-      set(handles.pushbutton_advanced,'String','<html>Unavailable for <br />multi-EEGsets</html>')
+      set(handles.pushbutton_advanced,'TooltipString','Advanced GUI is unavailable when multiple EEGsets are selected.')
 else
-   set(handles.pushbutton_advanced,'String','Advanced') ;
+   set(handles.pushbutton_advanced,'String','Advanced', 'TooltipString', '') ;
 end
 
 %
@@ -394,6 +390,12 @@ function ELwarning_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function pushbutton_advanced_Callback(hObject, eventdata, handles)
+if isfield(handles, 'multieeg') && handles.multieeg==1
+    msgboxText = 'Advanced GUI is unavailable when multiple EEGsets are selected.';
+    title = 'ERPLAB: creabasiceventlistGUI() error';
+    errorfound(msgboxText, title);
+    return
+end
 handles.output = 'advanced';
 % Update handles structure
 guidata(hObject, handles);
