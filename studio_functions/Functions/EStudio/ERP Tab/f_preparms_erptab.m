@@ -339,8 +339,7 @@ Gridspace = [1 20;1 20];
 timeRange = [timeStart,timEnd];
 [timeticksdef stepX]= default_time_ticks_studio(ERP, timeRange);
 timeticksdef = str2num(char(timeticksdef));
-qtimeRangdef = round(timeRange/100)*100;
-qXticks = xtickstep+qtimeRangdef(1);
+qXticks = ceil(timeRange(1) / xtickstep) * xtickstep;
 for ii=1:1000
     xtickcheck = qXticks(end)+xtickstep;
     if xtickcheck>timeRange(2)

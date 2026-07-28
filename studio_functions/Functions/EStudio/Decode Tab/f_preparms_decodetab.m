@@ -95,8 +95,7 @@ end
 timeRange = [timeStart,timEnd];
 [timeticksdef stepX]= default_time_ticks_decode(MVPC, timeRange);
 timeticksdef = str2num(char(timeticksdef));
-qtimeRangdef = round(timeRange/100)*100;
-qXticks = xtickstep+qtimeRangdef(1);
+qXticks = ceil(timeRange(1) / xtickstep) * xtickstep;
 for ii=1:10000
     xtickcheck = qXticks(end)+xtickstep;
     if xtickcheck>timeRange(2)
