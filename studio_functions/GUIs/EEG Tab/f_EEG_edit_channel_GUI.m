@@ -102,7 +102,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             'String','See also Chan Locations button in EEGLAB Tools',...
             'FontSize',FontSize_defualt-1,'HorizontalAlignment','center',...
             'BackgroundColor',ColorB_def,'ForegroundColor',[0.4 0.4 0.4]);
-        set(EStduio_eegtab_EEG_edit_chan.DataSelBox,'sizes',[30 30 30 30 10 30 20])
+        set(EStduio_eegtab_EEG_edit_chan.DataSelBox,'sizes',[25 25 30 30 10 30 20])
         estudioworkingmemory('EEGTab_editchan',0);
     end
 

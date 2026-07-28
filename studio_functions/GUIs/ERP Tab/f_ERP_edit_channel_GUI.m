@@ -96,7 +96,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         ERP_tab_edit_chan.edit_chanlocs = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.edit_chanlocs_title,...
             'String','Add or edit channel locations','callback',@edit_chanlocs,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         ERP_tab_edit_chan.edit_chanlocs.HorizontalAlignment='Center';
-        set(ERP_tab_edit_chan.DataSelBox,'sizes',[30 30 30 30 10 30])
+        set(ERP_tab_edit_chan.DataSelBox,'sizes',[25 25 30 30 10 30])
         estudioworkingmemory('ERPTab_editchan',0);
     end
 

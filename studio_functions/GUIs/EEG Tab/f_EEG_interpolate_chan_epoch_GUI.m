@@ -200,7 +200,7 @@ varargout{1} = box_interpolate_chan_epoch;
         set(Eegtab_EEG_interpolate_chan_epoch.advanced_run_title,'Sizes',[10,-1,30,-1,10]);
         
         %%resize each row
-        set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[30 30 25 8 20 30 25 30 30 20 30])
+        set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[25 25 25 8 20 30 25 30 30 20 30])
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
     end
 %%**************************************************************************%%
