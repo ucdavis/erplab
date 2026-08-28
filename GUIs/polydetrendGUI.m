@@ -165,24 +165,22 @@ indxlistch = handles.indxlistch;
 indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select Channel(s)';
 
-if get(hObject, 'Value')
-        if ~isempty(listch)
-                ch = browsechanbinGUI(listch, indxlistch, titlename);
-                if ~isempty(ch)
-                        set(handles.edit_channels, 'String', vect2colon(ch, 'Delimiter', 'off'));
-                        handles.indxlistch = ch;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                else
-                        disp('User selected Cancel')
-                        return
-                end
+if ~isempty(listch)
+        ch = browsechanbinGUI(listch, indxlistch, titlename);
+        if ~isempty(ch)
+                set(handles.edit_channels, 'String', vect2colon(ch, 'Delimiter', 'off'));
+                handles.indxlistch = ch;
+                % Update handles structure
+                guidata(hObject, handles);
         else
-                msgboxText =  'No channel information was found';
-                title = 'ERPLAB: polydetrend GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No channel information was found';
+        title = 'ERPLAB: polydetrend GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 %--------------------------------------------------------------------------

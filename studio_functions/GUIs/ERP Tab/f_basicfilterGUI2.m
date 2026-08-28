@@ -2963,24 +2963,22 @@ indxlistch = handles.indxlistch;
 indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select Channel(s)';
 
-if get(hObject, 'Value')
-    if ~isempty(listch)
-        ch = browsechanbinGUI(listch, indxlistch, titlename);
-        if ~isempty(ch)
-            set(handles.edit_channels, 'String', vect2colon(ch, 'Delimiter', 'off'));
-            handles.indxlistch = ch;
-            % Update handles structure
-            guidata(hObject, handles);
-        else
-            disp('User selected Cancel')
-            return
-        end
+if ~isempty(listch)
+    ch = browsechanbinGUI(listch, indxlistch, titlename);
+    if ~isempty(ch)
+        set(handles.edit_channels, 'String', vect2colon(ch, 'Delimiter', 'off'));
+        handles.indxlistch = ch;
+        % Update handles structure
+        guidata(hObject, handles);
     else
-        msgboxText =  'No channel information was found';
-        title = 'EStudio: f_basicfilter GUI input';
-        errorfound(msgboxText, title);
+        disp('User selected Cancel')
         return
     end
+else
+    msgboxText =  'No channel information was found';
+    title = 'EStudio: f_basicfilter GUI input';
+    errorfound(msgboxText, title);
+    return
 end
 
 %
@@ -3028,22 +3026,20 @@ indxlistch = handles.indxlistb;
 indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select Bin(s)';
 
-if get(hObject, 'Value')
-    if ~isempty(listch)
-        bin = browsechanbinGUI(listch, indxlistch, titlename);
-        if ~isempty(ch)
-            set(handles.edit_bins, 'String', vect2colon(bin, 'Delimiter', 'off'));
-            handles.indxlistb = bin;
-            % Update handles structure
-            guidata(hObject, handles);
-        else
-            disp('User selected Cancel')
-            return
-        end
+if ~isempty(listch)
+    bin = browsechanbinGUI(listch, indxlistch, titlename);
+    if ~isempty(ch)
+        set(handles.edit_bins, 'String', vect2colon(bin, 'Delimiter', 'off'));
+        handles.indxlistb = bin;
+        % Update handles structure
+        guidata(hObject, handles);
     else
-        msgboxText =  'No bin information was found';
-        title = 'EStudio: f_basicfilter GUI input';
-        errorfound(msgboxText, title);
+        disp('User selected Cancel')
         return
     end
+else
+    msgboxText =  'No bin information was found';
+    title = 'EStudio: f_basicfilter GUI input';
+    errorfound(msgboxText, title);
+    return
 end

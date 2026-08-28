@@ -2283,28 +2283,26 @@ indxlistch = handles.indxlistch;
 indxlistch = indxlistch(indxlistch<=length(listch));
 titlename = 'Select Channel(s)';
 
-if get(hObject, 'Value')
-        if ~isempty(listch)
-                ch = browsechanbinGUI(listch, indxlistch, titlename);
-                if ~isempty(ch)
-                        set(handles.edit_chans, 'String', vect2colon(ch, 'Delimiter', 'off'));
-                        handles.indxlistch = ch;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                        
-                        if get(handles.radiobutton_yauto, 'Value')
-                                yscaleauto(hObject, eventdata, handles)
-                        end
-                else
-                        disp('User selected Cancel')
-                        return
+if ~isempty(listch)
+        ch = browsechanbinGUI(listch, indxlistch, titlename);
+        if ~isempty(ch)
+                set(handles.edit_chans, 'String', vect2colon(ch, 'Delimiter', 'off'));
+                handles.indxlistch = ch;
+                % Update handles structure
+                guidata(hObject, handles);
+
+                if get(handles.radiobutton_yauto, 'Value')
+                        yscaleauto(hObject, eventdata, handles)
                 end
         else
-                msgboxText =  'No channel information was found';
-                title = 'ERPLAB: ploterp GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No channel information was found';
+        title = 'ERPLAB: ploterp GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 %--------------------------------------------------------------------------
@@ -2321,29 +2319,26 @@ indxlistb = handles.indxlistb;
 indxlistb = indxlistb(indxlistb<=length(listb));
 titlename = 'Select Bin(s)';
 
-if get(hObject, 'Value')
-        %set(handles.pushbutton_browsechan, 'Enable', 'off')
-        if ~isempty(listb)
-                bin = browsechanbinGUI(listb, indxlistb, titlename);
-                if ~isempty(bin)
-                        set(handles.edit_bins, 'String', vect2colon(bin, 'Delimiter', 'off'));
-                        handles.indxlistb = bin;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                        
-                        if get(handles.radiobutton_yauto, 'Value')
-                                yscaleauto(hObject, eventdata, handles)
-                        end
-                else
-                        disp('User selected Cancel')
-                        return
+if ~isempty(listb)
+        bin = browsechanbinGUI(listb, indxlistb, titlename);
+        if ~isempty(bin)
+                set(handles.edit_bins, 'String', vect2colon(bin, 'Delimiter', 'off'));
+                handles.indxlistb = bin;
+                % Update handles structure
+                guidata(hObject, handles);
+
+                if get(handles.radiobutton_yauto, 'Value')
+                        yscaleauto(hObject, eventdata, handles)
                 end
         else
-                msgboxText =  'No bin information was found';
-                title = 'ERPLAB: ploterp GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No bin information was found';
+        title = 'ERPLAB: ploterp GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 %--------------------------------------------------------------------------

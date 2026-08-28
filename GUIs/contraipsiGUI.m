@@ -234,24 +234,22 @@ leftchanArray  = leftchanArray(leftchanArray<=length(listch));
 %indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select left-side channel(s)';
 
-if get(hObject, 'Value')
-        if ~isempty(listch)
-                ch = browsechanbinGUI(listch, leftchanArray, titlename);
-                if ~isempty(ch)
-                        set(handles.edit_leftchanArray, 'String', vect2colon(ch, 'Delimiter', 'off'));
-                        handles.leftchanArray = ch;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                else
-                        disp('User selected Cancel')
-                        return
-                end
+if ~isempty(listch)
+        ch = browsechanbinGUI(listch, leftchanArray, titlename);
+        if ~isempty(ch)
+                set(handles.edit_leftchanArray, 'String', vect2colon(ch, 'Delimiter', 'off'));
+                handles.leftchanArray = ch;
+                % Update handles structure
+                guidata(hObject, handles);
         else
-                msgboxText =  'No channel information was found';
-                title = 'ERPLAB: geterpvalues GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No channel information was found';
+        title = 'ERPLAB: geterpvalues GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 % -----------------------------------------------------------------------
@@ -274,24 +272,22 @@ rightchanArray = rightchanArray(rightchanArray<=length(listch));
 %indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select right-side channel(s)';
 
-if get(hObject, 'Value')
-        if ~isempty(listch)
-                ch = browsechanbinGUI(listch, rightchanArray, titlename);
-                if ~isempty(ch)
-                        set(handles.edit_rightchanArray, 'String', vect2colon(ch, 'Delimiter', 'off'));
-                        handles.rightchanArray = ch;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                else
-                        disp('User selected Cancel')
-                        return
-                end
+if ~isempty(listch)
+        ch = browsechanbinGUI(listch, rightchanArray, titlename);
+        if ~isempty(ch)
+                set(handles.edit_rightchanArray, 'String', vect2colon(ch, 'Delimiter', 'off'));
+                handles.rightchanArray = ch;
+                % Update handles structure
+                guidata(hObject, handles);
         else
-                msgboxText =  'No channel information was found';
-                title = 'ERPLAB: geterpvalues GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No channel information was found';
+        title = 'ERPLAB: geterpvalues GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 % -----------------------------------------------------------------------
@@ -332,24 +328,22 @@ leftbinArray   = leftbinArray(leftbinArray<=length(listb));
 %indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select left bin(s)';
 
-if get(hObject, 'Value')
-        if ~isempty(listb)
-                bn = browsechanbinGUI(listb, leftbinArray, titlename);
-                if ~isempty(bn)
-                        set(handles.edit_leftstimbinArray, 'String', vect2colon(bn, 'Delimiter', 'off'));
-                        handles.leftbinArray = bn;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                else
-                        disp('User selected Cancel')
-                        return
-                end
+if ~isempty(listb)
+        bn = browsechanbinGUI(listb, leftbinArray, titlename);
+        if ~isempty(bn)
+                set(handles.edit_leftstimbinArray, 'String', vect2colon(bn, 'Delimiter', 'off'));
+                handles.leftbinArray = bn;
+                % Update handles structure
+                guidata(hObject, handles);
         else
-                msgboxText =  'No bin information was found';
-                title = 'ERPLAB: geterpvalues GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No bin information was found';
+        title = 'ERPLAB: geterpvalues GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 % -----------------------------------------------------------------------
@@ -372,24 +366,22 @@ rightbinArray  = rightbinArray(rightbinArray<=length(listb));
 %indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select right bin(s)';
 
-if get(hObject, 'Value')
-        if ~isempty(listb)
-                bn = browsechanbinGUI(listb, rightbinArray, titlename);
-                if ~isempty(bn)
-                        set(handles.edit_rightstimbinArray, 'String', vect2colon(bn, 'Delimiter', 'off'));
-                        handles.rightbinArray = bn;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                else
-                        disp('User selected Cancel')
-                        return
-                end
+if ~isempty(listb)
+        bn = browsechanbinGUI(listb, rightbinArray, titlename);
+        if ~isempty(bn)
+                set(handles.edit_rightstimbinArray, 'String', vect2colon(bn, 'Delimiter', 'off'));
+                handles.rightbinArray = bn;
+                % Update handles structure
+                guidata(hObject, handles);
         else
-                msgboxText =  'No bin information was found';
-                title = 'ERPLAB: geterpvalues GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No bin information was found';
+        title = 'ERPLAB: geterpvalues GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 % -----------------------------------------------------------------------
@@ -571,24 +563,22 @@ middlechanArray = middlechanArray(middlechanArray<=length(listch));
 %indxlistch = indxlistch(indxlistch<=length(listch));
 titlename  = 'Select middle channel(s)';
 
-if get(hObject, 'Value')
-        if ~isempty(listch)
-                ch = browsechanbinGUI(listch, middlechanArray, titlename);
-                if ~isempty(ch)
-                        set(handles.edit_middlechans, 'String', vect2colon(ch, 'Delimiter', 'off'));
-                        handles.middlechanArray = ch;
-                        % Update handles structure
-                        guidata(hObject, handles);
-                else
-                        disp('User selected Cancel')
-                        return
-                end
+if ~isempty(listch)
+        ch = browsechanbinGUI(listch, middlechanArray, titlename);
+        if ~isempty(ch)
+                set(handles.edit_middlechans, 'String', vect2colon(ch, 'Delimiter', 'off'));
+                handles.middlechanArray = ch;
+                % Update handles structure
+                guidata(hObject, handles);
         else
-                msgboxText =  'No channel information was found';
-                title = 'ERPLAB: geterpvalues GUI input';
-                errorfound(msgboxText, title);
+                disp('User selected Cancel')
                 return
         end
+else
+        msgboxText =  'No channel information was found';
+        title = 'ERPLAB: geterpvalues GUI input';
+        errorfound(msgboxText, title);
+        return
 end
 
 % % -----------------------------------------------------------------------

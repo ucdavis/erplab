@@ -256,19 +256,17 @@ end
 
 %--------------------------------------------------------------------------
 function pushbutton_reset_Callback(hObject, eventdata, handles)
-if get(hObject, 'Value')
-      msgboxText =  'Are you sure you want to delete your e-mail setting using ERPLAB.';
-      title = 'ERPLAB: E-mail setting, reset';
-      button = askquest(sprintf(msgboxText), title);
+msgboxText =  'Are you sure you want to delete your e-mail setting using ERPLAB.';
+title = 'ERPLAB: E-mail setting, reset';
+button = askquest(sprintf(msgboxText), title);
       
-      if ~strcmpi(button,'yes')
-            disp('User selected Cancel')
-            return
-      else
-            setpref('Internet','E_mail', []);
-            setpref('Internet','SMTP_Username', []);
-            setpref('Internet','SMTP_Password', []);
-      end
+if ~strcmpi(button,'yes')
+      disp('User selected Cancel')
+      return
+else
+      setpref('Internet','E_mail', []);
+      setpref('Internet','SMTP_Username', []);
+      setpref('Internet','SMTP_Password', []);
 end
 
 %--------------------------------------------------------------------------

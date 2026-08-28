@@ -175,27 +175,25 @@ indxlistb = handles.indxlistb;
 indxlistb = indxlistb(indxlistb<=length(listb));
 titlename = 'Select Bin(s)';
 
-if get(hObject, 'Value')
-    %set(handles.pushbutton_browsechan, 'Enable', 'off')
-    if ~isempty(listb)
-        bin = browsechanbinGUI(listb, indxlistb, titlename);
-        if ~isempty(bin)
-            set(handles.edit3_custom_bin, 'String', vect2colon(bin, 'Delimiter', 'off'));
-            handles.indxlistb = bin;
-            % Update handles structure
-            guidata(hObject, handles);
-        else
-            disp('User selected Cancel')
-            return
-        end
+%set(handles.pushbutton_browsechan, 'Enable', 'off')
+if ~isempty(listb)
+    bin = browsechanbinGUI(listb, indxlistb, titlename);
+    if ~isempty(bin)
+        set(handles.edit3_custom_bin, 'String', vect2colon(bin, 'Delimiter', 'off'));
+        handles.indxlistb = bin;
+        % Update handles structure
+        guidata(hObject, handles);
     else
-        msgboxText =  'No bin information was found';
-        title = 'EStudio: f_export2text GUI for bin input';
-        errorfound(msgboxText, title);
+        disp('User selected Cancel')
         return
     end
-    
+else
+    msgboxText =  'No bin information was found';
+    title = 'EStudio: f_export2text GUI for bin input';
+    errorfound(msgboxText, title);
+    return
 end
+    
 
 
 function edit_custom_chan_Callback(hObject, eventdata, handles)
@@ -226,24 +224,22 @@ indxlistch = handles.indxlistch;
 indxlistch = indxlistch(indxlistch<=length(listch));
 titlename = 'Select Channel(s)';
 
-if get(hObject, 'Value')
-    if ~isempty(listch)
-        ch = browsechanbinGUI(listch, indxlistch, titlename);
-        if ~isempty(ch)
-            set(handles.edit_custom_chan, 'String', vect2colon(ch, 'Delimiter', 'off'));
-            handles.indxlistch = ch;
-            % Update handles structure
-            guidata(hObject, handles);
-        else
-            disp('User selected Cancel')
-            return
-        end
+if ~isempty(listch)
+    ch = browsechanbinGUI(listch, indxlistch, titlename);
+    if ~isempty(ch)
+        set(handles.edit_custom_chan, 'String', vect2colon(ch, 'Delimiter', 'off'));
+        handles.indxlistch = ch;
+        % Update handles structure
+        guidata(hObject, handles);
     else
-        msgboxText =  'No channel information was found';
-        title = 'EStudio: f_export2text GUI for channel input';
-        errorfound(msgboxText, title);
+        disp('User selected Cancel')
         return
     end
+else
+    msgboxText =  'No channel information was found';
+    title = 'EStudio: f_export2text GUI for channel input';
+    errorfound(msgboxText, title);
+    return
 end
 
 %--------------------------------------------------------------------------
