@@ -390,8 +390,8 @@ else
       amin = g.maplimits(1);
       amax = g.maplimits(2);
   elseif strcmp(g.maplimits,'maxmin') || strcmp(g.maplimits,'minmax')
-      amin = min(min(abs(P)))*1.02; % 2% shrinkage keeps within color bounds
-      amax = max(max(abs(P)))*1.02; 
+      amin = min(min(P)); % signed range; abs() would put the low end at ~0
+      amax = max(max(P));
   elseif strcmp(g.maplimits,'absmax')
       amin = min(min(abs(P)))*1.02; % 2% shrinkage keeps within color bounds
       amax = max(max(abs(P)))*1.02; 
@@ -434,7 +434,8 @@ else
   %%%%%%%%%%%%%%%%%%%%%%%%%      
   if ~isempty(g.cbar)
       BACKCOLOR = get(gcf,'Color');
-      if g.cbar == 0       
+      cmapbeforecbar = colormap; % cbar() resets the colormap, so restore it below
+      if g.cbar == 0
           ColorbarHandle = cbar(0,3,[amin amax]); 
           pos = get(ColorbarHandle,'position');  % move left & shrink to match head size
           try
@@ -443,8 +444,9 @@ else
                   set(ColorbarHandle,'position',[pos(1)-.05 pos(2)+0.13 pos(3)*0.7 pos(4)]);
           end
       else
-          ColorbarHandle = cbar(g.cbar,3,[amin amax]); 
+          ColorbarHandle = cbar(g.cbar,3,[amin amax]);
       end
+      colormap(ancestor(HeadAxes,'figure'), cmapbeforecbar);
   end
   axes(HeadAxes);
 

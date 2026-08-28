@@ -178,6 +178,12 @@ varargout{1} = ERP_plot_scalp_gui;
                 ERPTab_plotscalp{7}=1;
             end
             gui_erp_scalp_map.map_extras_view_ops.Value=mapextrc;
+            try viewloc = ERPTab_plotscalp{11}; catch; viewloc = '';ERPTab_plotscalp{11} = '';end
+            if isempty(viewloc) || ~ischar(viewloc) || isempty(str2num(viewloc))
+                viewloc = num2str([-180 30]);
+                ERPTab_plotscalp{11} = viewloc;
+            end
+            gui_erp_scalp_map.map_extras_view_location.String = viewloc;
         end
 
         %%----------------------------------Bar scale------------------------------
@@ -1377,6 +1383,7 @@ varargout{1} = ERP_plot_scalp_gui;
         ERPTab_plotscalp{8} =gui_erp_scalp_map.map_extras_cmap_ops.Value ;
         ERPTab_plotscalp{9}=gui_erp_scalp_map.map_extras_cmapb_disp.Value;
         ERPTab_plotscalp{10}=gui_erp_scalp_map.measurement.Value;
+        ERPTab_plotscalp{11} = gui_erp_scalp_map.map_extras_view_location.String;%%custom 3D view angles
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
         
         
@@ -1559,8 +1566,19 @@ varargout{1} = ERP_plot_scalp_gui;
                 ERPTab_plotscalp{7}=1;
             end
             gui_erp_scalp_map.map_extras_view_ops.Value=mapextrc;
+            try viewloc = ERPTab_plotscalp{11}; catch; viewloc = '';ERPTab_plotscalp{11} = '';end
+            if isempty(viewloc) || ~ischar(viewloc) || isempty(str2num(viewloc))
+                viewloc = num2str([-180 30]);
+                ERPTab_plotscalp{11} = viewloc;
+            end
+            gui_erp_scalp_map.map_extras_view_location.String = viewloc;
+            if mapextrc==10 %%'custom'
+                gui_erp_scalp_map.map_extras_view_location.Enable = 'on';
+            else
+                gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+            end
         end
-        
+
         try clormap = ERPTab_plotscalp{8}; catch clormap=1;ERPTab_plotscalp{8} = 1;end
         if isempty(clormap) || numel(clormap)~=1 || any(clormap<1) || any(clormap>6)
             clormap=1;
@@ -1687,9 +1705,24 @@ varargout{1} = ERP_plot_scalp_gui;
             set(gui_erp_scalp_map.map_type_2d_type,'Enable','off');
             set(gui_erp_scalp_map.map_type_2d_type_outside,'Enable','off','Value',0);
             %%for 3D
-            set(gui_erp_scalp_map.map_extras_view_ops,'String', morimenu,'Enable','on','Value',1);
-            gui_erp_scalp_map.map_extras_view_location.String = num2str([-180 30]);
-            gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+            %%this handler runs on every panel refresh, so keep the saved view
+            ERPTab_plotscalp_view = estudioworkingmemory('ERPTab_plotscalp');
+            try viewselec = ERPTab_plotscalp_view{7}; catch; viewselec = 1; end
+            if isempty(viewselec) || numel(viewselec)~=1 || viewselec<1 || viewselec>numel(morimenu)
+                viewselec = 1;
+            end
+            try viewloc = ERPTab_plotscalp_view{11}; catch; viewloc = ''; end
+            if isempty(viewloc) || ~ischar(viewloc) || isempty(str2num(viewloc))
+                viewloc = num2str([-180 30]);
+            end
+            set(gui_erp_scalp_map.map_extras_view_ops,'String', morimenu,'Enable','on');
+            set(gui_erp_scalp_map.map_extras_view_ops,'Value', viewselec);
+            gui_erp_scalp_map.map_extras_view_location.String = viewloc;
+            if viewselec==numel(morimenu) %%'custom'
+                gui_erp_scalp_map.map_extras_view_location.Enable = 'on';
+            else
+                gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+            end
         else
             set(gui_erp_scalp_map.map_type_2d_type,'Enable','on');
             gui_erp_scalp_map.map_type_3d_spl.Enable = 'off';
