@@ -37,6 +37,11 @@ if nargin<2
 end
 tagx =  get(hsig, 'Tag');
 ht = findall(hsig,'Type','uitoolbar');
+if isempty(ht)
+        % newer Matlab builds the default toolbar only on demand
+        set(hsig, 'ToolBar', 'figure');
+        ht = findall(hsig,'Type','uitoolbar');
+end
 
 % plot ERP waveforms Gui
 icon = imread('plot2_icongui.png');
