@@ -1,5 +1,38 @@
-% DEPRECATED...Sorry
+% PURPOSE  :	Replaces string (alphanumeric) event codes with numeric ones, using an
+%                 explicit mapping that you supply. Works directly on EEG.event, so it
+%                 neither needs nor creates an EVENTLIST.
 %
+% FORMAT   :
+%
+% EEG = pop_str2code(EEG, stringscode, numcode);
+%
+% INPUTS   :
+%
+% EEG           - input dataset (continuous or epoched)
+% stringscode   - cell array of the string event codes to replace
+% numcode       - numeric codes to use instead, one per entry of stringscode
+%
+% OUTPUTS  :
+%
+% EEG           - dataset with numeric EEG.event.type values
+%
+% EXAMPLE  :
+%
+% EEG = pop_str2code(EEG, {'Upright' 'Inverted'}, [11 12]);
+%
+% Any string code not listed in stringscode is converted with str2double when it
+% contains a number (e.g. 'S12' is not converted, but '12' is), and is replaced by
+% -99 otherwise.
+%
+% Called with only the EEG dataset it opens str2codeGUI instead. There is no menu
+% entry for it, so it is reached by calling it directly.
+%
+% See also str2codeGUI.m letterkilla.m pop_editeventlist.m pop_creabasiceventlist.m
+%
+% Related: pop_creabasiceventlist's 'AlphanumericCleaning' option strips non-digit
+% characters automatically (via letterkilla) rather than using an explicit mapping,
+% and pop_editeventlist opens assigncodesGUI for code assignment while building an
+% EVENTLIST.
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
@@ -98,6 +131,7 @@ if nargin<nvar  % using GUI
         end
         
 else  % using scripting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        shist = 1; % scripted call, so the command goes into EEG.history
         if ~ischar(EEG.event(1).type)
                 disp('Warning: str2code did not detect any string code-------------')
                 return
@@ -111,7 +145,7 @@ else  % using scripting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                         EEG.event(i).type = numcode(loc);
                 else
                         capnum = str2double(EEG.event(i).type);
-                        if isempty(capnum)
+                        if isnan(capnum) % str2double returns NaN, not [], when it cannot convert
                                 fprintf('Warning: Unfortunately string code %s was not specified.\n',...
                                         EEG.event(i).type);
                                 fprintf('Warning: Luckily, ERPLAB will use code -99 instead.\n');
