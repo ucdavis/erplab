@@ -327,13 +327,10 @@ artc     = p.Results.Criterion;
 
 
 if ~isempty(p.Results.Stdev)
-    question= 'The standard deviation (Stdev) is no longer supported.\nHence, ERPLAB uses the standard error of the mean (SEM) instead';
-    title = 'ERPLAB: pop_averager() standard error of the mean';
-    buttonames = {'Continue'};
-    button     = askquestpoly(sprintf(question), title, buttonames);
-    if ~strcmpi(button, 'Continue')
-        return
-    end
+    % Stdev is accepted for backwards compatibility but no longer changes
+    % anything; binerror always holds the SEM.
+    fprintf(['\nERPLAB WARNING: the standard deviation (Stdev) option is no longer supported.\n' ...
+        'The standard error of the mean (SEM) is used instead.\n\n']);
 end
 if ~iscell(artc)
     if strcmpi(artc, 'all')
