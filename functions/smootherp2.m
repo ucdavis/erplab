@@ -32,15 +32,30 @@ function ERP = smootherp2(ERP, points)
 
 % fprintf('smootherp.m : START\n');
 
-if spanvalue<0
-        disp('Error smootherp(): span should be greater than zero')
+porder = 3;   % polynomial order of the filter
+
+if points<0
+        disp('Error smootherp2(): span should be greater than zero')
         return
 end
+if mod(points,2)==0
+        points = points+1;   % sgolayfilt needs an odd frame length
+        fprintf('smootherp2(): span must be odd. Using %d points instead.\n', points);
+end
+if points<=porder
+        fprintf('Error smootherp2(): span must be greater than %d for a %dth-order fit.\n', porder, porder);
+        return
+end
+if points>ERP.pnts
+        fprintf('Error smootherp2(): span (%d) cannot exceed the number of time points (%d).\n', points, ERP.pnts);
+        return
+end
+
 nbin    = ERP.nbin;
 dataaux = ERP.bindata.*0;
 
 for j=1:nbin
-        
-        dataaux(:,:,j) = sgolayfilt(ERP.times, ERP.bindata(:,:,j)',3,points)';   % Apply 3rd-order filter
+        % sgolayfilt works down the columns, so transpose to put time in rows
+        dataaux(:,:,j) = sgolayfilt(ERP.bindata(:,:,j)', porder, points)';
 end
-ERP.bindata = dataaux;  % for now
+ERP.bindata = dataaux;

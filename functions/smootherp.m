@@ -62,11 +62,32 @@ dataaux = ERP.bindata.*0;
 
 for i=1:nch
         for j=1:nbin
-                %Smooth the data using the rloess methods with a span of 'spanvalue'
-                %dataaux(i,:,j) = smooth(ERP.times, ERP.binavg(i,:,j),spanvalue,'rloess');
-                
                 %Smooth the data using a moving average filter methods
-                dataaux(i,:,j) = smooth(ERP.times, ERP.bindata(i,:,j),spanvalue);
+                dataaux(i,:,j) = movingavg(ERP.bindata(i,:,j), spanvalue);
         end
 end
 ERP.bindata = dataaux;
+
+%--------------------------------------------------------------------------
+function ys = movingavg(y, span)
+% Centered moving average. The window shrinks symmetrically near the edges,
+% so the first and last samples are left unchanged. Matches the moving
+% average of smooth() bit for bit, without needing the Curve Fitting Toolbox.
+
+y    = y(:);
+n    = numel(y);
+span = min(span, n);
+if mod(span,2)==0
+        span = span-1;      % an even span is reduced to the next odd one
+end
+if span<=1
+        ys = y.';
+        return
+end
+
+c      = filter(ones(span,1)/span, 1, y);
+cbegin = cumsum(y(1:span-2));
+cbegin = cbegin(1:2:end)./(1:2:(span-2)).';
+cend   = cumsum(y(n:-1:n-span+3));
+cend   = cend(end:-2:1)./(span-2:-2:1).';
+ys     = [cbegin; c(span:end); cend].';

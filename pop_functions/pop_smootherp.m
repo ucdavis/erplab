@@ -3,13 +3,16 @@
 % FORMAT   :
 %
 % ERP = pop_smootherp(ERP, npoints, stype);
+% ERP = pop_smootherp(ERP, npoints, stype, issaveas);
 %
 % INPUTS     :
 %
 %         ERP              - ERP structures (ERPset)
-%         npoints          - odd number of points.
-%         stype            - 0=Savitzky-Golay smoothing filter
-%                            1=moving average filter method
+%         npoints          - odd number of points. An even value is rounded up.
+%         stype            - 0=moving average filter method
+%                            1=Savitzky-Golay smoothing filter
+%         issaveas         - 1=open the "save ERPset" window when finished,
+%                            0=return without prompting (default, for scripting)
 %
 %
 % OUTPUTS
@@ -25,7 +28,7 @@
 %
 % ERP = pop_smootherp(ERP, 7, 0);
 %
-% See also smootherp.m smootherp2.m smooth.m sgolayfilt.m
+% See also smootherp.m smootherp2.m sgolayfilt.m
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
@@ -55,11 +58,14 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP, erpcom] = pop_smootherp(ERP, npoints, stype)
+function [ERP, erpcom] = pop_smootherp(ERP, npoints, stype, issaveas)
 erpcom = '';
 if nargin < 1
       help pop_smootherp
       return
+end
+if nargin < 4
+      issaveas = 0; % scripting: do not open the "save ERPset" window
 end
 if isempty(ERP)
       msgboxText =  'Error: cannot smooth an empty ERP dataset';
@@ -89,7 +95,7 @@ if nargin==1
       %
       % Somersault
       %
-      [ERP, erpcom] = pop_smootherp(ERP, npoints, stype);
+      [ERP, erpcom] = pop_smootherp(ERP, npoints, stype, 1);
       pause(0.1);
       return
 end
@@ -107,10 +113,15 @@ ERP.isfilt = 1;
 %
 msg2end
 
+erpcom = sprintf( 'pop_smootherp( %s, %s, %s);', inputname(1), num2str(npoints), num2str(stype));
+
+if ~issaveas
+      return % saving is left to the caller
+end
+
 [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');
 
 if issave>0
-      erpcom = sprintf( 'pop_smootherp( %s, %s, %s);', inputname(1), num2str(npoints), num2str(stype));
       if issave==2
             erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
             msgwrng = '*** Your ERPset was saved on your hard drive.***';

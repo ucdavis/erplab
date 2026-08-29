@@ -1,6 +1,8 @@
 % Pending. Function under progress...
 %
-%
+% NOTE: script-only. Nothing in ERPLAB calls this function and it has no menu
+% entry. DC removal during filtering is handled by pop_basicfilter's 'RemoveDC'
+% option, which calls removedc directly.
 %
 % PURPOSE  :	Remove DC offset from a continuous EEG dataset.
 %
@@ -136,9 +138,11 @@ elseif isnumeric(window)
                 msgboxText = 'Invalid range for getting the mean value.';
                 error('prog:input', ['ERPLAB says: ' msgboxText]);
         end
-        if length(window)~=2
+        if length(window)==2
+                windowsam = window;
+        else
                 windowsam = [1 window(1)];
-        end        
+        end
 else
         msgboxText = 'Invalid range for getting the mean value.';
         error('prog:input', ['ERPLAB says: ' msgboxText]);
@@ -155,10 +159,16 @@ end
 %
 % subroutine
 %
-EEG.data = removedc(data, windowsam, chanArray);
+EEG.data = removedc(EEG.data, windowsam, chanArray);
 
 EEG.setname = [EEG.setname '_ld']; % suggested name (si queris no mas!)
-com = sprintf( '%s = pop_eegremovemean( %s, ''%s'' );', inputname(1), inputname(1), interval);
+if ischar(window)
+        rangestr = sprintf('''%s''', window);
+else
+        rangestr = ['[' num2str(window) ']'];
+end
+com = sprintf( '%s = pop_eegremovemean( %s, %s, ''RangeForMean'', %s );', ...
+        inputname(1), inputname(1), vect2colon(chanArray), rangestr);
 
 % get history from script. EEG
 switch shist
