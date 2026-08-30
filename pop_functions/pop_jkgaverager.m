@@ -73,7 +73,7 @@
 function [ALLERP, erpcom] = pop_jkgaverager(ALLERP, varargin)
 erpcom = '';
 if nargin<1
-        help jkgaverager
+        help pop_jkgaverager
         return
 end
 

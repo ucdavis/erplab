@@ -189,16 +189,22 @@ try
     
     
     %% RUN BINLISTER
-    [handles.EEG, handles.EEG.EVENTLIST]  = binlister( handles.EEG ... % emptyEEG
+    [handles.EEG, handles.EEG.EVENTLIST]  = binlister_smart( handles.EEG ... % emptyEEG
         , BDFfilename       ...         % inputBinDescriptorFile
         , 'none'            ...         % inputEventList
         , 'none'            ...         % outputEventList
         , []                ...         % forbiddenCodeArray
         , []                ...         % ignoreCodeArray
-        , 0                 );          % reportable
+        , 1                 );          % indexEL
     
     
     if(isempty(handles.EEG.EVENTLIST));
+        % a malformed BDF comes back as an empty EVENTLIST, not an error
+        errordlg(sprintf(['\n\n\tThe bin descriptor file could not be parsed.\n\n' ...
+            '\tSee the syntax report in the Command Window for the offending bin(s).\n\n' ...
+            '\tA common cause is bin numbers that are not sequential (1, 2, 3, ...).\n\n']), ...
+            'BDF - Syntax Error');
+        delete(BDFfilename);
         % Turn the interface back on
         set(InterfaceObj,'Enable','on');
         drawnow;
@@ -261,10 +267,13 @@ catch errorObj
     display(getReport(errorObj,'extended','hyperlinks','on'),'Error');
     %     set(InterfaceObj,'Enable','on');
     
-    if(strcmpi(errorObj.stack(1).name, 'binlister') && errorObj.stack(1).line == 706)
-        errordlg(sprintf('\n\n\tCannot analyze a BDF file containing RT-flags without an EEG dataset.\n\n\tRemove exist RT-flags from the BDF-file or load an existing EEG dataset.\n\n'), 'RT-Flag Error');
-    elseif(strcmpi(errorObj.stack(1).name, 'pushbuttonAnalyzeBDF_Callback') && errorObj.stack(1).line == 171)
-        errordlg(sprintf('\n\n\tBin numbers must be in sequential order.\n\n\tFix your bin numbers.\n\n'), 'BDF - Bin Number Error');
+    % RT specs cannot be measured without a real dataset
+    bdfstr = get(handles.editBDF, 'String');
+    if iscell(bdfstr), bdfstr = strjoin(bdfstr(:)', ' '); end
+    isRTbdf = ~isempty(strfind(lower(bdfstr), ':rt<')); %#ok<STREMP>
+
+    if(isRTbdf && any(strcmpi(errorObj.stack(1).name, {'binlister','binlister_smart'})))
+        errordlg(sprintf('\n\n\tCannot analyze a BDF file containing RT-flags without an EEG dataset.\n\n\tRemove existing RT-flags from the BDF-file or load an existing EEG dataset.\n\n'), 'RT-Flag Error');
     else
         errordlg(getReport(errorObj,'extended','hyperlinks','off'),'Error');
     end
@@ -318,8 +327,8 @@ catch errorObj
     display(getReport(errorObj,'extended','hyperlinks','on'),'Error');
     %     set(InterfaceObj,'Enable','on');
     
-    if(strcmpi(errorObj.stack(1).name, 'readeventlist') && errorObj.stack(1).line == 140)
-        errordlg(sprintf('\n\nIncorrect File Type:\tFile is not an acceptable BIN DESCRIPTOR FILE.\n\nSelect another BDF0file\n\n'), 'Incorrect File Type Error');
+    if(strcmpi(errorObj.stack(1).name, 'readeventlist'))
+        errordlg(sprintf('\n\nIncorrect File Type:\tFile is not an acceptable BIN DESCRIPTOR FILE.\n\nSelect another BDF file\n\n'), 'Incorrect File Type Error');
     else
         errordlg(getReport(errorObj,'extended','hyperlinks','off'),'Error');
     end
@@ -428,7 +437,7 @@ catch errorObj
     display(getReport(errorObj,'extended','hyperlinks','on'),'Error');
     %     set(InterfaceObj,'Enable','on');
     
-    if(strcmpi(errorObj.stack(1).name, 'readeventlist') && errorObj.stack(1).line == 140)
+    if(strcmpi(errorObj.stack(1).name, 'readeventlist'))
         errordlg(sprintf('\n\nIncorrect File Type:\tFile does not contain an acceptable EVENT LIST FILE.\n\nSelect another file\n\n'), 'Incorrect File Type Error');
     else
         errordlg(getReport(errorObj,'extended','hyperlinks','off'),'Error');
