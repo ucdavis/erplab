@@ -1,0 +1,4 @@
+# keep development-only files out of git archive / GitHub release zips
+.github/       export-ignore
+.gitignore     export-ignore
+.gitattributes export-ignore
