@@ -25,10 +25,10 @@ gui_labelset_waveviewer = struct();
 if nargin == 0
     fig = f_estudio_figure(); % Parent figure
     box_erplabelset_viewer_property = uiextras.BoxPanel('Parent', fig, 'Title', 'Chan/Bin/ERPset Label Properties', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize',12); % Create boxpanel
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize',f_get_default_fontsize()); % Create boxpanel
 elseif nargin == 1
     box_erplabelset_viewer_property = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Chan/Bin/ERPset Label Properties', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize',12);
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize',f_get_default_fontsize());
 else
     box_erplabelset_viewer_property = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Chan/Bin/ERPset Label Properties', 'Padding', 5, ...
         'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');

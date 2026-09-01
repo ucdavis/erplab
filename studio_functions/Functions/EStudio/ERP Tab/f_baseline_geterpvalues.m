@@ -181,7 +181,7 @@ gui_baseline = erp_m_t_Baseline_period_gui();
         b1 = uiextras.VBox( 'Parent', f_localpeak);
         %%---------------------------------Title------------------------------------
         b11 = uiextras.HBox( 'Parent', b1 );
-        b111 = uicontrol('Style','text','Parent', b11,'String','Baseline period (in ms)','fontsize',16);%,'FontWeight', 'bold');
+        b111 = uicontrol('Style','text','Parent', b11,'String','Baseline period (in ms)','FontSize',FontSizeDefault+4);%,'FontWeight', 'bold');
         
         %%------------------------------Baseline methods---------------------------
         b13 = uiextras.HBox( 'Parent', b1 );

@@ -35,10 +35,10 @@ end
 if nargin == 0
     fig = f_estudio_figure(); % Parent figure
     ERPsets_waveviewer_box = uiextras.BoxPanel('Parent', fig, 'Title', 'ERPsets', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', 12); % Create boxpanel
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', f_get_default_fontsize()); % Create boxpanel
 elseif nargin == 1
     ERPsets_waveviewer_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERPsets', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', 12);
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', f_get_default_fontsize());
 elseif nargin == 3 || nargin == 2
     ERPsets_waveviewer_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERPsets', 'Padding', 5, ...
         'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');

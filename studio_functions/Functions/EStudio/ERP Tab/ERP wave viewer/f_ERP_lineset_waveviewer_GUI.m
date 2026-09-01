@@ -27,7 +27,7 @@ gui_erplinset_waveviewer = struct();
 if nargin == 0
     fig = f_estudio_figure(); % Parent figure
     box_erplineset_viewer_property = uiextras.BoxPanel('Parent', fig, 'Title', 'Lines & Legends', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', 12); % Create boxpanel
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', f_get_default_fontsize()); % Create boxpanel
 elseif nargin == 1
     box_erplineset_viewer_property = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Lines & Legends', 'Padding', 5,...
         'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');%[0.7765,0.7294,0.8627]

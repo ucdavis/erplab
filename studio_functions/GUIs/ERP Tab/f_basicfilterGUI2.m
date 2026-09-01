@@ -1196,8 +1196,9 @@ function checkbox_notch_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function no_filter(hObject,handles, msgtx)
+FontSizeDefault = f_get_default_fontsize();
 plot(1, 1, 'w');
-text(0.32,0.5, msgtx,'FontSize',18, 'color', [1 0 0])
+text(0.32,0.5, msgtx,'FontUnits','pixels','FontSize',FontSizeDefault+6, 'color', [1 0 0])
 axis([0  1 0 1])
 set(handles.slider_highpass, 'Value', 0);
 set(handles.slider_lowpass, 'Value', 0);
@@ -1230,6 +1231,7 @@ return
 %##########################################################################
 
 function [hfr labelf] = plotresponsefilter(hObject, eventdata, handles)
+FontSizeDefault = f_get_default_fontsize();
 
 %
 % IMPORTANT: This function plot the filter response of FILTFILT function only.
@@ -1254,7 +1256,7 @@ else
         if get(handles.radiobutton_freqr, 'Value') || get(handles.radiobutton_impr, 'Value')
             %             posaxes1 = get(gca,'YLim');
             msgtx = 'Working, please wait...';
-            text(mean(xmaxp)/3, 1.12, msgtx,'FontSize',14, 'color', 'k')
+            text(mean(xmaxp)/3, 1.12, msgtx,'FontUnits','pixels','FontSize',FontSizeDefault+2, 'color', 'k')
             drawnow
         end
         %end
@@ -1770,8 +1772,8 @@ if get(handles.radiobutton_freqr,'Value')
             end
             
             xxm = hpzoom/5;
-            text(xxm, yym+0.2,' Losing passband gain!','FontSize',10)
-            text(xxm, yym+0.1,' Increase the order of the filter or select automin.','FontSize',10)
+            text(xxm, yym+0.2,' Losing passband gain!','FontUnits','pixels','FontSize',FontSizeDefault-2)
+            text(xxm, yym+0.1,' Increase the order of the filter or select automin.','FontUnits','pixels','FontSize',FontSizeDefault-2)
             set(gca,'Color', 'y')
             
         elseif iswarngain==2
@@ -1783,8 +1785,8 @@ if get(handles.radiobutton_freqr,'Value')
             end
             
             xxm = hpzoom/5;
-            text(xxm, yym+0.2,' Passband gain of 1 was overpassed!','FontSize',10)
-            text(xxm, yym+0.1,' Increase the order of the filter or select automin.','FontSize',10)
+            text(xxm, yym+0.2,' Passband gain of 1 was overpassed!','FontUnits','pixels','FontSize',FontSizeDefault-2)
+            text(xxm, yym+0.1,' Increase the order of the filter or select automin.','FontUnits','pixels','FontSize',FontSizeDefault-2)
             set(gca,'Color', 'y')
             
         elseif iswarngain==3
@@ -1796,8 +1798,8 @@ if get(handles.radiobutton_freqr,'Value')
             end
             
             xxm = hpzoom/5;
-            text(xxm, yym+0.2,' Losing stopband attenuation','FontSize',10)
-            text(xxm, yym+0.1,' Increase the order of the filter or select automin.','FontSize',10)
+            text(xxm, yym+0.2,' Losing stopband attenuation','FontUnits','pixels','FontSize',FontSizeDefault-2)
+            text(xxm, yym+0.1,' Increase the order of the filter or select automin.','FontUnits','pixels','FontSize',FontSizeDefault-2)
             set(gca,'Color', 'y')
             
         elseif iswarnroff==0 &&  iswarngain==0
@@ -2424,6 +2426,7 @@ function edit_tip_cutoff_CreateFcn(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function [ym f ylim] = plotresponse_uf_data(hObject, eventdata, handles)
+FontSizeDefault = f_get_default_fontsize();
 
 [ym f ylim] = deal([]);
 frecp = str2num(get(handles.edit_xmaxplot,'String'));
@@ -2441,7 +2444,7 @@ end
 axes(handles.axes1);
 posaxes1 = get(gca,'YLim');
 msgtx    = 'Working, please wait...';
-text(mean(frecp)/3, posaxes1(2)/2, msgtx,'FontSize',14, 'color', 'k')
+text(mean(frecp)/3, posaxes1(2)/2, msgtx,'FontUnits','pixels','FontSize',FontSizeDefault+2, 'color', 'k')
 drawnow
 
 if isempty(setxor(ch, [handles.datafr.chan])) % are equal?
