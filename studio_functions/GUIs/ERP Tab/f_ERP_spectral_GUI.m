@@ -25,12 +25,12 @@ catch
     ColorB_def = [0.95 0.95 0.95];
 end
 if nargin == 0
-    fig_title = figure(); % Parent figure
+    fig_title = f_estudio_figure(); % Parent figure
     ERP_filtering_box = uiextras.BoxPanel('Parent', fig_title, 'Title', 'Spectral Analysis', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     ERP_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Analysis', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    ERP_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Analysis', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    ERP_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Analysis', 'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 

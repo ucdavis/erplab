@@ -30,12 +30,12 @@ end
 
 % global box;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     box_eegset_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGsets', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     box_eegset_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGsets', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    box_eegset_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGsets', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    box_eegset_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGsets', 'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 % global selectedData;

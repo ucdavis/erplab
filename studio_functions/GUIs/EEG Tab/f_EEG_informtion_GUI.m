@@ -17,12 +17,12 @@ catch
     ColorB_def = [0.95 0.95 0.95];
 end
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     EEG_info = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG & Bin Information', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EEG_info = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG & Bin Information', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EEG_info = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG & Bin Information', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EEG_info = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG & Bin Information', 'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 varargout{1} = EEG_info;
@@ -61,7 +61,7 @@ drawui_EEG_info(FontSizeDefault);
             'Parent'        , gui_EEG_info.setfilename_title2,...
             'Data'          , dsnames, ...
             'ColumnWidth'   , {500}, ...
-            'ColumnName'    , {''}, ...
+            'ColumnName'    , {}, ...
             'RowName'       , {'Set name','File name'},...
             'ColumnEditable',[false]);
         

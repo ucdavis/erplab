@@ -259,7 +259,7 @@ if strcmpi(p.Results.Plotwave,'on')
                 break;
             end
             p_ax = subplot(RowNum,ColumnNum,count);
-            set(gca,'fontsize',FontSizeDefault);
+            set(gca,'FontUnits','pixels','fontsize',FontSizeDefault);
             hold on;
             temp = squeeze(ERP.bindata);
             for Numofplot  = 1:ERP.nbin
@@ -268,20 +268,20 @@ if strcmpi(p.Results.Plotwave,'on')
             axis(p_ax,[floor(ERP.times(1)),ceil(ERP.times(end)), 1.1*min(temp(:)) 1.1*max(temp(:))]);
             xticks(p_ax,FreqTick);
             if count == 1
-                title(p_ax,char(strrep(ERP.chanlocs(count).labels,'_','\_')),'FontSize',FontSizeDefault,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
+                title(p_ax,char(strrep(ERP.chanlocs(count).labels,'_','\_')),'FontUnits','pixels','FontSize',FontSizeDefault,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
             else
-                title(p_ax,ERP.chanlocs(count).labels,'FontSize',FontSizeDefault,'FontWeight','normal','Color','k','Interpreter','none');
+                title(p_ax,ERP.chanlocs(count).labels,'FontUnits','pixels','FontSize',FontSizeDefault,'FontWeight','normal','Color','k','Interpreter','none');
             end
-            xlabel(p_ax,'Frequency/Hz','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
+            xlabel(p_ax,'Frequency/Hz','FontUnits','pixels','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
             
             if strcmpi(Amptype,'phase')
-                ylabel(p_ax,'Angle/degree','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
+                ylabel(p_ax,'Angle/degree','FontUnits','pixels','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
             elseif strcmpi(Amptype,'power')
-                ylabel(p_ax,'Power/\muV^2','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
+                ylabel(p_ax,'Power/\muV^2','FontUnits','pixels','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
             elseif strcmpi(Amptype,'db')
-                ylabel(p_ax,'Decibels/dB','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
+                ylabel(p_ax,'Decibels/dB','FontUnits','pixels','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
             else
-                ylabel(p_ax,'Amplitude/\muV','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
+                ylabel(p_ax,'Amplitude/\muV','FontUnits','pixels','FontSize',FontSizeDefault,'FontWeight','normal','Color','k');
             end
             
             for NUmoflabel = 1:length(ERP.times)
@@ -303,7 +303,7 @@ if strcmpi(p.Results.Plotwave,'on')
     set(h_legend, 'position', pos);
     qlegcolumns = ceil(sqrt(length(ERP.bindescr)));
     set(h_legend,'NumColumns',qlegcolumns);
-    set(h_legend,'FontSize',FontSizeDefault);
+    set(h_legend,'FontUnits','pixels','FontSize',FontSizeDefault);
     set(fig,'Color','w');
 end
 

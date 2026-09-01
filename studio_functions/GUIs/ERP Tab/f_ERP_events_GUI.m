@@ -20,7 +20,7 @@ erptab_events = struct();
 % global eegtab_events_box;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     eegtab_events_box = uiextras.BoxPanel('Parent', fig, 'Title', 'EventList', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -28,7 +28,7 @@ elseif nargin == 1
         'BackgroundColor',ColorB_def);
 else
     eegtab_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EventList', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event_help
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

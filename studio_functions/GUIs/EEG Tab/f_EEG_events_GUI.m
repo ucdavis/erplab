@@ -20,7 +20,7 @@ EStduio_eegtab_EEG_events = struct();
 % global EStudio_eeg_events_box;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     EStudio_eeg_events_box = uiextras.BoxPanel('Parent', fig, 'Title', 'EventList', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -28,7 +28,7 @@ elseif nargin == 1
         'BackgroundColor',ColorB_def);
 else
     EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EventList', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event_help
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -140,7 +140,7 @@ varargout{1} = EStudio_eeg_events_box;
             'Parent'        , EStduio_eegtab_EEG_events.setfilename_title2,...
             'Data'          , dsnames, ...
             'ColumnWidth'   , {500}, ...
-            'ColumnName'    , {''}, ...
+            'ColumnName'    , {}, ...
             'RowName'       , {'Set name','File name'},...
             'ColumnEditable',[false]);
         set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 30 20 30 30 20 100 20 70]);

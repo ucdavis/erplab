@@ -19,7 +19,7 @@ catch
     ColorB_def = [0.702,0.77,0.85];
 end
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     ERP_filtering_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Filtering', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -27,7 +27,7 @@ elseif nargin == 1
         'BackgroundColor',ColorB_def);
 else
     ERP_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Filtering', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @filter_help
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @filter_help
 end
 
 gui_erp_filtering = struct();

@@ -22,7 +22,7 @@ Eegtab_EEG_interpolate_chan_epoch = struct();
 
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Interpolate Channels',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -30,7 +30,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Interpolate Channels',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @intpchan_help
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @intpchan_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

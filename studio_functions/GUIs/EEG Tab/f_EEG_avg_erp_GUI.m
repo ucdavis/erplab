@@ -26,7 +26,7 @@ EEG_avg_erp = struct();
 % global Eegtab_box_avg_erp;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Averaged ERPs (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -34,7 +34,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERPs (Epoched EEG)',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @avg_help
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @avg_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

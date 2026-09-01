@@ -21,7 +21,7 @@ catch
     ColorB_def = [0.95 0.95 0.95];
 end
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     EEG_filtering_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Filtering', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % , 'HelpFcn', @filter_help
 elseif nargin == 1
@@ -29,7 +29,7 @@ elseif nargin == 1
         'BackgroundColor',ColorB_def);
 else
     EEG_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Filtering', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 

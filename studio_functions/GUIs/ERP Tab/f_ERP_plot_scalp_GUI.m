@@ -17,7 +17,7 @@ gui_erp_scalp_map = struct();
 % global ERP_plot_scalp_gui;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     ERP_plot_scalp_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot Scalp Maps',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -25,7 +25,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     ERP_plot_scalp_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Scalp Maps',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @scap_help
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @scap_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

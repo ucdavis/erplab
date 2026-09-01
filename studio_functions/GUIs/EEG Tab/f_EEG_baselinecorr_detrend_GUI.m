@@ -17,12 +17,12 @@ addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %%---------------------------gui-------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     EEG_basecorr_detrend_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Baseline Correction & Linear Detrend (Epoched EEG)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EEG_basecorr_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Baseline Correction & Linear Detrend (Epoched EEG)', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EEG_basecorr_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Baseline Correction & Linear Detrend (Epoched EEG)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EEG_basecorr_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Baseline Correction & Linear Detrend (Epoched EEG)', 'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 gui_eeg_blc_dt = struct();

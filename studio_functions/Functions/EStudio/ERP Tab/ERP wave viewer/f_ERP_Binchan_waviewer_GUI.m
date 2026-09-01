@@ -30,18 +30,18 @@ catch
 end
 % global Chanbin_waveviewer_box;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     Chanbin_waveviewer_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Channels and Bins', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontSize', 12); % Create boxpanel
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', 12); % Create boxpanel
 elseif nargin == 1
     Chanbin_waveviewer_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channels and Bins', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontSize', 12);
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize', 12);
 elseif nargin == 3 || nargin == 2
     Chanbin_waveviewer_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channels and Bins', 'Padding', 5, ...
-        'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 elseif nargin == 4
     Chanbin_waveviewer_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channels and Bins', 'Padding', 5, ...
-        'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
 
 try

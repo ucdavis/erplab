@@ -23,7 +23,7 @@ EEG_dq_epoch = struct();
 % global Eegtab_box_dq_epoch;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Data Quality Metrics (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -31,7 +31,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Data Quality Metrics (Epoched EEG)',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @dq_help
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @dq_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

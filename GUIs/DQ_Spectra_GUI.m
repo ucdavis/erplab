@@ -102,9 +102,17 @@ classdef DQ_Spectra_GUI < matlab.apps.AppBase
             app.DQTable.ColumnName = fft_labels;
             app.orig_ColName = fft_labels;
 
-            FontSizeDefault = f_get_default_fontsize();
-            if isempty(FontSizeDefault); FontSizeDefault = 12; end
-            app.DQTable.FontSize = FontSizeDefault;
+            % uifigure components have no FontUnits property, so this size is
+            % read as points and cannot take the pixel value that
+            % f_get_default_fontsize returns. These per-platform point sizes
+            % render alike on each OS.
+            if ismac
+                app.DQTable.FontSize = 12;
+            elseif ispc
+                app.DQTable.FontSize = 9;
+            else
+                app.DQTable.FontSize = 8.5;
+            end
             app.heatmap_on = 0;
 
             app.EditStdWindow.Enable = 'off';

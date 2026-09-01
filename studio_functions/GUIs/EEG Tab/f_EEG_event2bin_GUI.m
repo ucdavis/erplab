@@ -24,7 +24,7 @@ EStduio_eegtab_EEG_event2bin = struct();
 % global EStudio_box_EEG_event2bin;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', fig, 'Title', 'Assign Events to Bins (BINLISTER)', ...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -32,7 +32,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Assign Events to Bins (BINLISTER)',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event2bin_help
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event2bin_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

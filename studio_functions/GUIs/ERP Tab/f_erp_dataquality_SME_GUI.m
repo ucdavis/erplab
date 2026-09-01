@@ -20,12 +20,12 @@ catch
 end
 
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     Erp_information = uiextras.BoxPanel('Parent', fig, 'Title', 'View Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'View Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'View Data Quality Metrics', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'View Data Quality Metrics', 'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 varargout{1} = Erp_information;
@@ -66,7 +66,7 @@ drawui_erp_information(FontSizeDefault);
             'Parent'        , gui_erp_DQSME.setfilename_title2,...
             'Data'          , dsnames, ...
             'ColumnWidth'   , {500}, ...
-            'ColumnName'    , {''}, ...
+            'ColumnName'    , {}, ...
             'RowName'       , {'ERP name','File name'},...
             'ColumnEditable',[false]);
         

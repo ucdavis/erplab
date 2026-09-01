@@ -21,7 +21,7 @@ EStduio_eegtab_eeglab_ica = struct();
 %-----------------------------Name the title----------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB ICA (only for one selected dataset)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -29,7 +29,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB ICA (only for one selected dataset)',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%%, 'HelpFcn', @eeglabica_help
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%%, 'HelpFcn', @eeglabica_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

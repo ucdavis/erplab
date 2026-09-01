@@ -22,7 +22,7 @@ EEG_shift_eventcode_conus = struct();
 % global Eegtab_box_shift_eventcodes_conus;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Shift Event Codes (Continuous EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -30,7 +30,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Shift Event Codes (Continuous EEG)',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @shift_help;
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @shift_help;
 end
 
 %-----------------------------Draw the panel-------------------------------------

@@ -18,7 +18,7 @@ gui_erp_bin_operation = struct();
 % global ERP_bin_operation_gui;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     ERP_bin_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Bin Operations', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -26,7 +26,7 @@ elseif nargin == 1
         5,'BackgroundColor',ColorB_def);
 else
     ERP_bin_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Bin Operations', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def); %'HelpFcn', @binop_help
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def); %'HelpFcn', @binop_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

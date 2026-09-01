@@ -22,7 +22,7 @@ catch
 end
 
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     box_erp_resample = uiextras.BoxPanel('Parent', fig, 'Title', 'Sampling Rate & Epoch', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -30,7 +30,7 @@ elseif nargin == 1
         'BackgroundColor',ColorB_def);
 else
     box_erp_resample = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Sampling Rate & Epoch', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @resample_help
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @resample_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

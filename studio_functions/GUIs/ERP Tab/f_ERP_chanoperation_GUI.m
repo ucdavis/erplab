@@ -21,7 +21,7 @@ catch
     ColorB_def = [0.95 0.95 0.95];
 end
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     ERP_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Channel Operations', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -29,7 +29,7 @@ elseif nargin == 1
         'BackgroundColor',ColorB_def);
 else
     ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channel Operations', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @chanop_help
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @chanop_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

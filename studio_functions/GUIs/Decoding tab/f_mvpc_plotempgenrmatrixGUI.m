@@ -18,7 +18,7 @@ gui_mvpc_temporalgenermatrix = struct();
 % global MVPC_confusion_box_gui;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot/Export Temporal Generalization Matrix', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel  tool_link
 elseif nargin == 1
@@ -26,7 +26,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     MVPC_confusion_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot/Export Temporal Generalization Matrix',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
 end
 
 %-----------------------------Draw the panel-------------------------------------

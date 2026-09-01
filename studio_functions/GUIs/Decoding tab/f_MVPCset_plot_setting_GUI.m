@@ -19,12 +19,12 @@ MVPC_plotset = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def,~] = geterplabstudiodef;
 %-----------------------------Name the title----------------------------------------------
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     MVPC_plotset_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot Settings (MVPCsets)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     MVPC_plotset_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings (MVPCsets)', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    MVPC_plotset_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings (MVPCsets)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    MVPC_plotset_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings (MVPCsets)', 'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------

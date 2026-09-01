@@ -19,7 +19,7 @@ gui_erp_CSD = struct();
 % global ERP_CSD_gui;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     ERP_CSD_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Convert Voltage to CSD', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -27,7 +27,7 @@ elseif nargin == 1
         'BackgroundColor',ColorB_def);
 else
     ERP_CSD_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Convert Voltage to CSD', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
 end
 
 %-----------------------------Draw the panel-------------------------------------

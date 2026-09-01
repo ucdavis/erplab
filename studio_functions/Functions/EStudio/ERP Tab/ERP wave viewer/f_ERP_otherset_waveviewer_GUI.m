@@ -22,15 +22,15 @@ gui_otherset_waveviewer = struct();
 % global box_erplabelset_viewer_otherset;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     box_erplabelset_viewer_otherset = uiextras.BoxPanel('Parent', fig, 'Title', 'Other', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontSize',12); % Create boxpanel
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize',12); % Create boxpanel
 elseif nargin == 1
     box_erplabelset_viewer_otherset = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Other', 'Padding', 5,...
-        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontSize',12);
+        'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w','FontUnits','pixels','FontSize',12);
 else
     box_erplabelset_viewer_otherset = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Other', 'Padding', 5, ...
-        'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
+        'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
 %-----------------------------Draw the panel-------------------------------------
 try

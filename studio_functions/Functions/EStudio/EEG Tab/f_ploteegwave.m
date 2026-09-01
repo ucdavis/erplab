@@ -573,7 +573,7 @@ if EventOnset==1 && ~isempty(data)
                 tmph2 = text(hbig, [tmplat], ylims(2)-0.005, [EVENTFONT evntxt], ...
                     'color', Eventcolors{ event2plot(index) }, ...
                     'horizontalalignment', 'left',...
-                    'rotation',90,'FontSize',FontSizeDefault);
+                    'rotation',90,'FontUnits','pixels','FontSize',FontSizeDefault);
             end
         catch, end
         
@@ -670,7 +670,7 @@ if EEG.trials>1
             % 		'XTick',alltag-lowlim+Trialstag/2, 'YTick',[],'xaxislocation', 'top');
             for ii = 1:numel(tagnum)
                 text(hbig, [alltag1(ii)-lowlim+Trialstag/2],ylims(2)+1.1, [32,num2str(tagnum(ii))], ...
-                    'color', 'k','FontSize',FontSizeDefault, ...
+                    'color', 'k','FontUnits','pixels','FontSize',FontSizeDefault, ...
                     'horizontalalignment', 'left','rotation',90); %%
                 set(hbig,'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)]);
             end
@@ -868,15 +868,15 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         line(hbig,[leftintv,rightintv],[ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(1) ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew+ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
-        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontUnits','pixels','FontSize',FontSizeDefault);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontUnits','pixels','FontSize',FontSizeDefault);
     end
     if EEGdispFlag~=0
         line(hbig,[leftintv,rightintv],[ylims(end)-OldAmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-OldAmpScale ylims(end)-OldAmpScale],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end) ylims(end)],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(OldAmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
-        text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(OldAmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontUnits','pixels','FontSize',FontSizeDefault);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontUnits','pixels','FontSize',FontSizeDefault);
     end
     
     

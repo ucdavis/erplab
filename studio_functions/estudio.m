@@ -284,7 +284,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         end
         EStudio_gui_erp_totl = struct();
         % First, let's start the window
-        EStudio_gui_erp_totl.Window = figure( 'Name', currvers, ...
+        EStudio_gui_erp_totl.Window = f_estudio_figure( 'Name', currvers, ...
             'NumberTitle', 'off', ...
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
@@ -350,7 +350,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
         %% Create tabs
         FontSizeDefault = f_get_default_fontsize();
-        EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',FontSizeDefault+1);
+        EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontUnits','pixels','FontSize',FontSizeDefault+1);
         EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );%%EEG Tab
         EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%ERP Tab
         EStudio_gui_erp_totl.tabdecode = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPC Tab

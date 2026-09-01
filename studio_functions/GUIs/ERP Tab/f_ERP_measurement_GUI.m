@@ -24,7 +24,7 @@ catch
     ColorB_def = [0.95 0.95 0.95];
 end
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     erp_measurement_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Measurement Tool',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
@@ -32,7 +32,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     erp_measurement_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Measurement Tool',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @ERPmeasr_help
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @ERPmeasr_help
 end
 
 try

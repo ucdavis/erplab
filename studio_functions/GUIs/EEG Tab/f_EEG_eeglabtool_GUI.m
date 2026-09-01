@@ -22,7 +22,7 @@ EStduio_eegtab_eeglab_tool = struct();
 % global EStudio_box_eeglab_tool;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', fig, 'Title',...
         'EEGLAB Tools (only for one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def); % , 'HelpFcn', @eeglabtool_help
 elseif nargin == 1
@@ -30,7 +30,7 @@ elseif nargin == 1
         'EEGLAB Tools (only for one selected dataset)', 'Padding ', 5,'BackgroundColor',ColorB_def);
 else
     EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title',...
-        'EEGLAB Tools (only for one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+        'EEGLAB Tools (only for one selected dataset)', 'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------

@@ -17,7 +17,7 @@ gui_erp_grdavg = struct();
 % global ERP_grdavg_box_gui;
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
-    fig = figure(); % Parent figure
+    fig = f_estudio_figure(); % Parent figure
     ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Average Across ERPsets (Grand Average)', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel  tool_link
 elseif nargin == 1
@@ -25,7 +25,7 @@ elseif nargin == 1
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
     ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Average Across ERPsets (Grand Average)',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
+        'Padding', 5, 'FontUnits','pixels','FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
 end
 
 %-----------------------------Draw the panel-------------------------------------

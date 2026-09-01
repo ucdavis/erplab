@@ -537,7 +537,11 @@ end % classdef
 function o = checkBoxLabelOffset()
 %checkBoxLabelOffset  Horizontal offset to checkbox label
 
-if ismac
+% The offset is in pixels, so it depends on how many pixels the platform puts
+% in an inch. Mac reported 72 until R2025a and needs the wider value there;
+% from R2025a it reports 96, matching Windows and Linux, and so takes the same
+% offset as them.
+if ismac && get( 0, 'ScreenPixelsPerInch' ) < 96
     o = 20;
 else
     if verLessThan( 'MATLAB', '8.6' ) % R2015b
