@@ -37,19 +37,19 @@ end
 
 
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_bestset(FonsizeDefault);
+drawui_bestset(FontSizeDefault);
 
 varargout{1} = box_mvpcset_gui;
 
 % Draw the ui
-    function drawui_bestset(FonsizeDefault)
+    function drawui_bestset(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -64,44 +64,44 @@ varargout{1} = box_mvpcset_gui;
         Edit_label = 'off';
 
         Mvpcsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-            2,'String', BESTlistName,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
+            2,'String', BESTlistName,'Callback',@selectdata,'FontSize',FontSizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         try Mvpcsetops.butttons_datasets.Value=1; catch end;
         set(vBox, 'Sizes', 150);
 
         %%---------------------Options for MVPCsets-----------------------------------------------------
         Mvpcsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Mvpcsetops.dupeselected = uicontrol('Parent', Mvpcsetops.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
-            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.renameselected = uicontrol('Parent', Mvpcsetops.buttons2, 'Style', 'pushbutton', 'String', 'Rename',...
-            'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @renamedata,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.suffix = uicontrol('Parent', Mvpcsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
-            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
 
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         Mvpcsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
-            'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @load,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
         Mvpcsetops.mvpc_Export = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Export', ...
-            'Callback', @mvpc_Export,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @mvpc_Export,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.refresh_mvpcset = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Refresh',...
-            'Callback', @refresh_mvpcset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @refresh_mvpcset,'Enable','on','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
 
         Mvpcsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
-            'Callback', @save_mvpc,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @save_mvpc,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save a Copy', ...
-            'Callback', @save_mvpcas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @save_mvpcas,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
-            'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @curr_folder,'Enable','on','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
         buttons5 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
 
         Mvpcsetops.clearselected = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear Selected', ...
-            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Mvpcsetops.clearall = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear All', ...
-            'Callback', @clearall,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @clearall,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
         %set(buttons4,'Sizes',[70 90 95])
 

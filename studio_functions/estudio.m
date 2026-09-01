@@ -349,8 +349,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
 
         %% Create tabs
-        FonsizeDefault = f_get_default_fontsize();
-        EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',FonsizeDefault+1);
+        FontSizeDefault = f_get_default_fontsize();
+        EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',FontSizeDefault+1);
         EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );%%EEG Tab
         EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%ERP Tab
         EStudio_gui_erp_totl.tabdecode = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPC Tab
@@ -678,10 +678,10 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        FonsizeDefault = f_get_default_fontsize();
+        FontSizeDefault = f_get_default_fontsize();
         Processed_Method=estudioworkingmemory('f_ERP_proces_messg');
         EStudio_gui_erp_totl.Process_messg.BackgroundColor = [0.95 0.95 0.95];
-        EStudio_gui_erp_totl.Process_messg.FontSize = FonsizeDefault;
+        EStudio_gui_erp_totl.Process_messg.FontSize = FontSizeDefault;
         if observe_ERPDAT.Process_messg ==1
             EStudio_gui_erp_totl.Process_messg.String = strcat('1- ',Processed_Method,': Running....');
             EStudio_gui_erp_totl.Process_messg.ForegroundColor = [0 0 0];

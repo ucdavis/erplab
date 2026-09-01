@@ -36,24 +36,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_dq_epoch_eeg(FonsizeDefault)
+drawui_dq_epoch_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_dq_epoch;
 
-    function drawui_dq_epoch_eeg(FonsizeDefault)
+    function drawui_dq_epoch_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EEG_dq_epoch.DataSelBox = uiextras.VBox('Parent', Eegtab_box_dq_epoch,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
@@ -96,14 +95,14 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.para_title1 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_dq_epoch.para_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_dq_epoch.para_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Data Quality Quantification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Data Quality Quantification:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         uicontrol('Style','pushbutton','Parent',EEG_dq_epoch.para_title1,...
-            'String','?','callback',@dq_metrics_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+            'String','?','callback',@dq_metrics_help,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(EEG_dq_epoch.para_title1,'Sizes',[-1 220 25]);
         %%Default Parameters
         EEG_dq_epoch.para_title2 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.def_para = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.para_title2,'HorizontalAlignment','left',...
-            'callback',@def_para,'String','Default parameters','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@def_para,'String','Default parameters','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.def_para.KeyPressFcn=  @eeg_shiftcodes_presskey;
         
         uiextras.Empty('Parent', EEG_dq_epoch.para_title2 ,'BackgroundColor',ColorB_def);
@@ -113,7 +112,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         %%Custom Parameters
         EEG_dq_epoch.para_title3 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.custom_para = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.para_title3,'HorizontalAlignment','left',...
-            'callback',@custom_para,'String','Custom parameters','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@custom_para,'String','Custom parameters','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.def_para.KeyPressFcn=  @eeg_shiftcodes_presskey;
         
         if DQcustom_wins==0
@@ -124,7 +123,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             EEG_dq_epoch.custom_para.Value=1;
         end
         EEG_dq_epoch.custom_para_op = uicontrol('Style','pushbutton','Parent',EEG_dq_epoch.para_title3,'HorizontalAlignment','left',...
-            'callback',@custom_para_op,'String','Options','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
+            'callback',@custom_para_op,'String','Options','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
         uiextras.Empty('Parent', EEG_dq_epoch.para_title3 ,'BackgroundColor',ColorB_def);
         set(EEG_dq_epoch.para_title3,'Sizes',[150,60 -1]);
         
@@ -150,27 +149,27 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.movewindow_title1 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_dq_epoch.movewindow_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_dq_epoch.movewindow_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Epochs to Include in DQ metrics:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Epochs to Include in DQ metrics:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         uicontrol('Style','pushbutton','Parent',EEG_dq_epoch.movewindow_title1,...
-            'String','?','callback',@dq_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+            'String','?','callback',@dq_help,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(EEG_dq_epoch.movewindow_title1,'Sizes',[-1 220 25]);
 
         %%all epochs
         EEG_dq_epoch.movewindow_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.all_marks = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.movewindow_title,'HorizontalAlignment','left',...
-            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.all_marks.KeyPressFcn=  @eeg_shiftcodes_presskey;
 
         %%exclude marked epochs
         EEG_dq_epoch.windowstep_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.excld_marks = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.windowstep_title,'HorizontalAlignment','left',...
-            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.excld_marks.KeyPressFcn=  @eeg_shiftcodes_presskey;
 
         %%marked epochs
         EEG_dq_epoch.eventcode_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.marked_epochs = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_epoch.all_marks.Value = Valueround1;
         EEG_dq_epoch.excld_marks.Value = Valueround2;
         EEG_dq_epoch.marked_epochs.Value = Valueround3;
@@ -181,7 +180,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.invalidepoch_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_dq_epoch.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.invalidepoch = uicontrol('Style','checkbox','Parent',EEG_dq_epoch.invalidepoch_title ,'HorizontalAlignment','left',...
-            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         uiextras.Empty('Parent', EEG_dq_epoch.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.invalidepoch.KeyPressFcn=  @eeg_shiftcodes_presskey;
         set(EEG_dq_epoch.invalidepoch_title,'Sizes',[-1 230 -1]);
@@ -191,10 +190,10 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.detar_run_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_dq_epoch.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.dq_cancel = uicontrol('Style', 'pushbutton','Parent',EEG_dq_epoch.detar_run_title,...
-            'String','Cancel','callback',@dq_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@dq_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_dq_epoch.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.dq_run = uicontrol('Style','pushbutton','Parent',EEG_dq_epoch.detar_run_title,...
-            'String','Run','callback',@dq_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@dq_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_dq_epoch.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_dq_epoch.detar_run_title,'Sizes',[15 105  30 105 15]);
         

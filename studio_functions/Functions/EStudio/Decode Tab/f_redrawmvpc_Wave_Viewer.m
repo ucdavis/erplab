@@ -12,7 +12,7 @@ function f_redrawmvpc_Wave_Viewer()
 global observe_DECODE;
 global EStudio_gui_erp_totl;
 addlistener(observe_DECODE,'Messg_change',@Messg_change);
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
@@ -73,23 +73,23 @@ uiextras.Empty('Parent', EStudio_gui_erp_totl.decode_blank,'BackgroundColor',Col
 
 EStudio_gui_erp_totl.commdecode_panel_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
 EStudio_gui_erp_totl.decode_zoom_in = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom In',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
 EStudio_gui_erp_totl.decode_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','edit','String','100',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
 EStudio_gui_erp_totl.decode_zoom_out = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Zoom Out',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
 uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
-    'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+    'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
 EStudio_gui_erp_totl.decode_popmemu = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','popupmenu','String',{'Plotting Options','Automatic Plotting:On','Window Size'},...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 EStudio_gui_erp_totl.decode_reset = uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','pushbutton','String','Reset',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 uicontrol('Parent',EStudio_gui_erp_totl.commdecode_panel_title,'Style','text','String','',...
-    'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
+    'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on');
 set(EStudio_gui_erp_totl.commdecode_panel_title, 'Sizes', [70 50 70 -1 150 50 5]);
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plot_decode_grid,'BackgroundColor',ColorB_def);%%%Message
-EStudio_gui_erp_totl.Process_decode_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.Process_decode_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
 
 
 set(EStudio_gui_erp_totl.decode_zoom_in,'Callback',@zoomin,'Enable',Enableflag);
@@ -98,10 +98,10 @@ set(EStudio_gui_erp_totl.decode_zoom_out,'Callback',@zoomout,'Enable',Enableflag
 
 if ~isempty(observe_DECODE.ALLMVPC) && ~isempty(observe_DECODE.MVPC)
     set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'},...
-        'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+        'Callback',@plotops_decode,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 else
     set(EStudio_gui_erp_totl.decode_popmemu,'String',{'Plotting Options','Automatic Plotting','Window Size'},...
-        'Callback',@plotops_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+        'Callback',@plotops_decode,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 end
 decode_popmemu = EStudio_gui_erp_totl.decode_popmemu.String;
 if Decode_autoplot==1
@@ -110,7 +110,7 @@ else
     decode_popmemu{2} = 'Automatic Plotting: Off';
 end
 EStudio_gui_erp_totl.decode_popmemu.String=decode_popmemu;
-set(EStudio_gui_erp_totl.decode_reset,'Callback', @reserpars_decode,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+set(EStudio_gui_erp_totl.decode_reset,'Callback', @reserpars_decode,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 if Decode_autoplot==0
     EStudio_gui_erp_totl.Process_decode_messg.String='Plotting is disabled, to enable it, please go to "Plotting Options" at the bottom of the plotting area to active it.';
 end
@@ -202,7 +202,7 @@ global EStudio_gui_erp_totl;
 % if isempty(observe_DECODE.MVPC) || isempty(observe_DECODE.ALLMVPC)
 %     return;
 % end
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
@@ -226,7 +226,7 @@ estudioworkingmemory('f_Decode_proces_messg_pre',{Processed_Method,observe_DECOD
 
 
 EStudio_gui_erp_totl.Process_decode_messg.BackgroundColor = [0.95 0.95 0.95];
-EStudio_gui_erp_totl.Process_decode_messg.FontSize = FonsizeDefault;
+EStudio_gui_erp_totl.Process_decode_messg.FontSize = FontSizeDefault;
 
 if observe_DECODE.Process_messg==1
     EStudio_gui_erp_totl.Process_decode_messg.String =  strcat('1- ',Processed_Method,': Running....');

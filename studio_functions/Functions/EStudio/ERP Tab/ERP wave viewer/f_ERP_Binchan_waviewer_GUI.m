@@ -45,19 +45,19 @@ elseif nargin == 4
 end
 
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_erpsetbinchan_viewer(FonsizeDefault);
+drawui_erpsetbinchan_viewer(FontSizeDefault);
 
 varargout{1} = Chanbin_waveviewer_box;
 % Draw the ui
-    function drawui_erpsetbinchan_viewer(FonsizeDefault)
+    function drawui_erpsetbinchan_viewer(FontSizeDefault)
         MERPWaveViewer_chanbin= estudioworkingmemory('MERPWaveViewer_chanbin');%%call the memery for this panel
         
         try
@@ -103,7 +103,7 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         gui_erp_waviewer.ERPwaviewer.chan = Chan_sel;
         ERPwaveview_binchan.ElecRange = uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
-            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',[1 1 1]); % 2B
+            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FontSizeDefault,'Enable','on','BackgroundColor',[1 1 1]); % 2B
         
         ERPwaveview_binchan.ElecRange.KeyPressFcn = @setbinchan_presskey;
         if  numel(Chan_sel) == numel(Chanlist)
@@ -139,7 +139,7 @@ varargout{1} = Chanbin_waveviewer_box;
             brange(Numofbin11+1) = {char(strcat(num2str(Numofbin11),'.',32,char(binStr(Numofbin11))))};
         end
         ERPwaveview_binchan.BinRange =  uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','Min',1,'Max',BinNum+1,...
-            'String', brange,'callback',@ViewerBinRange,'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',[1 1 1]); % 2C
+            'String', brange,'callback',@ViewerBinRange,'FontSize',FontSizeDefault,'Enable','on','BackgroundColor',[1 1 1]); % 2C
         ERPwaveview_binchan.BinRange.KeyPressFcn = @setbinchan_presskey;
         if BinNum== numel(Bin_sel)
             ERPwaveview_binchan.BinRange.Value  =1;
@@ -152,10 +152,10 @@ varargout{1} = Chanbin_waveviewer_box;
         ERPwaveview_binchan.help_apply_title = uiextras.HBox('Parent', ERPwaveview_binchan.vBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title );
         ERPwaveview_binchan.cancel = uicontrol('Style','pushbutton','Parent', ERPwaveview_binchan.help_apply_title  ,'String','Cancel',...
-            'callback',@setbinchan_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
+            'callback',@setbinchan_cancel,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title  );
         ERPwaveview_binchan.apply =  uicontrol('Style','pushbutton','Parent',ERPwaveview_binchan.help_apply_title  ,'String','Apply',...
-            'callback',@setbinchan_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@setbinchan_apply,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         %         ERPwaveview_binchan.custom.KeyPressFcn = @setbinchan_presskey;
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title );
         set(ERPwaveview_binchan.help_apply_title ,'Sizes',[40 70 20 70 20]);

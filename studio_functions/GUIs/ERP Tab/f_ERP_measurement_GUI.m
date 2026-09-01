@@ -36,18 +36,18 @@ else
 end
 
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-erp_m_t_gui(FonsizeDefault);
+erp_m_t_gui(FontSizeDefault);
 
 varargout{1} = erp_measurement_box;
 %%********************Draw the GUI for Measurement Tool*****************
-    function erp_m_t_gui(FonsizeDefault)
+    function erp_m_t_gui(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -60,22 +60,22 @@ varargout{1} = erp_measurement_box;
         ERPMTops.measurement_type = uiextras.Grid('Parent',ERPMTops.mt,'Spacing',1,'BackgroundColor',ColorB_def);
         
         %%1A
-        ERPMTops.measurement_type_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Type:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPMTops.measurement_type_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Type:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.measurement_type_title,'HorizontalAlignment','left');
         %%1B
-        ERPMTops.erpset_select_title  = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','ERPset:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPMTops.erpset_select_title  = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','ERPset:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.erpset_select_title,'HorizontalAlignment','left');
         %%1C
-        ERPMTops.bin_select_title  = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Bin:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPMTops.bin_select_title  = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Bin:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.bin_select_title,'HorizontalAlignment','left');
         %%1D
-        ERPMTops.channel_select_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Channel:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPMTops.channel_select_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Channel:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.channel_select_title,'HorizontalAlignment','left');
         %%1E
-        ERPMTops.tw_set_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Window:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPMTops.tw_set_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Window:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.tw_set_title,'HorizontalAlignment','left');
         %%1F
-        ERPMTops.out_file_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Output:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPMTops.out_file_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Output:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.out_file_title,'HorizontalAlignment','left');
         
         %%-----------------------------Setting for second column---------------
@@ -97,7 +97,7 @@ varargout{1} = erp_measurement_box;
             'Negative Area',...
             'Instantaneous Amp'};
         ERPMTops.m_t_type = uicontrol('Style', 'popup','Parent',ERPMTops.measurement_type,'String',mesurement_type,...
-            'callback',@Mesurement_type,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'callback',@Mesurement_type,'Enable',Enable_label,'FontSize',FontSizeDefault);
         %%Get the parameters for pop_geterpvalues used in the last time.
         def_erpvalue   = estudioworkingmemory('pop_geterpvalues');
         if isempty(def_erpvalue)
@@ -204,62 +204,62 @@ varargout{1} = erp_measurement_box;
         
         %%2B ERPset custom
         ERPMTops.m_t_erpset = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,'String', '',...
-            'callback',@erpset_custom,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'callback',@erpset_custom,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         ERPMTops.Paras{2} = str2num(ERPMTops.m_t_erpset.String);
         ERPMTops.m_t_erpset.KeyPressFcn = @erp_mt_presskey;
         
         %%2C
         ERPMTops.m_t_bin = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String', '','callback',@binSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'String', '','callback',@binSelect_custom,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         ERPMTops.Paras{3} = str2num(ERPMTops.m_t_bin.String);
         ERPMTops.m_t_bin.KeyPressFcn = @erp_mt_presskey;
         %%2D
         ERPMTops.m_t_chan = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String','','callback',@chanSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);%vect2colon(observe_ERPDAT.ERP_chan,'Sort', 'on')
+            'String','','callback',@chanSelect_custom,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);%vect2colon(observe_ERPDAT.ERP_chan,'Sort', 'on')
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
         ERPMTops.m_t_chan.KeyPressFcn = @erp_mt_presskey;
         %%2E
         ERPMTops.m_t_TW = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String','','callback',@t_w_set,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','','callback',@t_w_set,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.m_t_TW.KeyPressFcn = @erp_mt_presskey;
         %%2F
         last_outfile = def_erpvalue{3};
         if ~ischar(last_outfile); last_outfile = ''; end
         ERPMTops.m_t_file = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String', last_outfile,'callback',@file_name_set,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String', last_outfile,'callback',@file_name_set,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         ERPMTops.m_t_file.KeyPressFcn = @erp_mt_presskey;
         
         %%-----------Setting for third column--------------------------------
         %%3A
         ERPMTops.m_t_type_ops = uicontrol('Style', 'pushbutton','Parent',ERPMTops.measurement_type,...
-            'String','Options','callback',@Mesurement_type_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Options','callback',@Mesurement_type_option,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         %%3B
         ERPMTops.m_t_erpset_ops = uicontrol('Style','pushbutton','Parent',  ERPMTops.measurement_type,...
-            'String','Browse','callback',@erpsetop,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@erpsetop,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         %%3C
         ERPMTops.m_t_bin_ops = uicontrol('Style','pushbutton','Parent',  ERPMTops.measurement_type,...
-            'String','Browse','callback',@binSelect_label,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@binSelect_label,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         %%3D
         ERPMTops.m_t_chan_ops = uicontrol('Style','pushbutton','Parent', ERPMTops.measurement_type,...
-            'String','Browse','callback',@chanSelect_label,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@chanSelect_label,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         %%3E
         ERPMTops.m_t_TW_ops = uicontrol('Style', 'pushbutton','Parent',ERPMTops.measurement_type,...
-            'String','Baseline','callback',@m_t_TW_ops,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Baseline','callback',@m_t_TW_ops,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         %%3F
         ERPMTops.m_t_file_ops = uicontrol('Style', 'pushbutton','Parent',ERPMTops.measurement_type,...
-            'String','Options','callback',@out_file_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Options','callback',@out_file_option,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(ERPMTops.measurement_type, 'ColumnSizes',[65 135 65],'RowSizes',[25 25 25 25 25 25]);
         
         %%---------------------------Select ERPsets and Run options-----------
         ERPMTops.out_file_run = uiextras.HBox('Parent',ERPMTops.mt,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPMTops.cancel = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','Cancel',...
-            'callback',@ERPmeasr_cancel,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@ERPmeasr_cancel,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.m_t_value = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','Save measures',...
-            'callback',@erp_m_t_savalue,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@erp_m_t_savalue,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.apply = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','Preview',...
-            'callback',@erp_m_t_view,'Enable',Enable_label,'FontSize',FonsizeDefault,'Value',0,'BackgroundColor',[1 1 1]);
+            'callback',@erp_m_t_view,'Enable',Enable_label,'FontSize',FontSizeDefault,'Value',0,'BackgroundColor',[1 1 1]);
         set(ERPMTops.out_file_run,'Sizes',[70 -1 70]);
         
         %%ERPMTops end

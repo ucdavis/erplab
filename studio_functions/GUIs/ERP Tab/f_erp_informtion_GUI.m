@@ -28,17 +28,17 @@ end
 varargout{1} = Erp_information;
 gui_erp_information = struct;
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_information(FonsizeDefault);
+drawui_erp_information(FontSizeDefault);
 
 
-    function drawui_erp_information(FonsizeDefault)
+    function drawui_erp_information(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -49,7 +49,7 @@ drawui_erp_information(FonsizeDefault);
         %%ERP setname and file name
         gui_erp_information.setfilename_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', gui_erp_information.setfilename_title,'String','Current ERP setname & file name',...
-            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
         
         
         gui_erp_information.setfilename_title2 = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -68,27 +68,27 @@ drawui_erp_information(FonsizeDefault);
         %%----------------------------Setting sampling rate---------------------
         gui_erp_information.samplingrate_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         ERP_time_resolution = strcat('Sampling: ');
-        gui_erp_information.samplingrate_resolution = uicontrol('Style','text','Parent', gui_erp_information.samplingrate_title,'String',ERP_time_resolution,'FontSize',FonsizeDefault);
+        gui_erp_information.samplingrate_resolution = uicontrol('Style','text','Parent', gui_erp_information.samplingrate_title,'String',ERP_time_resolution,'FontSize',FontSizeDefault);
         set(gui_erp_information.samplingrate_resolution,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         %%----------------------------Setting epoch---------------------
         gui_erp_information.epoch = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.epoch_name = uicontrol('Style','text','Parent', gui_erp_information.epoch,'String',['Epoch:'],'FontSize',FonsizeDefault);
+        gui_erp_information.epoch_name = uicontrol('Style','text','Parent', gui_erp_information.epoch,'String',['Epoch:'],'FontSize',FontSizeDefault);
         set(gui_erp_information.epoch_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         %%----------------------------channel locations---------------------
         gui_erp_information.chanlocs_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_information.chanlocs  = uicontrol('Style','text','Parent', gui_erp_information.chanlocs_title,'String','Channel locations:',...
-            'FontSize',FonsizeDefault,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         %%----------------------------Number of Channels---------------------
         gui_erp_information.chan_num = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.numofchan  = uicontrol('Style','text','Parent', gui_erp_information.chan_num,'String','Number of channels:','FontSize',FonsizeDefault);
+        gui_erp_information.numofchan  = uicontrol('Style','text','Parent', gui_erp_information.chan_num,'String','Number of channels:','FontSize',FontSizeDefault);
         set(gui_erp_information.numofchan,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         %%----------------------------Number of bins---------------------
         gui_erp_information.bin_num = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.numofbin  = uicontrol('Style','text','Parent', gui_erp_information.bin_num,'String','Number of bins:','FontSize',FonsizeDefault);
+        gui_erp_information.numofbin  = uicontrol('Style','text','Parent', gui_erp_information.bin_num,'String','Number of bins:','FontSize',FontSizeDefault);
         set(gui_erp_information.numofbin,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         
@@ -102,24 +102,24 @@ drawui_erp_information(FonsizeDefault);
             Total_rejected_trials = strcat('0%');
         end
         gui_erp_information.total_rejected = uiextras.HBox('Parent',gui_erp_information.DataSelBox);
-        gui_erp_information.total_rejected_percentage  = uicontrol('Style','text','Parent', gui_erp_information.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_information.total_rejected_percentage  = uicontrol('Style','text','Parent', gui_erp_information.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_information.total_rejected_percentage,'HorizontalAlignment','left');
         
         
         %%----------------------totla rejected-----------------------------
         gui_erp_information.total_rejected_show = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_information.total_rejected_option2  = uicontrol('Style','pushbutton','Parent', gui_erp_information.total_rejected_show,'String','Bin Info Table',...
-            'callback',@total_reject_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@total_reject_ops,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_information.total_rejected_option2.Enable = 'off';
         gui_erp_information.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_erp_information.total_rejected_show,'String','Classic artifact summary',...
-            'callback',@total_reject_clasc,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@total_reject_clasc,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_information.total_rejected_option.Enable = 'off';
         
         
         %%---------------------Table---------------------------------------
         gui_erp_information.bin_latency_title = uiextras.HBox('Parent', gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_information.trialinfor= uicontrol('Style', 'text','Parent', gui_erp_information.bin_latency_title,...
-            'String','Trial information','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Trial information','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_information.table_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100

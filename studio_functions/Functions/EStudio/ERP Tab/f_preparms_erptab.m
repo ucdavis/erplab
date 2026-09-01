@@ -330,9 +330,9 @@ for ii = 1:nplot
     LineStylespec{ii} = '-';
 end
 
-FonsizeDefault = f_get_default_fontsize();
-FontSizeLeg = FonsizeDefault;
-CBEFontsize = FonsizeDefault;
+FontSizeDefault = f_get_default_fontsize();
+FontSizeLeg = FontSizeDefault;
+CBEFontsize = FontSizeDefault;
 LabelsName = labelsdef;
 
 Gridspace = [1 20;1 20];
@@ -353,7 +353,7 @@ if isempty(qXticks)%%|| stepX==xtickstep
 end
 timeticks = qXticks;
 xticklabel = 'on';
-xlabelFontsize = FonsizeDefault;
+xlabelFontsize = FontSizeDefault;
 xlabelFontcolor = [0 0 0];
 Xunits = 'off';
 MinorticksX = [0];
@@ -362,7 +362,7 @@ Yscales = yscale;
 yticklabel = 'on';
 yunits = 'off';
 MinorticksY = 0;
-YlabelFontsize = FonsizeDefault;
+YlabelFontsize = FontSizeDefault;
 ylabelFontcolor = [0 0 0];
 TextcolorLeg = 1;
 

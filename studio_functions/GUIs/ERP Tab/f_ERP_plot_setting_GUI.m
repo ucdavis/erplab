@@ -29,16 +29,16 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erpplot(FonsizeDefault);
+drawui_erpplot(FontSizeDefault);
 varargout{1} = ERP_plotset_box;
-    function drawui_erpplot(FonsizeDefault)
+    function drawui_erpplot(FontSizeDefault)
         
         estudioworkingmemory('erp_plot_set',0);
         estudioworkingmemory('erp_xtickstep',0);
@@ -46,100 +46,100 @@ varargout{1} = ERP_plotset_box;
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
         ERPTab_plotset.plotop = uiextras.VBox('Parent',ERP_plotset_box, 'Spacing',1,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Time Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Time Axis:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
         %%time range
         ERPTab_plotset.timerange = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPTab_plotset.timet_auto = uicontrol('Style','checkbox','Parent', ERPTab_plotset.timerange,'String','Auto',...
-            'callback',@timet_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+            'callback',@timet_auto,'Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         ERPTab_plotset.timet_auto.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','Range','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','Range','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         ERPTab_plotset.timet_low = uicontrol('Style', 'edit','Parent',ERPTab_plotset.timerange,'BackgroundColor',[1 1 1],...
-            'String','','callback',@low_ticks_change,'Enable','off','FontSize',FonsizeDefault,'Enable','off');
+            'String','','callback',@low_ticks_change,'Enable','off','FontSize',FontSizeDefault,'Enable','off');
         ERPTab_plotset.timet_low.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         ERPTab_plotset.timet_high = uicontrol('Style', 'edit','Parent',ERPTab_plotset.timerange,'String','',...
-            'callback',@high_ticks_change,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@high_ticks_change,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         ERPTab_plotset.timet_high.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPTab_plotset.timerange, 'Sizes', [50 50 50 30 50 20]);
         %%time ticks
         ERPTab_plotset.timeticks = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPTab_plotset.timetick_auto = uicontrol('Style','checkbox','Parent', ERPTab_plotset.timeticks,'String','Auto',...
-            'callback',@timetick_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+            'callback',@timetick_auto,'Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         ERPTab_plotset.timetick_auto.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.timeticks,'String','Time ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.timeticks,'String','Time ticks, every','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         ERPTab_plotset.timet_step = uicontrol('Style', 'edit','Parent',ERPTab_plotset.timeticks,'String','',...
-            'callback',@ticks_step_change,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@ticks_step_change,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         ERPTab_plotset.timet_step.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.timeticks,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.timeticks,'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPTab_plotset.timeticks, 'Sizes', [50 100 80 20]);
         
         %%amplitude scale
-        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Amplitude Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Amplitude Axis:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         
         ERPTab_plotset.yscale = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPTab_plotset.yscale_auto = uicontrol('Style','checkbox','Parent',ERPTab_plotset.yscale,'String','Auto',...
-            'callback',@yscale_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off');
+            'callback',@yscale_auto,'Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off');
         ERPTab_plotset.yscale_auto.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent',ERPTab_plotset.yscale,'String','Scale','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',ERPTab_plotset.yscale,'String','Scale','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         ERPTab_plotset.yscale_low = uicontrol('Style', 'edit','Parent',ERPTab_plotset.yscale,'BackgroundColor',[1 1 1],...
-            'String','','callback',@yscale_low,'Enable','off','FontSize',FonsizeDefault,'Enable','off');
+            'String','','callback',@yscale_low,'Enable','off','FontSize',FontSizeDefault,'Enable','off');
         ERPTab_plotset.yscale_low.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.yscale,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscale,'String','to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         ERPTab_plotset.yscale_high = uicontrol('Style', 'edit','Parent',ERPTab_plotset.yscale,'String','',...
-            'callback',@yscale_high,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@yscale_high,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         ERPTab_plotset.yscale_high.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.yscale,'String','uv','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscale,'String','uv','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPTab_plotset.yscale, 'Sizes', [50 50 50 30 50 20]);
         
         %%y ticks
         ERPTab_plotset.yscaleticks = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPTab_plotset.ytick_auto = uicontrol('Style','checkbox','Parent', ERPTab_plotset.yscaleticks,'String','Auto',...
-            'callback',@ytick_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+            'callback',@ytick_auto,'Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         ERPTab_plotset.ytick_auto.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.yscaleticks,'String','Amp. ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscaleticks,'String','Amp. ticks, every','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         ERPTab_plotset.yscale_step = uicontrol('Style', 'edit','Parent',ERPTab_plotset.yscaleticks,'String','',...
-            'callback',@yscale_step,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@yscale_step,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         ERPTab_plotset.yscale_step.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.yscaleticks,'String','uv','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscaleticks,'String','uv','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(ERPTab_plotset.yscaleticks, 'Sizes', [50 100 80 20]);
         
         
         ERPTab_plotset.polarity_waveform = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', ERPTab_plotset.polarity_waveform,'String','Polarity:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1F
+        uicontrol('Style','text','Parent', ERPTab_plotset.polarity_waveform,'String','Polarity:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1F
         
         %% polarity
         ERPTab_plotset.positive_up = uicontrol('Style','radiobutton','Parent',ERPTab_plotset.polarity_waveform,'String','Positive Up',...
-            'callback',@polarity_up,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@polarity_up,'Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         ERPTab_plotset.positive_up.KeyPressFcn=  @erp_plotsetting_presskey;
         ERPTab_plotset.negative_up = uicontrol('Style','radiobutton','Parent', ERPTab_plotset.polarity_waveform,'String','Negative Up',...
-            'callback',@polarity_down,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@polarity_down,'Value',0,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         ERPTab_plotset.negative_up.KeyPressFcn=  @erp_plotsetting_presskey;
         set(ERPTab_plotset.polarity_waveform, 'Sizes',[60  -1 -1]);
         
         ERPTab_plotset.bin_chan = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPTab_plotset.pagesel = uicontrol('Parent', ERPTab_plotset.bin_chan, 'Style', 'popupmenu','String',...
-            {'CHANNELS with BINS overlay','BINS with CHANNELS overlay'},'callback',@pageviewchanged,'FontSize',FonsizeDefault,'Enable','off');
+            {'CHANNELS with BINS overlay','BINS with CHANNELS overlay'},'callback',@pageviewchanged,'FontSize',FontSizeDefault,'Enable','off');
         ERPTab_plotset.pagesel.KeyPressFcn=  @erp_plotsetting_presskey;
         
         
         %%standard error for each ERP wave
         ERPTab_plotset.SEM_title = uiextras.HBox('Parent', ERPTab_plotset.plotop,'BackgroundColor',ColorB_def);
         ERPTab_plotset.show_SEM = uicontrol('Style','checkbox','Parent', ERPTab_plotset.SEM_title ,'String','Show standard error',...
-            'callback',@showSEM,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off'); %
+            'callback',@showSEM,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off'); %
         ERPTab_plotset.show_SEM.KeyPressFcn = @erp_plotsetting_presskey;
         SMEString = {'0','1','2','3','4','5','6','7','8','9','10'};
         ERPTab_plotset.SEM_custom = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.SEM_title ,'String',SMEString,...
-            'callback',@SEMerror,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',2); %
+            'callback',@SEMerror,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',2); %
         ERPTab_plotset.SEM_custom.KeyPressFcn = @erp_plotsetting_presskey;
         set(ERPTab_plotset.SEM_title,'Sizes',[160 80]);
         
         ERPTab_plotset.SEMtrans_title = uiextras.HBox('Parent', ERPTab_plotset.plotop,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', ERPTab_plotset.SEMtrans_title ,'String','transparency',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','right'); %
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','right'); %
         SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
         ERPTab_plotset.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.SEMtrans_title ,'String',SMEtransString,...
-            'callback',@SEMtrans,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',3); %
+            'callback',@SEMtrans,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',3); %
         ERPTab_plotset.SEMtrans_custom.KeyPressFcn = @erp_plotsetting_presskey;
         set(ERPTab_plotset.SEMtrans_title,'Sizes',[160 80]);
         ERPTab_plotset.SEM_custom.Enable = 'off';
@@ -148,38 +148,38 @@ varargout{1} = ERP_plotset_box;
         
         %%Grid layout
         ERPTab_plotset.gridlayout_title = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', ERPTab_plotset.gridlayout_title,'String','Grid Layout:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
+        uicontrol('Style','text','Parent', ERPTab_plotset.gridlayout_title,'String','Grid Layout:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1E
         
         ERPTab_plotset.gridlayout_title2 = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
         ERPTab_plotset.gridlayoutdef = uicontrol('Style','radiobutton','Parent', ERPTab_plotset.gridlayout_title2,...
-            'callback',@gridlayoutdef,'String','Default','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',1,'Enable','off'); % 1E
+            'callback',@gridlayoutdef,'String','Default','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',1,'Enable','off'); % 1E
         ERPTab_plotset.gridlayoutdef.KeyPressFcn=  @erp_plotsetting_presskey;
         ERPTab_plotset.chanorder_front = uicontrol('Parent',ERPTab_plotset.gridlayout_title2, 'Style', 'radiobutton', 'String', 'Simple 10/20 system order',...
-            'Callback', @chanorder_front,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
+            'Callback', @chanorder_front,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
         ERPTab_plotset.chanorder_front.KeyPressFcn=  @erp_plotsetting_presskey;
         set(ERPTab_plotset.gridlayout_title2,'Sizes',[70 -1]);
         
         ERPTab_plotset.gridlayout_title3 = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
         ERPTab_plotset.gridlayout_custom = uicontrol('Style','radiobutton','Parent', ERPTab_plotset.gridlayout_title3,...
-            'callback',@gridlayout_custom,'String','Custom','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off'); % 1E
+            'callback',@gridlayout_custom,'String','Custom','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off'); % 1E
         ERPTab_plotset.gridlayout_custom.KeyPressFcn=  @erp_plotsetting_presskey;
         ERPTab_plotset.gridlayout_export = uicontrol('Style','pushbutton','Parent', ERPTab_plotset.gridlayout_title3,...
-            'callback',@gridlayout_export,'String','Export','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off'); % 1E
+            'callback',@gridlayout_export,'String','Export','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off'); % 1E
         ERPTab_plotset.gridlayout_import = uicontrol('Style','pushbutton','Parent', ERPTab_plotset.gridlayout_title3,...
-            'callback',@gridlayout_import,'String','Import','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off'); % 1E
+            'callback',@gridlayout_import,'String','Import','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off'); % 1E
         set(ERPTab_plotset.gridlayout_title3,'Sizes',[70 60 60]);
         
         ERPTab_plotset.row_colum_title = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
         for ii = 1:256
             rowcolumnString{ii} = num2str(ii);
         end
-        uicontrol('Style','text','Parent', ERPTab_plotset.row_colum_title,'String','Row(s):','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
+        uicontrol('Style','text','Parent', ERPTab_plotset.row_colum_title,'String','Row(s):','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1E
         ERPTab_plotset.rowNum_set = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.row_colum_title,'Enable','off',...
-            'String',rowcolumnString,'callback',@rowNum_set,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',1);
+            'String',rowcolumnString,'callback',@rowNum_set,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',1);
         ERPTab_plotset.rowNum_set.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.row_colum_title,'String','Column(s):','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
+        uicontrol('Style','text','Parent', ERPTab_plotset.row_colum_title,'String','Column(s):','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1E
         ERPTab_plotset.columns = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.row_colum_title,'Enable','off',...
-            'String',rowcolumnString,'callback',@columNum_select,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',1); % 2E Plot_column
+            'String',rowcolumnString,'callback',@columNum_select,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',1); % 2E Plot_column
         ERPTab_plotset.columns.KeyPressFcn=  @erp_plotsetting_presskey;
         set(ERPTab_plotset.row_colum_title,'Sizes',[45 75 60 75]);
         
@@ -187,10 +187,10 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.reset_apply = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         ERPTab_plotset.plot_reset = uicontrol('Style', 'pushbutton','Parent',ERPTab_plotset.reset_apply,'Enable','off',...
-            'String','Cancel','callback',@plot_erp_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@plot_erp_reset,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         ERPTab_plotset.plot_apply = uicontrol('Style', 'pushbutton','Parent',ERPTab_plotset.reset_apply,'Enable','off',...
-            'String','Apply','callback',@plot_setting_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@plot_setting_apply,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         set(ERPTab_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
         

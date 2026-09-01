@@ -11,7 +11,7 @@ function f_redrawERP_viewer_test()
 global viewer_ERPDAT;
 global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'v_messg_change',@V_messg_change);
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 
 if nargin>1
     help f_redrawERP_viewer;
@@ -114,47 +114,47 @@ gui_erp_waviewer.plotgrid = uix.VBox('Parent',gui_erp_waviewer.ViewContainer,'Pa
 gui_erp_waviewer.pageinfo_box = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.erpwaviewer_legend_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
-uicontrol('Parent',gui_erp_waviewer.erpwaviewer_legend_title,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.erpwaviewer_legend_title,'Style','text','String','','FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.erpwaviewer_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.erpwaviewer_legend_title,'BackgroundColor',figbgdColor);
 gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
-uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
 
 gui_erp_waviewer.blank_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
-uicontrol('Parent',gui_erp_waviewer.blank_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.blank_title,'Style','text','String','','FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def);
 
 
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
-uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def);
 gui_erp_waviewer.zoom_in = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Zoom In',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomin);
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomin);
 gui_erp_waviewer.zoom_edit = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','edit','String',num2str(zoomSpace),...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomedit);
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomedit);
 
 gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Zoom Out',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
-uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
+uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.show_popup = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','popupmenu','String',{'Plot options','Show Command','Save Figure as','Create Static /Exportable Plot'},...
-    'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Callback',@show_popup);
+    'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def,'Callback',@show_popup);
 
 gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Reset',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
 
-uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def);
 set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 150 70 5]);
 
 gui_erp_waviewer.xaxis_panel = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
-gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
+gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel,'Style','text','String','','FontSize',FontSizeDefault+2,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 %%Setting title
 gui_erp_waviewer.pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr{pagecurrentNum}];
-gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',@page_minus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def);
+gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',@page_minus,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 gui_erp_waviewer.pageinfo_minus.Enable = 'off';
-gui_erp_waviewer.pageinfo_edit = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
-gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',@page_plus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+gui_erp_waviewer.pageinfo_edit = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FontSizeDefault+2,'BackgroundColor',[1 1 1]);
+gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',@page_plus,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 gui_erp_waviewer.pageinfo_plus.Enable = 'off';
 
 if pageNum ==1
@@ -655,7 +655,7 @@ end
 function V_messg_change(~,~)
 global viewer_ERPDAT;
 global gui_erp_waviewer;
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;%%Get background color
 catch
@@ -665,7 +665,7 @@ if isempty(ColorBviewer_def)
     ColorBviewer_def = [0.7765,0.7294,0.8627];
 end
 gui_erp_waviewer.Process_messg.BackgroundColor = [0.95 0.95 0.95];
-gui_erp_waviewer.Process_messg.FontSize = FonsizeDefault;
+gui_erp_waviewer.Process_messg.FontSize = FontSizeDefault;
 Processed_Method=estudioworkingmemory('ERPViewer_proces_messg');
 if viewer_ERPDAT.Process_messg ==1
     gui_erp_waviewer.Process_messg.String =  strcat('1- ',Processed_Method,': Running....');

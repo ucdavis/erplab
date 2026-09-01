@@ -39,24 +39,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_dq_epoch_eeg(FonsizeDefault)
+drawui_dq_epoch_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_avg_erp;
 
-    function drawui_dq_epoch_eeg(FonsizeDefault)
+    function drawui_dq_epoch_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EEG_avg_erp.DataSelBox = uiextras.VBox('Parent', Eegtab_box_avg_erp,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
@@ -92,27 +91,27 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.movewindow_title1 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_avg_erp.movewindow_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_avg_erp.movewindow_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Epochs to Include in ERP Average:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Epochs to Include in ERP Average:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         uicontrol('Style','pushbutton','Parent',EEG_avg_erp.movewindow_title1,...
-            'String','?','callback',@avg_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+            'String','?','callback',@avg_help,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(EEG_avg_erp.movewindow_title1,'Sizes',[-1 220 25]);
 
         %%all epochs
         EEG_avg_erp.movewindow_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.all_marks = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.movewindow_title,'HorizontalAlignment','left',...
-            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.all_marks.KeyPressFcn=  @eeg_avg_erp_presskey;
 
         %%exclude marked epochs
         EEG_avg_erp.windowstep_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.excld_marks = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.windowstep_title,'HorizontalAlignment','left',...
-            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.excld_marks.KeyPressFcn=  @eeg_avg_erp_presskey;
 
         %%marked epochs
         EEG_avg_erp.eventcode_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.marked_epochs = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.all_marks.Value = Valueround1;
         EEG_avg_erp.excld_marks.Value = Valueround2;
         EEG_avg_erp.marked_epochs.Value = Valueround3;
@@ -124,7 +123,7 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.invalidepoch_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_avg_erp.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_avg_erp.invalidepoch = uicontrol('Style','checkbox','Parent',EEG_avg_erp.invalidepoch_title ,'HorizontalAlignment','left',...
-            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         uiextras.Empty('Parent', EEG_avg_erp.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_avg_erp.invalidepoch.KeyPressFcn=  @eeg_avg_erp_presskey;
         set(EEG_avg_erp.invalidepoch_title,'Sizes',[-1 230 -1]);
@@ -162,14 +161,14 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.para_title1 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_avg_erp.para_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_avg_erp.para_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Data Quality Quantification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Data Quality Quantification:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         uicontrol('Style','pushbutton','Parent',EEG_avg_erp.para_title1,...
-            'String','?','callback',@dq_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+            'String','?','callback',@dq_help,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(EEG_avg_erp.para_title1,'Sizes',[-1 220 25]);
         %%Default Parameters
         EEG_avg_erp.para_title2 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.def_para = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.para_title2,'HorizontalAlignment','left',...
-            'callback',@def_para,'String','On - default parameters','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@def_para,'String','On - default parameters','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.def_para.KeyPressFcn=  @eeg_avg_erp_presskey;
         
         uiextras.Empty('Parent', EEG_avg_erp.para_title2 ,'BackgroundColor',ColorB_def);
@@ -178,11 +177,11 @@ varargout{1} = Eegtab_box_avg_erp;
         %%Custom Parameters
         EEG_avg_erp.para_title3 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.custom_para = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.para_title3,'HorizontalAlignment','left',...
-            'callback',@custom_para,'String','On - custom parameters','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@custom_para,'String','On - custom parameters','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.def_para.KeyPressFcn=  @eeg_avg_erp_presskey;
         
         EEG_avg_erp.custom_para_op = uicontrol('Style','pushbutton','Parent',EEG_avg_erp.para_title3,'HorizontalAlignment','left',...
-            'callback',@custom_para_op,'String','Options','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
+            'callback',@custom_para_op,'String','Options','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
         uiextras.Empty('Parent', EEG_avg_erp.para_title3 ,'BackgroundColor',ColorB_def);
         set(EEG_avg_erp.para_title3,'Sizes',[160,60 -1]);
         
@@ -190,7 +189,7 @@ varargout{1} = Eegtab_box_avg_erp;
         %%no dq
         EEG_avg_erp.para_title4 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.no_dq = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.para_title4,'HorizontalAlignment','left',...
-            'callback',@no_dq,'String','No data quality measures','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@no_dq,'String','No data quality measures','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.no_dq.KeyPressFcn=  @eeg_avg_erp_presskey;
         uiextras.Empty('Parent', EEG_avg_erp.para_title4 ,'BackgroundColor',ColorB_def);
         set(EEG_avg_erp.para_title4,'Sizes',[160 -1]);
@@ -212,10 +211,10 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.detar_run_title = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_avg_erp.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_avg_erp.avg_cancel = uicontrol('Style', 'pushbutton','Parent',EEG_avg_erp.detar_run_title,...
-            'String','Cancel','callback',@avg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@avg_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_avg_erp.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_avg_erp.avg_run = uicontrol('Style','pushbutton','Parent',EEG_avg_erp.detar_run_title,...
-            'String','Run','callback',@avg_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@avg_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_avg_erp.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_avg_erp.detar_run_title,'Sizes',[15 105  30 105 15]);
         

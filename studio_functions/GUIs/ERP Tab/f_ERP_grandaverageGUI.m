@@ -30,18 +30,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_bin_operation(FonsizeDefault)
+drawui_erp_bin_operation(FontSizeDefault)
 varargout{1} = ERP_grdavg_box_gui;
 
-    function drawui_erp_bin_operation(FonsizeDefault)
-        FontSize_defualt = FonsizeDefault;
+    function drawui_erp_bin_operation(FontSizeDefault)
         Enable_label = 'off';
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
@@ -51,29 +50,29 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.weigavg_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.weigavg = uicontrol('Style','checkbox','Parent', gui_erp_grdavg.weigavg_title,...
             'String','Use weighted average based on trial numbers','Value',0,'Enable','off',...
-            'callback',@checkbox_weigavg,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'callback',@checkbox_weigavg,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.weigavg.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{1} = gui_erp_grdavg.weigavg.Value;
         
         gui_erp_grdavg.excldnullbin_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.excldnullbin = uicontrol('Style','checkbox','Parent', gui_erp_grdavg.excldnullbin_title,...
-            'callback',@excldnullbin,'String','Exclude null bins from averages','Value',1,'Enable','off','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'callback',@excldnullbin,'String','Exclude null bins from averages','Value',1,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.excldnullbin.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{2} = gui_erp_grdavg.excldnullbin.Value;
 
         gui_erp_grdavg.jacknife_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.jacknife = uicontrol('Style','checkbox','Parent', gui_erp_grdavg.jacknife_title,...
-            'String','Create jackknife subaveraged ERPsets','callback',@jacknife,'Value',0,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'String','Create jackknife subaveraged ERPsets','callback',@jacknife,'Value',0,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_erp_grdavg.jacknife.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{3} = gui_erp_grdavg.jacknife.Value;
 
         gui_erp_grdavg.warn_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.warn = uicontrol('Style','checkbox','Parent', gui_erp_grdavg.warn_title,'Enable','off',...
-            'String','Warn for sets exceeding rejection %:','Value',0,'callback',@checkbox_warn,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Warn for sets exceeding rejection %:','Value',0,'callback',@checkbox_warn,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.warn.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{4} = gui_erp_grdavg.warn.Value;
         gui_erp_grdavg.warn_edit = uicontrol('Style','edit','Parent', gui_erp_grdavg.warn_title,'Enable','off',...
-            'String','','callback',@warn_edit,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','','callback',@warn_edit,'FontSize',FontSizeDefault,'Enable',Enable_label); % 2F
         gui_erp_grdavg.warn_edit.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{5} = str2num(gui_erp_grdavg.warn_edit.String);
         set(gui_erp_grdavg.warn_title,'Sizes',[220,70]);
@@ -81,36 +80,36 @@ varargout{1} = ERP_grdavg_box_gui;
         
         gui_erp_grdavg.cmpsd_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.cmpsd = uicontrol('Style','checkbox','Parent', gui_erp_grdavg.cmpsd_title,'Enable','off',...
-            'String','Compute point-by-point SEM','Value',1,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Compute point-by-point SEM','Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.cmpsd.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{6} = gui_erp_grdavg.cmpsd.Value;
         gui_erp_grdavg.cbdatq_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.cbdatq = uicontrol('Style','checkbox','Parent', gui_erp_grdavg.cbdatq_title,'Enable','off',...
-            'String','Combine data quality measures','Value',1,'callback',@checkbox_cbdatq,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Combine data quality measures','Value',1,'callback',@checkbox_cbdatq,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.cbdatq.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{7} = gui_erp_grdavg.cbdatq.Value;
 
         gui_erp_grdavg.cbdatq_custom_option_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.cbdatq_def = uicontrol('Style','radiobutton','Parent', gui_erp_grdavg.cbdatq_custom_option_title,'Enable','off',...
-            'String','Default','Value',1,'callback',@cbdatq_def,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Default','Value',1,'callback',@cbdatq_def,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.cbdatq_def.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{8} = gui_erp_grdavg.cbdatq_def.Value;
 
         gui_erp_grdavg.cbdatq_custom = uicontrol('Style','radiobutton','Parent', gui_erp_grdavg.cbdatq_custom_option_title,'Enable','off',...
-            'String','Custom','Value',0,'callback',@cbdatq_custom,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Custom','Value',0,'callback',@cbdatq_custom,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.cbdatq_custom.KeyPressFcn = @erp_graverage_presskey;
 
         gui_erp_grdavg.cbdatq_custom_op = uicontrol('Style','pushbutton','Parent', gui_erp_grdavg.cbdatq_custom_option_title,...
-            'String','set custom combo','callback',@cbdatq_custom_op,'Enable','off','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'String','set custom combo','callback',@cbdatq_custom_op,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         set(gui_erp_grdavg.cbdatq_custom_option_title,'Sizes',[70 70 -1]);
 
         gui_erp_grdavg.location_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',gui_erp_grdavg.location_title);
         gui_erp_grdavg.cancel  = uicontrol('Style','pushbutton','Parent',gui_erp_grdavg.location_title,'Enable','off',...
-            'String','Cancel','callback',@average_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
+            'String','Cancel','callback',@average_cancel,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Max',10); % 2F
         uiextras.Empty('Parent',gui_erp_grdavg.location_title);
         gui_erp_grdavg.run = uicontrol('Style','pushbutton','Parent',gui_erp_grdavg.location_title,'Enable','off',...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@apply_run,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',gui_erp_grdavg.location_title);
         set(gui_erp_grdavg.location_title,'Sizes',[20 95 30 95 20]);
         

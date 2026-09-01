@@ -36,17 +36,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_eeg_resample(FonsizeDefault);
+drawui_eeg_resample(FontSizeDefault);
 varargout{1} = box_eeg_resample;
 
-    function drawui_eeg_resample(FonsizeDefault)
+    function drawui_eeg_resample(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -58,65 +58,65 @@ varargout{1} = box_eeg_resample;
         %%------------------current sampling rate--------------------------
         gui_eeg_resample.csrate_title = uiextras.HBox('Parent', gui_eeg_resample.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', gui_eeg_resample.csrate_title,'String','Current sampling rate:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_resample.csrate_edit = uicontrol('Style','edit','Parent', gui_eeg_resample.csrate_title,'String','',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         uicontrol('Style','text','Parent', gui_eeg_resample.csrate_title,'String','Hz',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_eeg_resample.csrate_title,'Sizes',[130 110 30]);
         
         %%---------------------new sampling rate---------------------------
         gui_eeg_resample.nwsrate_title = uiextras.HBox('Parent', gui_eeg_resample.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_resample.nwsrate_checkbox = uicontrol('Style','checkbox','Parent', gui_eeg_resample.nwsrate_title,'String','New sampling rate:',...
-            'callback',@nwsrate_checkbox,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
+            'callback',@nwsrate_checkbox,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
         gui_eeg_resample.nwsrate_checkbox.KeyPressFcn = @EEG_resample_presskey;
         gui_eeg_resample.Paras{1} = gui_eeg_resample.nwsrate_checkbox.Value;
         gui_eeg_resample.nwsrate_edit = uicontrol('Style','edit','Parent', gui_eeg_resample.nwsrate_title,'String','',...
-            'callback',@nwsrate_edit,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@nwsrate_edit,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_eeg_resample.Paras{2} = str2num(gui_eeg_resample.nwsrate_edit.String);
         gui_eeg_resample.nwsrate_edit.KeyPressFcn = @EEG_resample_presskey;
         uicontrol('Style','text','Parent', gui_eeg_resample.nwsrate_title,'String','Hz',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_eeg_resample.nwsrate_title,'Sizes',[130 110 30]);
         
         %%----------------current time-window------------------------------
         gui_eeg_resample.ctimewindow_title = uiextras.HBox('Parent', gui_eeg_resample.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',gui_eeg_resample.ctimewindow_title,...
-            'String','Current epoch','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Current epoch','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_resample.ctimewindow_editleft = uicontrol('Style','edit','Parent', gui_eeg_resample.ctimewindow_title,'String','',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_eeg_resample.currentunitleft = uicontrol('Style', 'text','Parent',gui_eeg_resample.ctimewindow_title,...
-            'String','ms, to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms, to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_resample.ctimewindow_editright = uicontrol('Style','edit','Parent', gui_eeg_resample.ctimewindow_title,'String','',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_eeg_resample.currentunitright = uicontrol('Style', 'text','Parent',gui_eeg_resample.ctimewindow_title,...
-            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_eeg_resample.ctimewindow_title,'Sizes',[90 55  40 55 25]);
         
         %%--------------------new time window--------------------------------
         gui_eeg_resample.nwtimewindow_title = uiextras.HBox('Parent', gui_eeg_resample.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_resample.nwtimewindow_checkbox= uicontrol('Style', 'checkbox','Parent',gui_eeg_resample.nwtimewindow_title,...
-            'callback',@nwtimewindow_checkbox,'String','New epoch','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
+            'callback',@nwtimewindow_checkbox,'String','New epoch','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
         gui_eeg_resample.Paras{3} = gui_eeg_resample.nwtimewindow_checkbox.Value;
         gui_eeg_resample.nwtimewindow_checkbox.KeyPressFcn = @EEG_resample_presskey;
         gui_eeg_resample.nwtimewindow_editleft = uicontrol('Style','edit','Parent', gui_eeg_resample.nwtimewindow_title,'String','',...
-            'callback',@nwtimewindow_editleft,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@nwtimewindow_editleft,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_eeg_resample.Paras{4} = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
         gui_eeg_resample.nwtimewindow_editleft.KeyPressFcn = @EEG_resample_presskey;
         gui_eeg_resample.nwwd_unitleft = uicontrol('Style', 'text','Parent',gui_eeg_resample.nwtimewindow_title,...
-            'String','ms, to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms, to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_resample.nwtimewindow_editright = uicontrol('Style','edit','Parent', gui_eeg_resample.nwtimewindow_title,'String','',...
-            'callback',@nwtimewindow_editright,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@nwtimewindow_editright,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_eeg_resample.Paras{5} = str2num(gui_eeg_resample.nwtimewindow_editright.String);
         gui_eeg_resample.nwtimewindow_editright.KeyPressFcn = @EEG_resample_presskey;
         gui_eeg_resample.nwwd_unitright = uicontrol('Style', 'text','Parent',gui_eeg_resample.nwtimewindow_title,...
-            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_eeg_resample.nwtimewindow_title,'Sizes',[90 55  40 55 25]);
         
         %%------------------------Trim Continuous data-----------------------------
         gui_eeg_resample.Trimcont_title = uiextras.HBox('Parent',gui_eeg_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_resample.Trimcont= uicontrol('Style', 'pushbutton','Parent',gui_eeg_resample.Trimcont_title,...
-            'String','Trim relative to first & last event','callback',@Trimcont,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Trim relative to first & last event','callback',@Trimcont,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_resample.Trimcont_title);
         set(gui_eeg_resample.Trimcont_title,'Sizes',[-1 20]);
         
@@ -124,11 +124,11 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.advance_help_title = uiextras.HBox('Parent',gui_eeg_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_eeg_resample.advance_help_title);
         gui_eeg_resample.resample_cancel= uicontrol('Style', 'pushbutton','Parent',gui_eeg_resample.advance_help_title,...
-            'String','Cancel','callback',@resample_cancel,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@resample_cancel,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_resample.advance_help_title);
         
         gui_eeg_resample.resample_run = uicontrol('Style', 'pushbutton','Parent',gui_eeg_resample.advance_help_title,'String','Apply',...
-            'callback',@resample_run,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+            'callback',@resample_run,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_resample.advance_help_title);
         set(gui_eeg_resample.advance_help_title,'Sizes',[15 105  30 105 15]);
         set(gui_eeg_resample.DataSelBox,'Sizes',[30 30 30 30 30 30]);

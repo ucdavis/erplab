@@ -55,18 +55,18 @@ end
 
 varargout{1} = ERPsets_waveviewer_box;
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_erpsetbinchan_viewer(FonsizeDefault)
+drawui_erpsetbinchan_viewer(FontSizeDefault)
 
 % Draw the ui
-    function drawui_erpsetbinchan_viewer(FonsizeDefault)
+    function drawui_erpsetbinchan_viewer(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
@@ -93,21 +93,21 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         end
         ds_length = length(ERPdatasets);
         ERPwaveview_erpsetops.butttons_datasets = uicontrol('Parent', panelshbox, 'Style', 'listbox', 'min', 1,'max',...
-            ds_length,'String', dsnames,'Value', SelectedIndex,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',[1 1 1]);
+            ds_length,'String', dsnames,'Value', SelectedIndex,'Callback',@selectdata,'FontSize',FontSizeDefault,'Enable','on','BackgroundColor',[1 1 1]);
         ERPwaveview_erpsetops.butttons_datasets.KeyPressFcn = @ERPset_keypress;
         %%Help and apply
         ERPwaveview_erpsetops.help_apply_title = uiextras.HBox('Parent', ERPwaveview_erpsetops.vBox,'BackgroundColor',ColorBviewer_def);
         
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
         ERPwaveview_erpsetops.erpset_cancel = uicontrol('Style','pushbutton','Parent', ERPwaveview_erpsetops.help_apply_title  ,'String','Cancel',...
-            'callback',@erpset_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@erpset_cancel,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title  );
         ERPwaveview_erpsetops.erpset_apply = uicontrol('Style','pushbutton','Parent',ERPwaveview_erpsetops.help_apply_title  ,'String','Apply',...
-            'callback',@ERPset_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@ERPset_apply,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
 
         %ERPwaveview_erpsetops.erpset_apply = uicontrol('Style','pushbutton','Parent',ERPwaveview_erpsetops.help_apply_title  ,'String','Refresh',...
-            %'callback',@ERPset_resfresh,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            %'callback',@ERPset_resfresh,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         %uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
 
         set(ERPwaveview_erpsetops.help_apply_title ,'Sizes',[40 70 20 70 20]);

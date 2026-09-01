@@ -31,17 +31,17 @@ end
 % gui_erp_waviewer.Window.WindowButtonMotionFcn = {@Viewerpos_width};
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_plot_property(FonsizeDefault);
+drawui_plot_property(FontSizeDefault);
 varargout{1} = box_erpwave_viewer_property;
 
-    function drawui_plot_property(FonsizeDefault)
+    function drawui_plot_property(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         gui_property_waveviewer.DataSelBox = uiextras.VBox('Parent', box_erpwave_viewer_property,'BackgroundColor',ColorBviewer_def);
@@ -51,25 +51,25 @@ varargout{1} = box_erpwave_viewer_property;
         gui_property_waveviewer.parameters_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         
         uicontrol('Style','text','Parent', gui_property_waveviewer.parameters_title,'String','Parameters:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         gui_property_waveviewer.parameters_load = uicontrol('Style','pushbutton','Parent', gui_property_waveviewer.parameters_title,'String','Load',...
-            'callback',@parameters_load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'callback',@parameters_load,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         gui_property_waveviewer.parameters_save = uicontrol('Style','pushbutton','Parent', gui_property_waveviewer.parameters_title,'String','Save',...
-            'callback',@parameters_save,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'callback',@parameters_save,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         gui_property_waveviewer.parameters_saveas = uicontrol('Style','pushbutton','Parent', gui_property_waveviewer.parameters_title,'String','Save as',...
-            'callback',@parameters_saveas,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'callback',@parameters_saveas,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         set(gui_property_waveviewer.parameters_title, 'Sizes',[70 55 55 55]);
         
         %%-----------Setting for viewer title-----------------------------
         gui_property_waveviewer.viewer_TN_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_TN_title,'String','Title:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         ViewerName = estudioworkingmemory('viewername');
         if isempty(ViewerName)
             ViewerName = char('My Viewer');
         end
         gui_property_waveviewer.parameters_load = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_TN_title,'String',ViewerName,...
-            'callback',@viewer_TN,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'callback',@viewer_TN,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         set(gui_property_waveviewer.viewer_TN_title, 'Sizes',[70 165]);
         
         New_pos = gui_erp_waviewer.screen_pos;
@@ -82,21 +82,21 @@ varargout{1} = box_erpwave_viewer_property;
         
         gui_property_waveviewer.viewer_pos_title1 = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title1,'String','Window size:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %1A
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %1A
         
         gui_property_waveviewer.viewer_wz_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','Width:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         gui_property_waveviewer.parameters_pos_width = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_wz_title,'String',num2str(New_pos(1)),...
-            'callback',@Viewerpos_width,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'callback',@Viewerpos_width,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','%,',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','Height:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         gui_property_waveviewer.parameters_pos_height = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_wz_title,'String',num2str(New_pos(2)),...
-            'callback',@Viewerpos_height,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+            'callback',@Viewerpos_height,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); %
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','%',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         
         set(gui_property_waveviewer.viewer_wz_title, 'Sizes',[40 55 20 45 55 20]);
         

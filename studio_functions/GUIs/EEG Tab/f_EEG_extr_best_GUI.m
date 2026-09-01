@@ -39,24 +39,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_dq_epoch_eeg(FonsizeDefault)
+drawui_dq_epoch_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_best;
 
-    function drawui_dq_epoch_eeg(FonsizeDefault)
+    function drawui_dq_epoch_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EEG_extr_best.DataSelBox = uiextras.VBox('Parent', Eegtab_box_best,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         EnableFlag = 'off';
         
@@ -67,27 +66,27 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.movewindow_title1 = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_extr_best.movewindow_title1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_extr_best.movewindow_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Epochs to Include in BESTset:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Epochs to Include in BESTset:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         uicontrol('Style','pushbutton','Parent',EEG_extr_best.movewindow_title1,...
-            'String','?','callback',@best_help,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]);
+            'String','?','callback',@best_help,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(EEG_extr_best.movewindow_title1,'Sizes',[-1 220 25]);
 
         %%all epochs
         EEG_extr_best.movewindow_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_extr_best.all_marks = uicontrol('Style','radiobutton','Parent',EEG_extr_best.movewindow_title,'HorizontalAlignment','left',...
-            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@all_marks,'String','All (ignore artifact detections)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_extr_best.all_marks.KeyPressFcn=  @EEG_extr_best_presskey;
 
         %%exclude marked epochs
         EEG_extr_best.windowstep_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_extr_best.excld_marks = uicontrol('Style','radiobutton','Parent',EEG_extr_best.windowstep_title,'HorizontalAlignment','left',...
-            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@excld_marks,'String','Only epochs without flagged artifacts','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_extr_best.excld_marks.KeyPressFcn=  @EEG_extr_best_presskey;
 
         %%marked epochs
         EEG_extr_best.eventcode_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_extr_best.marked_epochs = uicontrol('Style','radiobutton','Parent',EEG_extr_best.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@marked_epochs,'String','Only epochs WITH flagged artifacts','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_extr_best.all_marks.Value = 0;
         EEG_extr_best.excld_marks.Value = 1;
         EEG_extr_best.marked_epochs.Value = 0;
@@ -98,7 +97,7 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.invalidepoch_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_extr_best.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.invalidepoch = uicontrol('Style','checkbox','Parent',EEG_extr_best.invalidepoch_title ,'HorizontalAlignment','left',...
-            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@invalidepoch,'String','Exclude epochs with boundary events','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         uiextras.Empty('Parent', EEG_extr_best.invalidepoch_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.invalidepoch.KeyPressFcn=  @EEG_extr_best_presskey;
         set(EEG_extr_best.invalidepoch_title,'Sizes',[-1 230 -1]);
@@ -120,18 +119,18 @@ varargout{1} = Eegtab_box_best;
         %Transform into phase-independent power
         EEG_extr_best.tranf_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_extr_best.tranf_checkbox = uicontrol('Style', 'checkbox','Parent',EEG_extr_best.tranf_title,...
-            'String','Transform into phase-independent power','callback',@tranf_checkbox,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','Transform into phase-independent power','callback',@tranf_checkbox,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         EEG_extr_best.tranf_title2 = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_extr_best.tranf_title2,'BackgroundColor',ColorB_def);
         
         EEG_extr_best.tranf_left = uicontrol('Style', 'edit','Parent',EEG_extr_best.tranf_title2,...
-            'String',' ','callback',@tranf_left,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@tranf_left,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent',EEG_extr_best.tranf_title2,...
-            'String','to','FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','to','FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         EEG_extr_best.tranf_right = uicontrol('Style','edit','Parent',EEG_extr_best.tranf_title2,...
-            'String',' ','callback',@tranf_right,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@tranf_right,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent',EEG_extr_best.tranf_title2,...
-            'String','Hz','FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','Hz','FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         set(EEG_extr_best.tranf_title2,'Sizes',[15 105  30 100 20]);
 
         uiextras.Empty('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
@@ -140,10 +139,10 @@ varargout{1} = Eegtab_box_best;
         EEG_extr_best.detar_run_title = uiextras.HBox('Parent', EEG_extr_best.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_extr_best.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.avg_cancel = uicontrol('Style', 'pushbutton','Parent',EEG_extr_best.detar_run_title,...
-            'String','Cancel','callback',@avg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@avg_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_extr_best.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_extr_best.avg_run = uicontrol('Style','pushbutton','Parent',EEG_extr_best.detar_run_title,...
-            'String','Run','callback',@avg_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@avg_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_extr_best.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_extr_best.detar_run_title,'Sizes',[15 105  30 105 15]);
         

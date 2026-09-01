@@ -35,17 +35,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_resample(FonsizeDefault);
+drawui_erp_resample(FontSizeDefault);
 varargout{1} = box_erp_resample;
 
-    function drawui_erp_resample(FonsizeDefault)
+    function drawui_erp_resample(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -57,70 +57,70 @@ varargout{1} = box_erp_resample;
         %%------------------current sampling rate--------------------------
         gui_erp_resample.csrate_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', gui_erp_resample.csrate_title,'String','Current sampling rate:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_resample.csrate_edit = uicontrol('Style','edit','Parent', gui_erp_resample.csrate_title,'String','',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         uicontrol('Style','text','Parent', gui_erp_resample.csrate_title,'String','Hz',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_resample.csrate_title,'Sizes',[130 110 30]);
         
         %%---------------------new sampling rate---------------------------
         gui_erp_resample.nwsrate_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_resample.nwsrate_checkbox = uicontrol('Style','checkbox','Parent', gui_erp_resample.nwsrate_title,'String','New sampling rate:',...
-            'callback',@nwsrate_checkbox,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
+            'callback',@nwsrate_checkbox,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
         gui_erp_resample.nwsrate_checkbox.KeyPressFcn = @erp_resample_presskey;
         gui_erp_resample.Paras{1} = gui_erp_resample.nwsrate_checkbox.Value;
         gui_erp_resample.nwsrate_edit = uicontrol('Style','edit','Parent', gui_erp_resample.nwsrate_title,'String','',...
-            'callback',@nwsrate_edit,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@nwsrate_edit,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_erp_resample.Paras{2} = str2num(gui_erp_resample.nwsrate_edit.String);
         gui_erp_resample.nwsrate_edit.KeyPressFcn = @erp_resample_presskey;
         uicontrol('Style','text','Parent', gui_erp_resample.nwsrate_title,'String','Hz',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_resample.nwsrate_title,'Sizes',[130 110 30]);
         
         %%----------------current time-window------------------------------
         gui_erp_resample.ctimewindow_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',gui_erp_resample.ctimewindow_title,...
-            'String','Current epoch','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Current epoch','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_resample.ctimewindow_editleft = uicontrol('Style','edit','Parent', gui_erp_resample.ctimewindow_title,'String','',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         uicontrol('Style', 'text','Parent',gui_erp_resample.ctimewindow_title,...
-            'String','ms, to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms, to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_resample.ctimewindow_editright = uicontrol('Style','edit','Parent', gui_erp_resample.ctimewindow_title,'String','',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         uicontrol('Style', 'text','Parent',gui_erp_resample.ctimewindow_title,...
-            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_resample.ctimewindow_title,'Sizes',[90 55  40 55 25]);
         
         %%--------------------new time window--------------------------------
         gui_erp_resample.nwtimewindow_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_resample.nwtimewindow_checkbox= uicontrol('Style', 'checkbox','Parent',gui_erp_resample.nwtimewindow_title,...
-            'callback',@nwtimewindow_checkbox,'String','New epoch','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
+            'callback',@nwtimewindow_checkbox,'String','New epoch','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
         gui_erp_resample.Paras{3} = gui_erp_resample.nwtimewindow_checkbox.Value;
         gui_erp_resample.nwtimewindow_checkbox.KeyPressFcn = @erp_resample_presskey;
         gui_erp_resample.nwtimewindow_editleft = uicontrol('Style','edit','Parent', gui_erp_resample.nwtimewindow_title,'String','',...
-            'callback',@nwtimewindow_editleft,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@nwtimewindow_editleft,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_erp_resample.Paras{4} = str2num(gui_erp_resample.nwtimewindow_editleft.String);
         gui_erp_resample.nwtimewindow_editleft.KeyPressFcn = @erp_resample_presskey;
         uicontrol('Style', 'text','Parent',gui_erp_resample.nwtimewindow_title,...
-            'String','ms, to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms, to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_resample.nwtimewindow_editright = uicontrol('Style','edit','Parent', gui_erp_resample.nwtimewindow_title,'String','',...
-            'callback',@nwtimewindow_editright,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+            'callback',@nwtimewindow_editright,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_erp_resample.Paras{5} = str2num(gui_erp_resample.nwtimewindow_editright.String);
         gui_erp_resample.nwtimewindow_editright.KeyPressFcn = @erp_resample_presskey;
         uicontrol('Style', 'text','Parent',gui_erp_resample.nwtimewindow_title,...
-            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_resample.nwtimewindow_title,'Sizes',[90 55  40 55 25]);
         
         %%------------------------cancel & apply-----------------------------
         gui_erp_resample.advance_help_title = uiextras.HBox('Parent',gui_erp_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_resample.advance_help_title);
         gui_erp_resample.resample_cancel= uicontrol('Style', 'pushbutton','Parent',gui_erp_resample.advance_help_title,...
-            'String','Cancel','callback',@resample_cancel,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@resample_cancel,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_resample.advance_help_title);
         
         gui_erp_resample.resample_run = uicontrol('Style', 'pushbutton','Parent',gui_erp_resample.advance_help_title,'String','Apply',...
-            'callback',@resample_run,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+            'callback',@resample_run,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_resample.advance_help_title);
         set(gui_erp_resample.advance_help_title,'Sizes',[15 105  30 105 15]);
         set(gui_erp_resample.DataSelBox,'Sizes',[30 30 30 30 30]);

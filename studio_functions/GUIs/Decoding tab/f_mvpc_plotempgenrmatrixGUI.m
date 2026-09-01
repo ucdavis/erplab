@@ -31,18 +31,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_mvpc_gradavg(FonsizeDefault)
+drawui_mvpc_gradavg(FontSizeDefault)
 varargout{1} = MVPC_confusion_box_gui;
 
-    function drawui_mvpc_gradavg(FonsizeDefault)
-        FontSize_defualt = FonsizeDefault;
+    function drawui_mvpc_gradavg(FontSizeDefault)
         Enable_label = 'off';
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
@@ -52,18 +51,18 @@ varargout{1} = MVPC_confusion_box_gui;
         %%Latecies
         gui_mvpc_temporalgenermatrix.latency_title = uiextras.HBox('Parent', gui_mvpc_temporalgenermatrix.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_mvpc_temporalgenermatrix.latency_title,...
-            'String','Latency to plot:','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String','Latency to plot:','Enable','on','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_mvpc_temporalgenermatrix.measure_latency = uicontrol('Style','edit','Parent', gui_mvpc_temporalgenermatrix.latency_title,...
-            'String','','Enable','off','callback',@measure_latency,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'String','','Enable','off','callback',@measure_latency,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_temporalgenermatrix.measure_latency.KeyPressFcn = @mvpc_graverage_presskey;
         set(gui_mvpc_temporalgenermatrix.latency_title,'Sizes',[90 -1]);
 
         %%latency example
         gui_mvpc_temporalgenermatrix.latency_title2 = uiextras.HBox('Parent', gui_mvpc_temporalgenermatrix.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_mvpc_temporalgenermatrix.latency_title2,...
-            'String','','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String','','Enable','on','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_mvpc_temporalgenermatrix.latency_exp = uicontrol('Style','text','Parent', gui_mvpc_temporalgenermatrix.latency_title2,...
-            'String','','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','','Enable','on','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         set(gui_mvpc_temporalgenermatrix.latency_title2,'Sizes',[30 -1]);
 
         text_instruct = '(e.g., -200 800 to plot average confusion matrix across -200 to 800 ms)';
@@ -71,9 +70,9 @@ varargout{1} = MVPC_confusion_box_gui;
         %%colors
         gui_mvpc_temporalgenermatrix.color_title = uiextras.HBox('Parent', gui_mvpc_temporalgenermatrix.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_mvpc_temporalgenermatrix.color_title,...
-            'String','Color to plot:','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String','Color to plot:','Enable','on','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_mvpc_temporalgenermatrix.measure_color = uicontrol('Style','popupmenu','Parent', gui_mvpc_temporalgenermatrix.color_title,...
-            'String',{'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' },'Enable','off','callback',@measure_color,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'String',{'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' },'Enable','off','callback',@measure_color,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_temporalgenermatrix.measure_color.KeyPressFcn = @mvpc_graverage_presskey;
 
         set(gui_mvpc_temporalgenermatrix.color_title,'Sizes',[80 -1]);
@@ -107,14 +106,14 @@ varargout{1} = MVPC_confusion_box_gui;
         try limimax = colorlimit(2); catch limimax=1;  end
         gui_mvpc_temporalgenermatrix.color_limitstitle = uiextras.HBox('Parent', gui_mvpc_temporalgenermatrix.DataSelBox,'BackgroundColor',ColorB_def);
         gui_mvpc_temporalgenermatrix.color_limiauto = uicontrol('Style','checkbox','Parent', gui_mvpc_temporalgenermatrix.color_limitstitle,'Value',limitauto,...
-            'String','Auto, limit: min ','Enable','off','callback',@color_limiauto,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Auto, limit: min ','Enable','off','callback',@color_limiauto,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_mvpc_temporalgenermatrix.color_limimin = uicontrol('Style','edit','Parent', gui_mvpc_temporalgenermatrix.color_limitstitle,...
-            'String',num2str(limimin),'Enable','off','callback',@color_limimin,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'String',num2str(limimin),'Enable','off','callback',@color_limimin,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_temporalgenermatrix.color_limimin.KeyPressFcn = @mvpc_graverage_presskey;
         uicontrol('Style','text','Parent',gui_mvpc_temporalgenermatrix.color_limitstitle,...
-            'String',', max','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String',', max','Enable','on','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_mvpc_temporalgenermatrix.color_limimax = uicontrol('Style','edit','Parent', gui_mvpc_temporalgenermatrix.color_limitstitle,...
-            'String',num2str(limimax),'Enable','off','callback',@color_limimax,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'String',num2str(limimax),'Enable','off','callback',@color_limimax,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         set(gui_mvpc_temporalgenermatrix.color_limitstitle,'Sizes',[110 60 30 60]);
         gui_mvpc_temporalgenermatrix.paras{3} = gui_mvpc_temporalgenermatrix.color_limiauto.Value;
         gui_mvpc_temporalgenermatrix.paras{4} = [str2num(gui_mvpc_temporalgenermatrix.color_limimin.String),str2num(gui_mvpc_temporalgenermatrix.color_limimax.String)];
@@ -125,12 +124,12 @@ varargout{1} = MVPC_confusion_box_gui;
         gui_mvpc_temporalgenermatrix.location_title = uiextras.HBox('Parent', gui_mvpc_temporalgenermatrix.DataSelBox,'BackgroundColor',ColorB_def);
         % uiextras.Empty('Parent',gui_mvpc_temporalgenermatrix.location_title);
         gui_mvpc_temporalgenermatrix.cancel  = uicontrol('Style','pushbutton','Parent',gui_mvpc_temporalgenermatrix.location_title,'Enable','off',...
-            'String','Cancel','callback',@average_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
+            'String','Cancel','callback',@average_cancel,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Max',10); % 2F
         gui_mvpc_temporalgenermatrix.export_ops  = uicontrol('Style','pushbutton','Parent',gui_mvpc_temporalgenermatrix.location_title,'Enable','off',...
-            'String','Export','callback',@average_export,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
+            'String','Export','callback',@average_export,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Max',10); % 2F
         % uiextras.Empty('Parent',gui_mvpc_temporalgenermatrix.location_title);
         gui_mvpc_temporalgenermatrix.run = uicontrol('Style','pushbutton','Parent',gui_mvpc_temporalgenermatrix.location_title,'Enable','off',...
-            'String','Plot','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
+            'String','Plot','callback',@apply_run,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         % uiextras.Empty('Parent',gui_mvpc_temporalgenermatrix.location_title);
         % set(gui_mvpc_temporalgenermatrix.location_title,'Sizes',[20 95 30 95 20]);
         set(gui_mvpc_temporalgenermatrix.DataSelBox,'Sizes',[25,35,30,20,5,30]);

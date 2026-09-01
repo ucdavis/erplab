@@ -36,24 +36,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_art_det_segmt_conus_eeg(FonsizeDefault)
+drawui_art_det_segmt_conus_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_art_det_segmt_conus;
 
-    function drawui_art_det_segmt_conus_eeg(FonsizeDefault)
+    function drawui_art_det_segmt_conus_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EEG_art_det_segmt_conus.DataSelBox = uiextras.VBox('Parent', Eegtab_box_art_det_segmt_conus,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
@@ -77,9 +76,9 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         %%channels that detect artifact
         EEG_art_det_segmt_conus.chan_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_art_det_segmt_conus.chan_title,...
-            'String','Time Threshold:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Time Threshold:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         EEG_art_det_segmt_conus.time_threshold_edit = uicontrol('Style','edit','Parent',EEG_art_det_segmt_conus.chan_title,...
-            'String',num2str(timethreshold),'FontSize',FontSize_defualt,'callback',@time_threshold_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String',num2str(timethreshold),'FontSize',FontSizeDefault,'callback',@time_threshold_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_art_det_segmt_conus.time_threshold_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set( EEG_art_det_segmt_conus.chan_title,'Sizes',[120 -1]);
         
@@ -95,9 +94,9 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         end
         EEG_art_det_segmt_conus.voltage_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_art_det_segmt_conus.voltage_text = uicontrol('Style','text','Parent',EEG_art_det_segmt_conus.voltage_title,...
-            'String',['Buffer before eventcode (ms)'],'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String',['Buffer before eventcode (ms)'],'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         EEG_art_det_segmt_conus.buffer_before_edit = uicontrol('Style','edit','Parent',EEG_art_det_segmt_conus.voltage_title,...
-            'callback',@buffer_before_edit,'String',num2str(bufferbefore),'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@buffer_before_edit,'String',num2str(bufferbefore),'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_art_det_segmt_conus.buffer_before_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(EEG_art_det_segmt_conus.voltage_title,'Sizes',[120,-1]);
         
@@ -113,18 +112,18 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         end
         EEG_art_det_segmt_conus.movewindow_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_art_det_segmt_conus.movewindow_text = uicontrol('Style','text','Parent',EEG_art_det_segmt_conus.movewindow_title,...
-            'String',[32,'Buffer after eventcode (ms)'],'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String',[32,'Buffer after eventcode (ms)'],'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         EEG_art_det_segmt_conus.buffer_after_edit = uicontrol('Style','edit','Parent',EEG_art_det_segmt_conus.movewindow_title,...
-            'callback',@buffer_after_edit,'String',num2str(bufferafter),'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@buffer_after_edit,'String',num2str(bufferafter),'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_art_det_segmt_conus.buffer_after_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(EEG_art_det_segmt_conus.movewindow_title,'Sizes',[120,-1]);
         
         %%eventcode exceptions
         EEG_art_det_segmt_conus.windowstep_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_art_det_segmt_conus.windowstep_text = uicontrol('Style','text','Parent',EEG_art_det_segmt_conus.windowstep_title,...
-            'String','Eventcode exceptions (optional)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Eventcode exceptions (optional)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         EEG_art_det_segmt_conus.event_exp_edit = uicontrol('Style','edit','Parent',EEG_art_det_segmt_conus.windowstep_title,...
-            'callback',@event_exp_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@event_exp_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_art_det_segmt_conus.event_exp_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(EEG_art_det_segmt_conus.windowstep_title,'Sizes',[120,-1]);
         
@@ -142,14 +141,14 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.eventcode_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_art_det_segmt_conus.eventcode_title );
         EEG_art_det_segmt_conus.event_exp_select = uicontrol('Style','popupmenu','Parent',EEG_art_det_segmt_conus.eventcode_title,...
-            'callback',@event_exp_select,'String',{'Ignore','Use'},'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@event_exp_select,'String',{'Ignore','Use'},'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         if strcmp(ignoreUseType,'ignore')
             EEG_art_det_segmt_conus.event_exp_select.Value = 1;
         else
             EEG_art_det_segmt_conus.event_exp_select.Value = 2;
         end
         uicontrol('Style','text','Parent',EEG_art_det_segmt_conus.eventcode_title,...
-            'String','these exceptions','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','these exceptions','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         EEG_art_det_segmt_conus.event_exp_select.KeyPressFcn=  @eeg_artdetect_presskey;
         set(EEG_art_det_segmt_conus.eventcode_title,'Sizes',[80,90,-1]);
         
@@ -166,7 +165,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.boundaryevent_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EEG_art_det_segmt_conus.boundaryevent_title );
         EEG_art_det_segmt_conus.boundaryevent = uicontrol('Style','checkbox','Parent',EEG_art_det_segmt_conus.boundaryevent_title,...
-            'callback',@boundaryevent,'String','Ignore boundary events','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,...
+            'callback',@boundaryevent,'String','Ignore boundary events','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,...
             'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',ignoreBoundary); % 2F
         EEG_art_det_segmt_conus.boundaryevent.KeyPressFcn=  @eeg_artdetect_presskey;
         uiextras.Empty('Parent', EEG_art_det_segmt_conus.boundaryevent_title );
@@ -177,17 +176,17 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detar_run_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_art_det_segmt_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_art_det_segmt_conus.detectsegmt_preview = uicontrol('Style', 'pushbutton','Parent',EEG_art_det_segmt_conus.detar_run_title,...
-            'String','Preview','callback',@detectsegmt_preview,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Preview','callback',@detectsegmt_preview,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_art_det_segmt_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_art_det_segmt_conus.detectsegmt_run = uicontrol('Style','pushbutton','Parent',EEG_art_det_segmt_conus.detar_run_title,...
-            'String','Finalize','callback',@detectsegmt_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Finalize','callback',@detectsegmt_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_art_det_segmt_conus.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_art_det_segmt_conus.detar_run_title,'Sizes',[15 105  30 105 15]);
         
         %%note/warning
         EEG_art_det_segmt_conus.note_title = uiextras.HBox('Parent', EEG_art_det_segmt_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_art_det_segmt_conus.note_title,...
-            'String','Warning: Any previously created Eventlist will be deleted','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Warning: Any previously created Eventlist will be deleted','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         
         set(EEG_art_det_segmt_conus.DataSelBox,'Sizes',[30 35 35 35 25 30 30 30]);
         estudioworkingmemory('EEGTab_detect_segmt_conus',0);

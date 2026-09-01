@@ -35,24 +35,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_dq_fre_conus_eeg(FonsizeDefault)
+drawui_dq_fre_conus_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_dq_fre_conus;
 
-    function drawui_dq_fre_conus_eeg(FonsizeDefault)
+    function drawui_dq_fre_conus_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EEG_dq_fre_conus.DataSelBox = uiextras.VBox('Parent', Eegtab_box_dq_fre_conus,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
@@ -81,12 +80,12 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         %%Event codes
         EEG_dq_fre_conus.chan_title = uiextras.HBox('Parent', EEG_dq_fre_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_dq_fre_conus.chan_title,'HorizontalAlignment','left',...
-            'String','Chans:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Chans:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         EEG_dq_fre_conus.chans_edit = uicontrol('Style','edit','Parent',EEG_dq_fre_conus.chan_title,...
-            'String','','FontSize',FontSize_defualt,'callback',@chans_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','','FontSize',FontSizeDefault,'callback',@chans_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_dq_fre_conus.chans_edit.KeyPressFcn=  @eeg_shiftcodes_presskey;
         EEG_dq_fre_conus.chans_browse = uicontrol('Style','pushbutton','Parent',EEG_dq_fre_conus.chan_title,...
-            'String','Browse','FontSize',FontSize_defualt,'callback',@chans_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','FontSize',FontSizeDefault,'callback',@chans_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         set( EEG_dq_fre_conus.chan_title,'Sizes',[60 -1,60]);
         
         EEG_dq_fre_conus.bandtable_title = uiextras.HBox('Parent', EEG_dq_fre_conus.DataSelBox,'BackgroundColor',ColorB_def);
@@ -102,21 +101,21 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         %%Round to later time sample
         EEG_dq_fre_conus.eventcode_title = uiextras.HBox('Parent', EEG_dq_fre_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_fre_conus.add_rows = uicontrol('Style','pushbutton','Parent',EEG_dq_fre_conus.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@add_rows,'String','+Add a row ','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
+            'callback',@add_rows,'String','+Add a row ','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
         EEG_dq_fre_conus.remove_rows = uicontrol('Style','pushbutton','Parent',EEG_dq_fre_conus.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@remove_rows,'String','-Remove selected rows','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
+            'callback',@remove_rows,'String','-Remove selected rows','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
         EEG_dq_fre_conus.resetable = uicontrol('Style','pushbutton','Parent',EEG_dq_fre_conus.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@resetable,'String','Reset','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
+            'callback',@resetable,'String','Reset','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 2F
         set(EEG_dq_fre_conus.eventcode_title,'Sizes',[70,140,-1]);
         
         %%-----------------------Cancel and Run----------------------------
         EEG_dq_fre_conus.detar_run_title = uiextras.HBox('Parent', EEG_dq_fre_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_dq_fre_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_dq_fre_conus.dq_fre_cancel = uicontrol('Style', 'pushbutton','Parent',EEG_dq_fre_conus.detar_run_title,...
-            'String','Cancel','callback',@dq_fre_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@dq_fre_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_dq_fre_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_dq_fre_conus.dq_fre_run = uicontrol('Style','pushbutton','Parent',EEG_dq_fre_conus.detar_run_title,...
-            'String','Run','callback',@dq_fre_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@dq_fre_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_dq_fre_conus.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_dq_fre_conus.detar_run_title,'Sizes',[15 105  30 105 15]);
         

@@ -17,7 +17,7 @@ if isempty(Messagestr)
     return
 end
 
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
@@ -30,7 +30,7 @@ end
 mh = msgbox(Messagestr, ['ERPLAB Studio:',32,titleName]);     %create msgbox
 mh.Resize = 'on';
 th = findall(mh, 'Type', 'Text');                   %get handle to text within msgbox
-th.FontSize = FonsizeDefault;
+th.FontSize = FontSizeDefault;
 set(mh,'color',ColorB_def);
 deltaWidth = sum(th.Extent([1,3]))-mh.Position(3) + th.Extent(1);
 deltaHeight = sum(th.Extent([2,4]))-mh.Position(4) + 10;

@@ -29,17 +29,17 @@ end
 
 gui_eegtab_binepoch = struct();
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-erp_blc_dt_gui(FonsizeDefault);
+erp_blc_dt_gui(FontSizeDefault);
 varargout{1} = EEG_binepoch_box;
 %%********************Draw the GUI for ERP measurement tool*****************
-    function erp_blc_dt_gui(FonsizeDefault)
+    function erp_blc_dt_gui(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
         if isempty(observe_EEGDAT.EEG)
@@ -52,9 +52,9 @@ varargout{1} = EEG_binepoch_box;
         %%Time range for one epoch
         gui_eegtab_binepoch.timerange_title = uiextras.HBox('Parent',  gui_eegtab_binepoch.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  gui_eegtab_binepoch.timerange_title,...
-            'String','Time Range:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Time Range:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.timerange_edit = uicontrol('Style', 'edit','Parent', gui_eegtab_binepoch.timerange_title,...
-            'String','','callback',@timerange_edit,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','','callback',@timerange_edit,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_eegtab_binepoch.timerange_edit.KeyPressFcn=  @eeg_binepoch_presskey;
         set(gui_eegtab_binepoch.timerange_title, 'Sizes',[80  200]);
         def  = estudioworkingmemory('pop_epochbin');
@@ -126,28 +126,28 @@ varargout{1} = EEG_binepoch_box;
         %%Baseline period: Pre, post whole custom
         gui_eegtab_binepoch.blc_dt_baseline_period_title = uiextras.HBox('Parent',  gui_eegtab_binepoch.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_eegtab_binepoch.blc_dt_baseline_period_title,...
-            'String','Baseline Period:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Baseline Period:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         
         gui_eegtab_binepoch.blc_dt_bp_option = uiextras.HBox('Parent',  gui_eegtab_binepoch.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.none = uicontrol('Style', 'radiobutton','Parent', gui_eegtab_binepoch.blc_dt_bp_option,'Value',noneFlag,...
-            'String','None','callback',@none_eeg,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','None','callback',@none_eeg,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.none.KeyPressFcn=  @eeg_binepoch_presskey;
         gui_eegtab_binepoch.pre = uicontrol('Style', 'radiobutton','Parent', gui_eegtab_binepoch.blc_dt_bp_option,'Value',preFlag,...
-            'String','Pre','callback',@pre_eeg,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Pre','callback',@pre_eeg,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.pre.KeyPressFcn=  @eeg_binepoch_presskey;
         gui_eegtab_binepoch.post = uicontrol('Style', 'radiobutton','Parent', gui_eegtab_binepoch.blc_dt_bp_option,'Value',postFlag,...
-            'String','Post','callback',@post_eeg,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Post','callback',@post_eeg,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.post.KeyPressFcn=  @eeg_binepoch_presskey;
         gui_eegtab_binepoch.whole = uicontrol('Style', 'radiobutton','Parent', gui_eegtab_binepoch.blc_dt_bp_option,'Value',wholeFlag,...
-            'String','Whole','callback',@whole_eeg,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Whole','callback',@whole_eeg,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.whole.KeyPressFcn=  @eeg_binepoch_presskey;
         
         gui_eegtab_binepoch.blc_dt_bp_option_cust = uiextras.HBox('Parent',  gui_eegtab_binepoch.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.custom = uicontrol('Style', 'radiobutton','Parent', gui_eegtab_binepoch.blc_dt_bp_option_cust,...
-            'String','Custom (ms) [start stop]','callback',@custom_eeg,'Value',customFlag,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Custom (ms) [start stop]','callback',@custom_eeg,'Value',customFlag,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.custom.KeyPressFcn=  @eeg_binepoch_presskey;
         gui_eegtab_binepoch.custom_edit = uicontrol('Style', 'edit','Parent', gui_eegtab_binepoch.blc_dt_bp_option_cust,...
-            'String','','callback',@precustom_edit,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','','callback',@precustom_edit,'Enable',Enable_label,'FontSize',FontSizeDefault);
         gui_eegtab_binepoch.custom_edit.KeyPressFcn=  @eeg_binepoch_presskey;
         if customFlag==1
             gui_eegtab_binepoch.custom_edit.String = num2str(BaelineMethod);
@@ -158,10 +158,10 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.other_option = uiextras.HBox('Parent',gui_eegtab_binepoch.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_eegtab_binepoch.other_option,'BackgroundColor',ColorB_def);
         gui_eegtab_binepoch.cancel = uicontrol('Parent',gui_eegtab_binepoch.other_option,'Style','pushbutton',...
-            'String','Cancel','callback',@Cancel_binepoch,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@Cancel_binepoch,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eegtab_binepoch.other_option);
         gui_eegtab_binepoch.apply = uicontrol('Style','pushbutton','Parent',gui_eegtab_binepoch.other_option,...
-            'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_eegtab_binepoch.apply.KeyPressFcn=  @eeg_binepoch_presskey;
         uiextras.Empty('Parent', gui_eegtab_binepoch.other_option);
         set(gui_eegtab_binepoch.other_option, 'Sizes',[15 105  30 105 15]);

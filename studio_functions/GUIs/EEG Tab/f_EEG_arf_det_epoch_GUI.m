@@ -36,24 +36,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_art_det_epoch_eeg(FonsizeDefault)
+drawui_art_det_epoch_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_art_det_epoch;
 
-    function drawui_art_det_epoch_eeg(FonsizeDefault)
+    function drawui_art_det_epoch_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         Eegtab_EEG_art_det_epoch.DataSelBox = uiextras.VBox('Parent', Eegtab_box_art_det_epoch,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
@@ -63,9 +62,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%Manua rejection
         Eegtab_EEG_art_det_epoch.manuar_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.manuar_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_epoch.manuar_title,'Value',0,...
-            'String','Manual detection','callback',@manuar_checkbox,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','Manual detection','callback',@manuar_checkbox,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.manuar_button = uicontrol('Style','pushbutton','Parent', Eegtab_EEG_art_det_epoch.manuar_title,...
-            'String','View & Mark','callback',@manuar_button,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','View & Mark','callback',@manuar_button,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( Eegtab_EEG_art_det_epoch.manuar_title ,'Sizes',[120 -1]);
         Eegtab_EEG_art_det_epoch.Paras{11} = Eegtab_EEG_art_det_epoch.manuar_checkbox.Value;
 
@@ -73,9 +72,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%display original data?
         Eegtab_EEG_art_det_epoch.art_det_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',Eegtab_EEG_art_det_epoch.art_det_title,...
-            'String','Algorithms:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Algorithms:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.det_algo = uicontrol('Style', 'popupmenu','Parent',Eegtab_EEG_art_det_epoch.art_det_title,...
-            'String','','callback',@det_algo,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','','callback',@det_algo,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         Eegtab_EEG_art_det_epoch.det_algo.KeyPressFcn=  @eeg_artdetect_presskey;
 
         Det_algostr = {'Simple voltage threshold','Moving window peak-to-peak',...
@@ -88,46 +87,46 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%channels that detect artifact
         Eegtab_EEG_art_det_epoch.chan_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.chan_title,...
-            'String','Chans:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Chans:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_epoch.chan_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_epoch.chan_title,...
-            'String','','FontSize',FontSize_defualt,'callback',@chan_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','','FontSize',FontSizeDefault,'callback',@chan_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_epoch.chan_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         Eegtab_EEG_art_det_epoch.chan_browse = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_epoch.chan_title,...
-            'String','Browse','FontSize',FontSize_defualt,'callback',@chan_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','FontSize',FontSizeDefault,'callback',@chan_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         set( Eegtab_EEG_art_det_epoch.chan_title,'Sizes',[60 -1 80]);
         Eegtab_EEG_art_det_epoch.Paras{2} = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
 
         %%Flags
         Eegtab_EEG_art_det_epoch.markflgas_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.markflgas_title,'FontWeight','bold',...
-            'String','Mark Flag (flag 1 is reserved):','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Mark Flag (flag 1 is reserved):','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
 
         Eegtab_EEG_art_det_epoch.markflgas_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.mflag1 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag1,'String','1','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','off','BackgroundColor',ColorB_def,'Value',1); % 2F
+            'callback',@mflag1,'String','1','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off','BackgroundColor',ColorB_def,'Value',1); % 2F
         Eegtab_EEG_art_det_epoch.mflag2 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag2,'String','2','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag2,'String','2','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag3 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag3,'String','3','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag3,'String','3','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag4 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag4,'String','4','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag4,'String','4','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag5 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag5,'String','5','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag5,'String','5','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag6 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag6,'String','6','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag6,'String','6','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag7 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag7,'String','7','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag7,'String','7','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag8 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
-            'callback',@mflag8,'String','8','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag8,'String','8','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag = [1,0,0,0,0,0,0,0];
         Eegtab_EEG_art_det_epoch.Paras{3} = Eegtab_EEG_art_det_epoch.mflag;
         set( Eegtab_EEG_art_det_epoch.markflgas_title1,'Sizes',[33 33 33 33 33 33 33 33]);
         %%test period
         Eegtab_EEG_art_det_epoch.periods_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.periods_editext=uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.periods_title,...
-            'String','Test period [ms] (start end)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Test period [ms] (start end)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_epoch.periods_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_epoch.periods_title,...
-            'callback',@periods_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@periods_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_epoch.periods_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_epoch.periods_title,'Sizes',[90,-1]);
         Eegtab_EEG_art_det_epoch.Paras{4} = str2num(Eegtab_EEG_art_det_epoch.periods_edit.String);
@@ -135,9 +134,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%Voltage limits
         Eegtab_EEG_art_det_epoch.voltage_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.voltage_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.voltage_title,...
-            'String','Voltage limits [uV] (e.g., -100 100)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Voltage limits [uV] (e.g., -100 100)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_epoch.voltage_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_epoch.voltage_title,...
-            'callback',@voltage_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@voltage_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_epoch.voltage_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
         Eegtab_EEG_art_det_epoch.Paras{5} = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
@@ -145,9 +144,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%moving window full width
         Eegtab_EEG_art_det_epoch.movewindow_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.movewindow_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.movewindow_title,...
-            'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_epoch.movewindow_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_epoch.movewindow_title,...
-            'callback',@movewindow_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@movewindow_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_epoch.movewindow_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_epoch.movewindow_title,'Sizes',[100,-1]);
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
@@ -155,9 +154,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%Window steps
         Eegtab_EEG_art_det_epoch.windowstep_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.windowstep_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.windowstep_title,...
-            'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_epoch.windowstep_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_epoch.windowstep_title,...
-            'callback',@windowstep_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@windowstep_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_epoch.windowstep_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_epoch.windowstep_title,'Sizes',[100,-1]);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
@@ -165,11 +164,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%------------------------------refilter---------------------------
         Eegtab_EEG_art_det_epoch.prefilter_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.prefilter_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_epoch.prefilter_title,'Value',0,...
-            'String','Prefilter at','callback',@prefilter_checkbox,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','Prefilter at','callback',@prefilter_checkbox,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.prefilter_edit = uicontrol('Style','edit','Parent', Eegtab_EEG_art_det_epoch.prefilter_title,...
-            'String','30','callback',@prefilter_edit,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','30','callback',@prefilter_edit,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uicontrol('Style','text','Parent', Eegtab_EEG_art_det_epoch.prefilter_title,...
-            'String','Hz (low-pass)','FontSize',FontSize_defualt,'Enable','on','BackgroundColor',ColorB_def);
+            'String','Hz (low-pass)','FontSize',FontSizeDefault,'Enable','on','BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_det_epoch.prefilter_title,'Sizes',[80 -1 80]);
         Eegtab_EEG_art_det_epoch.Paras{9} = Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value;
         Eegtab_EEG_art_det_epoch.Paras{10}= str2num(Eegtab_EEG_art_det_epoch.prefilter_edit.String);
@@ -178,17 +177,17 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.detar_run_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.detar_run_title);
         Eegtab_EEG_art_det_epoch.detectar_cancel = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_epoch.detar_run_title,...
-            'String','Cancel','callback',@detectar_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@detectar_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.detar_run_title);
         Eegtab_EEG_art_det_epoch.detectar_run = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_epoch.detar_run_title,...
-            'String','Run','callback',@detectar_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@detectar_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.detar_run_title);
         set(Eegtab_EEG_art_det_epoch.detar_run_title,'Sizes',[10,-1,30,-1,10]);
 
         Eegtab_EEG_art_det_epoch.show_sumy_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.show_sumy_title);
         Eegtab_EEG_art_det_epoch.show_sumy_ar = uicontrol('Style', 'checkbox','Parent',Eegtab_EEG_art_det_epoch.show_sumy_title,'Value',1,...
-            'String','Show summary window','callback',@show_sumy_ar,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','Show summary window','callback',@show_sumy_ar,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.show_sumy_title);
         set(Eegtab_EEG_art_det_epoch.show_sumy_title,'Sizes',[-1 180 -1]);
 

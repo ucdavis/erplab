@@ -29,21 +29,21 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_mvpcplot(FonsizeDefault);
+drawui_mvpcplot(FontSizeDefault);
 varargout{1} = MVPC_plotset_box;
-    function drawui_mvpcplot(FonsizeDefault)
+    function drawui_mvpcplot(FontSizeDefault)
         %%--------------------x and y axes setting-------------------------
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
         MVPC_plotset.plotop = uiextras.VBox('Parent',MVPC_plotset_box, 'Spacing',1,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', MVPC_plotset.plotop,'String','Time Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', MVPC_plotset.plotop,'String','Time Axis:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
         %%time range
         try MVPC_plotset_pars = estudioworkingmemory('MVPC_plotset_pars');catch MVPC_plotset_pars=''; end
         try timet_auto = MVPC_plotset_pars{1};catch timet_auto=1; end
@@ -55,17 +55,17 @@ varargout{1} = MVPC_plotset_box;
         try  timet_high = timet(2);  catch  timet_high = []; end
         MVPC_plotset.timerange = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         MVPC_plotset.timet_auto = uicontrol('Style','checkbox','Parent', MVPC_plotset.timerange,'String','Auto',...
-            'callback',@timet_auto,'Value',timet_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+            'callback',@timet_auto,'Value',timet_auto,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         MVPC_plotset.timet_auto.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.timerange,'String','Range','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.timerange,'String','Range','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.timet_low = uicontrol('Style', 'edit','Parent',MVPC_plotset.timerange,'BackgroundColor',[1 1 1],...
-            'String',num2str(timet_low),'callback',@low_ticks_change,'Enable','off','FontSize',FonsizeDefault,'Enable','off');
+            'String',num2str(timet_low),'callback',@low_ticks_change,'Enable','off','FontSize',FontSizeDefault,'Enable','off');
         MVPC_plotset.timet_low.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.timerange,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.timerange,'String','to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.timet_high = uicontrol('Style', 'edit','Parent',MVPC_plotset.timerange,'String',num2str(timet_high),...
-            'callback',@high_ticks_change,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@high_ticks_change,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         MVPC_plotset.timet_high.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.timerange,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.timerange,'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(MVPC_plotset.timerange, 'Sizes', [50 50 50 30 50 20]);
         %%time ticks
         try  timetick_auto = MVPC_plotset_pars{3};catch  timetick_auto=1;end
@@ -75,13 +75,13 @@ varargout{1} = MVPC_plotset_box;
         try ticks_step_change = MVPC_plotset_pars{4}; catch   ticks_step_change =[];end
         MVPC_plotset.timeticks = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         MVPC_plotset.timetick_auto = uicontrol('Style','checkbox','Parent', MVPC_plotset.timeticks,'String','Auto',...
-            'callback',@timetick_auto,'Value',timetick_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+            'callback',@timetick_auto,'Value',timetick_auto,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         MVPC_plotset.timetick_auto.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.timeticks,'String','Time ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.timeticks,'String','Time ticks, every','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.timet_step = uicontrol('Style', 'edit','Parent',MVPC_plotset.timeticks,'String',num2str(ticks_step_change),...
-            'callback',@ticks_step_change,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@ticks_step_change,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         MVPC_plotset.timet_step.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.timeticks,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.timeticks,'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(MVPC_plotset.timeticks, 'Sizes', [50 100 80 20]);
         
         %%--------x tick precision with decimals---------------------------
@@ -92,13 +92,13 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.xtickprecision_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  MVPC_plotset.xtickprecision_title);
         uicontrol('Style','text','Parent',MVPC_plotset.xtickprecision_title ,...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'String','Precision','HorizontalAlignment','left'); %
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'String','Precision','HorizontalAlignment','left'); %
         xprecisoonName = {'0','1','2','3','4','5','6'};
         MVPC_plotset.xticks_precision = uicontrol('Style','popupmenu','Parent',MVPC_plotset.xtickprecision_title,'String',xprecisoonName,...
-            'callback',@xticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',xticks_precision,'Enable','off'); %
+            'callback',@xticksprecison,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',xticks_precision,'Enable','off'); %
         MVPC_plotset.xticks_precision.KeyPressFcn = @mvpc_plotsetting_presskey;
         uicontrol('Style','text','Parent',  MVPC_plotset.xtickprecision_title,'String','# decimals',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); %
         set(MVPC_plotset.xtickprecision_title,'Sizes',[30 65 60 80]);
         
       
@@ -113,20 +113,20 @@ varargout{1} = MVPC_plotset_box;
         try yscales = MVPC_plotset_pars{10}; catch yscales = []; end
         try yscale_low = yscales(1); catch yscale_low = [];  end
         try  yscale_high = yscales(2);catch yscale_high = []; end
-        uicontrol('Style','text','Parent', MVPC_plotset.plotop,'String','Vertical Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.plotop,'String','Vertical Axis:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale_auto = uicontrol('Style','checkbox','Parent',MVPC_plotset.yscale,'String','Auto',...
-            'callback',@yscale_auto,'Value',yscale_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off');
+            'callback',@yscale_auto,'Value',yscale_auto,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off');
         MVPC_plotset.yscale_auto.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent',MVPC_plotset.yscale,'String','Scale','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',MVPC_plotset.yscale,'String','Scale','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale_low = uicontrol('Style', 'edit','Parent',MVPC_plotset.yscale,'BackgroundColor',[1 1 1],...
-            'String',num2str(yscale_low),'callback',@yscale_low,'Enable','off','FontSize',FonsizeDefault,'Enable','off');
+            'String',num2str(yscale_low),'callback',@yscale_low,'Enable','off','FontSize',FontSizeDefault,'Enable','off');
         MVPC_plotset.yscale_low.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.yscale,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.yscale,'String','to','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale_high = uicontrol('Style', 'edit','Parent',MVPC_plotset.yscale,'String',num2str(yscale_high),...
-            'callback',@yscale_high,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@yscale_high,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         MVPC_plotset.yscale_high.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.yscale,'String',' ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.yscale,'String',' ','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(MVPC_plotset.yscale, 'Sizes', [50 50 50 30 50 -1]);
         
         %%y ticks
@@ -137,13 +137,13 @@ varargout{1} = MVPC_plotset_box;
         try yscale_step = MVPC_plotset_pars{12}; catch yscale_step =[]; end
         MVPC_plotset.yscaleticks = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         MVPC_plotset.ytick_auto = uicontrol('Style','checkbox','Parent', MVPC_plotset.yscaleticks,'String','Auto',...
-            'callback',@ytick_auto,'Value',ytick_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+            'callback',@ytick_auto,'Value',ytick_auto,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         MVPC_plotset.ytick_auto.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','Vert. ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','Vert. ticks, every','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         MVPC_plotset.yscale_step = uicontrol('Style', 'edit','Parent',MVPC_plotset.yscaleticks,'String',num2str(yscale_step),...
-            'callback',@yscale_step,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@yscale_step,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         MVPC_plotset.yscale_step.KeyPressFcn=  @mvpc_plotsetting_presskey;
-        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', MVPC_plotset.yscaleticks,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(MVPC_plotset.yscaleticks, 'Sizes', [50 100 80 -1]);
         
         %%--------Y tick precision with decimals---------------------------
@@ -154,13 +154,13 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.ytickprecision_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  MVPC_plotset.ytickprecision_title);
         uicontrol('Style','text','Parent',MVPC_plotset.ytickprecision_title ,...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'String','Precision','HorizontalAlignment','left'); %
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'String','Precision','HorizontalAlignment','left'); %
         yprecisoonName = {'2','3','4','5','6'};
         MVPC_plotset.yticks_precision = uicontrol('Style','popupmenu','Parent',MVPC_plotset.ytickprecision_title,'String',yprecisoonName,...
-            'callback',@yticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',1,'Enable','off'); %
+            'callback',@yticksprecison,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',1,'Enable','off'); %
         MVPC_plotset.yticks_precision.KeyPressFcn = @mvpc_plotsetting_presskey;
         uicontrol('Style','text','Parent',  MVPC_plotset.ytickprecision_title,'String','# decimals',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); %
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); %
         set(MVPC_plotset.ytickprecision_title,'Sizes',[30 65 60 80]);
         
         %%standard error of the mean
@@ -184,26 +184,26 @@ varargout{1} = MVPC_plotset_box;
         
         MVPC_plotset.SEM_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
         MVPC_plotset.show_SEM = uicontrol('Style','checkbox','Parent', MVPC_plotset.SEM_title ,'String','Show standard error',...
-            'callback',@showSEM,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',show_SEM,'Enable','off'); %
+            'callback',@showSEM,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',show_SEM,'Enable','off'); %
         MVPC_plotset.show_SEM.KeyPressFcn = @mvpc_plotsetting_presskey;
         SMEString = {'0','1','2','3','4','5','6','7','8','9','10'};
         MVPC_plotset.SEM_custom = uicontrol('Style','popupmenu','Parent', MVPC_plotset.SEM_title ,'String',SMEString,...
-            'callback',@SEMerror,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEM_custom,'Enable','off'); %
+            'callback',@SEMerror,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',SEM_custom,'Enable','off'); %
         MVPC_plotset.SEM_custom.KeyPressFcn = @mvpc_plotsetting_presskey;
         set(MVPC_plotset.SEM_title,'Sizes',[160 80]);
         
         MVPC_plotset.SEMtrans_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', MVPC_plotset.SEMtrans_title ,'String','transparency',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','right'); %
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','right'); %
         SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
         MVPC_plotset.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', MVPC_plotset.SEMtrans_title ,'String',SMEtransString,...
-            'callback',@SEMtrans,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMtrans_custom,'Enable','off'); %
+            'callback',@SEMtrans,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Value',SEMtrans_custom,'Enable','off'); %
         MVPC_plotset.SEMtrans_custom.KeyPressFcn = @mvpc_plotsetting_presskey;
         set(MVPC_plotset.SEMtrans_title,'Sizes',[160 80]);
         %%chance line
         MVPC_plotset.chanceline_title = uiextras.HBox('Parent', MVPC_plotset.plotop,'BackgroundColor',ColorB_def);
         MVPC_plotset.chanceline = uicontrol('Style','checkbox','Parent', MVPC_plotset.chanceline_title ,'String','Chance line',...
-            'callback',@chanceline,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',chanceline,'Enable','off'); %
+            'callback',@chanceline,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Value',chanceline,'Enable','off'); %
         MVPC_plotset.chanceline.KeyPressFcn = @mvpc_plotsetting_presskey;
         uiextras.Empty('Parent', MVPC_plotset.chanceline_title); % 1A
         set(MVPC_plotset.chanceline_title, 'Sizes',[160 -1]);
@@ -212,11 +212,11 @@ varargout{1} = MVPC_plotset_box;
         MVPC_plotset.reset_apply = uiextras.HBox('Parent',MVPC_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         %         uiextras.Empty('Parent', MVPC_plotset.reset_apply); % 1A
         MVPC_plotset.plot_reset = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
-            'String','Cancel','callback',@plot_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@plot_cancel,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         MVPC_plotset.plot_ops = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
-            'String','Options','callback',@plot_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Options','callback',@plot_ops,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         MVPC_plotset.plot_apply = uicontrol('Style', 'pushbutton','Parent',MVPC_plotset.reset_apply,'Enable','off',...
-            'String','Apply','callback',@plot_setting_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@plot_setting_apply,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(MVPC_plotset.plotop, 'Sizes', [20 20 20 20 20 25 25 20 20 20 20 30]);
         estudioworkingmemory('MVPC_plotset',0);
         MVPC_plotset.paras{1} = MVPC_plotset.timet_auto.Value;

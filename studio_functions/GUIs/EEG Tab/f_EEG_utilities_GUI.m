@@ -35,18 +35,18 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_art_sumop_eeg(FonsizeDefault)
+drawui_art_sumop_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_art_sumop;
 
-    function drawui_art_sumop_eeg(FonsizeDefault)
+    function drawui_art_sumop_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         Eegtab_utilities.DataSelBox = uiextras.VBox('Parent', Eegtab_box_art_sumop,'BackgroundColor',ColorB_def);
@@ -61,7 +61,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_utilities.epoch2continuous_title = uiextras.HBox('Parent', Eegtab_utilities.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_utilities.epoch2continuous_title,'BackgroundColor',ColorB_def);
         Eegtab_utilities.epoch2continuous = uicontrol('Style', 'pushbutton','Parent',Eegtab_utilities.epoch2continuous_title,...
-            'String','Convert to Continuous EEG','callback',@epoch2continuous,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Convert to Continuous EEG','callback',@epoch2continuous,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_utilities.epoch2continuous_title,'BackgroundColor',ColorB_def);
         set(Eegtab_utilities.epoch2continuous_title, 'Sizes',[15 -1 15]);
         
@@ -70,7 +70,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_utilities.rm_eventcodes_title = uiextras.HBox('Parent', Eegtab_utilities.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_utilities.rm_eventcodes_title,'BackgroundColor',ColorB_def);
         Eegtab_utilities.rm_eventcodes = uicontrol('Style', 'pushbutton','Parent',Eegtab_utilities.rm_eventcodes_title,...
-            'String','Erase Undesired Event Codes','callback',@rm_eventcodes,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Erase Undesired Event Codes','callback',@rm_eventcodes,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_utilities.rm_eventcodes_title,'BackgroundColor',ColorB_def);
         set(Eegtab_utilities.rm_eventcodes_title, 'Sizes',[15 -1 15]);
         
@@ -78,7 +78,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_utilities.rc_bdf_title = uiextras.HBox('Parent', Eegtab_utilities.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_utilities.rc_bdf_title,'BackgroundColor',ColorB_def);
         Eegtab_utilities.rc_bdf = uicontrol('Style', 'pushbutton','Parent',Eegtab_utilities.rc_bdf_title,...
-            'String','Recover Bin Descriptor File from EEG','callback',@rc_bdf,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Recover Bin Descriptor File from EEG','callback',@rc_bdf,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_utilities.rc_bdf_title,'BackgroundColor',ColorB_def);
         set(Eegtab_utilities.rc_bdf_title, 'Sizes',[15 -1 15]);
         
@@ -86,7 +86,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_utilities.event_byte_title = uiextras.HBox('Parent', Eegtab_utilities.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_utilities.event_byte_title,'BackgroundColor',ColorB_def);
         Eegtab_utilities.event_byte = uicontrol('Style', 'pushbutton','Parent',Eegtab_utilities.event_byte_title,...
-            'String','Reset Event Code Bytes','callback',@event_byte,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Reset Event Code Bytes','callback',@event_byte,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_utilities.event_byte_title,'BackgroundColor',ColorB_def);
         set(Eegtab_utilities.event_byte_title, 'Sizes',[15 -1 15]);
         
@@ -94,7 +94,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_utilities.rmerrors_title = uiextras.HBox('Parent', Eegtab_utilities.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_utilities.rmerrors_title,'BackgroundColor',ColorB_def);
         Eegtab_utilities.rmerrors = uicontrol('Style', 'pushbutton','Parent',Eegtab_utilities.rmerrors_title,...
-            'String','Delete Spurious Additional Responses','callback',@rmerrors,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Delete Spurious Additional Responses','callback',@rmerrors,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_utilities.rmerrors_title,'BackgroundColor',ColorB_def);
         set(Eegtab_utilities.rmerrors_title, 'Sizes',[15 -1 15]);
         set(Eegtab_utilities.DataSelBox,'Sizes',[30 30 30 30 30]);

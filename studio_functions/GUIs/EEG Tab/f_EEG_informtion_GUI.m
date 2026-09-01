@@ -28,17 +28,17 @@ end
 varargout{1} = EEG_info;
 gui_EEG_info = struct;
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_EEG_info(FonsizeDefault);
+drawui_EEG_info(FontSizeDefault);
 
 
-    function drawui_EEG_info(FonsizeDefault)
+    function drawui_EEG_info(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -49,7 +49,7 @@ drawui_EEG_info(FonsizeDefault);
         %%EEG setname and file name
         gui_EEG_info.setfilename_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', gui_EEG_info.setfilename_title,'String','Current EEG setname & file name',...
-            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
         
         
         gui_EEG_info.setfilename_title2 = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -67,40 +67,40 @@ drawui_EEG_info(FonsizeDefault);
         
         %%----------------------------Setting sampling rate---------------------
         gui_EEG_info.samplingrate = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.samplingrate = uicontrol('Style','text','Parent', gui_EEG_info.samplingrate,'String','Sampling:','FontSize',FonsizeDefault);
+        gui_EEG_info.samplingrate = uicontrol('Style','text','Parent', gui_EEG_info.samplingrate,'String','Sampling:','FontSize',FontSizeDefault);
         
         EEG_time_resolution = strcat('Sampling:');
         set(gui_EEG_info.samplingrate,'HorizontalAlignment','left','BackgroundColor',ColorB_def,'String',EEG_time_resolution);
         
         %%----------------------------Number of Channels---------------------
         gui_EEG_info.chan_num = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.numofchan = uicontrol('Style','text','Parent', gui_EEG_info.chan_num,'String','Number of channels: ','FontSize',FonsizeDefault);
+        gui_EEG_info.numofchan = uicontrol('Style','text','Parent', gui_EEG_info.chan_num,'String','Number of channels: ','FontSize',FontSizeDefault);
         set(gui_EEG_info.numofchan,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         %%----------------------------Setting epoch---------------------
         gui_EEG_info.epoch = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.epoch_name = uicontrol('Style','text','Parent', gui_EEG_info.epoch,'String','Time range: ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_EEG_info.epoch_name = uicontrol('Style','text','Parent', gui_EEG_info.epoch,'String','Time range: ','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_EEG_info.epoch_name,'HorizontalAlignment','left');
         
         %%----------------------------Setting chanlocation---------------------
         gui_EEG_info.chanlocs_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.chanlocs = uicontrol('Style','text','Parent', gui_EEG_info.chanlocs_title,'String','Channel locations: ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_EEG_info.chanlocs = uicontrol('Style','text','Parent', gui_EEG_info.chanlocs_title,'String','Channel locations: ','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_EEG_info.chanlocs,'HorizontalAlignment','left');
         
         %%----------------------------Setting ICA weights---------------------
         gui_EEG_info.icweights_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.icweights = uicontrol('Style','text','Parent', gui_EEG_info.icweights_title ,'String','ICA weights: ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_EEG_info.icweights = uicontrol('Style','text','Parent', gui_EEG_info.icweights_title ,'String','ICA weights: ','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_EEG_info.icweights,'HorizontalAlignment','left');
         
         
         %%----------------------------Number of bins---------------------
         gui_EEG_info.bin_num = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.numofbin = uicontrol('Style','text','Parent', gui_EEG_info.bin_num,'String','Number of bins:','FontSize',FonsizeDefault);
+        gui_EEG_info.numofbin = uicontrol('Style','text','Parent', gui_EEG_info.bin_num,'String','Number of bins:','FontSize',FontSizeDefault);
         set(gui_EEG_info.numofbin,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         %%----------------------------Number of epoch---------------------
         gui_EEG_info.epoch_num_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.numofepoch = uicontrol('Style','text','Parent', gui_EEG_info.epoch_num_title,'String','Number of epochs:','FontSize',FonsizeDefault);
+        gui_EEG_info.numofepoch = uicontrol('Style','text','Parent', gui_EEG_info.epoch_num_title,'String','Number of epochs:','FontSize',FontSizeDefault);
         set(gui_EEG_info.numofepoch,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         %%----------------------------Total accepted---------------------
@@ -113,7 +113,7 @@ drawui_EEG_info(FonsizeDefault);
             Total_rejected_trials = strcat('0%');
         end
         gui_EEG_info.total_rejected = uiextras.HBox('Parent',gui_EEG_info.DataSelBox);
-        gui_EEG_info.total_rejected_percentage = uicontrol('Style','text','Parent', gui_EEG_info.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_EEG_info.total_rejected_percentage = uicontrol('Style','text','Parent', gui_EEG_info.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_EEG_info.total_rejected_percentage,'HorizontalAlignment','left');
         
         

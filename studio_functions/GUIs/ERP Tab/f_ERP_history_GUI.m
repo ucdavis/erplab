@@ -30,17 +30,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_history(FonsizeDefault);
+drawui_erp_history(FontSizeDefault);
 varargout{1} = box_erp_history;
 
-    function drawui_erp_history(FonsizeDefault)
+    function drawui_erp_history(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -52,9 +52,9 @@ varargout{1} = box_erp_history;
         
         
         gui_erp_history.erp_h_all = uicontrol('Style','radiobutton','Parent',gui_erp_history.erp_history_title,'String','Current ERPset',...
-            'callback',@ERP_H_ALL,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
+            'callback',@ERP_H_ALL,'Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         gui_erp_history.erp_h_current = uicontrol('Style','radiobutton','Parent', gui_erp_history.erp_history_title,'String','Current session',...
-            'callback',@erp_h_current,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
+            'callback',@erp_h_current,'Value',0,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         ERP_history = [];
         if isempty(ERP_history)
             ERP_history = char('No history exist in the current ERPset');
@@ -73,9 +73,9 @@ varargout{1} = box_erp_history;
         %%save the scripts
         gui_erp_history.save_history_title = uiextras.HBox('Parent', gui_erp_history.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_history.save_script = uicontrol('Style','pushbutton','Parent',gui_erp_history.save_history_title,...
-            'String','Save history script','callback',@savescript,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+            'String','Save history script','callback',@savescript,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         gui_erp_history.show_cmd = uicontrol('Style','pushbutton','Parent',gui_erp_history.save_history_title,...
-            'String','Show in cmd window','callback',@show_cmd,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+            'String','Show in cmd window','callback',@show_cmd,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         set(gui_erp_history.DataSelBox,'Sizes',[40 -1 30]);
     end
 

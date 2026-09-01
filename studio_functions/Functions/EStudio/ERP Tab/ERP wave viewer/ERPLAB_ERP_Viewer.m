@@ -333,25 +333,25 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         set(gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
         % + Adjust the main layout
         set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]); % Viewpanel and settings panel
-        gui_erp_waviewer.panel_fonts  = f_get_default_fontsize(); %% get the default fontsize based on the different plat form, e.g., Mac
+        gui_erp_waviewer.FontSizeDefault  = f_get_default_fontsize(); %% get the default fontsize based on the different plat form, e.g., Mac
         gui_erp_waviewer.settingLayout = uiextras.VBox('Parent', gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
         
         % + Create the settings window panels for ERP panel
-        gui_erp_waviewer.panel{1} = f_ERPsets_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{1} = f_ERPsets_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(1) = 360;
-        gui_erp_waviewer.panel{2} = f_ERP_Binchan_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{2} = f_ERP_Binchan_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(2) = 280;
-        gui_erp_waviewer.panel{3} = f_ERP_timeampscal_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{3} = f_ERP_timeampscal_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(3) = 490;
-        gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(4) = 385;
-        gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(5) = 200;
-        gui_erp_waviewer.panel{6} = f_ERP_lineset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{6} = f_ERP_lineset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(6) = 375;
-        gui_erp_waviewer.panel{7} = f_ERP_otherset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{7} = f_ERP_otherset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(7) = 225;
-        gui_erp_waviewer.panel{8} = f_ERP_property_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
+        gui_erp_waviewer.panel{8} = f_ERP_property_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.FontSizeDefault);
         gui_erp_waviewer.panelSizes(8) = 140;
         set(gui_erp_waviewer.settingLayout, 'Heights', gui_erp_waviewer.panelSizes);
         gui_erp_waviewer.panelscroll.Heights = sum(gui_erp_waviewer.panelSizes);

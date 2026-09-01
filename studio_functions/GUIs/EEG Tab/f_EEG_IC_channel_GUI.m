@@ -32,24 +32,24 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_ic_chan_eeg(FonsizeDefault)
+drawui_ic_chan_eeg(FontSizeDefault)
 varargout{1} = EStudio_eeg_box_ic_chan;
 
-    function drawui_ic_chan_eeg(FonsizeDefault)
+    function drawui_ic_chan_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EStduio_eegtab_EEG_IC_chan.DataSelBox = uiextras.VBox('Parent', EStudio_eeg_box_ic_chan,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_IC_chan.DataSelGrid = uiextras.Grid('Parent', EStduio_eegtab_EEG_IC_chan.DataSelBox,'BackgroundColor',ColorB_def);
         % Second column:
-        uicontrol('Style','text','Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'String','Channels','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'String','Channels','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1B
         try
             ALLEEGIN = evalin('base','ALLEEG');
             CURRENTSETIN = evalin('base','CURRENTSET');
@@ -91,7 +91,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             end
         end
         EStduio_eegtab_EEG_IC_chan.ElecRange = uicontrol('Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name)+1,...
-            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]); % 2B
+            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FontSizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]); % 2B
         EStduio_eegtab_EEG_IC_chan.ElecRange.KeyPressFcn=  @eeg_ichan_presskey;
         ChanArray =  estudioworkingmemory('EEG_ChanArray');
         if isempty(ChanArray) || length(ChanArray)> ChaNum
@@ -105,10 +105,10 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         end
         
         % Third column:
-        uicontrol('Style','text','Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'String','ICs','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1C
+        uicontrol('Style','text','Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'String','ICs','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1C
         
         EStduio_eegtab_EEG_IC_chan.ICRange =  uicontrol('Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'Style','listbox','Min',1,'Max',length(ICNamestrs)+1,...
-            'String', ICNamestrs,'callback',@onIChanged,'FontSize',FonsizeDefault,'Enable',EnableIC,'BackgroundColor',[1 1 1]); % 2C
+            'String', ICNamestrs,'callback',@onIChanged,'FontSize',FontSizeDefault,'Enable',EnableIC,'BackgroundColor',[1 1 1]); % 2C
         EStduio_eegtab_EEG_IC_chan.ICRange.KeyPressFcn=  @eeg_ichan_presskey;
         ICArray =  estudioworkingmemory('EEG_ICArray');
         if isempty(ICArray) || length(ICArray)>ICNum
@@ -126,11 +126,11 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         EStduio_eegtab_EEG_IC_chan.reset_apply = uiextras.HBox('Parent',EStduio_eegtab_EEG_IC_chan.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EStduio_eegtab_EEG_IC_chan.reset_apply); % 1A
         EStduio_eegtab_EEG_IC_chan.plot_reset = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_IC_chan.reset_apply,...
-            'String','Cancel','callback',@plot_eeg_cancel,'FontSize',FonsizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@plot_eeg_cancel,'FontSize',FontSizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]);
         
         uiextras.Empty('Parent', EStduio_eegtab_EEG_IC_chan.reset_apply); % 1A
         EStduio_eegtab_EEG_IC_chan.plot_apply = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_IC_chan.reset_apply,...
-            'String','Apply','callback',@plot_eeg_apply,'FontSize',FonsizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@plot_eeg_apply,'FontSize',FontSizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_IC_chan.plot_apply.KeyPressFcn=  @eeg_ichan_presskey;
         uiextras.Empty('Parent', EStduio_eegtab_EEG_IC_chan.reset_apply); % 1A
         set(EStduio_eegtab_EEG_IC_chan.reset_apply, 'Sizes',[10,-1,30,-1,10]);

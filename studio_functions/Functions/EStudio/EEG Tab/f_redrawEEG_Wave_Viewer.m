@@ -1122,7 +1122,7 @@ global EStudio_gui_erp_totl;
 if (isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)) && observe_EEGDAT.eeg_panel_message == 1
     return;
 end
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
@@ -1146,7 +1146,7 @@ estudioworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.e
 
 
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
-EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
+EStudio_gui_erp_totl.eegProcess_messg.FontSize = FontSizeDefault;
 
 if observe_EEGDAT.eeg_panel_message==1
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
@@ -1621,9 +1621,9 @@ end
 % -------------------------------------------------------------------------
 % ylims = [0 (PlotNum+1)*AmpScale];
 
-FonsizeDefault = f_get_default_fontsize();
-if isempty(FonsizeDefault) || numel(FonsizeDefault)~=1|| any(FonsizeDefault(:)<=0)
-    FonsizeDefault=10;
+FontSizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault) || numel(FontSizeDefault)~=1|| any(FontSizeDefault(:)<=0)
+    FontSizeDefault=10;
 end
 
 if EventOnset==1 && ~isempty(data) && PlotNum~=0
@@ -1647,7 +1647,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
     for index = 1:length(event2plot)
         %Just repeat for the first one
         if index == 1
-            EVENTFONT = [' \fontsize{',num2str(FonsizeDefault),'} '];
+            EVENTFONT = [' \fontsize{',num2str(FontSizeDefault),'} '];
         end
 
         % draw latency line
@@ -1701,7 +1701,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
                 tmph2 = text(myeegviewer, [tmplat], ylims(2)-0.005, [EVENTFONT evntxt], ...
                     'color', Eventcolors{ event2plot(index) }, ...
                     'horizontalalignment', 'left',...
-                    'rotation',90,'FontSize',FonsizeDefault);
+                    'rotation',90,'FontSize',FontSizeDefault);
             end
         catch, end
 
@@ -1796,7 +1796,7 @@ if EEG.trials>1
             end
             for ii = 1:numel(tagnum)
                 text(myeegviewer, [alltag1(ii)-lowlim+Trialstag/2],ylims(2)+1.1, [32,num2str(tagnum(ii))], ...
-                    'color', 'k','FontSize',FonsizeDefault, ...
+                    'color', 'k','FontSize',FontSizeDefault, ...
                     'horizontalalignment', 'left','rotation',90); %%
                 set(myeegviewer,'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)]);
             end
@@ -1969,7 +1969,7 @@ if EEG.trials>1
             'XTick',xtickstr,...
             'XTickLabel', tagtext,...
             'FontWeight','normal',...
-            'xaxislocation', 'bottom','FontSize',FonsizeDefault);
+            'xaxislocation', 'bottom','FontSize',FontSizeDefault);
         XTickLabel = cellstr(myeegviewer.XTickLabel);
         for Numofxtick = 1:length(XTickLabel)
             if strcmpi(XTickLabel{Numofxtick,:},'-0')
@@ -1997,15 +1997,15 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         line(myeegviewer,[leftintv,rightintv],[ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(1) ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew+ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
     end
     if EEGdispFlag~=0
         line(myeegviewer,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-AmpScale ylims(end)-AmpScale],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end) ylims(end)],'color','k','LineWidth',1, 'clipping','off');
-        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
-        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
+        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
     end
 end
 
@@ -2024,7 +2024,7 @@ if ~isempty(data) && PlotNum~=0
         'YColor','k',...
         'FontWeight','normal',...
         'TickDir', 'in',...
-        'LineWidth',0.5,'FontSize',FonsizeDefault);%%,'HorizontalAlignment','center'
+        'LineWidth',0.5,'FontSize',FontSizeDefault);%%,'HorizontalAlignment','center'
     count=0;
     for ii = length(myeegviewer.YTickLabel):-1:2
         count = count+1;

@@ -31,18 +31,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_bin_operation(FonsizeDefault);
+drawui_erp_bin_operation(FontSizeDefault);
 varargout{1} = ERP_bin_operation_gui;
 
-    function drawui_erp_bin_operation(FonsizeDefault)
-        FontSize_defualt = FonsizeDefault;
+    function drawui_erp_bin_operation(FontSizeDefault)
         Enable_label = 'off';
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
@@ -57,7 +56,7 @@ varargout{1} = ERP_bin_operation_gui;
             'ColumnWidth'   , {1000}, ...
             'ColumnName'    , [], ...
             'RowName'       , []);
-        set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
+        set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSizeDefault);
         gui_erp_bin_operation.Paras{1} = gui_erp_bin_operation.edit_bineq.Data;
         gui_erp_bin_operation.edit_bineq.KeyPressFcn = @erp_binop_presskey;
         gui_erp_bin_operation.edit_bineq.CellEditCallback = @equation_table_edited;
@@ -67,24 +66,24 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.equations_modified = false;  % True if user edits after loading file
         gui_erp_bin_operation.equation_selection = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Advanced','callback',@eq_advanced,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_load = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Load EQ','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Load EQ','callback',@eq_load,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_save = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Save EQ','callback',@eq_save,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_clear = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Clear','callback',@eq_clear,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
 
         %%%----------------Mode-----------------------------------
         gui_erp_bin_operation.mode_1 = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.mode_modify = uicontrol('Style','radiobutton','Parent',gui_erp_bin_operation.mode_1 ,...
-            'String','Modify existing ERPset (recursive updating)','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Modify existing ERPset (recursive updating)','callback',@mode_modify,'Value',1,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_bin_operation.Paras{2} = gui_erp_bin_operation.mode_modify.Value;
         gui_erp_bin_operation.mode_modify.KeyPressFcn = @erp_binop_presskey;
         %%--------------For create a new ERPset----------------------------
         gui_erp_bin_operation.mode_2 = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.mode_create = uicontrol('Style','radiobutton','Parent',gui_erp_bin_operation.mode_2 ,...
-            'String','New ERPset (independent transformations)','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','New ERPset (independent transformations)','callback',@mode_create,'Value',0,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_bin_operation.mode_create.KeyPressFcn = @erp_binop_presskey;
 
 
@@ -92,15 +91,15 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.run_title = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
         gui_erp_bin_operation.cancel= uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.run_title,...
-            'String','Cancel','callback',@binop_cancel,'FontSize',FontSize_defualt,'Enable','off','BackgroundColor',[1 1 1]); % 2F
+            'String','Cancel','callback',@binop_cancel,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
         gui_erp_bin_operation.run = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.run_title,...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Run','callback',@apply_run,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
         set(gui_erp_bin_operation.run_title, 'Sizes',[15 105  30 105 15]);
         gui_erp_bin_operation.note_title = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_erp_bin_operation.note_title,...
-            'String','Note: Operates on all bins and channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Note: Operates on all bins and channels','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         set(gui_erp_bin_operation.DataSelBox,'Sizes',[130,30,25,25,30 30]);
         estudioworkingmemory('ERPTab_binop',0);
     end

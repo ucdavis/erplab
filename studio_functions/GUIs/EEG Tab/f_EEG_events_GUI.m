@@ -33,18 +33,18 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_eeg_events(FonsizeDefault)
+drawui_eeg_events(FontSizeDefault)
 varargout{1} = EStudio_eeg_events_box;
 
-    function drawui_eeg_events(FonsizeDefault)
+    function drawui_eeg_events(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EStduio_eegtab_EEG_events.DataSelBox = uiextras.VBox('Parent', EStudio_eeg_events_box,'BackgroundColor',ColorB_def);
@@ -57,60 +57,60 @@ varargout{1} = EStudio_eeg_events_box;
         %%----------------title "EventList Operations"---------------------
         EStduio_eegtab_EEG_events.eventop_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.eventop_title,'FontWeight','bold',...
-            'String','EventList Operations:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','EventList Operations:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
 
         %%Create Eventlist and Import
         EStduio_eegtab_EEG_events.create_rt_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_events.create_eventlist = uicontrol('Style', 'pushbutton','Parent',   EStduio_eegtab_EEG_events.create_rt_title ,...
-            'String','Create','callback',@create_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Create','callback',@create_eventlist,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_events.imp_eventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.create_rt_title ,...
-            'String','Import .txt','callback',@imp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Import .txt','callback',@imp_eventlist,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_events.exp_eventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.create_rt_title,...
-            'String','Export .txt','callback',@exp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Export .txt','callback',@exp_eventlist,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
 
         %%export eventlist
         EStduio_eegtab_EEG_events.imp_exp_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
 
         EStduio_eegtab_EEG_events.vieweventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title,...
-            'String','View ','callback',@vieweventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','View ','callback',@vieweventlist,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
 
         EStduio_eegtab_EEG_events.imp_eventlist_exc = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title ,...
-            'String','Import .xls','callback',@imp_eventlist_exc,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Import .xls','callback',@imp_eventlist_exc,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_events.exp_eventlist_exc = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title,...
-            'String','Export .xls','callback',@exp_eventlist_exc,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Export .xls','callback',@exp_eventlist_exc,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
 
 
         EStduio_eegtab_EEG_events.imp_exp_title1 = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
 
         EStduio_eegtab_EEG_events.transfer_event = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.imp_exp_title1 ,...
-            'String','Transfer event info to EEG.event','callback',@transfer_event,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Transfer event info to EEG.event','callback',@transfer_event,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EStduio_eegtab_EEG_events.imp_exp_title1);
         set(EStduio_eegtab_EEG_events.imp_exp_title1,'Sizes',[200 -1]);
 
         %%------------title for "Other Operations"-------------------------
         EStduio_eegtab_EEG_events.eventotherop_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.eventotherop_title,'FontWeight','bold',...
-            'String','Other Operations:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Other Operations:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
 
         %%Summarize EEG event codes
         EStduio_eegtab_EEG_events.summarize_code_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_events.summarize_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.summarize_code_title,...
-            'String','Summarize event codes/bins in cmd window','callback',@summarize_code,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Summarize event codes/bins in cmd window','callback',@summarize_code,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EStduio_eegtab_EEG_events.summarize_code_title);
         set( EStduio_eegtab_EEG_events.summarize_code_title,'Sizes',[265 -1]);
 
         %%Shuffle events/bins/samples/
         EStduio_eegtab_EEG_events.shuffle_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_events.eeg_shuffle = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.shuffle_title ,...
-            'String','Shuffle events/bins/samples','callback',@eeg_shuffle,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Shuffle events/bins/samples','callback',@eeg_shuffle,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         %%export reaction times
         EStduio_eegtab_EEG_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.shuffle_title ,...
-            'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Export RTs','callback',@exp_rt,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[170 -1]);
 
         EStduio_eegtab_EEG_events.sumevent_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_events.sumevent_name = uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.sumevent_title,'FontWeight','bold',...
-            'String','Event Code Summary','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Event Code Summary','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         %%---------------------Table---------------------------------------
         EStduio_eegtab_EEG_events.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100
@@ -128,7 +128,7 @@ varargout{1} = EStudio_eeg_events_box;
         %%EEG setname and file name
         EStduio_eegtab_EEG_events.setfilename_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', EStduio_eegtab_EEG_events.setfilename_title,'String','Current EEG setname & file name',...
-            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
 
 
         EStduio_eegtab_EEG_events.setfilename_title2 = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);

@@ -37,25 +37,24 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_bin_operation(FonsizeDefault);
+drawui_erp_bin_operation(FontSizeDefault);
 varargout{1} = EEG_chan_operation_gui;
 
-    function drawui_erp_bin_operation(FonsizeDefault)
+    function drawui_erp_bin_operation(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.ALLEEG) && isempty(observe_EEGDAT.EEG)
             Enable_label = 'off';
@@ -75,7 +74,7 @@ varargout{1} = EEG_chan_operation_gui;
             'ColumnName'    , [], ...
             'RowName'       , []);
         gui_eegtab_chan_optn.Paras{1} = gui_eegtab_chan_optn.edit_bineq.Data;
-        set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
+        set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSizeDefault);
         gui_eegtab_chan_optn.edit_bineq.KeyPressFcn=  @eeg_chanop_presskey;
         gui_eegtab_chan_optn.edit_bineq.CellEditCallback = @equation_table_edited;
 
@@ -85,28 +84,28 @@ varargout{1} = EEG_chan_operation_gui;
 
         gui_eegtab_chan_optn.equation_selection = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.eq_load = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Load EQ','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Load EQ','callback',@eq_load,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_save = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Save EQ','callback',@eq_save,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_clear = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Clear','callback',@eq_clear,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
 
         gui_eegtab_chan_optn.asst_locaInfo = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.eq_editor = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
-            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Advanced','callback',@eq_advanced,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.ref_asst = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
-            'String','Reference Assist','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Reference Assist','callback',@ref_asst,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
 
         %%%----------------Mode-----------------------------------
         gui_eegtab_chan_optn.mode_1 = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.mode_modify = uicontrol('Style','radiobutton','Parent',gui_eegtab_chan_optn.mode_1 ,...
-            'String','Modify existing dataset (recursive updating)','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Modify existing dataset (recursive updating)','callback',@mode_modify,'Value',1,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_eegtab_chan_optn.mode_modify.KeyPressFcn=  @eeg_chanop_presskey;
         gui_eegtab_chan_optn.Paras{3} =gui_eegtab_chan_optn.mode_modify.Value;
         %%--------------For create a new ERPset----------------------------
         gui_eegtab_chan_optn.mode_2 = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.mode_create = uicontrol('Style','radiobutton','Parent',gui_eegtab_chan_optn.mode_2 ,...
-            'String','New dataset (independent transformations)','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','New dataset (independent transformations)','callback',@mode_create,'Value',0,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_eegtab_chan_optn.mode_create.KeyPressFcn=  @eeg_chanop_presskey;
 
         uiextras.Empty('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
@@ -114,7 +113,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.loca_info_row = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_eegtab_chan_optn.loca_info_row,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.locaInfor = uicontrol('Style','checkbox','Parent',gui_eegtab_chan_optn.loca_info_row,...
-            'String','Try to preserve location information','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Try to preserve location information','callback',@loca_infor,'FontSize',FontSizeDefault,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         uiextras.Empty('Parent', gui_eegtab_chan_optn.loca_info_row,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.Paras{2} = gui_eegtab_chan_optn.locaInfor.Value;
         set(gui_eegtab_chan_optn.loca_info_row,'Sizes',[-1 220 -1]);
@@ -123,10 +122,10 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.run_title = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.cancel = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.run_title,...
-            'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@chanop_cancel,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.chanop_apply = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.run_title,...
-            'String','Run','callback',@chanop_eeg_apply,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Run','callback',@chanop_eeg_apply,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         set(gui_eegtab_chan_optn.run_title,'Sizes',[15 105  30 105 15]);
 

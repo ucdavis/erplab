@@ -37,19 +37,19 @@ end
 
 
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_do_mvpa(FonsizeDefault);
+drawui_do_mvpa(FontSizeDefault);
 
 varargout{1} = box_bestset_gui;
 
 % Draw the ui
-    function drawui_do_mvpa(FonsizeDefault)
+    function drawui_do_mvpa(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -63,7 +63,7 @@ varargout{1} = box_bestset_gui;
         try Paras_mvpa = MVPCA_panelparas{1}; catch Paras_mvpa = [];end
         Docode_do_mvpa.select_classes_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.select_classes_title,...
-            'String','Select Classes To Decode Across:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Select Classes To Decode Across:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         %%class all vs custom
         try selclass_all = Paras_mvpa{1}; catch selclass_all = 1;end
         if isempty(selclass_all) || numel(selclass_all)~=1 || (selclass_all~=0 && selclass_all~=1)
@@ -71,22 +71,22 @@ varargout{1} = box_bestset_gui;
         end
         Docode_do_mvpa.select_classes = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.selclass_all = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.select_classes ,'Value',selclass_all,...
-            'String','All','callback',@selclass_all,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','All','callback',@selclass_all,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.selclass_all.KeyPressFcn=  @decode_mvpc_presskey;
         Docode_do_mvpa.selclass_custom = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.select_classes ,'Value',~selclass_all,...
-            'String','Custom','callback',@selclass_custom,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Custom','callback',@selclass_custom,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.selclass_custom.KeyPressFcn=  @decode_mvpc_presskey;
         Docode_do_mvpa.Paras{1} = Docode_do_mvpa.selclass_all.Value;
 
         %%defined class
         Docode_do_mvpa.select_classes_custom = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.select_classes_custom,...
-            'String','Class ID','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Class ID','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.selclass_custom_defined = uicontrol('Style', 'edit','Parent', Docode_do_mvpa.select_classes_custom ,'Value',0,...
-            'String',' ','callback',@selclass_custom_defined,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@selclass_custom_defined,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.selclass_custom_defined.KeyPressFcn=  @decode_mvpc_presskey;
         Docode_do_mvpa.selclass_custom_browse = uicontrol('Style', 'pushbutton','Parent', Docode_do_mvpa.select_classes_custom ,'Value',0,...
-            'String','Browse','callback',@selclass_custom_browse,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@selclass_custom_browse,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.selclass_custom_browse.KeyPressFcn=  @decode_mvpc_presskey;
         set(Docode_do_mvpa.select_classes_custom,'Sizes',[60 -1 60]);
         try selclass_custom_defined = Paras_mvpa{2}; catch selclass_custom_defined = 1;end
@@ -96,26 +96,26 @@ varargout{1} = box_bestset_gui;
         %%--------------------decoding parameters--------------------------
         Docode_do_mvpa.decode_paras_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.decode_paras_title ,...
-            'String','Decoding Parameters:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Decoding Parameters:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.no_class_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  Docode_do_mvpa.no_class_title  ,...
-            'String','Number of Classes/Bins','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Number of Classes/Bins','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.no_class = uicontrol('Style', 'edit','Parent',  Docode_do_mvpa.no_class_title  ,'Value',0,...
-            'String',' ','Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String',' ','Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(Docode_do_mvpa.no_class_title ,'Sizes',[140 -1]);
         %%chance
         Docode_do_mvpa.chance_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  Docode_do_mvpa.chance_title  ,...
-            'String','Chance','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Chance','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.chance = uicontrol('Style', 'edit','Parent',  Docode_do_mvpa.chance_title ,...
-            'String',' ','Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String',' ','Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(Docode_do_mvpa.chance_title ,'Sizes',[140 -1]);
         %%Number of cross folds
         Docode_do_mvpa.folds_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  Docode_do_mvpa.folds_title  ,...
-            'String','Cross-validation Folds','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Cross-validation Folds','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.foldsnum = uicontrol('Style', 'edit','Parent',  Docode_do_mvpa.folds_title,...
-            'String',' ','callback',@foldsnum,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@foldsnum,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(Docode_do_mvpa.folds_title ,'Sizes',[140 -1]);
         try foldsnum = Paras_mvpa{3}; catch foldsnum = 3;end
         if isempty(foldsnum) || numel(foldsnum)~=1 || any(foldsnum(:)<2)
@@ -126,12 +126,12 @@ varargout{1} = box_bestset_gui;
         %%channels
         Docode_do_mvpa.channels_custom = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.channels_custom ,...
-            'String','Channels','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Channels','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.channels_edit = uicontrol('Style', 'edit','Parent', Docode_do_mvpa.channels_custom,...
-            'String',' ','callback',@channels_edit,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@channels_edit,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.channels_edit.KeyPressFcn=  @decode_mvpc_presskey;
         Docode_do_mvpa.channels_browse = uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.channels_custom ,...
-            'String','Browse','callback',@channels_browse,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@channels_browse,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.channels_browse.KeyPressFcn=  @decode_mvpc_presskey;
         set(Docode_do_mvpa.channels_custom,'Sizes',[60 -1 60]);
         try channels_edit = Paras_mvpa{4}; catch channels_edit = [];end
@@ -143,9 +143,9 @@ varargout{1} = box_bestset_gui;
         %%Iterations
         Docode_do_mvpa.iter_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.iter_title ,...
-            'String','Iterations','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Iterations','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.iter_edit = uicontrol('Style', 'edit','Parent', Docode_do_mvpa.iter_title,...
-            'String',' ','callback',@iter_edit,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@iter_edit,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.iter_edit.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.iter_title );
         set(Docode_do_mvpa.iter_title,'Sizes',[60 -1 60]);
@@ -166,25 +166,25 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.Paras{6} = classtrialType;
         Docode_do_mvpa.trialsAVGs_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.trialsAVGs_title,...
-            'String','Number of trials and averages:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Number of trials and averages:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
 
         %%Equal Trials, Max Averages # 1 2 3
         Docode_do_mvpa.eq_trials_maxavg_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eq_trials_maxavg = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.eq_trials_maxavg_title,'Value',1,...
-            'String','Equal Trials, Max Averages','callback',@eq_trials_max_avg,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Equal Trials, Max Averages','callback',@eq_trials_max_avg,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eq_trials_maxavg.KeyPressFcn=  @decode_mvpc_presskey;
 
         %%Equal trials, Equal Averages # 4 5 6
         Docode_do_mvpa.eqtrials_eqavgs_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eqtrials_eqavgs = uicontrol('Style', 'radiobutton','Parent',  Docode_do_mvpa.eqtrials_eqavgs_title,'Value',0,...
-            'String','Equal Trials, Equal Averages','callback',@eqtrials_eqavgs,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Equal Trials, Equal Averages','callback',@eqtrials_eqavgs,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eqtrials_eqavgs.KeyPressFcn=  @decode_mvpc_presskey;
 
         %%across Classes
         Docode_do_mvpa.eq_trials_acrclass_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_acrclass_title);
         Docode_do_mvpa.eq_trials_acrclas_radio = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.eq_trials_acrclass_title,'Value',0,...
-            'String','Across Classes','callback',@eq_trials_acrclas_radio,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Across Classes','callback',@eq_trials_acrclas_radio,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eq_trials_acrclas_radio.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_acrclass_title);
         set(Docode_do_mvpa.eq_trials_acrclass_title,'Sizes',[20 140 -1]);
@@ -193,7 +193,7 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.eq_trials_acrbest_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_acrbest_title);
         Docode_do_mvpa.eq_trials_acrbest_checkbox = uicontrol('Style', 'checkbox','Parent', Docode_do_mvpa.eq_trials_acrbest_title,'Value',0,...
-            'String','Across BESTsets','callback',@eq_trials_acrbest_checkbox,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Across BESTsets','callback',@eq_trials_acrbest_checkbox,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.eq_trials_acrbest_checkbox.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.eq_trials_acrbest_title);
         set(Docode_do_mvpa.eq_trials_acrbest_title,'Sizes',[40 140 -1]);
@@ -202,10 +202,10 @@ varargout{1} = box_bestset_gui;
         Docode_do_mvpa.manfloor_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Docode_do_mvpa.manfloor_title);
         Docode_do_mvpa.manfloor_radio = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.manfloor_title,'Value',0,...
-            'String','Manual Floor','callback',@manfloor_radio,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Manual Floor','callback',@manfloor_radio,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.manfloor_radio.KeyPressFcn=  @decode_mvpc_presskey;
         Docode_do_mvpa.manfloor_edit = uicontrol('Style', 'edit','Parent', Docode_do_mvpa.manfloor_title,...
-            'String','','callback',@manfloor_edit,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','','callback',@manfloor_edit,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(Docode_do_mvpa.manfloor_title,'Sizes',[20 140 -1]);
 
         try manfloor_edit = Paras_mvpa{7}; catch manfloor_edit = 1;end
@@ -257,7 +257,7 @@ varargout{1} = box_bestset_gui;
         %%Max Trials, Equal AVGs
         Docode_do_mvpa.max_trials_equalavg_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.max_trials_equalavg = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.max_trials_equalavg_title,'Value',0,...
-            'String','Max Trials, Equal Averages','callback',@Maxtrials_equalavg,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Max Trials, Equal Averages','callback',@Maxtrials_equalavg,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.max_trials_equalavg.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.max_trials_equalavg_title);
         set(Docode_do_mvpa.max_trials_equalavg_title,'Sizes',[160 -1]);
@@ -267,16 +267,16 @@ varargout{1} = box_bestset_gui;
         %%----------------------------------metrics-----------------------
         Docode_do_mvpa.metric_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.metric_title,...
-            'String','Metric','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Metric','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         try metric_edit = Paras_mvpa{8}; catch metric_edit = 1;end
         %%ACC
         Docode_do_mvpa.decodemetrics_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.metric_ACC = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.decodemetrics_title,'Value',metric_edit,...
-            'String','ACC','callback',@metric_ACC,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','ACC','callback',@metric_ACC,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.metric_ACC.KeyPressFcn=  @decode_mvpc_presskey;
         %%AUC
         Docode_do_mvpa.metric_AUC = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.decodemetrics_title,'Value',~metric_edit,...
-            'String','AUC','callback',@metric_AUC,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','AUC','callback',@metric_AUC,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.metric_AUC.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.decodemetrics_title);
         set(Docode_do_mvpa.decodemetrics_title,'Sizes',[100 100 -1]);
@@ -286,16 +286,16 @@ varargout{1} = box_bestset_gui;
         %%----------------------------------Normalization-----------------------
         Docode_do_mvpa.nor_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.nor_title,...
-            'String','Normalization','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Normalization','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         try nor_edit = Paras_mvpa{9}; catch nor_edit = 1;end
         %%On
         Docode_do_mvpa.decodenor_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.nor_on = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.decodenor_title,'Value',~nor_edit,...
-            'String','On','callback',@nor_on,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','On','callback',@nor_on,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.nor_on.KeyPressFcn=  @decode_mvpc_presskey;
         %%Off
         Docode_do_mvpa.nor_off = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.decodenor_title,'Value',nor_edit,...
-            'String','Off','callback',@nor_off,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Off','callback',@nor_off,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.nor_off.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.decodenor_title);
         set(Docode_do_mvpa.decodenor_title,'Sizes',[100 100 -1]);
@@ -303,16 +303,16 @@ varargout{1} = box_bestset_gui;
         %%----------------------------------temporal generalization matrix-----------------------
         Docode_do_mvpa.tgm_title = uiextras.HBox('Parent',  Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', Docode_do_mvpa.tgm_title,...
-            'String','Temporal generalization matrix','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Temporal generalization matrix','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         try TGM_edit = Paras_mvpa{10}; catch TGM_edit = 1;end
         %%On
         Docode_do_mvpa.decodetgm_title = uiextras.HBox('Parent',   Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.tgm_on = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.decodetgm_title,'Value',~TGM_edit,...
-            'String','On','callback',@tgm_on,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','On','callback',@tgm_on,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.tgm_on.KeyPressFcn=  @decode_mvpc_presskey;
         %%Off
         Docode_do_mvpa.tgm_off = uicontrol('Style', 'radiobutton','Parent', Docode_do_mvpa.decodetgm_title,'Value',TGM_edit,...
-            'String','Off','callback',@tgm_off,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Off','callback',@tgm_off,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.tgm_off.KeyPressFcn=  @decode_mvpc_presskey;
         uiextras.Empty('Parent', Docode_do_mvpa.decodetgm_title);
         set(Docode_do_mvpa.decodetgm_title,'Sizes',[100 100 -1]);
@@ -322,7 +322,7 @@ varargout{1} = box_bestset_gui;
         %%Table is to display the bin descriptions
         Docode_do_mvpa.bindecps_title2 = uiextras.HBox('Parent',Docode_do_mvpa.vBox_decode,'Spacing',1,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.table_bins=  uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.bindecps_title2,'Value',0,...
-            'String','Show summary of trials and averages','callback',@sum_avg_trials,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Show summary of trials and averages','callback',@sum_avg_trials,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         estudioworkingmemory('MVPA_sum_avg_trial',0);
         % Docode_do_mvpa.table_bins = uitable(  ...
         %     'Parent'        , Docode_do_mvpa.bindecps_title2,...
@@ -335,11 +335,11 @@ varargout{1} = box_bestset_gui;
         %%-----------------------Cancel and Run----------------------------
         Docode_do_mvpa.detar_run_title = uiextras.HBox('Parent', Docode_do_mvpa.vBox_decode,'BackgroundColor',ColorB_def);
         Docode_do_mvpa.mvpa_cancel = uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
-            'String','Cancel','callback',@mvpa_cancel,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@mvpa_cancel,'FontSize',FontSizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.mvpa_ops = uicontrol('Style', 'pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
-            'String','Options','callback',@mvpa_ops,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
+            'String','Options','callback',@mvpa_ops,'FontSize',FontSizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         Docode_do_mvpa.mvpa_run = uicontrol('Style','pushbutton','Parent',Docode_do_mvpa.detar_run_title,...
-            'String','Run','callback',@mvpa_run,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@mvpa_run,'FontSize',FontSizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
 
         set(Docode_do_mvpa.vBox_decode,'Sizes',[20 15 25 20 25 25 25 25 25 20 18 18 25 16 16 25 15 15 15 15 18 15 25 30]);
         try  Docode_do_mvpa.paras_ops = MVPCA_panelparas{2}; catch  Docode_do_mvpa.paras_ops = [];end

@@ -492,9 +492,9 @@ end
 % -------------------------draw events if any------------------------------
 % -------------------------------------------------------------------------
 
-FonsizeDefault = f_get_default_fontsize();
-if isempty(FonsizeDefault) || numel(FonsizeDefault)~=1|| any(FonsizeDefault(:)<=0)
-    FonsizeDefault=10;
+FontSizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault) || numel(FontSizeDefault)~=1|| any(FontSizeDefault(:)<=0)
+    FontSizeDefault=10;
 end
 
 if EventOnset==1 && ~isempty(data)
@@ -518,7 +518,7 @@ if EventOnset==1 && ~isempty(data)
     for index = 1:length(event2plot)
         %Just repeat for the first one
         if index == 1
-            EVENTFONT = [' \fontsize{',num2str(FonsizeDefault),'} '];
+            EVENTFONT = [' \fontsize{',num2str(FontSizeDefault),'} '];
         end
         
         % draw latency line
@@ -573,7 +573,7 @@ if EventOnset==1 && ~isempty(data)
                 tmph2 = text(hbig, [tmplat], ylims(2)-0.005, [EVENTFONT evntxt], ...
                     'color', Eventcolors{ event2plot(index) }, ...
                     'horizontalalignment', 'left',...
-                    'rotation',90,'FontSize',FonsizeDefault);
+                    'rotation',90,'FontSize',FontSizeDefault);
             end
         catch, end
         
@@ -626,7 +626,7 @@ if EEG.trials==1
         AmpScale = OldAmpScale;
         set(hbig, 'Xlim',[1 Winlength*multiplier+1],...
             'XTick',[1:multiplier*DEFAULT_GRID_SPACING:Winlength*multiplier+1]);
-        set(hbig, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'),'FontSize',FonsizeDefault);
+        set(hbig, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'),'FontSize',FontSizeDefault);
         %%
         %%-----------------plot scale------------------
         leftintv = Winlength*multiplier+1;
@@ -670,7 +670,7 @@ if EEG.trials>1
             % 		'XTick',alltag-lowlim+Trialstag/2, 'YTick',[],'xaxislocation', 'top');
             for ii = 1:numel(tagnum)
                 text(hbig, [alltag1(ii)-lowlim+Trialstag/2],ylims(2)+1.1, [32,num2str(tagnum(ii))], ...
-                    'color', 'k','FontSize',FonsizeDefault, ...
+                    'color', 'k','FontSize',FontSizeDefault, ...
                     'horizontalalignment', 'left','rotation',90); %%
                 set(hbig,'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)]);
             end
@@ -842,7 +842,7 @@ if EEG.trials>1
             'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)],...
             'XTick',xtickstr,...
             'FontWeight','normal',...
-            'xaxislocation', 'bottom','FontSize',FonsizeDefault);
+            'xaxislocation', 'bottom','FontSize',FontSizeDefault);
         XTickLabel = cellstr(hbig.XTickLabel);
         for Numofxtick = 1:length(XTickLabel)
             if strcmpi(XTickLabel{Numofxtick,:},'-0')
@@ -868,15 +868,15 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         line(hbig,[leftintv,rightintv],[ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(1) ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew+ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
-        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
     end
     if EEGdispFlag~=0
         line(hbig,[leftintv,rightintv],[ylims(end)-OldAmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-OldAmpScale ylims(end)-OldAmpScale],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end) ylims(end)],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(OldAmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
-        text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(OldAmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FontSizeDefault);
     end
     
     
@@ -894,7 +894,7 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         'YColor','k',...
         'FontWeight','normal',...
         'TickDir', 'in',...
-        'LineWidth',0.5,'FontSize',FonsizeDefault);%%,'HorizontalAlignment','center'
+        'LineWidth',0.5,'FontSize',FontSizeDefault);%%,'HorizontalAlignment','center'
     count=0;
     for ii = length(hbig.YTickLabel):-1:2
         count = count+1;

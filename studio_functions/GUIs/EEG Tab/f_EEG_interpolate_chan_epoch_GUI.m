@@ -35,26 +35,25 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_ic_chan_eeg(FonsizeDefault)
+drawui_ic_chan_eeg(FontSizeDefault)
 varargout{1} = box_interpolate_chan_epoch;
 
-    function drawui_ic_chan_eeg(FonsizeDefault)
+    function drawui_ic_chan_eeg(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         Enable_label = 'off';
         %%--------------------channel and bin setting----------------------
@@ -64,7 +63,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.mode_1 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_1,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.mode_modify = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.mode_1 ,...
-            'String','Modify existing dataset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Modify existing dataset','callback',@mode_modify,'Value',1,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mode_modify.KeyPressFcn = @eeg_interpolatechan_presskey;
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_1,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_interpolate_chan_epoch.mode_1,'Sizes',[-1 160 -1]);
@@ -72,7 +71,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.mode_2 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_2,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.mode_create = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.mode_2 ,...
-            'String','Create new dataset','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Create new dataset','callback',@mode_create,'Value',0,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.mode_2,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_interpolate_chan_epoch.mode_2,'Sizes',[-1 160 -1]);
         Eegtab_EEG_interpolate_chan_epoch.mode_create.KeyPressFcn = @eeg_interpolatechan_presskey;
@@ -96,13 +95,13 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         
         uicontrol('Style','text','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title,...
-            'String','Interpolated chan','FontSize',FontSize_defualt,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Interpolated chan','FontSize',FontSizeDefault,'Enable','on','BackgroundColor',ColorB_def); % 2F
         
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title,...
-            'String','','FontSize',FontSize_defualt,'callback',@interpolate_chan_edit,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','','FontSize',FontSizeDefault,'callback',@interpolate_chan_edit,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.KeyPressFcn = @eeg_interpolatechan_presskey;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_browse = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title,...
-            'String','Browse','FontSize',FontSize_defualt,'callback',@interpolate_chan_browse,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','FontSize',FontSizeDefault,'callback',@interpolate_chan_browse,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set( Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title,'Sizes',[100 -1 60]);
         Eegtab_EEG_interpolate_chan_epoch.Parameters{2} = str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         
@@ -111,14 +110,14 @@ varargout{1} = box_interpolate_chan_epoch;
 
         Eegtab_EEG_interpolate_chan_epoch.interpolate_method_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_methods= uicontrol('Style','text','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_method_title,...
-            'String','Interpolation method:','FontSize',FontSize_defualt,'HorizontalAlignment','center','FontWeight','bold','Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Interpolation method:','FontSize',FontSizeDefault,'HorizontalAlignment','center','FontWeight','bold','Enable','on','BackgroundColor',ColorB_def); % 2F
 
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1 ,...
-            'String','Inverse distances','callback',@interpolate_inverse,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',~InterpValue); % 2F
+            'String','Inverse distances','callback',@interpolate_inverse,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',~InterpValue); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.KeyPressFcn = @eeg_interpolatechan_presskey;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1,...
-            'String','Spherical','callback',@interpolate_spherical,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',InterpValue); % 2F
+            'String','Spherical','callback',@interpolate_spherical,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',InterpValue); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.KeyPressFcn = @eeg_interpolatechan_presskey;
         set(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add1,'Sizes',[-1 -1]);
         Eegtab_EEG_interpolate_chan_epoch.Parameters{3} = Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value;
@@ -126,7 +125,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add2 = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan = uicontrol('Style','checkbox','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add2,...
-            'String','Ignored chans','callback',@ignore_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','Ignored chans','callback',@ignore_chan,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan.KeyPressFcn = @eeg_interpolatechan_presskey;
         Eegtab_EEG_interpolate_chan_epoch.Parameters{4}  = Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value;
         if isempty(ignoreChannels)
@@ -135,7 +134,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value = 1;
         end
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add2 ,...
-            'String',' ','callback',@ignore_chan_edit,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String',' ','callback',@ignore_chan_edit,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.KeyPressFcn = @eeg_interpolatechan_presskey;
         try
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = num2str(ignoreChannels);
@@ -143,7 +142,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
         end
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan_browse = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add2 ,...
-            'String','Browse','callback',@ignore_chan_browse,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','callback',@ignore_chan_browse,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_title_add2,'Sizes',[110 -1 60]);
         Eegtab_EEG_interpolate_chan_epoch.Parameters{5} = str2num(Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String);
         
@@ -151,7 +150,7 @@ varargout{1} = box_interpolate_chan_epoch;
         %%interpoate all time points
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch_title,...
-            'String','Interpolate all time points','callback',@interpolate_op_all_epoch,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'String','Interpolate all time points','callback',@interpolate_op_all_epoch,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.KeyPressFcn = @eeg_interpolatechan_presskey;
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch_title);
         set(Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch_title,'Sizes',[160 -1]);
@@ -161,7 +160,7 @@ varargout{1} = box_interpolate_chan_epoch;
         %%interpoate marked epochs  and its advanced options
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,...
-            'String','Interpolate epochs with this flag:','callback',@interpolate_marked_epoch_op,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
+            'String','Interpolate epochs with this flag:','callback',@interpolate_marked_epoch_op,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.KeyPressFcn = @eeg_interpolatechan_presskey;
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title);
         set(Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_title,'Sizes',[250 -1]);
@@ -169,21 +168,21 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         
         Eegtab_EEG_interpolate_chan_epoch.mflag1 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag1,'String','1','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
+            'callback',@mflag1,'String','1','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',1); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag2 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag2,'String','2','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag2,'String','2','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag3 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag3,'String','3','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag3,'String','3','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag4 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag4,'String','4','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag4,'String','4','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag5 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag5,'String','5','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag5,'String','5','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag6 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag6,'String','6','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag6,'String','6','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag7 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag7,'String','7','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag7,'String','7','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag8 = uicontrol('Style','radiobutton','Parent',Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,...
-            'callback',@mflag8,'String','8','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
+            'callback',@mflag8,'String','8','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',Enable_label,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_interpolate_chan_epoch.mflag = [1,0,0,0,0,0,0,0];
         set( Eegtab_EEG_interpolate_chan_epoch.interpolate_mflags_title,'Sizes',[33 33 33 33 33 33 33 33]);
         Eegtab_EEG_interpolate_chan_epoch.Parameters{7}= Eegtab_EEG_interpolate_chan_epoch.mflag;
@@ -192,10 +191,10 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.advanced_run_title = uiextras.HBox('Parent', Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.advanced_run_title);
         Eegtab_EEG_interpolate_chan_epoch.cancel = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_interpolate_chan_epoch.advanced_run_title,...
-            'String','Cancel','callback',@interpolated_chan_cancel,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@interpolated_chan_cancel,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.advanced_run_title);
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_interpolate_chan_epoch.advanced_run_title,...
-            'String','Run','callback',@interpolate_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@interpolate_run,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.advanced_run_title);
         set(Eegtab_EEG_interpolate_chan_epoch.advanced_run_title,'Sizes',[10,-1,30,-1,10]);
         

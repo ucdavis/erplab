@@ -33,17 +33,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_bin_operation(FonsizeDefault);
+drawui_erp_bin_operation(FontSizeDefault);
 varargout{1} = EEG_CSD_gui;
 
-    function drawui_erp_bin_operation(FontSize_defualt)
+    function drawui_erp_bin_operation(FontSizeDefault)
         Enable_label = 'off';
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
@@ -52,28 +52,28 @@ varargout{1} = EEG_CSD_gui;
         %%Parameters
         gui_eeg_CSD.sif_title = uiextras.HBox('Parent', gui_eeg_CSD.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_CSD.sif_text = uicontrol('Style','text','Parent', gui_eeg_CSD.sif_title,...
-            'String','Spline interpolation flexibility m-constant value (4 is recommended)','FontSize',FontSize_defualt,'Max',10,'BackgroundColor',ColorB_def); % 2F
+            'String','Spline interpolation flexibility m-constant value (4 is recommended)','FontSize',FontSizeDefault,'Max',10,'BackgroundColor',ColorB_def); % 2F
         
         gui_eeg_CSD.sif_num = uicontrol('Style','edit','Parent', gui_eeg_CSD.sif_title,...
-            'String','4','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_sif,'BackgroundColor',[1 1 1]); % 2F
+            'String','4','FontSize',FontSizeDefault,'Enable',Enable_label,'callback',@csd_sif,'BackgroundColor',[1 1 1]); % 2F
         set(gui_eeg_CSD.sif_title,'Sizes',[210,50]);
         gui_eeg_CSD.sif_num.KeyPressFcn = @eeg_csd_presskey;
         gui_eeg_CSD.Para{1} = str2num(gui_eeg_CSD.sif_num.String);
         gui_eeg_CSD.scl_title = uiextras.HBox('Parent', gui_eeg_CSD.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_CSD.scl_text = uicontrol('Style','text','Parent', gui_eeg_CSD.scl_title,...
-            'String','Smoothing constant lambda (0.00001 is recommended)','FontSize',FontSize_defualt,'Max',10,'BackgroundColor',ColorB_def); % 2F
+            'String','Smoothing constant lambda (0.00001 is recommended)','FontSize',FontSizeDefault,'Max',10,'BackgroundColor',ColorB_def); % 2F
         
         gui_eeg_CSD.scl_num = uicontrol('Style','edit','Parent', gui_eeg_CSD.scl_title,...
-            'String','0.00001','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_scl,'BackgroundColor',[1 1 1]); % 2F
+            'String','0.00001','FontSize',FontSizeDefault,'Enable',Enable_label,'callback',@csd_scl,'BackgroundColor',[1 1 1]); % 2F
         set(gui_eeg_CSD.scl_title,'Sizes',[210,50]);
         gui_eeg_CSD.scl_num.KeyPressFcn = @eeg_csd_presskey;
         gui_eeg_CSD.Para{2} = str2num(gui_eeg_CSD.scl_num.String);
         gui_eeg_CSD.hr_title = uiextras.HBox('Parent', gui_eeg_CSD.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_CSD.hr_text = uicontrol('Style','text','Parent', gui_eeg_CSD.hr_title,...
-            'String','Head radius CSD rescaling values (10cm is recommended)','FontSize',FontSize_defualt,'Max',10,'BackgroundColor',ColorB_def); % 2F
+            'String','Head radius CSD rescaling values (10cm is recommended)','FontSize',FontSizeDefault,'Max',10,'BackgroundColor',ColorB_def); % 2F
         
         gui_eeg_CSD.hr_num = uicontrol('Style','edit','Parent', gui_eeg_CSD.hr_title,...
-            'String','10','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_hr,'BackgroundColor',[1 1 1]); % 2F
+            'String','10','FontSize',FontSizeDefault,'Enable',Enable_label,'callback',@csd_hr,'BackgroundColor',[1 1 1]); % 2F
         set(gui_eeg_CSD.hr_title,'Sizes',[210,50]);
         gui_eeg_CSD.hr_num.KeyPressFcn = @eeg_csd_presskey;
         gui_eeg_CSD.Para{3} = str2num(gui_eeg_CSD.hr_num.String);
@@ -82,10 +82,10 @@ varargout{1} = EEG_CSD_gui;
         gui_eeg_CSD.run_title = uiextras.HBox('Parent', gui_eeg_CSD.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_eeg_CSD.run_title);
         gui_eeg_CSD.cancel= uicontrol('Style','pushbutton','Parent', gui_eeg_CSD.run_title ,'Enable',Enable_label,...
-            'String','Cancel','callback',@tool_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
+            'String','Cancel','callback',@tool_cancel,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Max',10); % 2F
         uiextras.Empty('Parent',  gui_eeg_CSD.run_title);
         gui_eeg_CSD.run = uicontrol('Style','pushbutton','Parent',gui_eeg_CSD.run_title,...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Run','callback',@apply_run,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_eeg_CSD.run_title);
         set(gui_eeg_CSD.run_title,'Sizes',[15 105  30 105 15]);
         set(gui_eeg_CSD.DataSelBox,'Sizes',[40,40,40,30]);

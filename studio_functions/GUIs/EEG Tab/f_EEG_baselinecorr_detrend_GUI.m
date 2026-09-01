@@ -27,18 +27,18 @@ end
 
 gui_eeg_blc_dt = struct();
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-EEG_blc_dt_gui(FonsizeDefault);
+EEG_blc_dt_gui(FontSizeDefault);
 varargout{1} = EEG_basecorr_detrend_box;
 
 
-    function EEG_blc_dt_gui(FonsizeDefault)
+    function EEG_blc_dt_gui(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 
         Enable_label = 'off';
@@ -47,37 +47,37 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%Measurement type
         gui_eeg_blc_dt.blc_dt_type_title = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_eeg_blc_dt.blc_dt_type_title,...
-            'String','Type:','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
+            'String','Type:','FontWeight','bold','FontSize',FontSizeDefault ,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.blc_dt_option = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.blc = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_dt_option,...
-            'String','Baseline Correction','callback',@baseline_correction_EEG,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Baseline Correction','callback',@baseline_correction_EEG,'Value',1,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.blcp.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.dt = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_dt_option,...
-            'String','Linear detrend','callback',@detrend_EEG,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Linear detrend','callback',@detrend_EEG,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.dt.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.EEGTab_baseline_detrend{1} = gui_eeg_blc_dt.blc.Value;
 
         %%Baseline period: Pre, post whole custom
         gui_eeg_blc_dt.blc_dt_baseline_period_title = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.blc_dt_title = uicontrol('Style', 'text','Parent', gui_eeg_blc_dt.blc_dt_baseline_period_title,...
-            'String','Baseline Period:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Baseline Period:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
 
         gui_eeg_blc_dt.blc_dt_bp_option = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.pre = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_dt_bp_option,...
-            'String','Pre','callback',@pre_EEG,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Pre','callback',@pre_EEG,'Value',1,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.pre.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.post = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_dt_bp_option,...
-            'String','Post','callback',@post_EEG,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Post','callback',@post_EEG,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.post.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.whole = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_dt_bp_option,...
-            'String','Whole','callback',@whole_EEG,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Whole','callback',@whole_EEG,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.whole.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.blc_dt_bp_option_cust = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.custom = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_dt_bp_option_cust,...
-            'String','Custom (ms) [start stop]','callback',@custom_EEG,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Custom (ms) [start stop]','callback',@custom_EEG,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.custom.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.custom_edit = uicontrol('Style', 'edit','Parent', gui_eeg_blc_dt.blc_dt_bp_option_cust,...
-            'String','','callback',@custom_edit,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','','callback',@custom_edit,'Enable',Enable_label,'FontSize',FontSizeDefault);
         gui_eeg_blc_dt.custom_edit.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         set(gui_eeg_blc_dt.blc_dt_bp_option_cust, 'Sizes',[160  100]);
         if gui_eeg_blc_dt.pre.Value==1
@@ -94,13 +94,13 @@ varargout{1} = EEG_basecorr_detrend_box;
         %%Bin and channels selection
         gui_eeg_blc_dt.blc_dt_bin_chan_title = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_eeg_blc_dt.blc_dt_bin_chan_title,...
-            'String','Chan Selection:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Chan Selection:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.blc_bin_chan_option = uiextras.HBox('Parent',  gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.all_bin_chan = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_bin_chan_option,...
-            'String','All (Recommended)','callback',@All_bin_chan,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','All (Recommended)','callback',@All_bin_chan,'Value',1,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.all_bin_chan.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         gui_eeg_blc_dt.Selected_bin_chan = uicontrol('Style', 'radiobutton','Parent', gui_eeg_blc_dt.blc_bin_chan_option,...
-            'String','Selected chan','callback',@Selected_bin_chan,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Selected chan','callback',@Selected_bin_chan,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.Selected_bin_chan.KeyPressFcn= @EEG_blcorrdetrend_presskey;
         set(gui_eeg_blc_dt.blc_bin_chan_option, 'Sizes',[135  175]);
         gui_eeg_blc_dt.EEGTab_baseline_detrend{3} = gui_eeg_blc_dt.all_bin_chan.Value;
@@ -108,10 +108,10 @@ varargout{1} = EEG_basecorr_detrend_box;
         gui_eeg_blc_dt.other_option = uiextras.HBox('Parent',gui_eeg_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_eeg_blc_dt.other_option,'BackgroundColor',ColorB_def);
         gui_eeg_blc_dt.Cancel = uicontrol('Parent',gui_eeg_blc_dt.other_option,'Style','pushbutton',...
-            'String','Cancel','callback',@Cancel_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@Cancel_blc_dt,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_blc_dt.other_option);
         gui_eeg_blc_dt.apply = uicontrol('Style','pushbutton','Parent',gui_eeg_blc_dt.other_option,...
-            'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_blc_dt.other_option);
         set(gui_eeg_blc_dt.other_option, 'Sizes',[15 105  30 105 15]);
 

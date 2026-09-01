@@ -174,9 +174,9 @@ end
 gui_baseline = erp_m_t_Baseline_period_gui();
 
     function  gui_baseline = erp_m_t_Baseline_period_gui()
-        FontSize_defualt = erpworkingmemory('fontsizeGUI');
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        FontSizeDefault = erpworkingmemory('fontsizeGUI');
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         b1 = uiextras.VBox( 'Parent', f_localpeak);
         %%---------------------------------Title------------------------------------
@@ -185,10 +185,10 @@ gui_baseline = erp_m_t_Baseline_period_gui();
         
         %%------------------------------Baseline methods---------------------------
         b13 = uiextras.HBox( 'Parent', b1 );
-        b131 = uicontrol('Style','text','Parent', b13,'String','Method selection','FontSize',FontSize_defualt);%,'FontWeight', 'bold');
+        b131 = uicontrol('Style','text','Parent', b13,'String','Method selection','FontSize',FontSizeDefault);%,'FontWeight', 'bold');
         set(b131, 'horizontalAlignment', 'left');
         Baseline_methods = {'None','Pre','Post','Whole','Custom'};
-        lpa_baseline_method = uicontrol('Style', 'popup','Parent',b13,'String',Baseline_methods,'callback',@Baseline_selection,'FontSize',FontSize_defualt);
+        lpa_baseline_method = uicontrol('Style', 'popup','Parent',b13,'String',Baseline_methods,'callback',@Baseline_selection,'FontSize',FontSizeDefault);
         set(b13, 'Sizes', [150 100]);
         if ~isempty(S_out.Baseline)
             switch BaselineMethod
@@ -207,9 +207,9 @@ gui_baseline = erp_m_t_Baseline_period_gui();
         
         %%-----------------Custum define time window for baseline period-----------------
         b14 = uiextras.HBox( 'Parent', b1 );
-        b141 = uicontrol('Style','text','Parent', b14,'String','Use two latencies','FontSize',FontSize_defualt);%,'FontWeight', 'bold');
+        b141 = uicontrol('Style','text','Parent', b14,'String','Use two latencies','FontSize',FontSizeDefault);%,'FontWeight', 'bold');
         set(b141, 'horizontalAlignment', 'left');
-        gui_baseline.lpa_baseline_custom = uicontrol('Style', 'edit','Parent',b14,'String',num2str(BaselineInterval),'callback',@Baseline_custom,'FontSize',FontSize_defualt);
+        gui_baseline.lpa_baseline_custom = uicontrol('Style', 'edit','Parent',b14,'String',num2str(BaselineInterval),'callback',@Baseline_custom,'FontSize',FontSizeDefault);
         if ~strcmp(BaselineMethod,'custom')
             set(gui_baseline.lpa_baseline_custom,'ForegroundColor', [.5 0.5 0.5], 'Enable', 'off','BackgroundColor',[0.800 0.800 0.800]);
             set(b141,'ForegroundColor', [.5 0.5 0.5]);
@@ -217,8 +217,8 @@ gui_baseline = erp_m_t_Baseline_period_gui();
         set(b14, 'Sizes', [150 100]);
         %%------------------------Cancel and Run----------------------------------
         b16 = uiextras.HBox( 'Parent', b1);
-        uicontrol( 'Parent', b16, 'String', 'Cancel','callback',@Local_peak_cancel,'FontSize',FontSize_defualt);
-        uicontrol( 'Parent', b16, 'String', 'Run','callback',@Local_peak_run,'FontSize',FontSize_defualt);
+        uicontrol( 'Parent', b16, 'String', 'Cancel','callback',@Local_peak_cancel,'FontSize',FontSizeDefault);
+        uicontrol( 'Parent', b16, 'String', 'Run','callback',@Local_peak_run,'FontSize',FontSizeDefault);
         
     end
 %%*************************************************************************

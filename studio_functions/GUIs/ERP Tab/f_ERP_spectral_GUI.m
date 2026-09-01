@@ -37,18 +37,18 @@ end
 gui_erp_spectral = struct();
 
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-erp_spectral_gui(FonsizeDefault);
+erp_spectral_gui(FontSizeDefault);
 
 varargout{1} = ERP_filtering_box;
 %%********************Draw the GUI for ERP measurement tool*****************
-    function erp_spectral_gui(FonsizeDefault)
+    function erp_spectral_gui(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -62,23 +62,23 @@ varargout{1} = ERP_filtering_box;
         
         %%amplitude and phase
         gui_erp_spectral.dispaly_title = uicontrol('Style','text','Parent',  gui_erp_spectral.amplitude_option,...
-            'String','Display in:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Display in:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_spectral.dispaly_title,'HorizontalAlignment','left');
         gui_erp_spectral.amplitude = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.amplitude_option,'String','Amplitude',...
-            'callback',@spectral_amplitude,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'callback',@spectral_amplitude,'Value',1,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_spectral.amplitude.KeyPressFcn= @erp_spectral_presskey;
         gui_erp_spectral.phase = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.amplitude_option,...
-            'String','Phase','callback',@spectral_phase,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Phase','callback',@spectral_phase,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_spectral.phase.KeyPressFcn= @erp_spectral_presskey;
         set( gui_erp_spectral.amplitude_option, 'Sizes', [80 100 100]);
         %%%power and dB
         gui_erp_spectral.pow_db = uiextras.HBox('Parent', gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_spectral.pow_db);
         gui_erp_spectral.power = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.pow_db ,...
-            'String','Power','callback',@spectral_power,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Power','callback',@spectral_power,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_spectral.power.KeyPressFcn= @erp_spectral_presskey;
         gui_erp_spectral.db = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.pow_db ,...
-            'String','dB','callback',@spectral_db,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','dB','callback',@spectral_db,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_spectral.db.KeyPressFcn= @erp_spectral_presskey;
         set( gui_erp_spectral.pow_db , 'Sizes', [80 100 100]);
         %%%
@@ -93,13 +93,13 @@ varargout{1} = ERP_filtering_box;
         end
         
         gui_erp_spectral.hamwin_title_option = uiextras.HBox('Parent', gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
-        gui_erp_spectral.hamwin_title = uicontrol('Style','text','Parent',  gui_erp_spectral.hamwin_title_option,'String','Hamming window:','FontSize',FonsizeDefault);
+        gui_erp_spectral.hamwin_title = uicontrol('Style','text','Parent',  gui_erp_spectral.hamwin_title_option,'String','Hamming window:','FontSize',FontSizeDefault);
         set( gui_erp_spectral.hamwin_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         gui_erp_spectral.hamwin_on = uicontrol('Style', 'radiobutton','Parent',  gui_erp_spectral.hamwin_title_option,...
-            'String','On','callback',@spectral_hamwin_on,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','On','callback',@spectral_hamwin_on,'Value',1,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_spectral.hamwin_on.KeyPressFcn= @erp_spectral_presskey;
         gui_erp_spectral.hamwin_off = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.hamwin_title_option,...
-            'String','Off','callback',@spectral_hamwin_off,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Off','callback',@spectral_hamwin_off,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_spectral.hamwin_off.KeyPressFcn= @erp_spectral_presskey;
         uiextras.Empty('Parent',  gui_erp_spectral.hamwin_title_option,'BackgroundColor',ColorB_def);
         set( gui_erp_spectral.hamwin_title_option, 'Sizes', [120 60 60 40]);
@@ -108,9 +108,9 @@ varargout{1} = ERP_filtering_box;
         %%frequency range
         gui_erp_spectral.frerange_title = uiextras.HBox('Parent',gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_erp_spectral.frerange_title,...
-            'String','Freq. range [min max]:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Freq. range [min max]:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_spectral.frerange = uicontrol('Style','edit','Parent',gui_erp_spectral.frerange_title,...
-            'String',' ','callback',@frerange,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@frerange,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_spectral.frerange.KeyPressFcn= @erp_spectral_presskey;
         gui_erp_spectral.Paras{3} = [];
         set(gui_erp_spectral.frerange_title,'Sizes',[120 -1]);
@@ -118,11 +118,11 @@ varargout{1} = ERP_filtering_box;
         %%
         gui_erp_spectral.other_option = uiextras.HBox('Parent',gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_spectral.cancel = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
-            'String','Cancel','callback',@spectral_cancel,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@spectral_cancel,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_spectral.plot = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
-            'String','Plot','callback',@spectral_plot,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Plot','callback',@spectral_plot,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_spectral.save = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
-            'String','Save','callback',@spectral_save,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Save','callback',@spectral_save,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         
         set(gui_erp_spectral.spectral, 'Sizes', [20 20 20 25 30]);
         estudioworkingmemory('ERPTab_spectral',0);

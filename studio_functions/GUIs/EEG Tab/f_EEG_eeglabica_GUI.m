@@ -34,18 +34,18 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_event2bin_eeg(FonsizeDefault)
+drawui_event2bin_eeg(FontSizeDefault)
 varargout{1} = EStudio_box_eeglab_ica;
 
-    function drawui_event2bin_eeg(FonsizeDefault)
+    function drawui_event2bin_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EStduio_eegtab_eeglab_ica.DataSelBox = uiextras.VBox('Parent', EStudio_box_eeglab_ica,'BackgroundColor',ColorB_def);
@@ -58,62 +58,62 @@ varargout{1} = EStudio_box_eeglab_ica;
         EStduio_eegtab_eeglab_ica.decomp_labelic_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         
         EStduio_eegtab_eeglab_ica.icadecomp_eeg = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.decomp_labelic_title,...
-            'String','Decompose data','callback',@icadecomp_eeg,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Decompose data','callback',@icadecomp_eeg,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.inslabel_ics = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.decomp_labelic_title,...
-            'String','Inspect/label ICs','callback',@inslabel_ics,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Inspect/label ICs','callback',@inslabel_ics,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         %%Edit eeg events and channel locations
         EStduio_eegtab_eeglab_ica.event_chanlocs_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_ica.classifyics_iclabel = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.event_chanlocs_title,...
-            'String','Classify IC by ICLabel','callback',@classifyics_iclabel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Classify IC by ICLabel','callback',@classifyics_iclabel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.remove_ics = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.event_chanlocs_title,...
-            'String','Remove ICs','callback',@remove_ics,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Remove ICs','callback',@remove_ics,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         
         %%transfter ICA weights
         EStduio_eegtab_eeglab_ica.icaweigts_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_eeglab_ica.icaweigts_title1,...
-            'String','Transfer ICA weights:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Transfer ICA weights:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_ica.DataSelGrid = uiextras.Grid('Parent', EStduio_eegtab_eeglab_ica.DataSelBox,...
             'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid);
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','From','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','From','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Selected dataset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Selected dataset','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1B
         EStduio_eegtab_eeglab_ica.CurrentEEG_tras= uicontrol('Style','Edit','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','',...
-            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
+            'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
         
         uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','to','FontSize',FonsizeDefault-1,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','to','FontSize',FontSizeDefault-1,'BackgroundColor',ColorB_def); % 1B
         
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Target dataset','FontSize',FonsizeDefault-1,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Target dataset','FontSize',FontSizeDefault-1,'BackgroundColor',ColorB_def); % 1B
         EStduio_eegtab_eeglab_ica.targetEEG_tras= uicontrol('Style','Edit','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','',...
-            'callback',@trans_weight_targeteeg,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
+            'callback',@trans_weight_targeteeg,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
         
         uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
         EStduio_eegtab_eeglab_ica.traICAweight= uicontrol('Style','pushbutton','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Transfer',...
-            'callback',@trans_weight,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
+            'callback',@trans_weight,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
         set( EStduio_eegtab_eeglab_ica.DataSelGrid, 'ColumnSizes',[30 90 15 76 -1],'RowSizes',[20 30]);
         
         
         %%Plot channel function
         EStduio_eegtab_eeglab_ica.plotic_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_eeglab_ica.plotic_title1,...
-            'String','Plot independent components:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Plot independent components:','FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         
         EStduio_eegtab_eeglab_ica.plotic_title2 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_ica.eeg_spcetra_map = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title2,...
-            'String','Spectra&maps','callback',@eeg_spcetra_map,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Spectra&maps','callback',@eeg_spcetra_map,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.ic_maps_2d = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title2,...
-            'String','Maps (2-D)','callback',@maps_2d,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Maps (2-D)','callback',@maps_2d,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.ic_maps_3d = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title2,...
-            'String','Maps (3-D)','callback',@maps_3d,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Maps (3-D)','callback',@maps_3d,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         EStduio_eegtab_eeglab_ica.plotic_title3 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_ica.eeg_ic_prop = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title3,...
-            'String','IC Properties','callback',@eeg_ic_prop,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','IC Properties','callback',@eeg_ic_prop,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.eeg_ic_tfr = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title3,...
-            'String','IC Time-frequency','callback',@eeg_ic_tfr,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','IC Time-frequency','callback',@eeg_ic_tfr,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(EStduio_eegtab_eeglab_ica.DataSelBox,'Sizes',[30 30 20 50 20 30 30]);
     end
 

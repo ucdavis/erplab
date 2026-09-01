@@ -33,18 +33,18 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_erp_events(FonsizeDefault)
+drawui_erp_events(FontSizeDefault)
 varargout{1} = eegtab_events_box;
 
-    function drawui_erp_events(FonsizeDefault)
+    function drawui_erp_events(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         erptab_events.DataSelBox = uiextras.VBox('Parent', eegtab_events_box,'BackgroundColor',ColorB_def);
@@ -53,20 +53,20 @@ varargout{1} = eegtab_events_box;
         %%Create Eventlist and Import
         erptab_events.create_rt_title = uiextras.HBox('Parent',erptab_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         erptab_events.imp_eventlist = uicontrol('Style', 'pushbutton','Parent', erptab_events.create_rt_title ,...
-            'String','Import .txt','callback',@imp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Import .txt','callback',@imp_eventlist,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         erptab_events.exp_eventlist = uicontrol('Style', 'pushbutton','Parent', erptab_events.create_rt_title,...
-            'String','Export .txt','callback',@exp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Export .txt','callback',@exp_eventlist,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         erptab_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',  erptab_events.create_rt_title ,...
-            'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Export RTs','callback',@exp_rt,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         %%export eventlist
         erptab_events.imp_exp_title = uiextras.HBox('Parent',erptab_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         erptab_events.imp_eventlist_exc = uicontrol('Style', 'pushbutton','Parent', erptab_events.imp_exp_title ,...
-            'String','Import .xls','callback',@imp_eventlist_exc,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Import .xls','callback',@imp_eventlist_exc,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         erptab_events.exp_eventlist_exc = uicontrol('Style', 'pushbutton','Parent', erptab_events.imp_exp_title,...
-            'String','Export .xls','callback',@exp_eventlist_exc,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Export .xls','callback',@exp_eventlist_exc,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         erptab_events.vieweventlist = uicontrol('Style', 'pushbutton','Parent', erptab_events.imp_exp_title,...
-            'String','View ','callback',@vieweventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','View ','callback',@vieweventlist,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         set(erptab_events.DataSelBox,'Sizes',[30 30]);
     end

@@ -102,9 +102,9 @@ classdef DQ_Spectra_GUI < matlab.apps.AppBase
             app.DQTable.ColumnName = fft_labels;
             app.orig_ColName = fft_labels;
 
-            FonsizeDefault = f_get_default_fontsize();
-            if isempty(FonsizeDefault); FonsizeDefault = 12; end
-            app.DQTable.FontSize = FonsizeDefault;
+            FontSizeDefault = f_get_default_fontsize();
+            if isempty(FontSizeDefault); FontSizeDefault = 12; end
+            app.DQTable.FontSize = FontSizeDefault;
             app.heatmap_on = 0;
 
             app.EditStdWindow.Enable = 'off';

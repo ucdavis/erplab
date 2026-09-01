@@ -42,14 +42,14 @@ end
 sel_path = cd;
 estudioworkingmemory('EEG_save_folder',sel_path);
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_EEGset(FonsizeDefault);
+drawui_EEGset(FontSizeDefault);
 
 varargout{1} = box_eegset_gui;
 
@@ -57,7 +57,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 
 % Draw the ui
-    function drawui_EEGset(FonsizeDefault)
+    function drawui_EEGset(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -67,9 +67,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         %%continuous or epoch
         EStduio_eegtab_EEG_set.datatype_title = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.eeg_contns = uicontrol('Parent',EStduio_eegtab_EEG_set.datatype_title, 'Style', 'radiobutton', 'String', 'Continuous EEG',...
-            'Callback', @continuous_eeg,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
+            'Callback', @continuous_eeg,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
         EStduio_eegtab_EEG_set.eeg_epoch = uicontrol('Parent',EStduio_eegtab_EEG_set.datatype_title, 'Style', 'radiobutton', 'String', 'Epoched EEG',...
-            'Callback', @epoch_eeg,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
+            'Callback', @epoch_eeg,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
 
         %%-----------------------ERPset display---------------------------------------
         panelshbox = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -82,7 +82,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         EEGArray = estudioworkingmemory('EEGArray');
         EStduio_eegtab_EEG_set.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-            length(dsnames)+1,'String', dsnames,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
+            length(dsnames)+1,'String', dsnames,'Callback',@selectdata,'FontSize',FontSizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         if isempty(EEGArray) || any(EEGArray(:)>length(dsnames))
             EEGArray=1;
             estudioworkingmemory('EEGArray',EEGArray);
@@ -94,36 +94,36 @@ estudioworkingmemory('Startimes',0);%%set default value
         %%---------------------Options for EEGsets-----------------------------------------------------
         EStduio_eegtab_EEG_set.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.dupeselected = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
-            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.renameselected = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Rename',...
-            'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @renamedata,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.suffix = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
-            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.refresh_eegset = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Refresh',...
-            'Callback', @refresh_eegset,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @refresh_eegset,'Enable','on','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import EEG',...
-            'Callback', @imp_eeg,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @imp_eeg,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load EEG', ...
-            'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @load,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.appendbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Append EEG', ...
-            'Callback', @append_eeg,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
+            'Callback', @append_eeg,'FontSize',FontSizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
 
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
-            'String', 'Save EEG', 'Callback', @eegset_save,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String', 'Save EEG', 'Callback', @eegset_save,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
-            'String', 'Save a Copy', 'Callback', @eegset_saveas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String', 'Save a Copy', 'Callback', @eegset_saveas,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
-            'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @curr_folder,'Enable','on','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
 
         buttons5 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.clearselected = uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear Selected', ...
-            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.clearall= uicontrol('Parent', buttons5, 'Style', 'pushbutton', 'String', 'Clear All', ...
-            'Callback', @clearall,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'Callback', @clearall,'Enable','on','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 
         %set(buttons4,'Sizes',[70 90 95]);
         set(vBox, 'Sizes', [20 150 25 25 25 25]);

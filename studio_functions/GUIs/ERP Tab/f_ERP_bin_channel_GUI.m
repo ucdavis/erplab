@@ -32,36 +32,36 @@ end
 %-----------------------------Draw the panel-------------------------------------
 
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_bin_chan(FonsizeDefault)
+drawui_bin_chan(FontSizeDefault)
 varargout{1} = EStudio_box_bin_chan;
 
-    function drawui_bin_chan(FonsizeDefault)
+    function drawui_bin_chan(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         ERPTab_bin_chan.DataSelBox = uiextras.VBox('Parent', EStudio_box_bin_chan,'BackgroundColor',ColorB_def);
         ERPTab_bin_chan.DataSelGrid = uiextras.Grid('Parent', ERPTab_bin_chan.DataSelBox,'BackgroundColor',ColorB_def);
         
         % Second column:
-        uicontrol('Style','text','Parent', ERPTab_bin_chan.DataSelGrid,'String','Channels','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', ERPTab_bin_chan.DataSelGrid,'String','Channels','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1B
         Chanlist_name = ['No erpset is available'];
         ERPTab_bin_chan.ElecRange = uicontrol('Parent', ERPTab_bin_chan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
-            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]); % 2B
+            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]); % 2B
         ERPTab_bin_chan.ElecRange.Value  =1;
         ERPTab_bin_chan.ElecRange.KeyPressFcn=  @erp_binchan_presskey;
         % Third column:
-        uicontrol('Style','text','Parent', ERPTab_bin_chan.DataSelGrid,'String','Bins','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1C
+        uicontrol('Style','text','Parent', ERPTab_bin_chan.DataSelGrid,'String','Bins','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1C
         
         brange = ['No erpset is available'];
         ERPTab_bin_chan.BinRange =  uicontrol('Parent', ERPTab_bin_chan.DataSelGrid,'Style','listbox','Min',1,'Max',2,...
-            'String', brange,'callback',@onBinChanged,'FontSize',FonsizeDefault,'Enable','off','Value',1,'BackgroundColor',[1 1 1]); % 2C
+            'String', brange,'callback',@onBinChanged,'FontSize',FontSizeDefault,'Enable','off','Value',1,'BackgroundColor',[1 1 1]); % 2C
         ERPTab_bin_chan.BinRange.KeyPressFcn=  @erp_binchan_presskey;
         
         set(ERPTab_bin_chan.DataSelGrid, 'ColumnSizes',[ -1.2 -2],'RowSizes',[20 -3]);
@@ -71,11 +71,11 @@ varargout{1} = EStudio_box_bin_chan;
         ERPTab_bin_chan.reset_apply = uiextras.HBox('Parent',ERPTab_bin_chan.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', ERPTab_bin_chan.reset_apply); % 1A
         ERPTab_bin_chan.plot_reset = uicontrol('Style', 'pushbutton','Parent',ERPTab_bin_chan.reset_apply,...
-            'String','Cancel','callback',@plot_erp_cancel,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@plot_erp_cancel,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         
         uiextras.Empty('Parent', ERPTab_bin_chan.reset_apply); % 1A
         ERPTab_bin_chan.plot_apply = uicontrol('Style', 'pushbutton','Parent',ERPTab_bin_chan.reset_apply,...
-            'String','Apply','callback',@binchan_apply,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@binchan_apply,'FontSize',FontSizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         ERPTab_bin_chan.plot_apply.KeyPressFcn=  @erp_binchan_presskey;
         uiextras.Empty('Parent', ERPTab_bin_chan.reset_apply); % 1A
         set(ERPTab_bin_chan.reset_apply, 'Sizes',[10,-1,30,-1,10]);

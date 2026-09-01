@@ -35,18 +35,18 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_art_sumop_eeg(FonsizeDefault)
+drawui_art_sumop_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_art_sumop;
 
-    function drawui_art_sumop_eeg(FonsizeDefault)
+    function drawui_art_sumop_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         Eegtab_EEG_art_sumop.DataSelBox = uiextras.VBox('Parent', Eegtab_box_art_sumop,'BackgroundColor',ColorB_def);
@@ -60,7 +60,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.clear_art_det_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  Eegtab_EEG_art_sumop.clear_art_det_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.clear_art_det = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.clear_art_det_title,...
-            'String','Clear artifact detection marks on EEG','callback',@clear_art_det,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Clear artifact detection marks on EEG','callback',@clear_art_det,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  Eegtab_EEG_art_sumop.clear_art_det_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.clear_art_det_title, 'Sizes',[13 -1 13]);
         
@@ -69,7 +69,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.syn_arfinfo_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.syn_arfinfo_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.syn_arfinfo = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.syn_arfinfo_title,...
-            'String','Sync artifact info in EEG and EVENTLIST','callback',@syn_arfinfo,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Sync artifact info in EEG and EVENTLIST','callback',@syn_arfinfo,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.syn_arfinfo_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.syn_arfinfo_title, 'Sizes',[13 -1 13]);
         
@@ -78,7 +78,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.Classic_ar_sum_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.Classic_ar_sum_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.Classic_ar_sum = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.Classic_ar_sum_title,...
-            'String','Classic Artifact Summary','callback',@Classic_ar_sum,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Classic Artifact Summary','callback',@Classic_ar_sum,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.Classic_ar_sum_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.Classic_ar_sum_title, 'Sizes',[13 -1 13]);
         
@@ -86,7 +86,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.total_reject_ops_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.total_reject_ops_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.total_reject_ops = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.total_reject_ops_title,...
-            'String','Artifact Summary','callback',@total_reject_ops,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Artifact Summary','callback',@total_reject_ops,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.total_reject_ops_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.total_reject_ops_title, 'Sizes',[13 -1 13]);
         

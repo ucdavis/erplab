@@ -37,18 +37,18 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_event2bin_eeg(FonsizeDefault)
+drawui_event2bin_eeg(FontSizeDefault)
 varargout{1} = EStudio_box_EEG_event2bin;
 
-    function drawui_event2bin_eeg(FonsizeDefault)
+    function drawui_event2bin_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EStduio_eegtab_EEG_event2bin.DataSelBox = uiextras.VBox('Parent', EStudio_box_EEG_event2bin,'BackgroundColor',ColorB_def);
@@ -61,9 +61,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         %%display original data?
         EStduio_eegtab_EEG_event2bin.BDF_title = uiextras.HBox('Parent', EStduio_eegtab_EEG_event2bin.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
-            'String','Bin Descriptor File','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Bin Descriptor File','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_event2bin.BDF_edit = uicontrol('Style', 'edit','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
-            'String','','callback',@BDF_edit,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','','callback',@BDF_edit,'FontSize',FontSizeDefault,'Enable',EnableFlag);
         EStduio_eegtab_EEG_event2bin.BDF_edit.KeyPressFcn=  @eeg_event2bin_presskey;
         def  = estudioworkingmemory('pop_binlister');
         if isempty(def)
@@ -75,7 +75,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         end
         EStduio_eegtab_EEG_event2bin.BDF_edit.String = bdfileName;
         EStduio_eegtab_EEG_event2bin.BDF_browse = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
-            'String','Browse','callback',@BDF_browse,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@BDF_browse,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( EStduio_eegtab_EEG_event2bin.BDF_title, 'Sizes',[100 -1 60]);
 
         %%---------------------Table---------------------------------------
@@ -96,12 +96,12 @@ varargout{1} = EStudio_box_EEG_event2bin;
         %%----------------cancel and Run---------------------------------
         EStduio_eegtab_EEG_event2bin.reset_Run = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_event2bin.bdf_cancel = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
-            'String','Cancel','callback',@BDF_eeg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@BDF_eeg_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.event2bin_advanced = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
-            'String','Advanced','callback',@event2bin_advanced,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Advanced','callback',@event2bin_advanced,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.KeyPressFcn=  @eeg_event2bin_presskey;
         EStduio_eegtab_EEG_event2bin.bdf_Run = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
-            'String','Run','callback',@eeg_bdf_Run,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@eeg_bdf_Run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.bdf_Run.KeyPressFcn=  @eeg_event2bin_presskey;
 
         set(EStduio_eegtab_EEG_event2bin.DataSelBox,'Sizes',[30 100 30]);

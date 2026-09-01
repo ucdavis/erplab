@@ -12,7 +12,7 @@ function f_redrawERP()
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
 
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
@@ -93,13 +93,13 @@ EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewConta
 %%Setting title
 pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
 pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
-EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
+EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FontSizeDefault);
 EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',...
-    {@page_minus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+    {@page_minus,EStudio_gui_erp_totl},'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(ERPArray(pagecurrentNum)),...
-    'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
+    'Callback',@page_edit,'FontSize',FontSizeDefault+2,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next',...
-    'Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+    'Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
 set(pageinfo_box, 'Sizes', [-1 70 50 70] );
 set(pageinfo_box,'BackgroundColor',ColorB_def);
 
@@ -120,12 +120,12 @@ uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def
 commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 
 EStudio_gui_erp_totl.zoom_in = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom In',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomin,'Enable',Enableflag);
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomin,'Enable',Enableflag);
 EStudio_gui_erp_totl.zoom_edit = uicontrol('Parent',commandfig_panel,'Style','edit','String',num2str(zoomSpace),...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomedit,'Enable',Enableflag);
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomedit,'Enable',Enableflag);
 
 EStudio_gui_erp_totl.zoom_out = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom Out',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout,'Enable',Enableflag);
+    'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout,'Enable',Enableflag);
 uiextras.Empty('Parent', commandfig_panel); % 1A
 
 if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
@@ -144,13 +144,13 @@ end
 EStudio_gui_erp_totl.erp_popmenu.String=popmemu_erp;
 
 EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
-    'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
+    'Callback', @erptab_reset,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 uiextras.Empty('Parent', commandfig_panel); % 1A
 set(commandfig_panel, 'Sizes', [70 50 70 -1 150 50 5]);
 
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
-EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
 
 if length(ERPArray) ==1
     Enable_minus = 'off';
@@ -937,7 +937,7 @@ end
 function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,yscale,columNum,...
     positive_up,BinchanOverlay,rowNums,GridposArray,Standerr,Transparency,waveview,legendview,Yticks)
 
-FonsizeDefault = f_get_default_fontsize();
+FontSizeDefault = f_get_default_fontsize();
 %%matlab version
 matlab_ver = version('-release');
 Matlab_ver = str2double(matlab_ver(1:4));
@@ -1294,7 +1294,7 @@ for Numofrows = 1:rowNums
                     ytick_label, ...
                     'HorizontalAlignment', 'right', ...
                     'VerticalAlignment', 'middle', ...
-                    'FontSize', FonsizeDefault, ...
+                    'FontSize', FontSizeDefault, ...
                     'FontAngle', props.FontAngle, ...
                     'FontUnits', props.FontUnits,...
                     'FontName', fontnames, ...
@@ -1351,7 +1351,7 @@ for Numofrows = 1:rowNums
                     xtick_label, ...
                     'HorizontalAlignment', 'Center', ...
                     'VerticalAlignment', 'Top', ...
-                    'FontSize', FonsizeDefault, ...
+                    'FontSize', FontSizeDefault, ...
                     'FontAngle', props.FontAngle, ...
                     'FontUnits', props.FontUnits,...
                     'FontName', fontnames, ...
@@ -1447,7 +1447,7 @@ if ~isempty(hplot)
     p  = get(legendview,'position');
     h_legend = legend(legendview,hplot,qLegendName);
     legend(legendview,'boxoff');
-    set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault);
+    set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FontSizeDefault);
 end
 end
 

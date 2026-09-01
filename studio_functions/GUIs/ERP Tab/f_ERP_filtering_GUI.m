@@ -33,18 +33,18 @@ end
 gui_erp_filtering = struct();
 
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-erp_filtering_gui(FonsizeDefault);
+erp_filtering_gui(FontSizeDefault);
 
 varargout{1} = ERP_filtering_box;
 %%********************Draw the GUI for ERP measurement tool*****************
-    function erp_filtering_gui(FonsizeDefault)
+    function erp_filtering_gui(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -112,13 +112,13 @@ varargout{1} = ERP_filtering_box;
         %%-----------------------------Setting for bin and chan--------------------
         gui_erp_filtering.bin_chan_title = uiextras.HBox('Parent',gui_erp_filtering.filtering,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_erp_filtering.bin_chan_title,'String','Bin and Chan Selection:','FontWeight','bold',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_filtering.filter_bin_chan_option = uiextras.HBox('Parent',  gui_erp_filtering.filtering,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_filtering.all_bin_chan = uicontrol('Style', 'radiobutton','Parent', gui_erp_filtering.filter_bin_chan_option,...
-            'String','All (Recommended)','callback',@All_bin_chan,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','All (Recommended)','callback',@All_bin_chan,'Value',1,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_filtering.all_bin_chan.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.Selected_bin_chan = uicontrol('Style', 'radiobutton','Parent', gui_erp_filtering.filter_bin_chan_option,...
-            'String','Selected bin & chan','callback',@Selected_bin_chan,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Selected bin & chan','callback',@Selected_bin_chan,'Value',0,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_filtering.Selected_bin_chan.KeyPressFcn= @erp_filter_presskey;
         set(gui_erp_filtering.filter_bin_chan_option, 'Sizes',[130  170]);
         gui_erp_filtering.params{1} = gui_erp_filtering.all_bin_chan.Value;
@@ -126,51 +126,51 @@ varargout{1} = ERP_filtering_box;
         %%--------------------------Setting for IIR filter------------------------------
         gui_erp_filtering.IIR_title = uiextras.HBox('Parent',gui_erp_filtering.filtering,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_erp_filtering.IIR_title,'String','Setting for IIR Butterworth:',...
-            'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'FontWeight','bold','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_filtering.filt_grid = uiextras.Grid('Parent',gui_erp_filtering.filtering,'BackgroundColor',ColorB_def);
         % first column
         uiextras.Empty('Parent',gui_erp_filtering.filt_grid); % 1A
         gui_erp_filtering.hp_tog = uicontrol('Style','checkbox','Parent',gui_erp_filtering.filt_grid,'String','High Pass',...
-            'callback',@highpass_toggle,'Value',0,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+            'callback',@highpass_toggle,'Value',0,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1B
         gui_erp_filtering.hp_tog.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.params{2} = gui_erp_filtering.hp_tog.Value;
         gui_erp_filtering.lp_tog = uicontrol('Style','checkbox','Parent',gui_erp_filtering.filt_grid,'String','Low Pass',...
-            'callback',@lowpass_toggle,'Value',1,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1C
+            'callback',@lowpass_toggle,'Value',1,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1C
         gui_erp_filtering.lp_tog.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.params{5} = gui_erp_filtering.lp_tog.Value;
         % second column
-        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Half Amp.','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2A
+        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Half Amp.','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2A
         gui_erp_filtering.hp_halfamp = uicontrol('Style','edit','Parent',gui_erp_filtering.filt_grid,...
-            'callback',@hp_halfamp,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2B
+            'callback',@hp_halfamp,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2B
         gui_erp_filtering.hp_halfamp.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.params{3} = str2num(gui_erp_filtering.hp_halfamp.String);
         gui_erp_filtering.hp_halfamp.String = num2str(locutoff);
         gui_erp_filtering.lp_halfamp = uicontrol('Style','edit','Parent',gui_erp_filtering.filt_grid,...
-            'callback',@lp_halfamp,'Enable',lp_halfamp_Enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2C
+            'callback',@lp_halfamp,'Enable',lp_halfamp_Enable,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2C
         gui_erp_filtering.lp_halfamp.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.params{6} = str2num(gui_erp_filtering.lp_halfamp.String);
         gui_erp_filtering.lp_halfamp.String = num2str(hicutoff);
         % third column
-        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Half Power','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3A
+        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Half Power','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 3A
         gui_erp_filtering.hp_halfpow = uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,...
-            'String',hp_halfpow_string,'Enable','off','BackgroundColor','y','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 3B
+            'String',hp_halfpow_string,'Enable','off','BackgroundColor','y','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 3B
         gui_erp_filtering.params{4} = str2num(gui_erp_filtering.hp_halfpow.String);
         gui_erp_filtering.lp_halfpow = uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,...
-            'String',lp_halfpow_string,'Enable','off','BackgroundColor','y','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 3C
+            'String',lp_halfpow_string,'Enable','off','BackgroundColor','y','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 3C
         gui_erp_filtering.params{7} = str2num(gui_erp_filtering.lp_halfpow.String);
         % fourth column
         uiextras.Empty('Parent',gui_erp_filtering.filt_grid); % 4A
-        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 4B
-        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 4C
+        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Hz','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 4B
+        uicontrol('Style','text','Parent',gui_erp_filtering.filt_grid,'String','Hz','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 4C
         set(gui_erp_filtering.filt_grid, 'ColumnSizes',[90 70 70 40],'RowSizes',[20 -1 -1]);
         
         
         gui_erp_filtering.rolloff_row = uiextras.HBox('Parent', gui_erp_filtering.filtering,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',gui_erp_filtering.rolloff_row,'String','Roll-Off','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1D
+        uicontrol('Style','text','Parent',gui_erp_filtering.rolloff_row,'String','Roll-Off','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 1D
         Roll_off = {'12','24','36','48'};
         gui_erp_filtering.roll_off = uicontrol('Style','popupmenu','Parent',gui_erp_filtering.rolloff_row,'String',Roll_off,...
-            'callback',@ERP_filtering_rolloff,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2D
+            'callback',@ERP_filtering_rolloff,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2D
         gui_erp_filtering.roll_off.KeyPressFcn= @erp_filter_presskey;
         gui_erp_filtering.params{8} =gui_erp_filtering.roll_off.Value;
         if filterorder ==2
@@ -184,7 +184,7 @@ varargout{1} = ERP_filtering_box;
         elseif filterorder ==8
             gui_erp_filtering.roll_off.Value = 4;
         end
-        uicontrol('Style','text','Parent',gui_erp_filtering.rolloff_row,'String','dB/Octave','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3D
+        uicontrol('Style','text','Parent',gui_erp_filtering.rolloff_row,'String','dB/Octave','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 3D
         
         
         gui_erp_filtering.params{9} = 0;
@@ -192,11 +192,11 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.filt_buttons = uiextras.HBox('Parent', gui_erp_filtering.filtering,'BackgroundColor',ColorB_def);
         %         uiextras.Empty('Parent',  gui_erp_filtering.filt_buttons);
         gui_erp_filtering.cancel=uicontrol('Style','pushbutton','Parent',gui_erp_filtering.filt_buttons,'String','Cancel',...
-            'callback',@ERP_filter_cancel,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@ERP_filter_cancel,'Enable','off','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_filtering.advanced = uicontrol('Style','pushbutton','Parent',gui_erp_filtering.filt_buttons,'String','Advanced',...
-            'callback',@advanced_ERP_filter,'Enable',Advance_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@advanced_ERP_filter,'Enable',Advance_ERP_filter_enable,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_filtering.apply = uicontrol('Style','pushbutton','Parent',gui_erp_filtering.filt_buttons,'String','Run',...
-            'callback',@ERP_filter_apply,'Enable',Apply_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@ERP_filter_apply,'Enable',Apply_ERP_filter_enable,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set( gui_erp_filtering.filtering,'Sizes',[20 20 20 80 20 30]);
         
         estudioworkingmemory('ERPTab_filter',0);

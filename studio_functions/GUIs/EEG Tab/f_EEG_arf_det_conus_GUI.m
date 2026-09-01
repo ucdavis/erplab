@@ -37,24 +37,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_art_det_conus_eeg(FonsizeDefault)
+drawui_art_det_conus_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_art_det_conus;
 
-    function drawui_art_det_conus_eeg(FonsizeDefault)
+    function drawui_art_det_conus_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         Eegtab_EEG_art_det_conus.DataSelBox = uiextras.VBox('Parent', Eegtab_box_art_det_conus,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
@@ -65,29 +64,29 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%Manua rejection
         Eegtab_EEG_art_det_conus.manuar_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.manuar_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.manuar_title,'Value',0,...
-            'String','Manual rejection','callback',@manuar_checkbox,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','Manual rejection','callback',@manuar_checkbox,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.manuar_button = uicontrol('Style','pushbutton','Parent', Eegtab_EEG_art_det_conus.manuar_title,...
-            'String','View & Reject','callback',@manuar_button,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','View & Reject','callback',@manuar_button,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( Eegtab_EEG_art_det_conus.manuar_title ,'Sizes',[120 -1]);
         Eegtab_EEG_art_det_conus.manuar_checkbox_Value = 0;
         %%channels that detect artifact
         Eegtab_EEG_art_det_conus.chan_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.chan_title,...
-            'String','Chans:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Chans:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.chan_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.chan_title,...
-            'String','','FontSize',FontSize_defualt,'callback',@chan_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','','FontSize',FontSizeDefault,'callback',@chan_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_conus.chan_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         Eegtab_EEG_art_det_conus.chan_browse = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_conus.chan_title,...
-            'String','Browse','FontSize',FontSize_defualt,'callback',@chan_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','FontSize',FontSizeDefault,'callback',@chan_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         set( Eegtab_EEG_art_det_conus.chan_title,'Sizes',[60 -1 80]);
         
         
         %%Voltage limits
         Eegtab_EEG_art_det_conus.voltage_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.voltage_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.voltage_title,...
-            'String',[32,'Voltage threshold',32,32,32,32,'(1 or 2 values)'],'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String',[32,'Voltage threshold',32,32,32,32,'(1 or 2 values)'],'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.voltage_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.voltage_title,...
-            'callback',@voltage_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@voltage_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_conus.voltage_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_conus.voltage_title,'Sizes',[120,-1]);
         
@@ -95,97 +94,97 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%moving window full width
         Eegtab_EEG_art_det_conus.movewindow_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.movewindow_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.movewindow_title,...
-            'String','Moving window width [ms]','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Moving window width [ms]','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.movewindow_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.movewindow_title,...
-            'callback',@movewindow_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@movewindow_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_conus.movewindow_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_conus.movewindow_title,'Sizes',[120,-1]);
         
         %%Window steps
         Eegtab_EEG_art_det_conus.windowstep_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.windowstep_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.windowstep_title,...
-            'String','Window step [ms]','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Window step [ms]','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.windowstep_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.windowstep_title,...
-            'callback',@windowstep_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@windowstep_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_conus.windowstep_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_conus.windowstep_title,'Sizes',[120,-1]);
         
         %%optional
         Eegtab_EEG_art_det_conus.option_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.option_title ,'FontWeight','bold',...
-            'String','Optional:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Optional:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         %%prefilter
         Eegtab_EEG_art_det_conus.filter_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.filter_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.filter_title,'Value',0,'Enable','off',...
-            'callback',@filter_checkbox,'String','Pre-filtering (only for identifying artifacts)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'callback',@filter_checkbox,'String','Pre-filtering (only for identifying artifacts)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.filter_title2 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', Eegtab_EEG_art_det_conus.filter_title2,...
-            'String','Fre. cutoff (Hz): Low','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Fre. cutoff (Hz): Low','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.lowfre_edit = uicontrol('Style','edit','Parent', Eegtab_EEG_art_det_conus.filter_title2,'Enable','off',...
-            'callback',@lowfre_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@lowfre_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',[1 1 1]); % 2F
         uicontrol('Style','text','Parent', Eegtab_EEG_art_det_conus.filter_title2,...
-            'String',', High','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
+            'String',', High','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.highfre_edit = uicontrol('Style','edit','Parent', Eegtab_EEG_art_det_conus.filter_title2,'Enable','off',...
-            'callback',@highfre_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@highfre_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',[1 1 1]); % 2F
         set(Eegtab_EEG_art_det_conus.filter_title2,'Sizes',[120,60,40,60]);
         %%include or exclude
         Eegtab_EEG_art_det_conus.filter_title3 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.filter_title3);
         Eegtab_EEG_art_det_conus.include_fre = uicontrol('Style','radiobutton','Parent', Eegtab_EEG_art_det_conus.filter_title3,'Value',1,'Enable','off',...
-            'callback',@include_fre,'String','Include this band','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'callback',@include_fre,'String','Include this band','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.exclude_fre = uicontrol('Style','radiobutton','Parent', Eegtab_EEG_art_det_conus.filter_title3,'Value',0,'Enable','off',...
-            'callback',@exclude_fre,'String','Exclude this band','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'callback',@exclude_fre,'String','Exclude this band','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         set( Eegtab_EEG_art_det_conus.filter_title3 ,'Sizes',[20,-1,-1]);
         
         %%join artifactual segments separated by less than
         Eegtab_EEG_art_det_conus.joinarseg_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.joinarseg_checkbox = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_conus.joinarseg_title,'Value',0,'Enable','off',...
-            'callback',@joinarseg_checkbox,'String','Join artifactual segments separated by less than','FontSize',FontSize_defualt-1,'BackgroundColor',ColorB_def); % 2F
+            'callback',@joinarseg_checkbox,'String','Join artifactual segments separated by less than','FontSize',FontSizeDefault-1,'BackgroundColor',ColorB_def); % 2F
         
         Eegtab_EEG_art_det_conus.joinarseg_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.joinarseg_title1 );
         Eegtab_EEG_art_det_conus.joinarseg_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.joinarseg_title1,'Enable','off',...
-            'callback',@joinarseg_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@joinarseg_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.joinarseg_title1 ,...
-            'String','ms','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set( Eegtab_EEG_art_det_conus.joinarseg_title1,'Sizes',[20,-1,40]);
         
         %%Unmark artifactual segments shorter than
         Eegtab_EEG_art_det_conus.unmarkarseg_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.unmarkarseg_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.unmarkarseg_title,'Value',0,'Enable','off' ,...
-            'callback',@unmarkarseg_checkbox,'String','Unmark artifactual segments shorter than','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'callback',@unmarkarseg_checkbox,'String','Unmark artifactual segments shorter than','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         
         Eegtab_EEG_art_det_conus.unmarkarseg_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.unmarkarseg_title1 );
         Eegtab_EEG_art_det_conus.unmarkarseg_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.unmarkarseg_title1,'Enable','off' ,...
-            'callback',@unmarkarseg_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@unmarkarseg_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.unmarkarseg_title1 ,...
-            'String','ms','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_det_conus.unmarkarseg_title1,'Sizes',[20,-1,40]);
         
         
         %%Add extra time to negining and end of regions
         Eegtab_EEG_art_det_conus.addtime_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.addtime_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.addtime_title,'Value',0,'Enable','off' ,...
-            'callback',@addtime_checkbox,'String','Add extra time to start and end of regions','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'callback',@addtime_checkbox,'String','Add extra time to start and end of regions','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         
         Eegtab_EEG_art_det_conus.addtime_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.addtime_title1 );
         Eegtab_EEG_art_det_conus.addtime_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.addtime_title1,'Enable','off',...
-            'callback',@addtime_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@addtime_edit,'String','','FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.addtime_title1 ,...
-            'String','ms','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_det_conus.addtime_title1,'Sizes',[20,-1,40]);
         
         
         %%-----------------------Cancel and Run----------------------------
         Eegtab_EEG_art_det_conus.detar_run_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.detectar_cancel = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
-            'String','Cancel','callback',@detectar_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@detectar_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         Eegtab_EEG_art_det_conus.detectar_preview = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
-            'String','Preview','callback',@detectar_preview,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Preview','callback',@detectar_preview,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         Eegtab_EEG_art_det_conus.detectar_run = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
-            'String','Finalize','callback',@detectar_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Finalize','callback',@detectar_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(Eegtab_EEG_art_det_conus.DataSelBox,'Sizes',[30 30 35 35 35 20 20 30 20 20 30 20 30 20 30 30]);
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
         

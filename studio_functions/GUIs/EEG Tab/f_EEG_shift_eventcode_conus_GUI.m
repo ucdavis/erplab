@@ -35,24 +35,23 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
 
-drawui_shift_eventcode_conus_eeg(FonsizeDefault)
+drawui_shift_eventcode_conus_eeg(FontSizeDefault)
 varargout{1} = Eegtab_box_shift_eventcodes_conus;
 
-    function drawui_shift_eventcode_conus_eeg(FonsizeDefault)
+    function drawui_shift_eventcode_conus_eeg(FontSizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EEG_shift_eventcode_conus.DataSelBox = uiextras.VBox('Parent', Eegtab_box_shift_eventcodes_conus,'BackgroundColor',ColorB_def);
-        FontSize_defualt = FonsizeDefault;
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
+        if isempty(FontSizeDefault)
+            FontSizeDefault = 12;
         end
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
@@ -72,12 +71,12 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         %%Event codes
         EEG_shift_eventcode_conus.chan_title = uiextras.HBox('Parent', EEG_shift_eventcode_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_shift_eventcode_conus.chan_title,'HorizontalAlignment','left',...
-            'String','Event codes:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Event codes:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         EEG_shift_eventcode_conus.event_codes_edit = uicontrol('Style','edit','Parent',EEG_shift_eventcode_conus.chan_title,...
-            'String','','FontSize',FontSize_defualt,'callback',@event_codes_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','','FontSize',FontSizeDefault,'callback',@event_codes_edit,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_shift_eventcode_conus.event_codes_edit.KeyPressFcn=  @eeg_shiftcodes_presskey;
         EEG_shift_eventcode_conus.event_codes_browse = uicontrol('Style','pushbutton','Parent',EEG_shift_eventcode_conus.chan_title,...
-            'String','Browse','FontSize',FontSize_defualt,'callback',@event_codes_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','FontSize',FontSizeDefault,'callback',@event_codes_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         set( EEG_shift_eventcode_conus.chan_title,'Sizes',[90 -1,60]);
         if iscell(eventcodes)
             EEG_shift_eventcode_conus.event_codes_edit.String = num2str(strjoin(eventcodes, ','));
@@ -93,12 +92,12 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         end
         EEG_shift_eventcode_conus.voltage_title = uiextras.HBox('Parent', EEG_shift_eventcode_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.voltage_text = uicontrol('Style','text','Parent',EEG_shift_eventcode_conus.voltage_title,'HorizontalAlignment','left',...
-            'String',['Timeshift (ms):'],'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String',['Timeshift (ms):'],'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         EEG_shift_eventcode_conus.timeshift_edit = uicontrol('Style','edit','Parent',EEG_shift_eventcode_conus.voltage_title,...
-            'callback',@timeshift_edit,'String',num2str(timeshift),'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
+            'callback',@timeshift_edit,'String',num2str(timeshift),'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_shift_eventcode_conus.timeshift_edit.KeyPressFcn=  @eeg_shiftcodes_presskey;
         EEG_shift_eventcode_conus.timeshift_qestion = uicontrol('Style','pushbutton','Parent',EEG_shift_eventcode_conus.voltage_title,...
-            'callback',@timeshift_question,'String','?','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',[1 1 1]); % 2F
+            'callback',@timeshift_question,'String','?','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',[1 1 1]); % 2F
         set(EEG_shift_eventcode_conus.voltage_title,'Sizes',[90,-1,60]);
         try
             sample_rounding= def{3};
@@ -125,7 +124,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         %%Round to arlier time sample (recommended)
         EEG_shift_eventcode_conus.movewindow_title = uiextras.HBox('Parent', EEG_shift_eventcode_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.roundearlier = uicontrol('Style','radiobutton','Parent',EEG_shift_eventcode_conus.movewindow_title,'HorizontalAlignment','left',...
-            'callback',@roundearlier,'String','Round to earlier time sample (recommended)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@roundearlier,'String','Round to earlier time sample (recommended)','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_shift_eventcode_conus.roundearlier.KeyPressFcn=  @eeg_shiftcodes_presskey;
         uiextras.Empty('Parent', EEG_shift_eventcode_conus.movewindow_title ,'BackgroundColor',ColorB_def);
         set(EEG_shift_eventcode_conus.movewindow_title,'Sizes',[270,-1]);
@@ -133,7 +132,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         %%Round to nearest time sample
         EEG_shift_eventcode_conus.windowstep_title = uiextras.HBox('Parent', EEG_shift_eventcode_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.roundnearest = uicontrol('Style','radiobutton','Parent',EEG_shift_eventcode_conus.windowstep_title,'HorizontalAlignment','left',...
-            'callback',@roundnearest,'String','Round to nearest time sample','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@roundnearest,'String','Round to nearest time sample','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_shift_eventcode_conus.roundnearest.KeyPressFcn=  @eeg_shiftcodes_presskey;
         uiextras.Empty('Parent',EEG_shift_eventcode_conus.windowstep_title ,'BackgroundColor',ColorB_def);
         set(EEG_shift_eventcode_conus.windowstep_title,'Sizes',[260,-1]);
@@ -141,7 +140,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         %%Round to later time sample
         EEG_shift_eventcode_conus.eventcode_title = uiextras.HBox('Parent', EEG_shift_eventcode_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.roundlater = uicontrol('Style','radiobutton','Parent',EEG_shift_eventcode_conus.eventcode_title,'HorizontalAlignment','left',...
-            'callback',@roundlater,'String','Round to later time sample','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
+            'callback',@roundlater,'String','Round to later time sample','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         uiextras.Empty('Parent', EEG_shift_eventcode_conus.eventcode_title );
         set(EEG_shift_eventcode_conus.eventcode_title,'Sizes',[260,-1]);
         EEG_shift_eventcode_conus.roundearlier.Value = Valueround1;
@@ -152,10 +151,10 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.detar_run_title = uiextras.HBox('Parent', EEG_shift_eventcode_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_shift_eventcode_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.shiftcodes_cancel = uicontrol('Style', 'pushbutton','Parent',EEG_shift_eventcode_conus.detar_run_title,...
-            'String','Cancel','callback',@shiftcodes_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@shiftcodes_cancel,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_shift_eventcode_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.shiftcodes_run = uicontrol('Style','pushbutton','Parent',EEG_shift_eventcode_conus.detar_run_title,...
-            'String','Shift Events','callback',@shiftcodes_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Shift Events','callback',@shiftcodes_run,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_shift_eventcode_conus.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_shift_eventcode_conus.detar_run_title,'Sizes',[15 105  30 105 15]);
         

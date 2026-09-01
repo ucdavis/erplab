@@ -38,17 +38,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_eeg_history(FonsizeDefault);
+drawui_eeg_history(FontSizeDefault);
 varargout{1} = box_eeg_history;
 
-    function drawui_eeg_history(FonsizeDefault)
+    function drawui_eeg_history(FontSizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -60,15 +60,14 @@ varargout{1} = box_eeg_history;
             EnableFlag = 'on';
         end
         
-        FontSize_defualt = FonsizeDefault;
         %%--------------------channel and bin setting----------------------
         gui_eeg_history.DataSelBox = uiextras.VBox('Parent', box_eeg_history,'BackgroundColor',ColorB_def);
         
         gui_eeg_history.eeg_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_history.eeg_h_all = uicontrol('Style','radiobutton','Parent',gui_eeg_history.eeg_history_title,'String','Current EEGset',...
-            'callback',@eeg_H_ALL,'Value',1,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
+            'callback',@eeg_H_ALL,'Value',1,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         gui_eeg_history.eeg_h_EEG = uicontrol('Style','radiobutton','Parent', gui_eeg_history.eeg_history_title,'String','Current session',...
-            'callback',@eeg_H_EEG,'Value',0,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
+            'callback',@eeg_H_EEG,'Value',0,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def,'Enable','on'); % 2F
         
         try
             eeg_history =  observe_EEGDAT.EEG.history;
@@ -93,9 +92,9 @@ varargout{1} = box_eeg_history;
         %%save the scripts
         gui_eeg_history.save_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eeg_history.save_script = uicontrol('Style','pushbutton','Parent',gui_eeg_history.save_history_title,...
-            'String','Save history script','callback',@savescript,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Save history script','callback',@savescript,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         gui_eeg_history.show_cmd = uicontrol('Style','pushbutton','Parent',gui_eeg_history.save_history_title,...
-            'String','Show in cmd window','callback',@show_cmd,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Show in cmd window','callback',@show_cmd,'FontSize',FontSizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( gui_eeg_history.DataSelBox,'Sizes',[35 -1 30]);
     end
 

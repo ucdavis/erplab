@@ -31,15 +31,15 @@ end
 varargout{1} = Erp_information;
 gui_erp_DQSME = struct;
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_erp_information(FonsizeDefault);
-    function drawui_erp_information(FonsizeDefault)
+drawui_erp_information(FontSizeDefault);
+    function drawui_erp_information(FontSizeDefault)
         
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -54,7 +54,7 @@ drawui_erp_information(FonsizeDefault);
         %%ERP setname and file name
         gui_erp_DQSME.setfilename_title = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', gui_erp_DQSME.setfilename_title,'String','Current ERP setname & file name',...
-            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+            'FontSize',FontSizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
         
         
         gui_erp_DQSME.setfilename_title2 = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -73,37 +73,37 @@ drawui_erp_information(FonsizeDefault);
         
         %%----------------------------Setting midian SME---------------------
         gui_erp_DQSME.Median_sme = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_DQSME.Median_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','Median aSME:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_DQSME.Median_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','Median aSME:','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_DQSME.Median_sme_title,'HorizontalAlignment','left');
         
-        gui_erp_DQSME.Median_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','','FontSize',FonsizeDefault);
+        gui_erp_DQSME.Median_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','','FontSize',FontSizeDefault);
         set(gui_erp_DQSME.Median_sme_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         set(gui_erp_DQSME.Median_sme,'Sizes',[100 400]);
         
         %%----------------------------Setting min. SME---------------------
         gui_erp_DQSME.min_sme = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_DQSME.min_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.min_sme,'String','Min aSME:','FontSize',FonsizeDefault);
+        gui_erp_DQSME.min_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.min_sme,'String','Min aSME:','FontSize',FontSizeDefault);
         set(gui_erp_DQSME.min_sme_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
-        gui_erp_DQSME.min_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.min_sme,'String','','FontSize',FonsizeDefault);
+        gui_erp_DQSME.min_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.min_sme,'String','','FontSize',FontSizeDefault);
         set(gui_erp_DQSME.min_sme_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         set(gui_erp_DQSME.min_sme,'Sizes',[80 400]);
         
         %%----------------------------Setting max. SME---------------------
         gui_erp_DQSME.max_sme = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_DQSME.max_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.max_sme,'String','Max aSME:','FontSize',FonsizeDefault);
+        gui_erp_DQSME.max_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.max_sme,'String','Max aSME:','FontSize',FontSizeDefault);
         set(gui_erp_DQSME.max_sme_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
-        gui_erp_DQSME.max_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.max_sme,'String','','FontSize',FonsizeDefault);
+        gui_erp_DQSME.max_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.max_sme,'String','','FontSize',FontSizeDefault);
         set(gui_erp_DQSME.max_sme_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         set(gui_erp_DQSME.max_sme,'Sizes',[80 400]);
         
         gui_erp_DQSME.DQSME_option = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_DQSME.DQSME_option_table  = uicontrol('Style','pushbutton','Parent', gui_erp_DQSME.DQSME_option,'String','Show in a table',...
-            'callback',@DQSME_table,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@DQSME_table,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         
         gui_erp_DQSME.DQSME_option_file  = uicontrol('Style','pushbutton','Parent', gui_erp_DQSME.DQSME_option,'String','Save to file',...
-            'callback',@DQSME_file,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'callback',@DQSME_file,'Enable',Enable_label,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]);
         set(gui_erp_DQSME.DQSME_option,'Sizes',[120 120]);
         
         set(gui_erp_DQSME.DQSME_option_table,'Enable','off');

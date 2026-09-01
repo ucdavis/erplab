@@ -31,18 +31,17 @@ end
 
 %-----------------------------Draw the panel-------------------------------------
 try
-    FonsizeDefault = varargin{2};
+    FontSizeDefault = varargin{2};
 catch
-    FonsizeDefault = [];
+    FontSizeDefault = [];
 end
-if isempty(FonsizeDefault)
-    FonsizeDefault = f_get_default_fontsize();
+if isempty(FontSizeDefault)
+    FontSizeDefault = f_get_default_fontsize();
 end
-drawui_mvpc_gradavg(FonsizeDefault)
+drawui_mvpc_gradavg(FontSizeDefault)
 varargout{1} = MVPC_grdavg_box_gui;
 
-    function drawui_mvpc_gradavg(FonsizeDefault)
-        FontSize_defualt = FonsizeDefault;
+    function drawui_mvpc_gradavg(FontSizeDefault)
         Enable_label = 'off';
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
@@ -51,14 +50,14 @@ varargout{1} = MVPC_grdavg_box_gui;
         %%Parameters
         gui_mvpc_grdavg.weigavg_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', gui_mvpc_grdavg.weigavg_title,...
-            'String','MVPCsets','Enable','on','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+            'String','MVPCsets','Enable','on','FontSize',FontSizeDefault,'BackgroundColor',ColorB_def);
         
         gui_mvpc_grdavg.mvpc_edit = uicontrol('Style','edit','Parent', gui_mvpc_grdavg.weigavg_title,...
-            'String','','Enable','off','callback',@mvpc_edit,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'String','','Enable','off','callback',@mvpc_edit,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_grdavg.mvpc_edit.KeyPressFcn = @mvpc_graverage_presskey;
         gui_mvpc_grdavg.paras{1} = str2num(gui_mvpc_grdavg.mvpc_edit.String);
         gui_mvpc_grdavg.mvpc_browse = uicontrol('Style','pushbutton','Parent', gui_mvpc_grdavg.weigavg_title,...
-            'String','Browse','Enable','off','callback',@mvpc_browse,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','Enable','off','callback',@mvpc_browse,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1]); % 2F
         gui_mvpc_grdavg.mvpc_browse.KeyPressFcn = @mvpc_graverage_presskey;
         set(gui_mvpc_grdavg.weigavg_title,'Sizes',[70 -1 70]);
         try avg_def=  estudioworkingmemory('pop_mvpcaverager'); catch avg_def = [];  end;
@@ -68,7 +67,7 @@ varargout{1} = MVPC_grdavg_box_gui;
         end
         gui_mvpc_grdavg.cbdatq_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_mvpc_grdavg.sem_checkbox = uicontrol('Style','checkbox','Parent', gui_mvpc_grdavg.cbdatq_title,'Enable','off',...
-            'String','','Value',avg_def,'callback',@sem_checkbox,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','','Value',avg_def,'callback',@sem_checkbox,'FontSize',FontSizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_mvpc_grdavg.sem_checkbox.String =  'Compute point-by-point SEM';
         gui_mvpc_grdavg.sem_checkbox.KeyPressFcn = @mvpc_graverage_presskey;
         gui_mvpc_grdavg.paras{2} = gui_mvpc_grdavg.sem_checkbox.Value;
@@ -76,10 +75,10 @@ varargout{1} = MVPC_grdavg_box_gui;
         gui_mvpc_grdavg.location_title = uiextras.HBox('Parent', gui_mvpc_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',gui_mvpc_grdavg.location_title);
         gui_mvpc_grdavg.cancel  = uicontrol('Style','pushbutton','Parent',gui_mvpc_grdavg.location_title,'Enable','off',...
-            'String','Cancel','callback',@average_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
+            'String','Cancel','callback',@average_cancel,'FontSize',FontSizeDefault,'BackgroundColor',[1 1 1],'Max',10); % 2F
         uiextras.Empty('Parent',gui_mvpc_grdavg.location_title);
         gui_mvpc_grdavg.run = uicontrol('Style','pushbutton','Parent',gui_mvpc_grdavg.location_title,'Enable','off',...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
+            'String','Run','callback',@apply_run,'FontSize',FontSizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',gui_mvpc_grdavg.location_title);
         set(gui_mvpc_grdavg.location_title,'Sizes',[20 95 30 95 20]);
         set(gui_mvpc_grdavg.DataSelBox,'Sizes',[30,30,30]);
