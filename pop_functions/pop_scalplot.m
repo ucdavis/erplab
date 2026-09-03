@@ -728,10 +728,11 @@ while iadj<=nadj && continueplot
         end
         for ibin=1:nbin
             if ismoviex>0
-                axes('position',[0.05  0.05+hi*(nbin-ibin)  0.9  hi])
+                hax = axes('position',[0.05  0.05+hi*(nbin-ibin)  0.9  hi], 'Parent', hsig);
             else
-                axes('position',[0.05+wi*(ilat-1)  0.05+hi*(nbin-ibin)  wi  hi])
+                hax = axes('position',[0.05+wi*(ilat-1)  0.05+hi*(nbin-ibin)  wi  hi], 'Parent', hsig);
             end
+            erplab_hideaxestoolbar(hax);
             if nlat>=1 && ~strcmp(measurestr, 'insta') && ~strcmp(measurestr, 'instalapla')
                 latetitle = [num2str(latencyArray(ilat,1)) '-' num2str(latencyArray(ilat,2))];
             else
@@ -835,7 +836,7 @@ while iadj<=nadj && continueplot
                 %
                 % Title
                 %
-                httle  = get(gca,'Title');
+                httle  = get(HeadAxes(ksub),'Title');
                 set(httle,'FontSize', fontsizel)
                 set(httle,'FontName', fontnamel)
                 %pttle = get(httle,'position');
@@ -845,7 +846,7 @@ while iadj<=nadj && continueplot
                 % Copy object when click on axes
                 %
                 if ismoviex==0
-                    axcopy_modified(gca)
+                    axcopy_modified(HeadAxes(ksub))
                 end
             elseif strcmpi(mtype, '2d')
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -857,25 +858,28 @@ while iadj<=nadj && continueplot
                 %
                 mapnumcontour = 12;
                 mheadrad      = 0.5;
+                % topoplot is an EEGLAB function that draws into gca and takes no axes
+                % argument, so point gca at our axes immediately before calling it
+                set(0,'CurrentFigure',hsig); set(hsig,'CurrentAxes',hax);
                 topoplot( data2plot, ERP.chanlocs,...
                     'style', smapstyle, 'plotrad',mplotrad, 'headrad', mheadrad,'emarker', {'.','k',[],1},...
                     'numcontour', mapnumcontour, 'maplimits', maplimit, 'colormap', clrmap,'electrodes', elestyle, 'nosedir', mapview);
                 
-                HeadAxes(ksub) = gca;
+                HeadAxes(ksub) = hax;
                 
                 % Color Bar
                 if clrbar==0 || (clrbar==1 && clrbarcustom==1)
                     ColorbarHandle = [];
                 else
                     clrpos = 'EastOutSide';
-                    ColorbarHandle = colorbar('location', clrpos);
+                    ColorbarHandle = colorbar(hax,'location', clrpos);
                     %set(ColorbarHandle,'Visible','off')
                 end
                 
                 %
                 % Axes Title (Position)
                 %
-                httle = title(titulo , 'FontSize', fontsizel, 'FontName', fontnamel); % Two line title
+                httle = title(hax, titulo , 'FontSize', fontsizel, 'FontName', fontnamel); % Two line title
                 %set(httle,'Position', [-0.004 0.55 4]) % above
                 set(httle,'Position', [-0.004 -0.58 4]) % below
                 %set(httle,'Position', [-0.588 -0.004  4], 'rotation',90) % vertical left
@@ -887,7 +891,7 @@ while iadj<=nadj && continueplot
                     set(HeadAxes(ksub), 'Position', [PP(1) PP(2) PP(3) PP(4)*0.9])
                 end
                 if ismoviex==0
-                    axcopy_modified(gca)
+                    axcopy_modified(hax)
                 end
             else
                 close(hsig)
@@ -921,7 +925,7 @@ while iadj<=nadj && continueplot
                 %
                 try
                     if isempty(ColorbarHandle)
-                        ColorbarHandle = colorbar('Visible', 'off');
+                        ColorbarHandle = colorbar(HeadAxes(end),'Visible', 'off');
                     end
                     erpsinglecolorbar(HeadAxes(end), ColorbarHandle, 1)
                 catch
@@ -998,7 +1002,7 @@ while iadj<=nadj && continueplot
         % When single colorbar is requiered (custom scale)
         %
         if isempty(ColorbarHandle)
-            ColorbarHandle = colorbar('Visible', 'off');
+            ColorbarHandle = colorbar(HeadAxes(end),'Visible', 'off');
         end
         erpsinglecolorbar(HeadAxes, ColorbarHandle, nlat)
         drawnow

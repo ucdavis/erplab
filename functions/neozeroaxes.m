@@ -10,7 +10,11 @@
 %
 % Apr-2015: updated/fixed to deal with Matlab's HG2 update (Matlab 2014b and later). JLC
 
-function neozeroaxes(type, fontsizeticks, mcolor)
+function neozeroaxes(type, fontsizeticks, mcolor, axesin)
+if nargin<4 || isempty(axesin)
+        axesin = gca; % axes to draw on; passed in so a focus change cannot redirect it
+end
+hfig = ancestor(axesin,'figure');
 if nargin<3
         mcolor = []; %[.7 .9 .7];
 end
@@ -21,16 +25,15 @@ if isempty(fontsizeticks)
         fontsizeticks = 8;
 end
 if isempty(mcolor)
-        mcolor = get(gcf,'Color');
+        mcolor = get(hfig,'Color');
 end
 linew     = 1; % axes line width
-holdwason = ishold;
-axesin    = get(gcf,'CurrentAxes');   % get current axes (old axes)
-bdownf    = get(gcf,'ButtonDownFcn'); % JLC, May 12th 2008
+holdwason = ishold(axesin);
+bdownf    = get(hfig,'ButtonDownFcn'); % JLC, May 12th 2008
 posi      = get(axesin,'position');   % get axes position
 
 % create new axes (ax)
-ax         = axis;
+ax         = axis(axesin);
 xscale     = get(axesin,'XScale');     % get XScale from the old X axis
 yscale     = get(axesin,'YScale');     % get YScale from the old Y axis
 ticklength = get(axesin,'TickLength'); % get TickLength from the old axis
@@ -70,7 +73,7 @@ YAxisXLimits = polyval(f,[0 YAxisWidth*abs(xmax - xmin)]);
 f   = polyfit([ax(3) ax(4)],[posi(2) posi(2)+posi(4)],1);
 YAxisYLimits = polyval(f,[ymin ymax]);
 XAxisYLimits = polyval(f,[0 XAxisHeight*abs(ymax - ymin)]);
-bgcolour     = get(gcf,'color'); % gets background color
+bgcolour     = get(hfig,'color'); % gets background color
 
 % right (new) XY axes intersection in case Y is inversed.
 if strcmp(sentido, 'reverse')
@@ -81,7 +84,7 @@ end
 XAxisPosition = [XAxisXLimits(1) Xaxis_y XAxisXLimits(2) - XAxisXLimits(1) XAxisYLimits(2) - XAxisYLimits(1)];
 
 % create new X axis
-AX.hX = axes('position',XAxisPosition,...
+AX.hX = axes('Parent',hfig,'position',XAxisPosition,...
         'XLim',[xmin xmax],...
         'box','off',...
         'YTick',[],...
@@ -97,7 +100,7 @@ AX.hX = axes('position',XAxisPosition,...
 YAxisPosition = [YAxisXLimits(1) YAxisYLimits(1) YAxisXLimits(2) - YAxisXLimits(1) YAxisYLimits(2) - YAxisYLimits(1)];
 
 % create new Y axis
-AX.hY = axes('position',YAxisPosition,...
+AX.hY = axes('Parent',hfig,'position',YAxisPosition,...
         'YLim',[ymin ymax],...
         'box','off',...
         'Xtick',[],...
@@ -131,8 +134,9 @@ if type==1
         end
 end
 
-set(gcf,'CurrentAxes',axesin)
-set(gcf,'ButtonDownFcn',bdownf)
+erplab_hideaxestoolbar([AX.hX AX.hY])
+set(hfig,'CurrentAxes',axesin)
+set(hfig,'ButtonDownFcn',bdownf)
 
 if ~holdwason
         set(AX.hX,'NextPlot','Replace')

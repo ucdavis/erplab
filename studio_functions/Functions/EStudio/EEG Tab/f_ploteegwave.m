@@ -203,14 +203,16 @@ if isempty(FigureName)
         'NumberTitle','on','color',[1 1 1]);
     %     fig_gui_wave = subplot(Numrows+1,1,[2:Numrows+1]);
     hbig= axes('Parent',fig_gui,'Box','on','FontWeight','normal', 'XTick', [], 'YTick', []);
-    hold on
+    hold(hbig,'on')
+    erplab_hideaxestoolbar(hbig);
 end
 
 if ~isempty(FigureName)
     fig_gui= figure('Name',['<< ' FigureName ' >> '],...
         'NumberTitle','on','color',[1 1 1]);
     hbig= axes('Parent',fig_gui,'Color','none','Box','on','FontWeight','normal', 'XTick', [], 'YTick', []);
-    hold on;
+    hold(hbig,'on');
+    erplab_hideaxestoolbar(hbig);
 end
 % drawnow;
 try
@@ -902,7 +904,7 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
     end
 end
 
-set(gcf,'color',[1 1 1]);
+set(fig_gui,'color',[1 1 1]);
 prePaperType = get(fig_gui,'PaperType');
 prePaperUnits = get(fig_gui,'PaperUnits');
 preUnits = get(fig_gui,'Units');

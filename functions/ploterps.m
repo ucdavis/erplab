@@ -444,7 +444,7 @@ else
                 calibAxes = gobjects(1, row*col);
                 calibPos  = cell(1, row*col);
                 for calibIdx = 1:row*col
-                        calibAxes(calibIdx) = subplot(row, col, calibIdx);
+                        calibAxes(calibIdx) = subplot(row, col, calibIdx, 'Parent', hbig);
                         calibPos{calibIdx}  = get(calibAxes(calibIdx), 'Position');
                 end
                 delete(calibAxes);
@@ -479,10 +479,11 @@ else
                 
                 labelch = strrep(labelch,'_','\_'); % trick for dealing with '_'. JLC
                 if holdch
-                        sp(ich) = subplot(row, col, pboxplot(ich)); % holdch always reuses the same cell
+                        sp(ich) = subplot(row, col, pboxplot(ich), 'Parent', hbig); % holdch always reuses the same cell
                 else
-                        sp(ich) = axes('Position', calibPos{pboxplot(ich)}); % use pre-calibrated position; avoids per-call subplot() listener overhead
+                        sp(ich) = axes('Position', calibPos{pboxplot(ich)}, 'Parent', hbig); % use pre-calibrated position; avoids per-call subplot() listener overhead
                 end
+                erplab_hideaxestoolbar(sp(ich));
                 
                 if pstyle==1 || pstyle==2
                         colorpl = [.7 .9 .7]; % Original
@@ -490,27 +491,27 @@ else
                         colorpl = BCKGCOLOR; % [1 1 1]
                 end
                 if isMGFP && i==nch
-                        set(gca,'ydir','normal');
+                        set(sp(ich),'ydir','normal');
                         yposlabel = 1.08*max(yaxlim(1:2));
                         data4plot = data_MGFP;
                         yaxlim(1) = -0.1;
                 else
                         if isinvertedY
-                                set(gca,'ydir','reverse');
+                                set(sp(ich),'ydir','reverse');
                                 yposlabel = 1.05*min(yaxlim(1:2));
                         else
-                                set(gca,'ydir','normal');
+                                set(sp(ich),'ydir','normal');
                                 yposlabel = 1.08*max(yaxlim(1:2));
                         end
                         data4plot = dataaux(chanArray(i),:,:);
                 end
                 
                 legendArray = {[]};
-                hold on
+                hold(sp(ich),'on')
                 for ibin=1:nbin
                         % hold on                                             
                         if holdch
-                                hplot(ibin+cobi) = plot(ERP.times, data4plot(1,:,binArray(ibin)),...
+                                hplot(ibin+cobi) = plot(sp(ich), ERP.times, data4plot(1,:,binArray(ibin)),...
                                         'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
                                 if binleg
                                         set(hplot(ibin+cobi),'DisplayName',...
@@ -527,9 +528,9 @@ else
                                 if ~isempty(ERP.binerror) && errorstd>=1
                                        yt1 = data4plot(1,:,binArray(ibin)) - ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
                                        yt2 = data4plot(1,:,binArray(ibin)) + ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
-                                       ciplot(yt1,yt2, ERP.times, colorDef{ibin+cobi}, stdalpha);
+                                       ciplot(yt1,yt2, ERP.times, colorDef{ibin+cobi}, stdalpha, sp(ich));
                                        
-                                       set(gcf, 'InvertHardcopy', 'off', 'PaperPositionMode', 'auto', 'PaperOrientation', 'portrait');
+                                       set(hbig, 'InvertHardcopy', 'off', 'PaperPositionMode', 'auto', 'PaperOrientation', 'portrait');
                                 end
                                 
                                 %                                 if ~isempty(ERP.binerror) && errorstd>=1
@@ -541,7 +542,7 @@ else
                                 %                                 end
                                 
                                 
-                                hplot(ibin) = plot(ERP.times, data4plot(1,:,binArray(ibin)),...
+                                hplot(ibin) = plot(sp(ich), ERP.times, data4plot(1,:,binArray(ibin)),...
                                     'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
                                 
                                 if binleg
@@ -557,24 +558,24 @@ else
                 %
                 % Set X and Y axis
                 %                              
-                axis([xaxlim(1:2) yaxlim(1:2)])
+                axis(sp(ich), [xaxlim(1:2) yaxlim(1:2)])
                 %set(gca,'Layer','top')
                 
                 if length(xaxlim)>2
-                        set(gca,'XTick', xaxlim(3:end))
+                        set(sp(ich),'XTick', xaxlim(3:end))
                 end
                 if minorticks(1)
-                        set(gca,'XMinorTick','on')
+                        set(sp(ich),'XMinorTick','on')
                 end               
                 if length(yaxlim)>2
-                        set(gca,'YTick', yaxlim(3:end))
+                        set(sp(ich),'YTick', yaxlim(3:end))
                 end
                 if minorticks(2)
-                        set(gca,'YMinorTick','on')
+                        set(sp(ich),'YMinorTick','on')
                 end
                 
-                set(gca,'XColor', FRGCOLOR);
-                set(gca,'YColor', FRGCOLOR);
+                set(sp(ich),'XColor', FRGCOLOR);
+                set(sp(ich),'YColor', FRGCOLOR);
                 
                 %                 if ~isempty(ERP.binerror) && errorstd>=1
                 %                         gg=1; hh=1;
@@ -592,7 +593,7 @@ else
                 %                 end
                 
                 if pstyle==1 || pstyle==2% Matlab figure and menues
-                        neozeroaxes(0, fsaxtick, BCKGCOLOR)                                                
+                        neozeroaxes(0, fsaxtick, BCKGCOLOR, sp(ich))                                                
                         comax = ['neozeroaxes(0);'...
                                 'legend show;'...
                                 'legend(''''boxoff'''','...
@@ -602,11 +603,11 @@ else
                                 comax = [ 'sem2legend;' comax ];
                         end
                         if pstyle==2
-                                set(gca, 'YAxisLocation', 'right')
+                                set(sp(ich), 'YAxisLocation', 'right')
                         end
                         CHLABCOLOR = [0 0 0];
                 else % classic
-                        neozeroaxes(1, fsaxtick, BCKGCOLOR)                       
+                        neozeroaxes(1, fsaxtick, BCKGCOLOR, sp(ich))                       
                         comax = ['neozeroaxes(1);'...
                                 'legend show;'...
                                 'legend(''''boxoff'''','...
@@ -618,12 +619,12 @@ else
                         CHLABCOLOR = FRGCOLOR;
                 end
                 
-                text(0,yposlabel, labelch, 'FontSize',fschan,'HorizontalAlignment', 'left', 'FontWeight', 'bold', 'Color', CHLABCOLOR,'BackgroundColor', colorpl);
-                set(gca,'Color', BCKGCOLOR);  
+                text(sp(ich), 0,yposlabel, labelch, 'FontSize',fschan,'HorizontalAlignment', 'left', 'FontWeight', 'bold', 'Color', CHLABCOLOR,'BackgroundColor', colorpl);
+                set(sp(ich),'Color', BCKGCOLOR);  
                 %set(gca,'Layer','top')
                 drawnow
                 axcopy_modified(sp(ich), comax); % SouthEastOutside
-                hold off
+                hold(sp(ich),'off')
         end
         
         %
@@ -632,14 +633,15 @@ else
         if legepos~=4
                 switch legepos
                         case {1,2}
-                                sh = subplot(row, col, corners);
+                                sh = subplot(row, col, corners, 'Parent', hbig);
                         case 3
                                 pf  = get(hbig,'position');
-                                figure('Name',['<< ' fname ' >>  BIN''s LEGEND'],'NumberTitle','on',...
+                                hleg = figure('Name',['<< ' fname ' >>  BIN''s LEGEND'],'NumberTitle','on',...
                                         'MenuBar','none', 'Tag', ftag, 'Color',BCKGCOLOR,...
                                         'Position',[ pf(1) pf(2) pf(3)/2.5 pf(4)]);
-                                sh = subplot(1, 1, 1);
+                                sh = subplot(1, 1, 1, 'Parent', hleg);
                 end
+                erplab_hideaxestoolbar(sh);
                 p  = get(sh,'position');
                 h_legend = legend(sh, hplot );
                 set(h_legend, 'position', p);

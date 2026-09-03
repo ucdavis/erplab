@@ -1030,15 +1030,17 @@ if isempty(qFigureName)
     fig_gui= figure('Name',['<< ' fname ' >> '],...
         'NumberTitle','on','color',qFigbgColor);
     %     fig_gui_wave = subplot(Numrows+1,1,[2:Numrows+1]);
-    hbig = subplot(Numrows+1,1,[2:Numrows+1]);
-    hold on;
+    hbig = subplot(Numrows+1,1,[2:Numrows+1],'Parent',fig_gui);
+    hold(hbig,'on');
+    erplab_hideaxestoolbar(hbig);
 end
 
 if ~isempty(qFigureName)
     fig_gui= figure('Name',['<< ' qFigureName ' >> '],...
         'NumberTitle','on','color',qFigbgColor);
-    hbig = subplot(ceil(Numrows*5)+1,1,[2:ceil(Numrows*5)+1]);
-    hold on;
+    hbig = subplot(ceil(Numrows*5)+1,1,[2:ceil(Numrows*5)+1],'Parent',fig_gui);
+    hold(hbig,'on');
+    erplab_hideaxestoolbar(hbig);
     %     hbig= axes('Parent',fig_gui_wave);
 end
 try
@@ -1483,7 +1485,8 @@ try
             qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
             LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',32,qLegendName{Numofoverlay}));
         end
-        sh = subplot(ceil(Numrows*5)+1, 1, 1,'align');
+        sh = subplot(ceil(Numrows*5)+1, 1, 1,'align','Parent',fig_gui);
+        erplab_hideaxestoolbar(sh);
         p  = get(sh,'position');
         if qlegcolor ~=1
             try
@@ -1507,7 +1510,8 @@ try
         legend(sh,'boxoff');
         axis(sh,'off');
     else
-        h_legend = subplot(ceil(Numrows*5)+1, 1, 1,'align');
+        h_legend = subplot(ceil(Numrows*5)+1, 1, 1,'align','Parent',fig_gui);
+        erplab_hideaxestoolbar(h_legend);
         set(h_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
         if qPLOTORG(2) ==1
             legendstr = char('The channel labels are not the same across the selected ERPsets, so no channel labels are shown.; If you want to see the channel labels, please select only one ERPset (or multiple ERPsets with matching channel labels).');
@@ -1523,7 +1527,7 @@ catch
     beep;
     disp('Cannot display the legend names, please check "qGridposArray" or other parameters!');
 end
-set(gcf,'color',qFigbgColor);
+set(fig_gui,'color',qFigbgColor);
 % prePaperType = get(fig_gui,'PaperType');
 % prePaperUnits = get(fig_gui,'PaperUnits');
 % preUnits = get(fig_gui,'Units');
