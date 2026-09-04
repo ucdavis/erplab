@@ -73,7 +73,7 @@ function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( EEG, vararg
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -141,10 +141,12 @@ if nargin==1
     inputstrMat = gui_erplabDeleteTimeSegments(def);  % GUI
     
     
-    % Exit when CANCEL button is pressed
+    % Exit when CANCEL button is pressed. Hand back the dataset unchanged and
+    % return an empty command: EEGLAB stores the dataset whenever LASTCOM is
+    % non-empty, so anything else here overwrites the loaded set.
     if isempty(inputstrMat)
-        outputEEG      = [];
-        commandHistory = 'User selected cancel';
+        outputEEG      = EEG;
+        commandHistory = '';
         return;
     end
 

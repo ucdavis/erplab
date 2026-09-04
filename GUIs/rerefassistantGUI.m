@@ -24,6 +24,9 @@ end
 function rerefassistantGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for rerefassistantGUI
 handles.output = hObject;
+% stored in the .fig as a multi-entry cell, which repeats the sentence
+set(handles.checkbox_addunrefequ, 'String', ...
+    'If a channel is not being re-referenced, include an equation for simply copying the channel');
 try
       handles.norichan  = varargin{1};
       listch = varargin{2};

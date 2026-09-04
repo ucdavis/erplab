@@ -49,6 +49,11 @@ end
 %--------------------------------------------------------------------------
 function scalplotGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
+% these labels are stored in the .fig as multi-entry cells, which draws the
+% extra entries as additional lines; collapse them to the intended single line
+set(handles.radio_2D, 'String', '2D');
+set(handles.radio_3D, 'String', '3D');
+
 % Choose default command line output for scalplotGUI
 try
         plotset = evalin('base', 'plotset');

@@ -82,6 +82,15 @@ if isobject(EEG) % eegobj
         return
 end
 
+% EEG is a plain [] when no dataset is loaded, so check before reading a field
+if ~iseegstruct(EEG)
+    msgboxText = 'ERPLAB says: There is no EEG dataset to work with. Please load a dataset first.';
+    title_header = 'ERPLAB: pop_continuousFFT() error';
+    errorfound(msgboxText, title_header);
+    fft_out = [];
+    return
+end
+
 if ~isempty(EEG.epoch)
     cont_here = 0;  % non-continuous, epoched data
     msgboxText =  'ERPLAB says: The selected dataset contains epoched EEG data, and this function works only with continuous EEG data.';    

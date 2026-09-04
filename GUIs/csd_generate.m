@@ -45,6 +45,7 @@ end
 
 % --- Executes just before csd_generate is made visible.
 function csd_generate_OpeningFcn(hObject, eventdata, handles, varargin)
+
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -53,6 +54,9 @@ function csd_generate_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for csd_generate
 handles.output = hObject;
+% stored in the .fig as a multi-entry cell whose empty first entry pushes the
+% label onto a second line
+set(handles.pushbutton_help, 'String', 'Help');
 
 %
 % Color GUI

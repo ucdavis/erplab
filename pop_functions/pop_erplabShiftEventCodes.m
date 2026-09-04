@@ -128,10 +128,11 @@ if nargin==1
     %% Call GUI
     inputstrMat = gui_erplabShiftEventCodes(def);  % GUI
     
-    % Exit when CANCEL button is pressed
+    % Exit when CANCEL button is pressed. Leave EEG as it was and return an
+    % empty command: EEGLAB stores the dataset whenever LASTCOM is non-empty,
+    % so anything else here overwrites the loaded set with the value below.
     if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
-        EEG            = [];
-        commandHistory = 'User selected cancel';
+        commandHistory = '';
         return;
     end
     

@@ -45,6 +45,7 @@ end
 
 % --- Executes just before gui_erplabShiftEventCodes is made visible.
 function gui_erplabShiftEventCodes_OpeningFcn(hObject, eventdata, handles, varargin) %#ok<*INUSL>
+
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -53,6 +54,8 @@ function gui_erplabShiftEventCodes_OpeningFcn(hObject, eventdata, handles, varar
 
 % Choose default command line output for gui_erplabShiftEventCodes
 handles.output = []; % hObject;
+% stored in the .fig as a multi-entry cell, which repeats '(recommended)'
+set(handles.radioBtnRoundEarlier, 'String', 'Round to earlier time sample (recommended)');
 
 
 % Handle input parameters from ERPLABWORKINGMEMORY

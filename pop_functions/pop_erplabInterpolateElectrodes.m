@@ -98,10 +98,12 @@ if nargin==1
         inputstrMat = gui_erplabInterpolateElectrodes(def);  % GUI
         
         
-        % Exit when CANCEL button is pressed
+        % Exit when CANCEL button is pressed. Hand back the dataset unchanged
+        % and return an empty command: EEGLAB stores the dataset whenever
+        % LASTCOM is non-empty, so anything else here overwrites the loaded set.
         if isempty(inputstrMat)
-            outputEEG      = [];
-            commandHistory = 'User selected cancel';
+            outputEEG      = EEG;
+            commandHistory = '';
             return;
         end
         
