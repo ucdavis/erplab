@@ -562,7 +562,7 @@ uimenu( submenu,'Label','EEG Channel operations','CallBack',comCHOP,'separator',
 
 %% FREQUENCY TOOLS & FILTERS EEG/ERP submenus
 %
-mFI = uimenu( submenu,'Label','Filter & Frequency Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+mFI = uimenu( submenu,'Label','Filter and Frequency Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mFI,'Label','Filters for EEG data ','CallBack',comBFCD,'userdata','startup:off;continuous:on;epoch:on;study:on;erpset:off');
 uimenu( mFI,'Label','Plot amplitude spectrum for EEG data ','CallBack', comPAS,'userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
 uimenu( mFI,'Label','Filters for ERP data ','CallBack',comFil,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
@@ -581,7 +581,7 @@ uimenu( mAR,'Label','Blink rejection','CallBack', comAR3,'userdata','startup:off
 uimenu( mAR,'Label','Step-like artifacts','CallBack', comAR4,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Sample to sample voltage threshold','CallBack', comAR6,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Rate of change -time derivative-','CallBack', comAR7,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
-uimenu( mAR,'Label','Blocking & flat line','CallBack', comAR8,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
+uimenu( mAR,'Label','Blocking and flat line','CallBack', comAR8,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Clear artifact detection marks on EEG ','CallBack', comRSTAR,'separator','on','ForegroundColor', [0.6 0 0],'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Synchronize artifact info in EEG and EVENTLIST ','CallBack', comARSinc1,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Post Artifact Detection Epoch Interpolation ','CallBack', comAR9,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
@@ -659,7 +659,7 @@ uimenu( mERPLOT,'Label','Close all ERPLAB figures ','CallBack','clerpf','separat
 
 %% EXPORT & IMPORT ERP submenus
 %
-mEXERP = uimenu( submenu,'Label','Export & Import ERP','tag','Exerp','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+mEXERP = uimenu( submenu,'Label','Export and Import ERP','tag','Exerp','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( mEXERP,'Label','Export ERP to text (readable by ERPSS) ','CallBack', comEXPAVG,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mEXERP,'Label','Export ERP to text (universal) ','CallBack', comEXPUNI,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mEXERP,'Label','Import ERP from text (ERPSS) ','CallBack', comIMPERPSS,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
