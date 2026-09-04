@@ -791,10 +791,9 @@ if (iswarngain==1 || iswarngain==2) && ~strcmpi(typefilter,'notch')
     end
     
     title       = 'WARNING!';
-    oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    erplab_dialogcolors(BackERPLABcolor)
     button      = questdlg(sprintf(question), title,'Proceed anyway', 'Cancel','Proceed anyway');
-    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    erplab_dialogcolors()
     
     if ~strcmpi(button,'Proceed anyway')
         disp('User selected Cancel')
@@ -823,10 +822,9 @@ if strcmp(typefilter, 'fir') || strcmp(typefilter, 'notch')
             
             questionstr = sprintf(question);
             titlex = 'ERPLAB: Filter order vs number of samples';
-            oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-            set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+            erplab_dialogcolors(BackERPLABcolor)
             button = questdlg(questionstr, titlex,'OK','OK');
-            set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+            erplab_dialogcolors()
             return
         end
     end
@@ -1140,10 +1138,9 @@ if get(hObject, 'Value')
                     'or uncheck the option for filtering between boundary events (not recommended).'];
                 questionstr = sprintf(question);
                 titlex = 'ERPLAB: Filter order vs number of samples';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                erplab_dialogcolors(BackERPLABcolor)
                 button = questdlg(questionstr, titlex,'OK','OK');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                erplab_dialogcolors()
                 return
             end
         end
@@ -1487,10 +1484,9 @@ if iswarnroff~=0
         
         questionstr = sprintf(question);
         titlex   = 'ERPLAB: Filter order';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button = questdlg(questionstr, titlex,'OK','Reset filters','OK');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+        erplab_dialogcolors()
         
         %
         % reset order
@@ -1622,10 +1618,9 @@ elseif iswarngain~=0 && iswarnroff==0
             
             titlex = 'ERPLAB: Filter order';
             
-            oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-            set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+            erplab_dialogcolors(BackERPLABcolor)
             button = questdlg(sprintf(question, line01), titlex,'OK','Reset filters','OK');
-            set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+            erplab_dialogcolors()
             
             %
             % reset order
@@ -1866,10 +1861,9 @@ if typef==1 || typef==2
                 'or uncheck the option for filtering between boundary events.'];
             questionstr = sprintf(question);
             titlex = 'ERPLAB: Filter order vs number of samples';
-            oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-            set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+            erplab_dialogcolors(BackERPLABcolor)
             button = questdlg(questionstr, titlex,'OK','OK');
-            set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+            erplab_dialogcolors()
             return
         end
     end

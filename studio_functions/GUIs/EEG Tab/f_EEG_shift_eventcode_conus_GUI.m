@@ -289,10 +289,9 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         question = ['Positive timeshift shifts right/forward in time\nNegative timeshift shifts left/backward in time'];
         title = 'Shift Event Codes (Continuous EEG)';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button = questdlg(sprintf(question), title,'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+        erplab_dialogcolors();
     end
 
 

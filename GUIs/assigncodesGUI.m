@@ -669,10 +669,9 @@ if condi
                 question = ['You have not saved your changes.\n\n'...
                         'What would you like to do?'];
                 title = 'Save List of changes';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                erplab_dialogcolors(BackERPLABcolor)
                 button = questdlg(sprintf(question), title,'Save and Continue','Save As', 'Cancel','Save and Continue');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                erplab_dialogcolors()
                 
                 if strcmpi(button,'Save As')
                         fullname = savelist(hObject, eventdata, handles);
@@ -812,9 +811,9 @@ if condi
                         %            'Please, disentangle this.\n'];
                         %title = 'Encoding boundary events';
                         %oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                        %set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                        %erplab_dialogcolors(BackERPLABcolor)
                         %button = questdlg(sprintf(question), title,'OK','OK');
-                        %set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                        %erplab_dialogcolors()
                         
                         %msgboxText{1} =  '''boundary'' event is already specified to be numerically encoded.';
                         %title = 'ERPLAB: duplicated inputs';

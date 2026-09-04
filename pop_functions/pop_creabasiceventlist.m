@@ -262,10 +262,9 @@ if rwwarn && nnz(tf)>0
     
     BackERPLABcolor = [1 0.9 0.3];    % yellow
     title      = 'ERPLAB: pop_creabasiceventlist, Overwriting Confirmation';
-    oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    erplab_dialogcolors(BackERPLABcolor)
     button      = questdlg(sprintf(question, EEG.setname), title,'Cancel','Overwrite them', 'Continue as it is', 'Overwrite them');
-    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    erplab_dialogcolors()
     
     if strcmpi(button,'Continue as it is')
         fprintf('|WARNING: Fields found in EEG.event that has ERPLAB''s reserved names will not be overwritten.\n\n');

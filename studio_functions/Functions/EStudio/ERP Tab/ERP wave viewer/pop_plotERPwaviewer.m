@@ -446,10 +446,9 @@ if ~isempty(qParameterfile)
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         question = ['Select one of them?\n 1. Use imported ALLERP. \n 2. Use ALLERP in Parameterfile.'];
         title = 'pop_plotERPwaviewer';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button = questdlg(sprintf(question), title,'Cancel','1', '2','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+        erplab_dialogcolors();
         
         if strcmpi(button,'1') || strcmpi(button,'2')
             if strcmpi(button,'1')

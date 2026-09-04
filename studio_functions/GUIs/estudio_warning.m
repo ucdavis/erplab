@@ -22,15 +22,22 @@ try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
     ColorB_def = [0.95 0.95 0.95];
+    ColorF_def = [0.02 0.02 0.02];
 end
 if isempty(ColorB_def)
     ColorB_def = [0.95 0.95 0.95];
+end
+if ~exist('ColorF_def','var') || isempty(ColorF_def)
+    ColorF_def = [0.02 0.02 0.02];
 end
 
 mh = msgbox(Messagestr, ['ERPLAB Studio:',32,titleName]);     %create msgbox
 mh.Resize = 'on';
 th = findall(mh, 'Type', 'Text');                   %get handle to text within msgbox
 th.FontSize = FontSizeDefault;
+% the background is set explicitly below, so set the text colour too or it
+% keeps following the desktop theme and goes pale on a light background
+th.Color = ColorF_def;
 set(mh,'color',ColorB_def);
 deltaWidth = sum(th.Extent([1,3]))-mh.Position(3) + th.Extent(1);
 deltaHeight = sum(th.Extent([2,4]))-mh.Position(4) + 10;

@@ -51,10 +51,9 @@ end
 BackERPLABcolor = [1 0.9 0.3];    % ERPLAB main window background
 question = 'In order to see your summary, What would you like to do?';
 title    = 'Artifact detection summary';
-oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+erplab_dialogcolors(BackERPLABcolor)
 button = questdlg(question, title,'Save in a .txt file','Save in a .xls file', 'Cancel','Cancel');
-set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+erplab_dialogcolors();
 
 if strcmpi(button,'Save in a .txt file')
     write_spreadsheet=1;

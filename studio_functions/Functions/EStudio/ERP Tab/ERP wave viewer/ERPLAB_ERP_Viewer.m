@@ -239,10 +239,9 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         question = ['Do you want to use the default "ALLERP"? \n Because there is no "ALLERP" in the "Parameterfile"'];
         title = 'My Viewer>ERPLAB_ERP_Viewer';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+        erplab_dialogcolors();
         
         if strcmpi(button,'Yes')
             Parameterfile.ALLERP= gui_erp_waviewer.ERPwaviewer.ALLERP;
@@ -406,10 +405,9 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         BackERPLABcolor1 = [1 0.9 0.3];    % yellow
         question1 = ['Are you sure you with to quit the "ERP wave viewer"?'];
         title1 = 'My Viewer>Exit';
-        oldcolor1 = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor1)
+        erplab_dialogcolors(BackERPLABcolor1)
         button1 = questdlg(sprintf(question1), title1,'Cancel','No', 'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor1);
+        erplab_dialogcolors();
         if strcmpi(button1,'Yes')
             try
                 close(gui_erp_waviewer.Window);

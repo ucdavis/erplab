@@ -29,10 +29,9 @@ for t=1:nformulas
                                             'For instance, nbin1 = ...\n\n'...
                                             'Do you want that EStudio corrects the syntax for you?'];
                                 title = 'WARNING: Syntax is not proper for non recursive mode';
-                                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                                erplab_dialogcolors(BackERPLABcolor)
                                 button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-                                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                                erplab_dialogcolors()
                                 
                                 if strcmpi(button,'Yes')
                                         ask4fix = 0;
@@ -54,10 +53,9 @@ for t=1:nformulas
                                             'For instance, you must write bin1 = ...\n\n'...
                                             'Do you want that EStudio corrects the syntax for you?'];
                                 title = 'WARNING: Syntax is not proper for recursive mode';
-                                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                                erplab_dialogcolors(BackERPLABcolor)
                                 button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-                                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                                erplab_dialogcolors()
                                 
                                 if strcmpi(button,'Yes')
                                         ask4fix = 0;

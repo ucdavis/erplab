@@ -281,6 +281,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
             ColorB_def = [0.7020 0.77 0.85];
+            ColorF_def = [0.02 0.02 0.02];
         end
         EStudio_gui_erp_totl = struct();
         % First, let's start the window
@@ -358,6 +359,9 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 1;
         EStudio_gui_erp_totl.context_tabs.SelectionChangedFcn = @SelectedTab;
         EStudio_gui_erp_totl.context_tabs.HighlightColor = [0 0 0];
+        % uix.TabPanel takes its tab text colour from a root default captured
+        % when the class loads, which a dark desktop makes light, so set it
+        EStudio_gui_erp_totl.context_tabs.ForegroundColor = ColorF_def;
         EStudio_gui_erp_totl.context_tabs.FontWeight = 'bold';
         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/length(EStudio_gui_erp_totl.context_tabs.TabNames);
         EStudio_gui_erp_totl.context_tabs.BackgroundColor = ColorB_def;
@@ -709,10 +713,9 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         question = ['Are you sure to quit EStudio?'];
         title = 'Exit';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+        erplab_dialogcolors();
         if strcmpi(button,'Yes')
             try
                 close(EStudio_gui_erp_totl.Window);

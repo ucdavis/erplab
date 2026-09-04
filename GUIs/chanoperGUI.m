@@ -311,8 +311,7 @@ if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
     question = ['Equations at editor window have not been saved yet.\n\n'...
         'What would you like to do?'];
     title = 'WARNING: Save List of edited chans';
-    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    erplab_dialogcolors(BackERPLABcolor)
 
     % Button text depends on context: Studio uses "continue", Classic uses "run"
     if handles.Toolabel  % Studio context
@@ -320,7 +319,7 @@ if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
     else  % Classic context
         button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
     end
-    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    erplab_dialogcolors()
 
     if strcmpi(button,'Save and continue') || strcmpi(button,'Save and run')
         fullname = savelist(hObject, eventdata, handles);
@@ -778,10 +777,9 @@ for t=1:nformulas
                     'For instance, nchan1 = ...\n\n'...
                     'Do you want that ERPLAB corrects the syntax for you?'];
                 title = 'WARNING: Syntax is not proper for non recursive mode';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                erplab_dialogcolors(BackERPLABcolor)
                 button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                erplab_dialogcolors()
 
                 if strcmpi(button,'Yes')
                     ask4fix = 0;
@@ -803,10 +801,9 @@ for t=1:nformulas
                     'For instance, you must write chan1 = ...\n\n'...
                     'Do you want that ERPLAB corrects the syntax for you?'];
                 title = 'WARNING: Syntax is not proper for recursive mode';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                erplab_dialogcolors(BackERPLABcolor)
                 button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                erplab_dialogcolors()
 
                 if strcmpi(button,'Yes')
                     ask4fix = 0;

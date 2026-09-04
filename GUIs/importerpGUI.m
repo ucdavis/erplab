@@ -460,10 +460,9 @@ if indxline>1
     question = ['Current list will be deleted.\n\n'...
         'Are you sure?'];
     title = 'List of averaged files for importing';
-    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    erplab_dialogcolors(BackERPLABcolor)
     button = questdlg(sprintf(question), title,'Cancel','Yes', 'Cancel');
-    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    erplab_dialogcolors()
     
     if ~strcmpi(button,'Yes')
         return

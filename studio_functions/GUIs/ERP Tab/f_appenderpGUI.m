@@ -175,10 +175,9 @@ else
         question = ['You have not yet saved your list.\n'...
             'What would you like to do?'];
         etitle       = 'Save List of ERPsets';
-        oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button      = questdlg(sprintf(question), etitle,'Save and Continue','Save As', 'Cancel','Save and Continue');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+        erplab_dialogcolors()
 
         if strcmpi(button,'Save As')
             fullname = savelist(hObject, eventdata, handles);

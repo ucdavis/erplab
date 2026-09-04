@@ -40,8 +40,7 @@ end
 %disp(char(question))
 
 TXCOLOR = [1 0.9 0.3];
-oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-set(0,'DefaultUicontrolBackgroundColor',TXCOLOR)
+erplab_dialogcolors(TXCOLOR)
 button = questdlg(question, tittle, buttonA, buttonB, defresp);
-set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+erplab_dialogcolors()
 

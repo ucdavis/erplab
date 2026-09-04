@@ -464,12 +464,11 @@ varargout{1} = box_erpset_gui;
         catch
             ColorB_def = [0.7020 0.77 0.85];
         end
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',ColorB_def);
+        erplab_dialogcolors(ColorB_def);
         [ind,tf] = listdlg('ListString',{'ERPSS Text','Universal Text','Neuroscan (*.arg)'},'SelectionMode','single',...
             'PromptString','Please select a type to import from...','Name','Import','OKString','Select');
 
-        set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
+        erplab_dialogcolors([1 1 1]);
         if isempty(ind)
             return;
         end
@@ -734,10 +733,9 @@ varargout{1} = box_erpset_gui;
             ColorB_def = [0.7020 0.77 0.85];
         end
 
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',ColorB_def);
+        erplab_dialogcolors(ColorB_def);
         [ind,tf] = listdlg('ListString',{'ERPSS Text','Universal Text'},'SelectionMode','single','PromptString','Please select a type to export to...','Name','Export ERP to','OKString','Ok');
-        set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
+        erplab_dialogcolors([1 1 1]);
         if isempty(ind)
             return;
         end

@@ -82,10 +82,9 @@ if nargin==1
         title    = ['Artifact detection summary for ',EEG.setname];
     end
     
-    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    erplab_dialogcolors(BackERPLABcolor)
     button = questdlg(question, title,'Save in a file','Show at Command Window', 'Cancel','Show at Command Window');
-    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    erplab_dialogcolors()
     
     if strcmpi(button,'Show at Command Window')
         fullname = '';

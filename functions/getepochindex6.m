@@ -378,10 +378,9 @@ for h=1:nset % dataset
                                     question = ['There is not such amount of %s %s epochs in your dataset #%g, for bin #%g!\n\n'...
                                           'What would you like to do?'];
                                     title = 'WARNING: criterion was not met';
-                                    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                                    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                                    erplab_dialogcolors(BackERPLABcolor)
                                     button = questdlg(sprintf(question, catching, str4ep, dataset(h), bini(ibin)), title,'Cancel','Continue','Continue');
-                                    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                                    erplab_dialogcolors()
                                     fprintf(question, catching, str4ep, dataset(h), bini(ibin));
                                     
                                     if ~strcmpi(button,'Continue')
@@ -407,10 +406,9 @@ for h=1:nset % dataset
                                     'This is,\n'...
                                     'If the "' instance '" instances are required then a finite amount of them must be specified.'];
                               title = 'WARNING: logical flaw';
-                              oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                              set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                              erplab_dialogcolors(BackERPLABcolor)
                               button = questdlg(sprintf(question, catching, str4ep, dataset(h), bini(ibin)), title,'Cancel','Continue','Continue');
-                              set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                              erplab_dialogcolors()
                               fprintf(question, catching, str4ep, dataset(h), bini(ibin));
                               
                               if ~strcmpi(button,'Continue')

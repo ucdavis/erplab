@@ -38,4 +38,6 @@ h = figure(varargin{:}, ...
     'defaultUibuttongroupFontUnits','pixels', ...
     'defaultUitableFontUnits',      'pixels');
 
+erplab_lighttheme(h);
+
 end

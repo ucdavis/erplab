@@ -8,12 +8,9 @@ ForeERPLABcolor = erpworkingmemory('ColorF');
 if isempty(ForeERPLABcolor) || numel(ForeERPLABcolor)~=3 || any(ForeERPLABcolor(:)>1) || any(ForeERPLABcolor(:)<0) 
     ForeERPLABcolor = [0 0 0];
 end
-BKGoldcolor = get(0,'DefaultUicontrolBackgroundColor'); % current background color
-FORoldcolor = get(0,'DefaultUicontrolForegroundColor'); % current foreground color
 oldimage = get(0,'DefaultImageVisible');
-set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor,...
-        'DefaultUicontrolForegroundColor',ForeERPLABcolor,...
-        'DefaultImageVisible','on')
+erplab_dialogcolors(BackERPLABcolor, ForeERPLABcolor);
+set(0,'DefaultImageVisible','on')
 options.Resize      ='on';
 options.WindowStyle ='normal';
 options.Interpreter ='tex';
@@ -22,6 +19,5 @@ options.Interpreter ='tex';
 response = inputdlg(prompt,dlg_title,num_lines,def, options);
 
 % put back colors
-set(0,'DefaultUicontrolBackgroundColor',BKGoldcolor,...
-        'DefaultUicontrolForegroundColor',FORoldcolor,...
-        'DefaultImageVisible',oldimage)
+erplab_dialogcolors();
+set(0,'DefaultImageVisible',oldimage)

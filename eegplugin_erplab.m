@@ -48,6 +48,9 @@ p = p(1:findstr(p,'eegplugin_erplab.m')-1);
 % add all ERPLAB subfolders
 addpath(genpath(p))
 
+% keep ERPLAB's windows on the light theme whatever the desktop is set to
+erplab_lighttheme_listener(p);
+
 
 try
     clearvars observe_ERPDAT;

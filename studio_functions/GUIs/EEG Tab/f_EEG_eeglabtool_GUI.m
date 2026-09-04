@@ -517,10 +517,9 @@ varargout{1} = EStudio_box_eeglab_tool;
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         question = ["We do not support this EEGLAB function. We recommend that you instead use ERPLAB's function: Shift Event Codes for Continuous EEG.\nAlternatively, you can quite from ERPLAB Studio, launch EEGLAB, and run the EEGLAB function."];
         title = 'EEGLAB Tool > Adjust event latencies';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button = questdlg(sprintf(question), title,'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+        erplab_dialogcolors();
     end
 
 

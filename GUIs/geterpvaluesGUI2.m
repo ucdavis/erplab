@@ -395,10 +395,9 @@ else
                 question = ['You have not yet saved your list.\n'...
                         'What would you like to do?'];
                 title       = 'Save List of ERPsets';
-                oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                erplab_dialogcolors(BackERPLABcolor)
                 button      = questdlg(sprintf(question), title,'Save and Continue','Save As', 'Cancel','Save and Continue');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                erplab_dialogcolors()
                 
                 if strcmpi(button,'Save As')
                         fullname = savelist(hObject, eventdata, handles);
@@ -472,10 +471,9 @@ else
                                 'What would you like to do?'];
                         title       = 'ERPLAB: Overwriting Confirmation';
                         BackERPLABcolor = [1 0.9 0.3];    % yellow
-                        oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-                        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                        erplab_dialogcolors(BackERPLABcolor)
                         button      = questdlg(sprintf(question), title,'Append','Overwrite', 'Cancel','Append');
-                        set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                        erplab_dialogcolors()
                         
                         if strcmpi(button, 'Append')
                                 appendfile = 1;
@@ -1417,10 +1415,9 @@ if errorlabel==1
                 'What would you like to do?'];
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         title       = 'Save List of ERPsets';
-        oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button      = questdlg(sprintf(msgboxText), title,'Cancel','Terminate', 'Continue', 'Continue');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+        erplab_dialogcolors()
         
         if strcmpi(button,'Continue')
                 chkerp  = 0;
@@ -1784,10 +1781,9 @@ if currentm==7
                 'Use it under your responsibility.'];
         title       = 'ERPLAB: Overwriting Confirmation';
         BackERPLABcolor = [1 0.9 0.3];    % yellow
-        oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        erplab_dialogcolors(BackERPLABcolor)
         button      = questdlg(sprintf(question, mnamex), title,'OK','OK');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+        erplab_dialogcolors()
 end
 
 areatype  = get(handles.popupmenu_areatype,'Value');

@@ -936,10 +936,9 @@ while iadj<=nadj && continueplot
                 BackERPLABcolor = [1 0.9 0.3];    % yellow
                 question = 'Press OK when ready to continue.';
                 titlet   = 'Adjusting frame size';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                erplab_dialogcolors(BackERPLABcolor)
                 button   = questdlg(question, titlet,'OK', 'OK');
-                set(0,'DefaultUicontrolBackgroundColor', oldcolor)
+                erplab_dialogcolors()
                 
                 if ~strcmpi(button,'OK')
                     disp('User selected Cancel')

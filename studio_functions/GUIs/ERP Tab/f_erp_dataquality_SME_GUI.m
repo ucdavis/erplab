@@ -268,7 +268,7 @@ drawui_erp_information(FontSizeDefault);
                 button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
             end
         end
-        set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
+        erplab_dialogcolors([1 1 1]);
         if countr==1
             assignin('base','ALLERPCOM',ALLERPCOM);
             assignin('base','ERPCOM',ERPCOM);

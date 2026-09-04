@@ -322,10 +322,9 @@ if jk
                   question = ['The filename file already exists.\n'...
                               'Do you want to overwrite it?'];
                   title = 'File already exists';
-                  oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                  set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                  erplab_dialogcolors(BackERPLABcolor)
                   button = questdlg(sprintf(question), title,'No','Yes', 'No');
-                  set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                  erplab_dialogcolors()
                   
                   if ~strcmpi(button,'Yes')
                         return
@@ -396,10 +395,9 @@ else
                 question = ['You have not saved your list.\n'...
                         'What would you like to do?'];
                 title = 'Save List of ERPsets';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                erplab_dialogcolors(BackERPLABcolor)
                 button = questdlg(sprintf(question), title,'Save and Continue','Save As', 'Cancel','Save and Continue');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                erplab_dialogcolors()
                 
                 if strcmpi(button,'Save As')
                         fullname = savelist(hObject, eventdata, handles);                        

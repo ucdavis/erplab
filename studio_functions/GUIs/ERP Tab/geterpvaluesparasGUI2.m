@@ -421,10 +421,9 @@ if currentm==7
         'Use it under your responsibility.'];
     title       = 'ERPLAB: Overwriting Confirmation';
     BackERPLABcolor = [1 0.9 0.3];    % yellow
-    oldcolor    = get(0,'DefaultUicontrolBackgroundColor');
-    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    erplab_dialogcolors(BackERPLABcolor)
     button      = questdlg(sprintf(question, mnamex), title,'OK','OK');
-    set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+    erplab_dialogcolors()
 end
 
 areatype  = get(handles.popupmenu_areatype,'Value');

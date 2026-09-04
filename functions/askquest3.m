@@ -35,7 +35,6 @@ else
 end
 
 BackERPLABcolor = [1 0.9 0.3]; %[ 0.65 0.68 .6];
-oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+erplab_dialogcolors(BackERPLABcolor)
 button = questdlg(question, tittle,'Yes','Hold', 'Cancel','Yes');
-set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+erplab_dialogcolors()
