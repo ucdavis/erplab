@@ -34,7 +34,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -182,11 +182,12 @@ if ~isfield(EEG.EVENTLIST.eventinfo,'binlabel')
         error(['ERPLAB says: ' msgboxText])
 end
 if ischar(blcorr)
-        if ~ismember_bc2(lower(blcorr),{'all' 'pre' 'post' 'none'})
-                internum = str2num(blcorr);
+        if ~ismember_bc2(lower(blcorr),{'all' 'whole' 'pre' 'post' 'none' 'no'})
+                internum = str2num(blcorr); %#ok<ST2NM> two values, so not str2double
                 if length(internum)  ~=2
                         msgboxText = ['pop_epochbin will not be performed.\n'...
-                                'Check out your baseline correction values'];
+                                'Baseline must be two latencies in ms, or one of:\n'...
+                                '''none'', ''pre'', ''post'', ''all'' (''whole'').'];
                         error(['ERPLAB says: ' msgboxText])
                 end
                 if internum(1)>=internum(2)|| internum(1)>rangtimems(2) || internum(2)<rangtimems(1)
@@ -203,10 +204,10 @@ if ischar(blcorr)
                 elseif strcmpi(blcorr,'post')
                         blcorrstr  = '[0 EEG.xmax]';        % secs
                         blcorrcomm = ['''' blcorr ''''];
-                elseif strcmpi(blcorr,'all')
+                elseif strcmpi(blcorr,'all') || strcmpi(blcorr,'whole')
                         blcorrstr  = '[EEG.xmin EEG.xmax]'; % secs
                         blcorrcomm = ['''' blcorr ''''];
-                else
+                else % 'none' or 'no'
                         blcorrstr  = 'none';
                         blcorrcomm = '''none''';
                 end

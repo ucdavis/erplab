@@ -5,19 +5,25 @@
 % ERP = pop_blcerp(ERP, 'Baseline',blc)
 %
 % ERP     -  ERPLAB structure
-% blc     - window for baseline correction in msec  or either a string like 'pre', 'post', or 'all'
-%           (strings with the baseline interval also works. e.g. '-300 100')
+% blc     - window for baseline correction in msec, or one of the keywords
+%           listed under INPUTS below
 %
 % Example :
-% >> ERP = pop_blcerp( ERP , [-200 800], 'Baseline', [-100 0]);
-% >> ERP = pop_blcerp( ERP , [-200 800], 'Baseline', '-100 0');
-% >> ERP = pop_blcerp( ERP , [-400 2000], 'Baseline', 'post');
+% >> ERP = pop_blcerp( ERP , 'Baseline', [-100 0]);
+% >> ERP = pop_blcerp( ERP , 'Baseline', '-100 0');
+% >> ERP = pop_blcerp( ERP , 'Baseline', 'post');
 %
 % INPUTS  :
 %
 % ERP     -  ERPLAB structure
-% blc     -  window for baseline correction in msec or either a string like
-%            'none', 'pre', 'post', or 'whole'
+% blc     -  window for baseline correction, either two latencies in msec
+%            ([-100 0] or '-100 0'), or one of these keywords:
+%              'none' (or 'no') - no baseline correction
+%              'pre'            - epoch start up to and including time zero
+%              'post'           - time zero (included) up to epoch end
+%              'all' (or 'whole') - the whole epoch
+%            Note that the sample at time zero belongs to both 'pre' and 'post'.
+%            Anything else raises an error.
 %
 % OUTPUTS :
 %
@@ -151,25 +157,44 @@ else
     issaveas  = 0;
 end
 if ischar(blcorr)
-    if ~ismember_bc2(lower(blcorr),{'all' 'pre' 'post' 'none'})
-        internum = str2double(blcorr);
+    if ~ismember_bc2(lower(blcorr),{'all' 'whole' 'pre' 'post' 'none' 'no'})
+        internum = str2num(blcorr); %#ok<ST2NM> str2double cannot parse two values
         if length(internum) ~=2
             msgboxText = ['pop_blcerp will not be performed.\n'...
-                'Check out your baseline correction values'];
+                'Baseline must be two latencies in ms, or one of:\n'...
+                '''none'', ''pre'', ''post'', ''all'' (''whole'').'];
             title =  'ERPLAB: pop_blcerp() base line';
-            errorfound(sprintf(msgboxText), title);
-            return
+            if shist == 1 % gui
+                errorfound(sprintf(msgboxText), title);
+                return
+            else
+                error('prog:input', msgboxText)
+            end
         end
-        if internum(1)>=internum(2)|| internum(1)>ERP.xmax || internum(2)<ERP.xmin
+        %%both sides in ms: ERP.xmin/xmax are in seconds for ERP data
+        if internum(1)>=internum(2)|| internum(1)>ERP.xmax*kktime || internum(2)<ERP.xmin*kktime
             msgboxText = ['pop_blcerp will not be performed.\n'...
                 'Check out your baseline correction values'];
             title =  'ERPLAB: pop_blcerp() base line';
-            errorfound(sprintf(msgboxText), title);
-            return
+            if shist == 1 % gui
+                errorfound(sprintf(msgboxText), title);
+                return
+            else
+                error('prog:input', msgboxText)
+            end
         end
 
         BLC  = internum; % msecs
         blcorrcomm = ['[' blcorr ']'];
+        %%same sample conversion as the numeric branch below
+        [BLCp1, BLCp2, checkw] = window2sample(ERP, BLC, ERP.srate);
+        if checkw==1
+            error('pop_blcerp() error: baseline period cannot be larger than epoch.')
+        elseif checkw==2
+            error('pop_blcerp() error: too narrow baseline window')
+        elseif checkw==3
+            error('pop_blcerp() error: baseline period is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', ERP.xmin*1000, ERP.xmax*1000)
+        end
     else
         if strcmpi(blcorr,'pre')
             BLC  = kktime*[ERP.xmin 0]; % msecs
@@ -183,12 +208,12 @@ if ischar(blcorr)
             %                   BLCp1 = find(ERP.times==0);
             [xxx, BLCp1, latdiffms] = closest(ERP.times, 0);%%GH 2022
             BLCp2 = ERP.pnts;
-        elseif strcmpi(blcorr,'all')
+        elseif strcmpi(blcorr,'all') || strcmpi(blcorr,'whole')
             BLC  = kktime*[ERP.xmin ERP.xmax]; % msecs
             blcorrcomm = ['''' blcorr ''''];
             BLCp1 = 1;
             BLCp2 = ERP.pnts;
-        else
+        else % 'none' or 'no'
             BLC  = [];
             blcorrcomm = '''none''';
         end

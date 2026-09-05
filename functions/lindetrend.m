@@ -19,7 +19,13 @@
 % interv        - time interval in ms to compute the least-square fit of a straight line to the data in this interval.
 %                 The fitted straight line will be extrapolated until having as many points as that  whole  data, then
 %                 this straight line will be substracted from the whole data.
-%                 "interval" can also be a string like 'pre', 'post' or 'all'
+%                 "interval" can also be one of these keywords:
+%                   'none' (or 'no')   - no detrending
+%                   'pre'              - epoch start up to and including time zero
+%                   'post'             - time zero (included) up to epoch end
+%                   'all' (or 'whole') - the whole epoch
+%                 Note that the sample at time zero belongs to both 'pre' and 'post'.
+%                 Anything else raises an error.
 %
 % OUTPUT
 %
@@ -100,27 +106,31 @@ elseif strcmpi(interv,'post')
 %         aa = find(ERPLAB.times==0);    % zero-time locked
         [xxx, aa, latdiffms] = closest(ERPLAB.times, 0);%%GH 2022
         bb = pnts;
-elseif strcmpi(interv,'all')
+elseif strcmpi(interv,'all') || strcmpi(interv,'whole')
         bb = pnts;  % full epoch
         aa = 1;
+elseif strcmpi(interv,'none') || strcmpi(interv,'no')
+        fprintf('\nWarning: No linear detrending was performed\n\n');
+        return
 else
-        toffsa    = abs(round(ERPLAB.xmin*ERPLAB.srate)) + 1;
-        
         if ischar(interv)
                 inte2num  = str2num(interv); % interv in ms
+                if numel(inte2num)~=2
+                        error('prog:input', ['lindetrend() was ended.\n'...
+                                'Interval must be two latencies in ms, or one of:\n'...
+                                '''none'', ''pre'', ''post'', ''all'' (''whole'').'])
+                end
         else
                 inte2num  = interv;
         end
-        
+
+        toffsa    = abs(round(ERPLAB.xmin*ERPLAB.srate)) + 1;
         aa = round(inte2num(1)*ERPLAB.srate/kktime) + toffsa   ;   % ms to samples
         bb = round(inte2num(2)*ERPLAB.srate/kktime) + toffsa   ;   % ms to samples
-        
+
         if (bb-aa<5 && bb-aa>pnts) || aa<1 || bb>pnts
-                msgboxText = ['Unappropriated time interval: [%g  %g]\n'...
-                        'lindetrend() was ended.\n'];
-                title = 'ERPLAB: lindetrend() error';
-                errorfound(sprintf(msgboxText,a,b), title);
-                return
+                error('prog:input', ['Unappropriated time interval: [%g  %g]\n'...
+                        'lindetrend() was ended.\n'], aa, bb)
         end
 end
 

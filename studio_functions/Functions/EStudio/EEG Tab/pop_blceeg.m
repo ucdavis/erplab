@@ -2,22 +2,28 @@
 %
 % FORMAT  :
 %
-% EEG = pop_blceeg(EEG, blc)
+% EEG = pop_blceeg(EEG, 'Baseline', blc)
 %
 % EEG     -  EEGLAB structure
-% blc     - window for baseline correction in msec  or either a string like 'pre', 'post', or 'all'
-%           (strings with the baseline interval also works. e.g. '-300 100')
+% blc     - window for baseline correction in msec, or one of the keywords
+%           listed under INPUTS below
 %
 % Example :
-% >> EEG = pop_blceeg( EEG , [-200 800],  [-100 0]);
-% >> EEG = pop_blceeg( EEG , [-200 800],  '-100 0');
-% >> EEG = pop_blceeg( EEG , [-400 2000],  'post');
+% >> EEG = pop_blceeg( EEG , 'Baseline', [-100 0]);
+% >> EEG = pop_blceeg( EEG , 'Baseline', '-100 0');
+% >> EEG = pop_blceeg( EEG , 'Baseline', 'post');
 %
 % INPUTS  :
 %
 % EEG     -  EEGLAB structure
-% blc     -  window for baseline correction in msec or either a string like
-%            'none', 'pre', 'post', or 'whole'
+% blc     -  window for baseline correction, either two latencies in msec
+%            ([-100 0] or '-100 0'), or one of these keywords:
+%              'none' (or 'no') - no baseline correction
+%              'pre'            - epoch start up to and including time zero
+%              'post'           - time zero (included) up to epoch end
+%              'all' (or 'whole') - the whole epoch
+%            Note that the sample at time zero belongs to both 'pre' and 'post'.
+%            Anything else raises an error.
 %
 % OUTPUTS :
 %
@@ -140,25 +146,44 @@ end
 
 
 if ischar(blcorr)
-    if ~ismember_bc2(lower(blcorr),{'all' 'pre' 'post' 'none'})
-        internum = str2double(blcorr);
+    if ~ismember_bc2(lower(blcorr),{'all' 'whole' 'pre' 'post' 'none' 'no'})
+        internum = str2num(blcorr); %#ok<ST2NM> str2double cannot parse two values
         if length(internum) ~=2
             msgboxText = ['pop_blceeg will not be performed.\n'...
-                'Check out your baseline correction values'];
+                'Baseline must be two latencies in ms, or one of:\n'...
+                '''none'', ''pre'', ''post'', ''all'' (''whole'').'];
             title =  'EStudio: pop_blceeg() base line';
-            errorfound(sprintf(msgboxText), title);
-            return
+            if shist == 1 % gui
+                errorfound(sprintf(msgboxText), title);
+                return
+            else
+                error('prog:input', msgboxText)
+            end
         end
-        if internum(1)>=internum(2)|| internum(1)>EEG.xmax || internum(2)<EEG.xmin
+        %%both sides in ms: EEG.xmin/xmax are in seconds
+        if internum(1)>=internum(2)|| internum(1)>EEG.xmax*kktime || internum(2)<EEG.xmin*kktime
             msgboxText = ['pop_blceeg will not be performed.\n'...
                 'Check out your baseline correction values'];
             title =  'EStudio: pop_blceeg() base line';
-            errorfound(sprintf(msgboxText), title);
-            return
+            if shist == 1 % gui
+                errorfound(sprintf(msgboxText), title);
+                return
+            else
+                error('prog:input', msgboxText)
+            end
         end
         
         BLC  = internum; % msecs
         blcorrcomm = ['[' blcorr ']'];
+        %%same sample conversion and range check as the numeric branch below
+        [BLCp1, BLCp2, checkw] = window2sample(EEG, BLC, EEG.srate);
+        if checkw==1
+            error('pop_blceeg() error: baseline period cannot be larger than epoch.')
+        elseif checkw==2
+            error('pop_blceeg() error: too narrow baseline window')
+        elseif checkw==3
+            error('pop_blceeg() error: baseline period is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', EEG.xmin*1000, EEG.xmax*1000)
+        end
     else
         if strcmpi(blcorr,'pre')
             BLC  = kktime*[EEG.xmin 0]; % msecs
@@ -172,12 +197,12 @@ if ischar(blcorr)
             %                   BLCp1 = find(EEG.times==0);
             [xxx, BLCp1, latdiffms] = closest(EEG.times, 0);%%GH 2022
             BLCp2 = EEG.pnts;
-        elseif strcmpi(blcorr,'all')
+        elseif strcmpi(blcorr,'all') || strcmpi(blcorr,'whole')
             BLC  = kktime*[EEG.xmin EEG.xmax]; % msecs
             blcorrcomm = ['''' blcorr ''''];
             BLCp1 = 1;
             BLCp2 = EEG.pnts;
-        else
+        else % 'none' or 'no'
             BLC  = [];
             blcorrcomm = '''none''';
         end
@@ -192,6 +217,13 @@ else
     BLC  = blcorr;
     blcorrcomm = ['[' num2str(blcorr) ']']; % msecs
     [BLCp1, BLCp2, checkw] = window2sample(EEG, BLC, EEG.srate);
+    if checkw==1
+        error('pop_blceeg() error: baseline period cannot be larger than epoch.')
+    elseif checkw==2
+        error('pop_blceeg() error: too narrow baseline window')
+    elseif checkw==3
+        error('pop_blceeg() error: baseline period is too far outside epoch boundaries (>2 samples). Epoch range: [%.1f %.1f] ms', EEG.xmin*1000, EEG.xmax*1000)
+    end
 end
 
 EEGaux = EEG; % original EEG

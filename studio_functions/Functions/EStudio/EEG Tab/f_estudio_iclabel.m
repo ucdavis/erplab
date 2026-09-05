@@ -98,9 +98,10 @@ if length(chanorcomp) > PLOTPERFIG
         'this function will pop-up several windows'), 'Confirmation', 'Cancel', 'OK','OK');
     if  ~isempty( strmatch(lower(ButtonName), 'cancel')), return; end;
 end;
+%%only the properties viewer needs the plugin; the IC labels are already in EEG
 if ~exist('ICLabel','dir') && ~exist('eegplugin_iclabel', 'file')
     fprintf(2, 'Warning: ICLabel default plugin missing (probably due to downloading zip file from Github). Install manually.\n');
-    EEG = [];
+    fprintf(2, 'The IC labels were still applied to your dataset; only the component properties viewer was skipped.\n');
     return;
 end
 try
@@ -113,7 +114,10 @@ catch
     try
         LASTCOM1 = pop_viewprops( EEG, 0, chanorcomp, spec_opt, erp_opt, scroll_event, classifier_name);
     catch
-        EEG = [];
+        %%returning here keeps the labelled EEG and avoids re-logging the iclabel command below
+        fprintf(2, 'Warning: could not open the component properties viewer (pop_viewprops).\n');
+        fprintf(2, 'The IC labels were still applied to your dataset.\n');
+        return;
     end
 end
 EEG = eegh(LASTCOM1, EEG);

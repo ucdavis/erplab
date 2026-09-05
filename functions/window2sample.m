@@ -27,7 +27,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ï¿½ 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -70,8 +70,8 @@ else % FFT
 end
 checkw   = 0; % no error by default
 if ischar(testwindow)
-        if ~strcmpi(testwindow,'all') && ~strcmpi(testwindow,'pre') && ~strcmpi(testwindow,'post')
-                internum = str2double(testwindow)/Ktime;  %ms to sec
+        if ~ismember_bc2(lower(testwindow),{'all' 'whole' 'pre' 'post'})
+                internum = str2num(testwindow)/Ktime;  %#ok<ST2NM> ms to sec, two values
                 if length(internum)~=2
                         disp('Error:  window2sample will not be performed. Check your parameters.')
                         checkw = 1;
@@ -86,7 +86,7 @@ if ischar(testwindow)
         elseif strcmpi(testwindow,'post')
                 p1 = find(ERPLAB.times==0);    % zero-time locked
                 p2 = pnts;
-        elseif strcmpi(testwindow,'all')
+        elseif strcmpi(testwindow,'all') || strcmpi(testwindow,'whole')
                 p2 = pnts;  % full epoch
                 p1 = 1;
         end
