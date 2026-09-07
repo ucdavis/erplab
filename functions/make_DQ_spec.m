@@ -9,9 +9,9 @@ function DQ_spec_out = make_DQ_spec(timelimits_ms)
 if exist('timelimits_ms','var') == 0 || isempty(timelimits_ms)
     
     try
-        evalin('base','timelimits = [EEG.xmin EEG.xmax];');
-        timelimits_ms = timelimits * 1000;
-        
+        % read the epoch out of the base workspace without assigning there
+        timelimits_ms = 1000 * evalin('base','[EEG.xmin EEG.xmax]');
+
     catch
         %warning('Couldn''t find time limits for DQ range, trying defaults')
         timelimits_ms = [-200 500];
