@@ -201,7 +201,7 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 % Save EVENTLIST file
 %
 prename = get(handles.edit_elname,'String');
-[elfname, elpathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as', prename);
+[elfname, elpathname] = erplab_uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as', prename);
 
 if isequal(elfname,0)
     disp('User selected Cancel')

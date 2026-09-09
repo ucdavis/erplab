@@ -33,7 +33,7 @@ end
 
 % If no handle is provided, use the current figure as default
 if nargin<1
-        [fileName,pathName] = uiputfile('*.pdf','Save to PDF file:');
+        [fileName,pathName] = erplab_uiputfile('*.pdf','Save to PDF file:');
         if fileName == 0; return; end
         pdfFileName = [pathName,fileName];
 end

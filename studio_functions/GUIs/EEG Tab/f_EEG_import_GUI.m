@@ -173,7 +173,7 @@ if isempty(fileName)
 end
 
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile('*.*', 'Choose files or header files -- pop_fileio()',...
+[filename, filepath,filterindex] = erplab_uigetfile('*.*', 'Choose files or header files -- pop_fileio()',...
     'MultiSelect', 'on');
 
 if filterindex==0
@@ -231,7 +231,7 @@ if isempty(fileName)
     return;
 end
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile({'*.BDF;*.bdf';'*.EDF+;*.edf+';'*.GDF;*.gdf'}, 'Choose BDF/EDF+/GDF files -- pop_biosig()',...
+[filename, filepath,filterindex] = erplab_uigetfile({'*.BDF;*.bdf';'*.EDF+;*.edf+';'*.GDF;*.gdf'}, 'Choose BDF/EDF+/GDF files -- pop_biosig()',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';
@@ -341,7 +341,7 @@ if isempty(fileName)
 end
 
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile({'*.BDF;*.bdf';'*.EDF+;*.edf+';'*.GDF;*.gdf'}, 'Choose BDF/EDF+/GDF files -- pop_biosig()',...
+[filename, filepath,filterindex] = erplab_uigetfile({'*.BDF;*.bdf';'*.EDF+;*.edf+';'*.GDF;*.gdf'}, 'Choose BDF/EDF+/GDF files -- pop_biosig()',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';
@@ -411,7 +411,7 @@ if isempty(fileName)
 end
 
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile({'*.BDF;*.bdf';'*.EDF+;*.edf+';'*.GDF;*.gdf'}, 'Choose BDF/EDF+/GDF files -- pop_biosig()',...
+[filename, filepath,filterindex] = erplab_uigetfile({'*.BDF;*.bdf';'*.EDF+;*.edf+';'*.GDF;*.gdf'}, 'Choose BDF/EDF+/GDF files -- pop_biosig()',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';
@@ -479,7 +479,7 @@ if isempty(fileName)
 end
 % [EEG,LASTCOM] = pop_loadbv();
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile({'*.vhdr' '*.ahdr'}, 'Select Brain Vision vhdr-file - pop_loadbv()',...
+[filename, filepath,filterindex] = erplab_uigetfile({'*.vhdr' '*.ahdr'}, 'Select Brain Vision vhdr-file - pop_loadbv()',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';
@@ -535,7 +535,7 @@ if isempty(fileName)
     return;
 end
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile('*.mat;*.MAT', 'Choose a Matlab file from Brain Vision Analyser -- pop_loadbva',...
+[filename, filepath,filterindex] = erplab_uigetfile('*.mat;*.MAT', 'Choose a Matlab file from Brain Vision Analyser -- pop_loadbva',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';
@@ -645,7 +645,7 @@ if isempty(fileName)
 end
 
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile('*.CNT;*.cnt', 'Load CNT files -- pop_loadcnt()',...
+[filename, filepath,filterindex] = erplab_uigetfile('*.CNT;*.cnt', 'Load CNT files -- pop_loadcnt()',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';
@@ -703,7 +703,7 @@ if isempty(fileName)
 end
 % [EEG,LASTCOM] = pop_loadeeg();
 ALLEEG = handles.ALLEEG;
-[filename, filepath,filterindex] = uigetfile('*.eeg;*.EEG', 'Load EEG files -- pop_loadeeg()',...
+[filename, filepath,filterindex] = erplab_uigetfile('*.eeg;*.EEG', 'Load EEG files -- pop_loadeeg()',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';
@@ -763,7 +763,7 @@ if isempty(fileName)
 end
 ALLEEG = handles.ALLEEG;
 % [EEG,LASTCOM] = pop_readbdf();
-[filename, filepath,filterindex] = uigetfile('*.BDF;*.bdf', 'Load BDF files -- pop_loadcnt()',...
+[filename, filepath,filterindex] = erplab_uigetfile('*.BDF;*.bdf', 'Load BDF files -- pop_loadcnt()',...
     'MultiSelect', 'on');
 if filterindex==0
     handles.text_message.String = 'User selected Cancel';

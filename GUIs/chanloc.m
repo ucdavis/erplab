@@ -334,7 +334,7 @@ function pushbutton_load_file_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 done_loading = 0;
-[lfile,lpath] = uigetfile('locations.sph','Choose a file with channel location information');
+[lfile,lpath] = erplab_uigetfile('locations.sph','Choose a file with channel location information');
 %load_str = [lpath lfile];  ' ''filetype'' ''xyz'''];
 %load_cell = {[lpath lfile], 'filetype', 'xyz'};
 %EEG3 = pop_chanedit(handles.EEG,'load',load_cell);
@@ -421,7 +421,7 @@ function pushbutton_load_set_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_load_set (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[lfile,lpath] = uigetfile('dataset_with_locs.set','Choose a dataset file that has channel location information');
+[lfile,lpath] = erplab_uigetfile('dataset_with_locs.set','Choose a dataset file that has channel location information');
 
 if lfile == 0
     disp('Location load file cancelled')
@@ -499,7 +499,7 @@ function pushbutton_save_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[sfile,spath] = uiputfile('locations.sph','Choose a location save file name');
+[sfile,spath] = erplab_uiputfile('locations.sph','Choose a location save file name');
 
 if sfile == 0
     disp('Save locations - file selection cancelled')

@@ -81,7 +81,7 @@ if nargin == 1
         filepath = '';
     else
         if isempty(filename)
-            [filename, filepath] = uigetfile({'*.mvpc','MVPC (*.mvpc)'},...
+            [filename, filepath] = erplab_uigetfile({'*.mvpc','MVPC (*.mvpc)'},...
                 'Load MVPC','MultiSelect', 'on');
             if isequal(filename,0)
                 disp('User selected Cancel')

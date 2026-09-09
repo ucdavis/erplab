@@ -260,7 +260,7 @@ varargout{1} = eegtab_events_box;
             fprintf(['Your current EEGset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
             
             %% Run pop_ command again with the inputs from the GUI
-            [filename,pathname] = uigetfile({'*.txt*'},['Select a EVENTLIST file for erpset:',32,num2str(ERPArray(Numoferp))]);
+            [filename,pathname] = erplab_uigetfile({'*.txt*'},['Select a EVENTLIST file for erpset:',32,num2str(ERPArray(Numoferp))]);
             ELfullname = fullfile(pathname, filename);
             
             if isequal(filename,0)
@@ -353,7 +353,7 @@ varargout{1} = eegtab_events_box;
             return;
         end
         
-        [fname, pathname] = uiputfile({'*.txt*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
+        [fname, pathname] = erplab_uiputfile({'*.txt*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         
         if isequal(fname,0)
             observe_ERPDAT.Process_messg =2;
@@ -455,7 +455,7 @@ varargout{1} = eegtab_events_box;
             fprintf(['Your current EEGset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
             
             %% Run pop_ command again with the inputs from the GUI
-            [filename,pathname] = uigetfile({'*.xls*';'*.xlsx*'},['Select a EVENTLIST file for erpset:',32,num2str(ERPArray(Numoferp))]);
+            [filename,pathname] = erplab_uigetfile({'*.xls*';'*.xlsx*'},['Select a EVENTLIST file for erpset:',32,num2str(ERPArray(Numoferp))]);
             ELfullname = fullfile(pathname, filename);
             
             if isequal(filename,0)
@@ -542,7 +542,7 @@ varargout{1} = eegtab_events_box;
             return;
         end
         
-        [fname, pathname] = uiputfile({'*.xls*';'*.xlsx*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
+        [fname, pathname] = erplab_uiputfile({'*.xls*';'*.xlsx*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         if isequal(fname,0)
             observe_ERPDAT.Process_messg =2;
             return

@@ -295,7 +295,7 @@ varargout{1} = ERP_chan_operation_gui;
         estudioworkingmemory('ERPTab_chanop',1);
 
 
-        [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
+        [filename, filepath] = erplab_uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
             return
         else
@@ -353,7 +353,7 @@ varargout{1} = ERP_chan_operation_gui;
         pathName =[cd,filesep];
         %         end
 
-        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
+        [filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
             observe_ERPDAT.Process_messg =2;
             return

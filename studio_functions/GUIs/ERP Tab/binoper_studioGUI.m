@@ -412,7 +412,7 @@ end
 %--------------------------------------------------------------------------
 function button_loadlist_Callback(hObject, eventdata, handles)
 
-[filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
+[filename, filepath] = erplab_uigetfile({'*.txt';'*.*'},'Select a formulas-file');
 if isequal(filename,0)
         disp('User selected Cancel')
         return
@@ -514,7 +514,7 @@ fullnamepre = get(handles.edit_filelist,'String');
 %
 % Save OUTPUT file
 %
-[filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'},'Save formulas-file as', fullnamepre);
+[filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.dat';'*.*'},'Save formulas-file as', fullnamepre);
 
 if isequal(filename,0)
         disp('User selected Cancel')

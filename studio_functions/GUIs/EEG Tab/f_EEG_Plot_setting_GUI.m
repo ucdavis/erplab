@@ -591,7 +591,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             pathstr =cd;
         end
         namedef ='Channel_order_eeg';
-        [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
+        [erpfilename, erppathname, indxs] = erplab_uiputfile({'*.tsv'}, ...
             ['Export EEG channel order (for plotting only)'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
@@ -653,7 +653,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
         
-        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;*.txt';'*.*'}, ...
+        [erpfilename, erppathname, indxs] = erplab_uigetfile({'*.tsv;*.txt';'*.*'}, ...
             ['Import EEG channel order (for plotting only)']);
         if isequal(erpfilename,0) || indxs~=1
             return

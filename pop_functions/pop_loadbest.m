@@ -82,7 +82,7 @@ if nargin == 1
         filepath = '';
     else
         if isempty(filename)
-            [filename, filepath] = uigetfile({'*.best','BEST (*.best)'},...
+            [filename, filepath] = erplab_uigetfile({'*.best','BEST (*.best)'},...
                 'Load BEST','MultiSelect', 'on');
             if isequal(filename,0)
                 disp('User selected Cancel')

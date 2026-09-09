@@ -1092,7 +1092,7 @@ varargout{1} = ERP_plotset_box;
         observe_ERPDAT.Process_messg =1;
         pathstr = pwd;
         namedef ='GridLocations';
-        [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
+        [erpfilename, erppathname, indxs] = erplab_uiputfile({'*.tsv'}, ...
             ['Save Grid Locations as'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
@@ -1170,7 +1170,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         
-        [filename, filepath] = uigetfile({'*.tsv;*.txt';'*.*'}, ...
+        [filename, filepath] = erplab_uigetfile({'*.tsv;*.txt';'*.*'}, ...
             'Plot Setting > Grid Layout > Import');
         if isequal(filename,0)
             return;

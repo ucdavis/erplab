@@ -31,7 +31,7 @@
 
 function pop_summarizebins(eventlistinputs, summaryoutput)
 if nargin<2
-        [eventlistinputs, elpathname] = uigetfile('*.txt','Load EventList file(s) (*.txt)',...
+        [eventlistinputs, elpathname] = erplab_uigetfile('*.txt','Load EventList file(s) (*.txt)',...
                 'Select an edited file', ...
                 'MultiSelect', 'on');
         
@@ -62,7 +62,7 @@ values = num2cell(data);
 q =[eventlistinputs' values];
 r = [fields; q];
 b = [{'Bin number','description'}; fields(2:end)' description'];
-[file,path] = uiputfile('*.xls','Save Bin Summary As');
+[file,path] = erplab_uiputfile('*.xls','Save Bin Summary As');
 [pathstr, fxname, ext] = fileparts(file);
 if ~strcmp(ext,'.xls')
         ext = '.xls';

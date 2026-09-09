@@ -39,7 +39,7 @@ if exist('filename','var') == 0 || isempty(filename)
     %format_options = {'*.xls' ; '*.mat'};
     format_options = {['*.' format];'*.xlsx';'*.mat'};
     pick_str = 'Save Data Quality to file. Pick path:';
-    [picked_file, picked_path] = uiputfile(format_options,pick_str);
+    [picked_file, picked_path] = erplab_uiputfile(format_options,pick_str);
     filename = [picked_path picked_file];
     if isequal(picked_path,0)
         disp('File path selected is not valid. Cancelling file write.')

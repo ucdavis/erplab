@@ -48,7 +48,7 @@ wm_loaded = [];
 
 if save_or_load == 1
     % prompt for path with file browser ui
-    [wm_fname, wm_pathname] = uiputfile({'*.erpm', 'ERP working memory file (*.erpm)';
+    [wm_fname, wm_pathname] = erplab_uiputfile({'*.erpm', 'ERP working memory file (*.erpm)';
         '*.*'  , 'All Files (*.*)'},'Save working memory file as',...
         'custom_memoryerp.erpm');
     
@@ -77,7 +77,7 @@ elseif save_or_load == 2
     
     
     % prompt for path with file browser ui
-    [wm_load_fname, wm_load_pathname] = uigetfile({'*.erpm', 'ERP working memory file (*.erpm)';
+    [wm_load_fname, wm_load_pathname] = erplab_uigetfile({'*.erpm', 'ERP working memory file (*.erpm)';
         '*.*'  , 'All Files (*.*)'},'Pick an existing working memory file to load',...
         'custom_memoryerp.erpm');
     if isempty(wm_load_pathname) || length(wm_load_pathname)==1

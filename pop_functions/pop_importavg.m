@@ -54,7 +54,7 @@ if nargin==1
         %
         % Call GUI
         %
-        [filename, filepath] = uigetfile({'*.avg';'Neuroscan average file (*.avg)'},'Select a file (Neuroscan)', 'MultiSelect', 'on');
+        [filename, filepath] = erplab_uigetfile({'*.avg';'Neuroscan average file (*.avg)'},'Select a file (Neuroscan)', 'MultiSelect', 'on');
         
         if ~iscell(filename) && ~ischar(filename) && filename==0
                 disp('User selected Cancel')

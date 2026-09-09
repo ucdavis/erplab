@@ -50,7 +50,7 @@ if ischar(write_file_path)
     
 elseif write_file_path == 1
     % UI file pick when write_file_path == 1
-    [file_name, file_path] = uiputfile('*.mat','Please pick a path to save the Bin-Organized EEG data');
+    [file_name, file_path] = erplab_uiputfile('*.mat','Please pick a path to save the Bin-Organized EEG data');
     write_file_path = [file_path file_name];
     save(write_file_path,'binorgEEG');
 end

@@ -722,7 +722,7 @@ estudioworkingmemory('f_ERP_proces_messg','Save figure as');
 observe_ERPDAT.Process_messg =1;
 pathstr = pwd;
 namedef =[observe_ERPDAT.ERP.erpname,'.pdf'];
-[erpfilename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
+[erpfilename, erppathname, indxs] = erplab_uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
     'Save as',[fullfile(pathstr,namedef)]);
 
 

@@ -117,7 +117,7 @@ if nargin==1
         %
         bdfnamefull = ERPLAB.EVENTLIST(1).bdfname;
         [pathbdf, bdfname, extbdf] = fileparts(bdfnamefull);
-        [filenamei, pathname, findex] = uiputfile({'*.txt';'*.*'},...
+        [filenamei, pathname, findex] = erplab_uiputfile({'*.txt';'*.*'},...
                 'Save bin descriptor file as', [bdfname '.txt']);
         if isequal(filenamei,0)
                 disp('User selected Cancel')

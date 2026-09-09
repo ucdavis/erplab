@@ -79,7 +79,7 @@ if nargin==1
         %Changed by Guanghui August 2022
         [pathx, erpfilename, ext] = fileparts(ERP.filename);
         
-        [filenamei, pathname] = uiputfile({'*.txt';'*.*'},['Save "',ERP.erpname, '" as'],[erpfilename,'.txt']);
+        [filenamei, pathname] = erplab_uiputfile({'*.txt';'*.*'},['Save "',ERP.erpname, '" as'],[erpfilename,'.txt']);
         
         if isequal(filenamei,0)
                 disp('User selected Cancel')

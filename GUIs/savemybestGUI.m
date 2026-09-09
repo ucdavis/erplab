@@ -182,7 +182,7 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 % Save OUTPUT file
 %
 fndefault = get(handles.edit_saveas,'String');
-[fname, pathname] = uiputfile({'*.best', 'BEST-files (*.best)';},'Save Output file as',...
+[fname, pathname] = erplab_uiputfile({'*.best', 'BEST-files (*.best)';},'Save Output file as',...
                                fndefault);
 
 if isequal(fname,0)

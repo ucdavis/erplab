@@ -237,7 +237,7 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 % Save OUTPUT file
 %
 prename = get(handles.edit_saveas,'String');
-[fname, pathname, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'},'Save Output file as', prename);
+[fname, pathname, filterindex] = erplab_uiputfile({'*.txt';'*.dat';'*.*'},'Save Output file as', prename);
 
 if isequal(fname,0)
         disp('User selected Cancel')

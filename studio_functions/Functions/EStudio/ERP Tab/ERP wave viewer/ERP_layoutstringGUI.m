@@ -294,7 +294,7 @@ classdef ERP_layoutstringGUI < matlab.apps.AppBase
 
         % --- Button pushed: Import ---
         function importBtn(app, ~)
-            [filename, filepath] = uigetfile({'*.tsv;*.txt'}, 'Load Gird Locations');
+            [filename, filepath] = erplab_uigetfile({'*.tsv;*.txt'}, 'Load Gird Locations');
             if isequal(filename,0)
                 return;
             end
@@ -340,7 +340,7 @@ classdef ERP_layoutstringGUI < matlab.apps.AppBase
         function exportBtn(app, ~)
             pathstr = pwd;
             namedef = 'GridLocations_viewer';
-            [erpfilename, erppathname, ~] = uiputfile({'*.tsv'}, 'Save Grid Locations as', fullfile(pathstr,namedef));
+            [erpfilename, erppathname, ~] = erplab_uiputfile({'*.tsv'}, 'Save Grid Locations as', fullfile(pathstr,namedef));
             if isequal(erpfilename,0)
                 disp('User selected Cancel')
                 return

@@ -458,7 +458,7 @@ estudioworkingmemory('ERPViewer_proces_messg',MessageViewer);
 
 pathstr = pwd;
 namedef ='Myviewer.pdf';
-[erpfilename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
+[erpfilename, erppathname, indxs] = erplab_uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
     'Save as',[fullfile(pathstr,namedef)]);
 
 if isequal(erpfilename,0)

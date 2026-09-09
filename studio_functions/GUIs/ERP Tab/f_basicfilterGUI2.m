@@ -2827,7 +2827,7 @@ end
 
 %--------------------------------------------------------------------------
 function pushbutton_import_settings_Callback(hObject, eventdata, handles)
-[filename, pathname] = uigetfile({'*.bfil','Basic Filter seetings (*.bfil)'}, 'Load settings');
+[filename, pathname] = erplab_uigetfile({'*.bfil','Basic Filter seetings (*.bfil)'}, 'Load settings');
 if isequal(filename,0)
     disp('User selected Cancel')
     return
@@ -2900,7 +2900,7 @@ end
 %
 % Save OUTPUT file
 %
-[filename, filepath, filterindex] = uiputfile({'*.bfil','Basic Filter settings (*.bfil)'},'Save filter settings as');
+[filename, filepath, filterindex] = erplab_uiputfile({'*.bfil','Basic Filter settings (*.bfil)'},'Save filter settings as');
 
 if isequal(filename,0)
     disp('User selected Cancel')

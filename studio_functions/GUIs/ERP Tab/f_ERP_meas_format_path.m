@@ -216,7 +216,7 @@ pathName = handles.pathName;
 
 title = 'Save output file as';
 
-[filename, filepath,filterindex] = uiputfile({'*.txt'; '*.dat'}, ...
+[filename, filepath,filterindex] = erplab_uiputfile({'*.txt'; '*.dat'}, ...
     title,pathName);
 
 if isequal(filterindex,0)

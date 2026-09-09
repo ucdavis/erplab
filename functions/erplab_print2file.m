@@ -36,11 +36,11 @@ end
 
 % If no handle is provided, use the current figure as default
 if nargin<1
-        [fileName,pathName] = uiputfile('*.pdf','Save to file:');
+        [fileName,pathName] = erplab_uiputfile('*.pdf','Save to file:');
         if fileName == 0; return; end
         FileName = [pathName,fileName];        
         
-        [fname, pathname, filterIndex] = uiputfile({'*.pdf';'*.eps';'*.jpg';'*.tiff'},'Save Current Figure as');
+        [fname, pathname, filterIndex] = erplab_uiputfile({'*.pdf';'*.eps';'*.jpg';'*.tiff'},'Save Current Figure as');
         
         if isequal(fname,0)
                 disp('User selected Cancel')

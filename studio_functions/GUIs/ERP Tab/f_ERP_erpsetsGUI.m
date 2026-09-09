@@ -604,7 +604,7 @@ varargout{1} = box_erpset_gui;
                     %%------------------------Import Neuroscan (.avg)----------------
                     %%------------------------------------------------------------------------
                 elseif ind == 3  %%
-                    [filename, filepath] = uigetfile({'*.avg';'Neuroscan average file (*.avg)'},'Select a file (Neuroscan)', 'MultiSelect', 'on');
+                    [filename, filepath] = erplab_uigetfile({'*.avg';'Neuroscan average file (*.avg)'},'Select a file (Neuroscan)', 'MultiSelect', 'on');
                     if ~iscell(filename) && ~ischar(filename) && filename==0
                         return
                     end
@@ -834,7 +834,7 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Process_messg =1;
         ALLERPCOM = evalin('base','ALLERPCOM');
 
-        [filename, filepath] = uigetfile({'*.erp','ERP (*.erp)';...
+        [filename, filepath] = erplab_uigetfile({'*.erp','ERP (*.erp)';...
             '*.mat','ERP (*.mat)'}, ...
             'Load ERP', ...
             'MultiSelect', 'on');

@@ -182,7 +182,7 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 % Save OUTPUT file
 %
 fndefault = get(handles.edit_saveas,'String');
-[fname, pathname] = uiputfile({'*.mvpc', 'MVPC-files (*.mvpc)';},'Save Output file as',...
+[fname, pathname] = erplab_uiputfile({'*.mvpc', 'MVPC-files (*.mvpc)';},'Save Output file as',...
                                fndefault);
 
 if isequal(fname,0)

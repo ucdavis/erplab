@@ -161,7 +161,7 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 % load
 %
 % prename = get(handles.edit_splinepath,'String');
-[blfilename, blpathname, filterindex] = uigetfile({'*.*'},'Load spline file ');
+[blfilename, blpathname, filterindex] = erplab_uigetfile({'*.*'},'Load spline file ');
 
 if isequal(blfilename,0)
     disp('User selected Cancel')
@@ -254,7 +254,7 @@ end
 function pushbutton_browse_saves_as_Callback(hObject, eventdata, handles)
 
 prename = get(handles.edit_saveas,'String');
-[blfilename, blpathname, filterindex] = uiputfile({'*.*'},'Save new spline file as ', prename);
+[blfilename, blpathname, filterindex] = erplab_uiputfile({'*.*'},'Save new spline file as ', prename);
 
 if isequal(blfilename,0)
     disp('User selected Cancel')

@@ -167,7 +167,7 @@ function pushbutton_adderpfile_Callback(hObject, eventdata, handles)
 %       'MultiSelect', 'on');
 
 
-[erpfname, erppathname, findex] = uigetfile({'*.txt','Universal text format(*.txt)'; ...
+[erpfname, erppathname, findex] = erplab_uigetfile({'*.txt','Universal text format(*.txt)'; ...
     '*.*',  'All Files (*.*)'}, ...
     'Select an edited file', ...
     'MultiSelect', 'on');
@@ -631,7 +631,7 @@ end
 %
 % Save OUTPUT file
 %
-[filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'},'Save erpset list as', pre_fname);
+[filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.dat';'*.*'},'Save erpset list as', pre_fname);
 
 if isequal(filename,0)
     disp('User selected Cancel')
@@ -703,7 +703,7 @@ if nargin<4
     optionx=0;
 end
 if optionx==0
-    [listname, lispath] = uigetfile({  '*.txt','Text File (*.txt)'; ...
+    [listname, lispath] = erplab_uigetfile({  '*.txt','Text File (*.txt)'; ...
         '*.*',  'All Files (*.*)'}, ...
         'Select an edited list', ...
         'MultiSelect', 'off');

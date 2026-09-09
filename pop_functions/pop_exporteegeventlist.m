@@ -119,7 +119,7 @@ if nargin==1
     %
     % Save OUTPUT file
     %
-    [fname, pathname,indx] = uiputfile({'*.txt';'*.xls,*.xlsx';'*.*'},'Save EVENTLIST file as');%%GH Mar 2024
+    [fname, pathname,indx] = erplab_uiputfile({'*.txt';'*.xls,*.xlsx';'*.*'},'Save EVENTLIST file as');%%GH Mar 2024
     
     if isequal(fname,0)
         disp('User selected Cancel')

@@ -528,7 +528,7 @@ guidata(hObject, handles);
 %--------------------------------------------------------------------------
 function pushbutton_openlist_Callback(hObject, eventdata, handles, editlistname)
 if nargin<4
-        [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select an edited file');
+        [filename, filepath] = erplab_uigetfile({'*.txt';'*.*'},'Select an edited file');
         
         if isequal(filename,0)
                 disp('User selected Cancel')
@@ -999,7 +999,7 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 % Save EVENTLIST file
 %
 prename = get(handles.edit_elname,'String');
-[elfname, elpathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as', prename);
+[elfname, elpathname] = erplab_uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as', prename);
 
 if isequal(elfname,0)
         disp('User selected Cancel')
@@ -1047,7 +1047,7 @@ namelist = char(strtrim(get(handles.edit_filelist,'String')));
 %
 % Save OUTPUT file
 %
-[filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'},'Save edited code(s) as', namelist);
+[filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.dat';'*.*'},'Save edited code(s) as', namelist);
 
 if isequal(filename,0)
         disp('User selected Cancel')

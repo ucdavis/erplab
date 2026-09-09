@@ -268,7 +268,7 @@ prename = get(handles.edit_fname,'String');
 % if ispc
 %         [filename, filepath, filterindex] = uiputfile({'*.xls';'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
 % else
-[filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
+[filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
 % end
 if isequal(filename,0)
         disp('User selected Cancel')
@@ -935,7 +935,7 @@ end
 
 %--------------------------------------------------------------------------
 function button_adderpset_Callback(hObject, eventdata, handles)
-[erpfname, erppathname] = uigetfile({  '*.erp','ERPLAB-files (*.erp)'; ...
+[erpfname, erppathname] = erplab_uigetfile({  '*.erp','ERPLAB-files (*.erp)'; ...
         '*.mat','Matlab (*.mat)'; ...
         '*.*',  'All Files (*.*)'}, ...
         'Select an edited file', ...
@@ -1176,7 +1176,7 @@ end
 
 %--------------------------------------------------------------------------
 function button_loadlist_Callback(hObject, eventdata, handles)
-[listname, lispath] = uigetfile({  '*.txt','Text File (*.txt)'; ...
+[listname, lispath] = erplab_uigetfile({  '*.txt','Text File (*.txt)'; ...
         '*.*',  'All Files (*.*)'}, ...
         'Select an edited list', ...
         'MultiSelect', 'off');
@@ -1565,7 +1565,7 @@ fulltext = char(get(handles.listbox_erpnames,'String'));
 %
 % Save OUTPUT file
 %
-[filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'},'Save erpset list as');
+[filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.dat';'*.*'},'Save erpset list as');
 
 if isequal(filename,0)
         disp('User selected Cancel')

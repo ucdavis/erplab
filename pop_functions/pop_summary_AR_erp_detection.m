@@ -92,7 +92,7 @@ if nargin==1
         %
         % Save OUTPUT file
         %
-        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'},'Save Artifact Detection Summary as', ['AR_summary_' ERP.erpname]);
+        [filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.dat';'*.*'},'Save Artifact Detection Summary as', ['AR_summary_' ERP.erpname]);
         
         if isequal(filename,0)
             disp('User selected Cancel')

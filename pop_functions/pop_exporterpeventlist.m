@@ -128,7 +128,7 @@ if nargin==1
         %
         % Save OUTPUT file
         %
-        [fname, pathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST file as');
+        [fname, pathname] = erplab_uiputfile({'*.txt';'*.*'},'Save EVENTLIST file as');
         
         if isequal(fname,0)
                 disp('User selected Cancel')

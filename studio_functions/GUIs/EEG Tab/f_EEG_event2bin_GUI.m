@@ -160,9 +160,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         try
             pre_patha = EStduio_eegtab_EEG_event2bin.BDF_edit.String;
             [pre_pathb, nameq, extq] = fileparts(pre_patha);
-            [bdfilename,bdfpathname] = uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)', pre_pathb);
+            [bdfilename,bdfpathname] = erplab_uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)', pre_pathb);
         catch
-            [bdfilename,bdfpathname] = uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)');
+            [bdfilename,bdfpathname] = erplab_uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)');
         end
         if isequal(bdfilename,0)
             return;

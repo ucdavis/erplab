@@ -86,7 +86,7 @@ if nargin==1
         errorfound(msgboxText, title);
         return
     end
-    [filename,pathname] = uigetfile({'*.txt';'*.xls,*.xlsx';'*.*'},'Select a EVENTLIST file');
+    [filename,pathname] = erplab_uigetfile({'*.txt';'*.xls,*.xlsx';'*.*'},'Select a EVENTLIST file');
     ELfullname = fullfile(pathname, filename);
     
     if isequal(filename,0)

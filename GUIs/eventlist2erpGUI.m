@@ -243,7 +243,7 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_browse_Callback(hObject, eventdata, handles)
 
-[bdfilename,bdfpathname] = uigetfile({'*.txt';'*.dat';'*.*'},'Select an EVENTLIST text file');
+[bdfilename,bdfpathname] = erplab_uigetfile({'*.txt';'*.dat';'*.*'},'Select an EVENTLIST text file');
 
 if isequal(bdfilename,0)
         disp('User selected Cancel')

@@ -142,9 +142,9 @@ try
         pre_patha = get(handles.edit_load_BDF, 'String');
         [pre_pathb, nameq, extq] = fileparts(pre_patha);
 
-        [bdfilename,bdfpathname] = uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)', pre_pathb);
+        [bdfilename,bdfpathname] = erplab_uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)', pre_pathb);
 catch
-        [bdfilename,bdfpathname] = uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)');
+        [bdfilename,bdfpathname] = erplab_uigetfile({'*.txt';'*.*'},'Select a Bin Descriptor File (BDF)');
 end
 if isequal(bdfilename,0)
         disp('User selected Cancel')
@@ -183,9 +183,9 @@ try
         pre_patha = get(handles.edit_load_EL, 'String');
         [pre_pathb, nameq, extq] = fileparts(pre_patha);
 
-        [logfilename,logpathname] = uigetfile({'*.txt';'*.*'},'Select a EVENTLIST text file (ex LOG file)', pre_pathb);
+        [logfilename,logpathname] = erplab_uigetfile({'*.txt';'*.*'},'Select a EVENTLIST text file (ex LOG file)', pre_pathb);
 catch
-        [logfilename,logpathname] = uigetfile({'*.txt';'*.*'},'Select a EVENTLIST text file (ex LOG file)');
+        [logfilename,logpathname] = erplab_uigetfile({'*.txt';'*.*'},'Select a EVENTLIST text file (ex LOG file)');
 end
 if isequal(logfilename,0)
         disp('User selected Cancel')
@@ -223,9 +223,9 @@ function pushbutton_browse_save_BL_Callback(hObject, eventdata, handles)
 %
 try
         prename = get(handles.edit_save_BL,'String');
-        [blfilename, blpathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as',prename);
+        [blfilename, blpathname] = erplab_uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as',prename);
 catch
-        [blfilename, blpathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as');
+        [blfilename, blpathname] = erplab_uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as');
 end
 if isequal(blfilename,0)
         disp('User selected Cancel')

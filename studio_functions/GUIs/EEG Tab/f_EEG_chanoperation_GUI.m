@@ -300,7 +300,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
 
-        [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
+        [filename, filepath] = erplab_uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
             observe_EEGDAT.eeg_panel_message =2;
             return
@@ -370,7 +370,7 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
-        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as',pathName);
+        [filename, filepath, filterindex] = erplab_uiputfile({'*.txt';'*.*'},'Save formulas-file as',pathName);
         if isequal(filename,0)
             observe_EEGDAT.eeg_panel_message =2;
             return

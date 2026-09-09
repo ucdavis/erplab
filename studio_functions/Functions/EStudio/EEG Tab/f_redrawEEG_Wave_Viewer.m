@@ -921,7 +921,7 @@ estudioworkingmemory('f_EEG_proces_messg',MessageViewer);
 
 pathstr = pwd;
 [~, namedef, ~] = fileparts(observe_EEGDAT.EEG.setname);
-[figurename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
+[figurename, erppathname, indxs] = erplab_uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
     'Save as',[fullfile(pathstr,namedef)]);
 
 if isequal(figurename,0)
