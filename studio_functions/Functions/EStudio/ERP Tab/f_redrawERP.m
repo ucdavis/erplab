@@ -1372,7 +1372,8 @@ for Numofrows = 1:rowNums
                 labelcbe = regexp(labelcbe, '\;', 'split');
             catch
             end
-            text(waveview,xpos_LABEL,ypos_LABEL+OffSetY(Numofrows), char(labelcbe),'FontName', fontnames,'HorizontalAlignment', 'left');%'FontWeight', 'bold',
+            text(waveview,xpos_LABEL,ypos_LABEL+OffSetY(Numofrows), char(labelcbe),'FontName', fontnames,...
+                'FontUnits','pixels','FontSize',FontSizeDefault,'HorizontalAlignment', 'left');%'FontWeight', 'bold',
         else
         end
         try

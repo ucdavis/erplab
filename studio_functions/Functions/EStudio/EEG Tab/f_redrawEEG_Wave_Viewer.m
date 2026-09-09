@@ -1647,7 +1647,10 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
     for index = 1:length(event2plot)
         %Just repeat for the first one
         if index == 1
-            EVENTFONT = [' \fontsize{',num2str(FontSizeDefault),'} '];
+            % padding only; the text call below sizes the label in pixels, and a
+            % TeX \fontsize directive would override that back to points. Two
+            % spaces reproduce the padding the directive left once TeX consumed it.
+            EVENTFONT = '  ';
         end
 
         % draw latency line
@@ -1969,7 +1972,7 @@ if EEG.trials>1
             'XTick',xtickstr,...
             'XTickLabel', tagtext,...
             'FontWeight','normal',...
-            'xaxislocation', 'bottom','FontSize',FontSizeDefault);
+            'xaxislocation', 'bottom','FontUnits','pixels','FontSize',FontSizeDefault);
         XTickLabel = cellstr(myeegviewer.XTickLabel);
         for Numofxtick = 1:length(XTickLabel)
             if strcmpi(XTickLabel{Numofxtick,:},'-0')
@@ -2024,7 +2027,7 @@ if ~isempty(data) && PlotNum~=0
         'YColor','k',...
         'FontWeight','normal',...
         'TickDir', 'in',...
-        'LineWidth',0.5,'FontSize',FontSizeDefault);%%,'HorizontalAlignment','center'
+        'LineWidth',0.5,'FontUnits','pixels','FontSize',FontSizeDefault);%%,'HorizontalAlignment','center'
     count=0;
     for ii = length(myeegviewer.YTickLabel):-1:2
         count = count+1;
