@@ -32,7 +32,7 @@ if nargin < 1
     help pop_ERP_spectralanalysis
     return
 end
-if isfield(ERP(1), 'datatype')
+if isfield(ERP, 'datatype')
     datatype = ERP.datatype;
 else
     datatype = 'ERP';
@@ -46,6 +46,12 @@ if nargin==1
             
             errorfound(msgboxText, title_msg);
             return
+        end
+        % preloadERP supplied a different erpset, so re-read its datatype
+        if isfield(ERP, 'datatype')
+            datatype = ERP.datatype;
+        else
+            datatype = 'ERP';
         end
     end
     if isempty(ERP.bindata)
