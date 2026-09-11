@@ -9,19 +9,8 @@ end
 %
 % When single colorbar is requiered (custom scale)
 %
-ksub = length(haxes);
-Pwidth(1)=1;
-kk2=1;
-for kk=1:ksub
-        %axes(haxes(kk))
-        if haxes(kk)~=0
-                Pk = get(haxes(kk),'OuterPosition');
-                %Pleft(kk) = Pk(1);
-                Pwidth(kk2) = Pk(3);
-                kk2 = kk2+1;
-        end
-end
-%set(hcb, 'Position', [min([0.57+0.16*nlat max(Pleft)+max(Pwidth)]) .11 max(Pwidth)/(100/nlat) .8150])
-% set(hcolorbar, 'Position', [0.01 .11 max(Pwidth)/(100/nlat) .8150], 'CLim', maplimit)
-set(hcolorbar, 'Position', [0.01 .11 max(Pwidth)/(100/nlat) .8150])
+cbpos   = get(hcolorbar, 'Position');
+cbwidth = cbpos(3); % as created: 2D and 3D bars are not the same width
+xpos    = 0.95 - cbwidth; % maps end at 0.95; tick labels use the margin beyond
+set(hcolorbar, 'Position', [xpos .11 cbwidth .8150])
 set(hcolorbar, 'Visible','on')
