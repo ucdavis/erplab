@@ -1,4 +1,4 @@
-## Note: We recommend against using Matlab 2025A or later with ERPLAB at this time. It is very buggy!
+## Note: As of v13.10, ERPLAB has been updated to be compatible with MATLAB 2025a+. However, there may still be remaining bugs; please report them to us if you encounter issues! 
 
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data. It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis. We have two versions: [ERPLAB Studio](https://github.com/ucdavis/erplab/wiki/ERPLAB-Studio-Manual) is a standalone package that provides an intuitive and easy-to-use graphical user interface. [ERPLAB Classic](https://github.com/ucdavis/erplab/wiki/Manual) is a plugin that runs inside the EEGLAB graphical user interface.
 </p>
@@ -6,10 +6,10 @@ Click the Wiki icon at the top of the page for documentation, tutorials, and FAQ
 </p>
 To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to erplab-bugreports@ucdavis.edu.
 
-## ERPLAB v13.00
+## ERPLAB v13.10
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/13.00/erplab13.00.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
+  <a href="https://github.com/ucdavis/erplab/releases/download/13.10/erplab13.10.zip"><img src="https://github.com/ucdavis/erplab/blob/master/images/erplab-and-studio-logo.png">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
@@ -24,6 +24,38 @@ This download contains both [ERPLAB Studio](https://github.com/ucdavis/erplab/wi
 [Click here](https://github.com/ucdavis/erplab/wiki/Compatability-and-Required-Toolboxes) for information about required Matlab toolboxes and compatibility with different versions of Matlab, EEGLAB, Windows, MacOS, and Linux.
 
 We encourage most users to use this latest major version.
+
+### ERPLAB v13.10 Release Notes
+
+*Changes since previous release:*
+
+**Compatibility with recent MATLAB versions was the main focus of this release.** Starting in R2025a, MATLAB changed some aspects of how it renders GUIs, and removed support for some of the ways ERPLAB previously operated. This caused a wide range of visual and functional problems in both Studio and Classic. Current fixes include:
+
+- Removing all HTML-based text formatting from ERPLAB's interface. MATLAB's HTML rendering inside interface elements is being phased out and had already become unreliable in recent versions. Labels, tooltips, data quality tables, selection lists, and menu items now use native formatting that works consistently across all supported MATLAB versions.
+- Corrected font size issues throughout ERPLAB. Interface font sizes are now tied to pixel units so that text and layout should scale better across platforms and MATLAB versions.
+- Set ERPLAB to disable/ignore dark theme when applicable. Newer versions of MATLAB now support dark theme, however ERPLAB does not support dark theme currently. 
+- Added improved window stacking procedures to fix issues with ERPLAB windows being moved behind the MATLAB IDE window, and other window ordering issues. 
+- Fixed a crash affecting most Classic plotting windows, caused by a change in how MATLAB creates figure toolbars.
+- Fixed issues causing Classic ERP waveform plots to sometimes draw into a new window, leaving the ERPLAB figure blank.
+- Fixed issues causing some GUI pushbuttons to be broken or inactive.
+- Fixed various rendering/clipping/sizing issues for text, images, and plots throughout ERPLAB Classic and Studio.
+
+Many interface windows were converted out of MATLAB's binary GUIDE and App Designer formats, improving long-term maintainability and forward compatibility. 
+
+Substantial performance improvements to plotting in ERPLAB Classic. Plotting ERPs across large numbers of channels, and plotting large numbers of scalp maps is now dramatically faster. Previously, plots became progressively slower as more channels were drawn.
+
+Added a full reset button to Studio’s “Reset” GUI, which resets all ERPLAB Studio parameters to defaults.
+
+Various fixes for 3D head plots, including issues with "Max–Min" color bar scale stopping at 0, colormap selection not registering, and view angle not being preserved. 
+
+Fixed several cases where cancelling a dialog or encountering an error while running a function would result in an empty dataset being returned
+
+Fixed an issue with the optimized binlister algorithm where bin assignment could differ from the standard algorithm.
+
+Updated several script-only functions, including ERP smoothing, continuous data mean removal, and string-to-numeric event code conversion. The change to ERP smoothing also no longer requires the Curve Fitting Toolbox, which is no longer needed by any part of ERPLAB. 
+
+Various other minor bug fixes and GUI improvements throughout ERPLAB Studio and Classic.
+
 
 ### ERPLAB v13.00 Release Notes
 
