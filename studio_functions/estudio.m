@@ -53,13 +53,6 @@ erplabver1 = geterplabeversion;
 EStudioversion = erplabver1;
 SignalProcessingToolboxCheck;
 
-% Check Matlab Version
-matlabRelease;
-if ans.Release == 'R2025a'
-     warndlg(sprintf('Matlab version 2025a currently does not work with some functions in ERPLAB. We recommend using an earlier version'),'!! Warning !!', 'modal')
-     clear ans;
-end
-
 
 %%--------------------check memory file------------------------------------
 
