@@ -1248,7 +1248,11 @@ varargout{1} = ERP_filtering_box;
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;estudioworkingmemory('ViewerFlag',0);
         end
-        if isempty(observe_ERPDAT.ALLERP)  || isempty(observe_ERPDAT.ERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
+        hasSPT = ~isempty(ver('signal'));
+        if ~hasSPT
+            ERP_filtering_box.Title = 'Filtering (requires Signal Processing Toolbox)';
+        end
+        if isempty(observe_ERPDAT.ALLERP)  || isempty(observe_ERPDAT.ERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1 || ~hasSPT
             gui_erp_filtering.apply.Enable = 'off';
             gui_erp_filtering.advanced.Enable = 'off';
             gui_erp_filtering.roll_off.Enable = 'off';
@@ -1404,9 +1408,11 @@ varargout{1} = ERP_filtering_box;
         hicutoff = 30;
         locutoff = 0;
         filterorder = 2*gui_erp_filtering.roll_off.Value;
-        [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
         gui_erp_filtering.hp_halfpow.String = '---';
-        gui_erp_filtering.lp_halfpow.String = num2str(round(frec3dB,-2));
+        if ~isempty(ver('signal'))
+            [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
+            gui_erp_filtering.lp_halfpow.String = num2str(round(frec3dB,-2));
+        end
         gui_erp_filtering.hp_halfamp.Enable = 'off';
         gui_erp_filtering.lp_halfamp.Enable = 'on';
         gui_erp_filtering.hp_halfamp.String = '0';

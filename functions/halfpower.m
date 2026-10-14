@@ -41,7 +41,9 @@ end
 nfilters = size(b,1); % 1 means 1 filter (e.g. lowpass), 2 means 2 filters (e.g. highpass+lowpass)
 fnyq  = fs/2;
 N     = round(fnyq/fresol);  %number of points for frequency response at 0.1 Hz resolution.
-warning off all
+ws = warning('off','all');
+% restore warning state on exit
+cleanupObj = onCleanup(@() warning(ws));
 
 try
       for k = 1:nfilters

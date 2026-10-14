@@ -1311,7 +1311,11 @@ varargout{1} = EEG_filtering_box;
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
             EEGUpdate = 0;  estudioworkingmemory('EEGUpdate',0);
         end
-        if  isempty(observe_EEGDAT.EEG) ||EEGUpdate==1
+        hasSPT = ~isempty(ver('signal'));
+        if ~hasSPT
+            EEG_filtering_box.Title = 'Filtering (requires Signal Processing Toolbox)';
+        end
+        if  isempty(observe_EEGDAT.EEG) ||EEGUpdate==1 || ~hasSPT
             gui_eegtab_filtering.apply.Enable = 'off';
             gui_eegtab_filtering.advanced.Enable = 'off';
             gui_eegtab_filtering.roll_off.Enable = 'off';
@@ -1486,9 +1490,11 @@ varargout{1} = EEG_filtering_box;
         end
         remove_dc = gui_eegtab_filtering.DC_remove.Value;
         filterorder = 2*gui_eegtab_filtering.roll_off.Value;
-        [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, 0,30,fs);
-        hp_halfpow_string =num2str(round(frec3dB(1),2));
-        gui_eegtab_filtering.lp_halfpow.String = hp_halfpow_string;
+        if ~isempty(ver('signal'))
+            [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, 0,30,fs);
+            hp_halfpow_string =num2str(round(frec3dB(1),2));
+            gui_eegtab_filtering.lp_halfpow.String = hp_halfpow_string;
+        end
         try nchan=observe_EEGDAT.EEG.nbchan;catch nchan=1;end
         defx = {0, 30, 2, 1:nchan, 1 ,'butter', remove_dc, []};
         estudioworkingmemory('pop_basicfilter',defx);
